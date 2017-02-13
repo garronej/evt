@@ -21,14 +21,11 @@ import {
 
 let evt = new SyncEvent<string>();
 
-evt.attach(data => console.log("Post: ".green, data));
-evt.attachOnce(data => console.log("Post once: ".cyan, data));
+evt.attach(data => console.log("Post: ", data));
+evt.attachOnce(data => console.log("Post once: ", data));
 
 console.log("Post count: ", evt.postCount);
 
-evt.post("tick");
-evt.post("tick");
-evt.post("tick");
 evt.post("tick");
 evt.post("tick");
 
@@ -41,8 +38,5 @@ Post count:  0
 Post:  tick
 Post once:  tick
 Post:  tick
-Post:  tick
-Post:  tick
-Post:  tick
-Post count:  5
+Post count:  2
 ````
