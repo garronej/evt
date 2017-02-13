@@ -1,0 +1,28 @@
+{
+  "name": "ts-events-extended",
+  "version": "1.0.0",
+  "description": "An extension of ts-events",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/garronej/ts-events-extended.git"
+  },
+  "main": "./out/lib/index.js",
+  "types": "./out/lib/index.d.ts",
+  "scripts": {
+    "postinstall": "npm run build",
+    "build": "npm run generate-async && npm run tsc",
+    "generate-async": "node ./src/lib/generateAsync",
+    "tsc": "./node_modules/.bin/tsc -p ./tsconfig.json",
+    "test": "node ./out/test/main"
+  },
+  "author": "Joseph Garrone",
+  "license": "MIT",
+  "dependencies": {
+    "@types/colors": "^1.1.1",
+    "@types/node": "^4.0.0",
+    "colors": "^1.1.2",
+    "ts-events": "^3.1.5",
+    "typescript": "^2.1.4"
+  },
+  "devDependencies": {}
+}
