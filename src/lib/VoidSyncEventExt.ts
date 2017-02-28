@@ -1,18 +1,25 @@
-import { VoidSyncEvent } from "ts-events";
+import { VoidSyncEvent, Postable } from "ts-events";
+import { SyncEventExt } from "./SyncEventExt";
 
 export class VoidSyncEventExt extends VoidSyncEvent {
 
-    public postCount: number= 0;
+    public postCount= 0;
+    public readonly evtAttach: SyncEventExt<"attachOnce"|"attach">;
 
     constructor(){
         super();
+
+        if( arguments.length === 0 )
+            this.evtAttach= new (SyncEventExt as any)("no recursion");
+        
     }
 
-    public attachOnce( handlerOnce: ()=>void): void;
-    public attachOnce(boundTo: Object, handlerOnce: ()=> void): void;
+    public attachOnce( handler: ()=>void): void;
+    public attachOnce(boundTo: Object, handler: ()=>void): void;
+    public attachOnce(event: Postable<void>): void;
     public attachOnce( ...inputs: any[]): void {
 
-        let handlerOnce: ()=> void;
+        let handlerOnce: (()=> void) | Postable<void> | undefined= undefined;
         let boundTo: Object;
 
         switch( inputs.length){
@@ -26,15 +33,43 @@ export class VoidSyncEventExt extends VoidSyncEvent {
                 break;
         }
 
-        let handler: typeof handlerOnce= () =>{
-            
-            handlerOnce.call(boundTo);
+        let handler: ()=> void;
 
-            this.detach(handler);
+        if( typeof (handlerOnce as any).post === "function" ){
 
-        };
+            handler= () => {
+                this.detach(handler);
+                (handlerOnce as { post: ()=>void }).post();
+            };
 
-        super.attach(boundTo, handler);
+        }else{
+
+            handler= () => {
+                this.detach(handler);
+                (handlerOnce as ()=> void).call(boundTo);
+            };
+
+        }
+
+        super.attach(handler);
+
+        if( !this.evtAttach ) return;
+
+        this.evtAttach.post("attachOnce");
+
+    }
+
+    public attach(handler: () => void): void;
+    public attach(boundTo: Object, handler: () => void): void;
+    public attach(event: Postable<void>): void;
+    public attach( ...inputs: any[]): void {
+
+        super.attach.apply(this, inputs);
+
+        if( !this.evtAttach ) return;
+
+        this.evtAttach.post("attach");
+
 
     }
 

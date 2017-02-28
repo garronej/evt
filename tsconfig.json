@@ -3,10 +3,14 @@
                 "module": "commonjs",
                 "target": "es5",
                 "lib": [
-                       "dom","es5","scripthost", "es2015"
+                        "dom",
+                        "es5",
+                        "scripthost",
+                        "es2015"
                 ],
                 "declaration": true,
-                "outDir": "./out"
+                "outDir": "./out",
+                "strictNullChecks": true
         },
         "filesGlob": [
                 "./src/**/*.ts"
