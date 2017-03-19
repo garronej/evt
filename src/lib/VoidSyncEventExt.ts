@@ -14,6 +14,34 @@ export class VoidSyncEventExt extends VoidSyncEvent {
         
     }
 
+    public waitFor(timeout?: number): Promise<boolean> {
+
+        timeout = timeout || 60000;
+
+        return new Promise<boolean>(resolve => {
+
+            let timer = setTimeout(() => {
+
+                this.detach(callback);
+
+                resolve(true);
+
+            }, timeout);
+
+            let callback = () => {
+
+                clearTimeout(timer);
+
+                resolve(false);
+
+            };
+
+            this.attachOnce(callback);
+
+        });
+
+    }
+
     public attachOnce(): Promise<void>;
     public attachOnce( handler: ()=>void): void;
     public attachOnce(boundTo: Object, handler: ()=>void): void;
@@ -25,7 +53,7 @@ export class VoidSyncEventExt extends VoidSyncEvent {
 
         switch( inputs.length){
             case 0:
-                return new Promise<void>( resolve => this.attachOnce( resolve ));
+                return new Promise<void>(resolve => this.attachOnce( resolve ));
             case 1: 
                 boundTo= this;
                 handlerOnce= inputs[0];
