@@ -14,15 +14,18 @@ export class SyncEventExt<T> extends SyncEvent<T> {
         
     }
 
+    public attachOnce(): Promise<T>;
     public attachOnce( handler: (data: T)=>void): void;
     public attachOnce(boundTo: Object, handler: (data: T)=>void): void;
     public attachOnce(event: Postable<T>): void;
-    public attachOnce( ...inputs: any[]): void {
+    public attachOnce( ...inputs: any[]): any {
 
         let handlerOnce: ((data: T)=> void) | Postable<T> | undefined= undefined;
         let boundTo: Object;
 
         switch( inputs.length){
+            case 0:
+                return new Promise<T>( resolve => this.attachOnce( resolve ) );
             case 1: 
                 boundTo= this;
                 handlerOnce= inputs[0];

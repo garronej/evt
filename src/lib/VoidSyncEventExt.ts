@@ -14,15 +14,18 @@ export class VoidSyncEventExt extends VoidSyncEvent {
         
     }
 
+    public attachOnce(): Promise<void>;
     public attachOnce( handler: ()=>void): void;
     public attachOnce(boundTo: Object, handler: ()=>void): void;
     public attachOnce(event: Postable<void>): void;
-    public attachOnce( ...inputs: any[]): void {
+    public attachOnce( ...inputs: any[]): any {
 
         let handlerOnce: (()=> void) | Postable<void> | undefined= undefined;
         let boundTo: Object;
 
         switch( inputs.length){
+            case 0:
+                return new Promise<void>( resolve => this.attachOnce( resolve ));
             case 1: 
                 boundTo= this;
                 handlerOnce= inputs[0];
