@@ -16,9 +16,6 @@ process.nextTick(() => evt.post(666));
     
     let n= await evt.waitFor();
 
-    if( n === "__TIMEOUT__" ) 
-        return console.assert(false);
-
     console.assert( n === 666 );
 
     console.log("PASS".green);

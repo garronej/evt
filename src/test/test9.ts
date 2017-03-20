@@ -18,9 +18,9 @@ setTimeout(() => {
 
 (async () => {
     
-    console.assert(await evt.attachOnce() === "foo");
+    console.assert(await evt.waitFor() === "foo");
 
-    console.assert(await evt.attachOnce() === "bar");
+    console.assert(await evt.waitFor() === "bar");
 
     console.log("PASS".green);
 

@@ -18,9 +18,9 @@ setTimeout(() => {
 
 (async () => {
     
-    await evt.attachOnce();
+    await evt.waitFor();
 
-    await evt.attachOnce();
+    await evt.waitFor();
 
     console.log("PASS".green);
 

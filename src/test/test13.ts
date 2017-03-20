@@ -20,11 +20,9 @@ setTimeout(() => {
     
     await evt.waitFor();
 
-    let hasTimedOut= await evt.waitFor();
+    await evt.waitFor();
 
-    console.assert( !hasTimedOut );
-
-    hasTimedOut= await evt.waitFor(200);
+    let hasTimedOut= await evt.waitFor(200);
 
     console.assert( hasTimedOut === "__TIMEOUT__" );
 

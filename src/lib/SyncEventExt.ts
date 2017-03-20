@@ -14,9 +14,14 @@ export class SyncEventExt<T> extends SyncEvent<T> {
 
     }
 
-    public waitFor(timeout?: number): Promise<T | "__TIMEOUT__"> {
+    public waitFor(): Promise<T>;
+    public waitFor(timeout: number): Promise<T | "__TIMEOUT__">;
+    public waitFor(...inputs: number[]): Promise<any>{
 
-        timeout = timeout || 60000;
+        if( !inputs.length )
+            return new Promise<T>(resolve => this.attachOnce(resolve)).then();
+
+        let timeout= inputs[0];
 
         return new Promise<T | "__TIMEOUT__">(resolve => {
 
@@ -42,7 +47,6 @@ export class SyncEventExt<T> extends SyncEvent<T> {
 
     }
 
-    public attachOnce(): Promise<T>;
     public attachOnce(handler: (data: T) => void): void;
     public attachOnce(boundTo: Object, handler: (data: T) => void): void;
     public attachOnce(event: Postable<T>): void;
@@ -52,8 +56,6 @@ export class SyncEventExt<T> extends SyncEvent<T> {
         let boundTo: Object;
 
         switch (inputs.length) {
-            case 0:
-                return new Promise<T>(resolve => this.attachOnce(resolve));
             case 1:
                 boundTo = this;
                 handlerOnce = inputs[0];
