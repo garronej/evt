@@ -60,7 +60,7 @@ export class SyncEventExt<T> extends SyncEvent<T> {
     public waitFor(...inputs: number[]): Promise<any> {
 
         if (!inputs.length)
-            return new Promise<T>(resolve => this.attachOnce(resolve)).then();
+            return new Promise<T>(resolve => this.attachOnce(resolve));
 
         let timeout = inputs[0];
 
@@ -84,7 +84,7 @@ export class SyncEventExt<T> extends SyncEvent<T> {
 
             this.attachOnce(callback);
 
-        }).then();
+        });
 
     }
 

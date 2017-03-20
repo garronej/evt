@@ -66,8 +66,6 @@ setTimeout(()=>{
 
         await new Promise<void>( resolve => setTimeout(resolve, 100));
 
-        console.log("tick");
-
         if( i === 8 ){
             iterator.next("STOP");
             break;

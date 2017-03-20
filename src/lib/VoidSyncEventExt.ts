@@ -84,7 +84,7 @@ export class VoidSyncEventExt extends VoidSyncEvent {
 
             this.attachOnce(callback);
 
-        }).then();
+        });
 
     }
 
