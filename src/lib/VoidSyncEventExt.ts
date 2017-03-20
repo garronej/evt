@@ -14,17 +14,17 @@ export class VoidSyncEventExt extends VoidSyncEvent {
         
     }
 
-    public waitFor(timeout?: number): Promise<boolean> {
+    public waitFor(timeout?: number): Promise< void | "__TIMEOUT__"> {
 
         timeout = timeout || 60000;
 
-        return new Promise<boolean>(resolve => {
+        return new Promise<void | "__TIMEOUT__">(resolve => {
 
             let timer = setTimeout(() => {
 
                 this.detach(callback);
 
-                resolve(true);
+                resolve("__TIMEOUT__");
 
             }, timeout);
 
@@ -32,13 +32,13 @@ export class VoidSyncEventExt extends VoidSyncEvent {
 
                 clearTimeout(timer);
 
-                resolve(false);
+                resolve();
 
             };
 
             this.attachOnce(callback);
 
-        });
+        }).then();
 
     }
 

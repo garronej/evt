@@ -14,17 +14,17 @@ export class SyncEventExt<T> extends SyncEvent<T> {
 
     }
 
-    public waitFor(timeout?: number): Promise<T | null> {
+    public waitFor(timeout?: number): Promise<T | "__TIMEOUT__"> {
 
         timeout = timeout || 60000;
 
-        return new Promise<T | null>(resolve => {
+        return new Promise<T | "__TIMEOUT__">(resolve => {
 
             let timer = setTimeout(() => {
 
                 this.detach(callback);
 
-                resolve(null);
+                resolve("__TIMEOUT__");
 
             }, timeout);
 
@@ -38,7 +38,7 @@ export class SyncEventExt<T> extends SyncEvent<T> {
 
             this.attachOnce(callback);
 
-        });
+        }).then();
 
     }
 
