@@ -1,5 +1,6 @@
 import { VoidSyncEvent, Postable } from "ts-events";
 import { SyncEventExt } from "./SyncEventExt";
+import { EventEmitter } from "events";
 
 export class VoidSyncEventExt extends VoidSyncEvent {
 
@@ -12,6 +13,46 @@ export class VoidSyncEventExt extends VoidSyncEvent {
         if( arguments.length === 0 )
             this.evtAttach= new (SyncEventExt as any)("no recursion");
         
+    }
+
+    public *asyncLoop(): IterableIterator<Promise<void>> {
+
+        let arrData: null[] = [];
+
+        let ee = new EventEmitter();
+
+        let callback= () => {
+            arrData.push(null);
+            ee.emit("push");
+        };
+
+        this.attach( callback );
+
+        let done= (stop?: "STOP")=>{
+
+            if(stop){
+                this.detach(callback);
+                ee.removeAllListeners("push");
+            }
+
+        }
+
+        while (true) {
+
+
+            done(yield new Promise<void>(function callee(resolve) {
+
+                if (!arrData.length)
+                    return ee.once("push", () => callee(resolve));
+                
+                arrData.shift();
+
+                resolve();
+
+            }));
+
+        }
+
     }
 
     public waitFor(): Promise<void>;

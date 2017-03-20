@@ -1,4 +1,5 @@
 import { SyncEvent, Postable } from "ts-events";
+import { EventEmitter } from "events";
 
 
 export class SyncEventExt<T> extends SyncEvent<T> {
@@ -14,14 +15,54 @@ export class SyncEventExt<T> extends SyncEvent<T> {
 
     }
 
+    public *asyncLoop(): IterableIterator<Promise<T>> {
+
+        let arrData: T[] = [];
+
+        let ee = new EventEmitter();
+
+        let callback= data => {
+            arrData.push(data);
+            ee.emit("push");
+        };
+
+        this.attach( callback );
+
+        let done= (stop?: "STOP")=>{
+
+            if(stop){
+                this.detach(callback);
+                ee.removeAllListeners("push");
+            }
+
+        }
+
+        while (true) {
+
+
+            done(yield new Promise<T>(function callee(resolve) {
+
+                if (!arrData.length)
+                    return ee.once("push", () => callee(resolve));
+
+                resolve(arrData.shift());
+
+
+
+            }));
+
+        }
+
+    }
+
     public waitFor(): Promise<T>;
     public waitFor(timeout: number): Promise<T | "__TIMEOUT__">;
-    public waitFor(...inputs: number[]): Promise<any>{
+    public waitFor(...inputs: number[]): Promise<any> {
 
-        if( !inputs.length )
+        if (!inputs.length)
             return new Promise<T>(resolve => this.attachOnce(resolve)).then();
 
-        let timeout= inputs[0];
+        let timeout = inputs[0];
 
         return new Promise<T | "__TIMEOUT__">(resolve => {
 

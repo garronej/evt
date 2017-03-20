@@ -10,7 +10,8 @@
                 ],
                 "declaration": true,
                 "outDir": "./out",
-                "strictNullChecks": true
+                "strictNullChecks": true,
+                "alwaysStrict": true
         },
         "filesGlob": [
                 "./src/**/*.ts"
