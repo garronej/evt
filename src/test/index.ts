@@ -1,5 +1,11 @@
 require("colors");
 
+process.on("unhandledRejection", error=> { 
+    console.log("INTERNAL ERROR".red);
+    console.log(error);
+    throw error;
+});
+
 let n = process.argv[2];
 
 if (n) {
