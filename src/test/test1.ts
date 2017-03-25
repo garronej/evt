@@ -1,8 +1,5 @@
 import {
-    SyncEvent,
-    AsyncEvent,
-    VoidSyncEvent,
-    VoidAsyncEvent
+    SyncEvent
 } from "../lib/index";
 
 require("colors");
@@ -20,7 +17,11 @@ evt.attach(data => {
     i++;
 
 });
-evt.attachOnce(data => console.assert(data === "tick"));
+
+evt.attachOnce(data => {
+
+    console.assert(data === "tick")
+});
 
 console.assert(evt.postCount === 0);
 

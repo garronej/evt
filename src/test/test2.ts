@@ -1,40 +1,48 @@
 import {
-    SyncEvent,
-    AsyncEvent,
-    VoidSyncEvent,
-    VoidAsyncEvent
+    SyncEvent
 } from "../lib/index";
 
 require("colors");
 
+type T= string;
 
-let evt = new AsyncEvent<string>();
+let evt = new SyncEvent<T>();
 
-let i = 0;
+let evtProxy= new SyncEvent<T>();
 
-evt.attach(data => {
+evt.attach(data=>{
 
-    if (i === 0) console.assert(data === "tick");
-    else console.assert(data === "tack");
-
-    i++;
+    if( !evtProxy.evtAttach.postCount )
+        evtProxy.evtAttach.attachOnce(()=> evtProxy.post(data));
+    else
+        evtProxy.post(data);
 
 });
-evt.attachOnce(data => console.assert(data === "tick"));
 
-console.assert(evt.postCount === 0);
+for( let char of [ "a", "b", "c", "d", "e" ])
+    evt.post(char);
 
-evt.post("tick");
-evt.post("tack");
-evt.post("tack");
+let alphabet= "";
 
-console.assert(evt.postCount === 3);
+evtProxy.attach(data => {
 
-console.assert(i === 0);
+    alphabet+= data;
 
-process.nextTick(()=> console.assert(i === 0));
-
-setImmediate(()=> {
-    console.assert(i === 3);
-    console.log("PASS".green);
 });
+
+
+for( let char of [ "f", "g", "h" ])
+    evt.post(char);
+
+//cSpell: disable
+console.assert(alphabet=== "abcdefgh");
+//cSpell: enable
+
+console.log("PASS".green);
+
+
+
+
+
+
+

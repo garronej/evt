@@ -1,39 +1,32 @@
 import {
-    SyncEvent,
-    AsyncEvent,
-    VoidSyncEvent,
-    VoidAsyncEvent
+    SyncEvent
 } from "../lib/index";
 
 require("colors");
 
+type T= string;
 
-let evt = new VoidSyncEvent();
+let evt = new SyncEvent<T>();
 
-let i = 0;
+let evtProxy= new SyncEvent<T>();
 
-evt.attach(() => { i++; });
-
-let called= false;
+evt.attach(evtProxy);
 
 let success= false;
 
-evt.attachOnce(() => {
-    console.assert(!called);
+evtProxy.attach(data => {
+
+    console.assert(data === "ok");
+
     success= true;
+
+
 });
 
-console.assert(evt.postCount === 0);
+evt.post("ok");
 
-evt.post();
-called= true;
-evt.post();
-evt.post();
-
-console.assert(evt.postCount === 3);
-
-console.assert(i === 3);
 
 console.assert(success);
 
 console.log("PASS".green);
+

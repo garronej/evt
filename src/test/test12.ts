@@ -1,35 +1,25 @@
 import {
-    SyncEvent,
-    AsyncEvent,
-    VoidSyncEvent,
-    VoidAsyncEvent
+    VoidSyncEvent
 } from "../lib/index";
 
 require("colors");
 
-let evt = new SyncEvent<string>();
-
+let evt = new VoidSyncEvent();
 
 setTimeout(() => {
-    evt.post("foo");
-    setImmediate( ()=> evt.post("bar"));
+    evt.post();
+    setImmediate( ()=> evt.post());
 }, 100);
 
 
 (async () => {
     
-    console.assert(await evt.waitFor() === "foo");
+    await evt.waitFor();
 
-    console.assert(await evt.waitFor() === "bar");
-
-    let message = await evt.waitFor(200);
-
-    console.assert( message === "__TIMEOUT__" );
+    await evt.waitFor();
 
     console.log("PASS".green);
 
 })();
-
-
 
 

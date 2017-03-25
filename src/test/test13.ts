@@ -1,8 +1,5 @@
 import {
-    SyncEvent,
-    AsyncEvent,
-    VoidSyncEvent,
-    VoidAsyncEvent
+    VoidSyncEvent
 } from "../lib/index";
 
 require("colors");
@@ -22,14 +19,14 @@ setTimeout(() => {
 
     await evt.waitFor();
 
-    let hasTimedOut= await evt.waitFor(200);
+    try{
 
-    console.assert( hasTimedOut === "__TIMEOUT__" );
+        await evt.waitFor(200);
 
-    console.log("PASS".green);
+    }catch( error ){
+        console.assert( error.message === "waitFor() timeout after 200 ms");
+        console.log("PASS".green);
+    }
+
 
 })();
-
-
-
-

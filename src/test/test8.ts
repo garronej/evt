@@ -1,36 +1,109 @@
 import {
-    SyncEvent,
-    AsyncEvent,
-    VoidSyncEvent,
-    VoidAsyncEvent
+    SyncEvent
 } from "../lib/index";
 
 require("colors");
 
-type T= string;
+export interface Person {
+    name: string;
+    age: number;
+    [prom: string]: any;
+}
 
-let evt = new SyncEvent<T>();
+export interface TypedPerson extends Person {
+    sex: "male" | "female";
+}
 
-let evtProxy= new SyncEvent<T>();
+export function isTyped(p: Person): p is TypedPerson {
+    return p.sex ? true: false;
+}
 
-evt.attachOnce(evtProxy);
-
-let success= false;
-
-evtProxy.attach(data => {
-
-    console.assert(data === "ok");
-
-    success= true;
+let testCount= 0;
 
 
+export class TypedPersonIntro {
+
+
+    private intro= "this person is ";
+
+    public introduce( tp: TypedPerson): void{
+
+        console.assert(this.intro + tp.sex === "this person is female");
+
+        testCount++;
+
+    }
+}
+
+let tpi= new TypedPersonIntro();
+
+
+let evt = new SyncEvent<Person>();
+
+evt.attach(isTyped, tpi, tpi.introduce);
+
+console.assert(evt.handlerCount === 1);
+
+evt.post({
+    "name": "Sienna",
+    "age": 22,
+    "sex": "female"
 });
 
-evt.post("ok");
-evt.post("ko");
+evt.detach(tpi);
+
+console.assert( evt.handlerCount === 0);
+
+evt.post({
+    "name": "Antonin",
+    "age": 21,
+    "sex": "male"
+});
 
 
-console.assert(success);
+evt.attach(isTyped, tpi, tpi.introduce);
+
+console.assert(evt.handlerCount === 1);
+
+evt.post({
+    "name": "Sienna",
+    "age": 22,
+    "sex": "female"
+});
+
+
+evt.detach({ "matcher": isTyped } );
+
+console.assert( evt.handlerCount === 0);
+
+evt.post({
+    "name": "Antonin",
+    "age": 21,
+    "sex": "male"
+});
+
+
+evt.attach(isTyped, tpi, tpi.introduce);
+
+console.assert(evt.handlerCount === 1);
+
+evt.post({
+    "name": "Sienna",
+    "age": 22,
+    "sex": "female"
+});
+
+evt.detach(tpi.introduce);
+
+console.assert( evt.handlerCount === 0);
+
+evt.post({
+    "name": "Antonin",
+    "age": 21,
+    "sex": "male"
+});
+
+
+console.assert(testCount === 3);
 
 console.log("PASS".green);
-

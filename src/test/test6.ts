@@ -1,47 +1,36 @@
 import {
-    SyncEvent,
-    AsyncEvent,
-    VoidSyncEvent,
-    VoidAsyncEvent
+    SyncEvent
 } from "../lib/index";
 
 require("colors");
 
-
-let evt = new VoidSyncEvent();
-
-let evtProxy= new VoidSyncEvent();
-
-evt.attach(()=>{
-
-    if( !evtProxy.evtAttach.postCount )
-        evtProxy.evtAttach.attachOnce(()=> evtProxy.post());
-    else
-        evtProxy.post();
-
-});
-
-for( let i in [ ".", ".", ".", ".", "." ])
-    evt.post();
-
-let count= 0;
-
-evtProxy.attach(() => {
-
-    count++;
-
-});
+let evt = new SyncEvent<string>();
 
 
-for( let i in [ "f", "g", "h" ])
-    evt.post();
+setTimeout(() => {
+    evt.post("foo");
+    setImmediate(() => evt.post("bar"));
+}, 100);
 
-console.assert(count === 8);
 
-console.log("PASS".green);
+(async () => {
+
+    console.assert(await evt.waitFor() === "foo");
+
+    console.assert(await evt.waitFor() === "bar");
+
+    try {
+
+        let message = await evt.waitFor(200);
+
+    } catch (error) {
+        console.assert(error.message === "waitFor() timeout after 200 ms");
+        console.log("PASS".green);
+    }
 
 
 
+})();
 
 
 

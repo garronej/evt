@@ -1,31 +1,36 @@
 import {
-    SyncEvent,
-    AsyncEvent,
-    VoidSyncEvent,
-    VoidAsyncEvent
+    VoidSyncEvent
 } from "../lib/index";
 
 require("colors");
 
+
 let evt = new VoidSyncEvent();
 
+let i = 0;
 
-setTimeout(() => {
-    evt.post();
-    setImmediate( ()=> evt.post());
-}, 100);
+evt.attach(() => { i++; });
 
+let called= false;
 
-(async () => {
-    
-    await evt.waitFor();
+let success= false;
 
-    await evt.waitFor();
+evt.attachOnce(() => {
+    console.assert(!called);
+    success= true;
+});
 
-    console.log("PASS".green);
+console.assert(evt.postCount === 0);
 
-})();
+evt.post();
+called= true;
+evt.post();
+evt.post();
 
+console.assert(evt.postCount === 3);
 
+console.assert(i === 3);
 
+console.assert(success);
 
+console.log("PASS".green);
