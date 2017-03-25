@@ -11,7 +11,6 @@
                 "declaration": true,
                 "outDir": "./dist",
                 "strictNullChecks": true,
-                "alwaysStrict": true,
                 "sourceMap": true
         },
         "filesGlob": [
