@@ -1,6 +1,6 @@
 {
   "name": "ts-events-extended",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "An extension of ts-events",
   "repository": {
     "type": "git",
@@ -15,6 +15,7 @@
   "author": "Joseph Garrone",
   "license": "MIT",
   "dependencies": {
+    "rejection-tracker": "garronej/rejection-tracker",
     "ts-exec-queue": "garronej/ts-exec-queue"
   },
   "devDependencies": {
