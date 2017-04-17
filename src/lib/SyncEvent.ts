@@ -361,6 +361,8 @@ export class SyncEvent<T> {
         //if( (data as any) !== "attach" && (data as any) !== "attachOnce")
         //console.log(this.handlers);
 
+        this.postPromise(data);
+
         let handlers = [...this.handlers];
 
         for( let index=0; index < handlers.length; index++ ){
@@ -376,12 +378,11 @@ export class SyncEvent<T> {
 
         }
 
-        this.postPromise(data);
 
     }
 
     private postPromise = execQueue(
-        (data: T, callback?: () => void): void => {
+        (data: T, callback?: () => void) => {
 
             let promiseHandlers = [...this.promiseHandlers];
 
@@ -405,7 +406,6 @@ export class SyncEvent<T> {
 
             if (run) setImmediate(callback!);
             else callback!();
-
 
         }
     );

@@ -1,10 +1,6 @@
-require("colors");
+require("rejection-tracker").main();
 
-process.on("unhandledRejection", error=> { 
-    console.log("INTERNAL ERROR".red);
-    console.log(error);
-    throw error;
-});
+require("colors");
 
 let n = process.argv[2];
 
@@ -14,7 +10,7 @@ if (n) {
 
 } else {
 
-    for (let i = 1; i <= 13; i++) {
+    for (let i = 1; i <= 14; i++) {
 
         try {
             require("./test" + i);

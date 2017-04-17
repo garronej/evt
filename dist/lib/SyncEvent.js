@@ -232,6 +232,7 @@ var SyncEvent = (function () {
         this.postCount++;
         //if( (data as any) !== "attach" && (data as any) !== "attachOnce")
         //console.log(this.handlers);
+        this.postPromise(data);
         var handlers = this.handlers.slice();
         for (var index = 0; index < handlers.length; index++) {
             var _a = handlers[index], matcher = _a.matcher, boundTo = _a.boundTo, handler = _a.handler, type = _a.type;
@@ -241,7 +242,6 @@ var SyncEvent = (function () {
                 this.handlers.splice(index, 1);
             handler.call(boundTo, data);
         }
-        this.postPromise(data);
     };
     return SyncEvent;
 }());
