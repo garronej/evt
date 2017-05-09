@@ -10,7 +10,7 @@ if (n) {
 
 } else {
 
-    for (let i = 1; i <= 14; i++) {
+    for (let i = 1; i <= 15; i++) {
 
         try {
             require("./test" + i);

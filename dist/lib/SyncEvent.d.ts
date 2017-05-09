@@ -18,6 +18,8 @@ export declare class SyncEvent<T> {
     readonly waiterCount: number;
     readonly permanentHandlerCount: number;
     readonly onceHandlerCount: number;
+    createProxy<Q extends T>(matcher: (data: T) => data is Q): SyncEvent<Q>;
+    createProxy(matcher?: (data: T) => boolean): SyncEvent<T>;
     constructor();
     private readWaitForParams(inputs);
     waitFor<Q extends T>(matcher: (data: T) => data is Q): Promise<Q>;

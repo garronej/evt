@@ -81,6 +81,12 @@ var SyncEvent = (function () {
         enumerable: true,
         configurable: true
     });
+    SyncEvent.prototype.createProxy = function (matcher) {
+        matcher = matcher || SyncEvent.defaultEvtMatcher;
+        var evt = new SyncEvent();
+        this.attach(matcher, evt);
+        return evt;
+    };
     SyncEvent.prototype.readWaitForParams = function (inputs) {
         if (inputs.length === 0)
             return { "matcher": SyncEvent.defaultEvtMatcher, "timeout": undefined };

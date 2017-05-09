@@ -66,6 +66,22 @@ export class SyncEvent<T> {
     }
 
 
+
+    public createProxy<Q extends T>(matcher: (data: T) => data is Q ): SyncEvent<Q>;
+    public createProxy(matcher?: (data: T) => boolean ): SyncEvent<T>;
+    public createProxy(matcher?: (data: T) => boolean): SyncEvent<any> {
+
+        matcher= matcher || SyncEvent.defaultEvtMatcher;
+
+        let evt= new SyncEvent<any>();
+
+        this.attach(matcher, evt);
+
+        return evt;
+
+    }
+
+
     constructor() {
 
         if (arguments.length === 0)
