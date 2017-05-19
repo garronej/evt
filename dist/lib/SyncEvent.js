@@ -15,24 +15,36 @@ var SyncEvent = (function () {
     function SyncEvent() {
         var _this = this;
         this.postCount = 0;
-        this.handlers = [];
+        this.callbackHandlers = [];
         this.promiseHandlers = [];
         this.postPromise = ts_exec_queue_1.execQueue(function (data, callback) {
-            var promiseHandlers = _this.promiseHandlers.slice();
-            var run = false;
-            for (var index = 0; index < promiseHandlers.length; index++) {
-                var _a = promiseHandlers[index], matcher = _a.matcher, timer = _a.timer, resolve = _a.resolve;
+            var match_run_detach = function (index, promiseHandler) {
+                var matcher = promiseHandler.matcher, timer = promiseHandler.timer, resolve = promiseHandler.resolve;
                 if (!matcher(data))
-                    continue;
-                if (!run)
-                    run = true;
+                    return false;
                 if (timer)
                     clearTimeout(timer);
                 _this.promiseHandlers.splice(index, 1);
                 resolve(data);
+                return true;
+            };
+            var extracted = false;
+            _this.promiseHandlers.slice().forEach(function (promiseHandler, index) {
+                if (!promiseHandler.extract)
+                    return;
+                extracted = match_run_detach(index, promiseHandler);
+            });
+            var matched = extracted;
+            if (!extracted) {
+                _this.promiseHandlers.slice().forEach(function (promiseHandler, index) {
+                    if (promiseHandler.extract)
+                        return;
+                    matched = match_run_detach(index, promiseHandler);
+                });
+                _this.postCallback(data);
             }
-            if (run)
-                setImmediate(callback);
+            if (matched)
+                setImmediate(function () { return callback(); });
             else
                 callback();
         });
@@ -49,7 +61,7 @@ var SyncEvent = (function () {
     };
     Object.defineProperty(SyncEvent.prototype, "handlerCount", {
         get: function () {
-            return this.handlers.length + this.promiseHandlers.length;
+            return this.callbackHandlers.length + this.promiseHandlers.length;
         },
         enumerable: true,
         configurable: true
@@ -63,31 +75,52 @@ var SyncEvent = (function () {
     });
     Object.defineProperty(SyncEvent.prototype, "permanentHandlerCount", {
         get: function () {
-            var out = 0;
-            for (var _i = 0, _a = this.handlers; _i < _a.length; _i++) {
-                var type = _a[_i].type;
-                if (type === "attach")
-                    out++;
-            }
-            return out;
+            return this.callbackHandlers.filter(function (_a) {
+                var once = _a.once;
+                return !once;
+            }).length;
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(SyncEvent.prototype, "onceHandlerCount", {
         get: function () {
-            return this.handlers.length - this.permanentHandlerCount;
+            return this.callbackHandlers.length - this.permanentHandlerCount;
         },
         enumerable: true,
         configurable: true
     });
     SyncEvent.prototype.createProxy = function (matcher) {
+        return this.__createProxy__(matcher, false);
+    };
+    SyncEvent.prototype.createProxyExtract = function (matcher) {
+        return this.__createProxy__(matcher, true);
+    };
+    SyncEvent.prototype.__createProxy__ = function (matcher, extract) {
         matcher = matcher || SyncEvent.defaultEvtMatcher;
         var evt = new SyncEvent();
-        this.attach(matcher, evt);
+        if (extract)
+            this.attachExtract(matcher, evt);
+        else
+            this.attach(matcher, evt);
         return evt;
     };
+    SyncEvent.prototype.waitFor = function () {
+        var inputs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            inputs[_i] = arguments[_i];
+        }
+        return this.__waitFor__(inputs, false);
+    };
+    SyncEvent.prototype.waitForExtract = function () {
+        var inputs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            inputs[_i] = arguments[_i];
+        }
+        return this.__waitFor__(inputs, true);
+    };
     SyncEvent.prototype.readWaitForParams = function (inputs) {
+        inputs = inputs.filter(function (v) { return v; });
         if (inputs.length === 0)
             return { "matcher": SyncEvent.defaultEvtMatcher, "timeout": undefined };
         else if (inputs.length === 1 && typeof inputs[0] === "number")
@@ -97,12 +130,8 @@ var SyncEvent = (function () {
         else
             return { "matcher": inputs[0], "timeout": inputs[1] };
     };
-    SyncEvent.prototype.waitFor = function () {
+    SyncEvent.prototype.__waitFor__ = function (inputs, extract) {
         var _this = this;
-        var inputs = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            inputs[_i] = arguments[_i];
-        }
         return new Promise(function (resolve, reject) {
             var _a = _this.readWaitForParams(inputs), matcher = _a.matcher, timeout = _a.timeout;
             var timer = undefined;
@@ -113,12 +142,40 @@ var SyncEvent = (function () {
                     reject(new Error("waitFor() timeout after " + timeout + " ms"));
                 }, timeout);
             }
-            var promiseHandler = { matcher: matcher, timer: timer, resolve: resolve };
+            var promiseHandler = { matcher: matcher, timer: timer, resolve: resolve, extract: extract };
             _this.promiseHandlers.push(promiseHandler);
             if (!_this.evtAttach)
                 return;
-            _this.evtAttach.post("waitFor");
+            _this.evtAttach.post("waitFor" + extract ? "Extract" : "");
         });
+    };
+    SyncEvent.prototype.attachOnce = function () {
+        var inputs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            inputs[_i] = arguments[_i];
+        }
+        this.__attach__(inputs, true, false);
+    };
+    SyncEvent.prototype.attacheOnceExtract = function () {
+        var inputs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            inputs[_i] = arguments[_i];
+        }
+        this.__attach__(inputs, true, true);
+    };
+    SyncEvent.prototype.attach = function () {
+        var inputs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            inputs[_i] = arguments[_i];
+        }
+        this.__attach__(inputs, false, false);
+    };
+    SyncEvent.prototype.attachExtract = function () {
+        var inputs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            inputs[_i] = arguments[_i];
+        }
+        this.__attach__(inputs, false, true);
     };
     SyncEvent.prototype.readAttachParams = function (inputs) {
         var outAsArray = undefined;
@@ -166,27 +223,12 @@ var SyncEvent = (function () {
         var _a = outAsArray, matcher = _a[0], boundTo = _a[1], handler = _a[2];
         return { matcher: matcher, boundTo: boundTo, handler: handler };
     };
-    SyncEvent.prototype.attachOnce = function () {
-        var inputs = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            inputs[_i] = arguments[_i];
-        }
+    SyncEvent.prototype.__attach__ = function (inputs, once, extract) {
         var _a = this.readAttachParams(inputs), matcher = _a.matcher, boundTo = _a.boundTo, handler = _a.handler;
-        this.__attach__("attachOnce", matcher, boundTo, handler);
-    };
-    SyncEvent.prototype.attach = function () {
-        var inputs = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            inputs[_i] = arguments[_i];
-        }
-        var _a = this.readAttachParams(inputs), matcher = _a.matcher, boundTo = _a.boundTo, handler = _a.handler;
-        this.__attach__("attach", matcher, boundTo, handler);
-    };
-    SyncEvent.prototype.__attach__ = function (type, matcher, boundTo, handler) {
-        this.handlers.push({ matcher: matcher, boundTo: boundTo, handler: handler, type: type });
+        this.callbackHandlers.push({ matcher: matcher, boundTo: boundTo, handler: handler, once: once, extract: extract });
         if (!this.evtAttach)
             return;
-        this.evtAttach.post(type);
+        this.evtAttach.post("attach" + once ? "Once" : "" + extract ? "Extract" : "");
     };
     SyncEvent.prototype.readDetachParams = function (inputs) {
         if (inputs.length === 0)
@@ -218,36 +260,50 @@ var SyncEvent = (function () {
         return null;
     };
     SyncEvent.prototype.detach = function () {
+        var _this = this;
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
         var by = this.readDetachParams(inputs);
-        var handlers = this.handlers.slice();
-        for (var index = 0; index < handlers.length; index++) {
-            var _a = handlers[index], matcher = _a.matcher, boundTo = _a.boundTo, handler = _a.handler;
+        this.callbackHandlers.slice().forEach(function (_a, index) {
+            var matcher = _a.matcher, boundTo = _a.boundTo, handler = _a.handler;
             if ((by.hasOwnProperty("matcher") ? (by.matcher === matcher) : true) &&
                 (by.hasOwnProperty("boundTo") ? (by.boundTo === boundTo) : true) &&
                 (by.hasOwnProperty("handler") ? (by.handler === handler) : true))
-                this.handlers.splice(index, 1);
-        }
+                _this.callbackHandlers.splice(index, 1);
+        });
         if (!Object.keys(by).length)
             this.stopWaiting();
     };
     SyncEvent.prototype.post = function (data) {
         this.postCount++;
-        //if( (data as any) !== "attach" && (data as any) !== "attachOnce")
-        //console.log(this.handlers);
         this.postPromise(data);
-        var handlers = this.handlers.slice();
-        for (var index = 0; index < handlers.length; index++) {
-            var _a = handlers[index], matcher = _a.matcher, boundTo = _a.boundTo, handler = _a.handler, type = _a.type;
+    };
+    SyncEvent.prototype.postCallback = function (data) {
+        var _this = this;
+        var match_run_detach = function (index, callbackHandler) {
+            var matcher = callbackHandler.matcher, boundTo = callbackHandler.boundTo, handler = callbackHandler.handler, once = callbackHandler.once;
             if (!matcher(data))
-                continue;
-            if (type === "attachOnce")
-                this.handlers.splice(index, 1);
+                return false;
+            if (once)
+                _this.callbackHandlers.splice(index, 1);
             handler.call(boundTo, data);
-        }
+            return true;
+        };
+        var extracted = false;
+        this.callbackHandlers.slice().forEach(function (callbackHandler, index) {
+            if (!callbackHandler.extract)
+                return;
+            extracted = match_run_detach(index, callbackHandler);
+        });
+        if (extracted)
+            return;
+        this.callbackHandlers.slice().forEach(function (callbackHandler, index) {
+            if (callbackHandler.extract)
+                return;
+            match_run_detach(index, callbackHandler);
+        });
     };
     return SyncEvent;
 }());
