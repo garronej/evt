@@ -42,3 +42,4 @@ Post count:  2
 ````
 
 TODO: Attach once and attach should return the emmiter.
+TODO: Spelling mistage attacheOnceExtract should be attachOnceExtract
