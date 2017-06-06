@@ -154,28 +154,28 @@ var SyncEvent = (function () {
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
-        this.__attach__(inputs, true, false);
+        return this.__attach__(inputs, true, false);
     };
-    SyncEvent.prototype.attacheOnceExtract = function () {
+    SyncEvent.prototype.attachOnceExtract = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
-        this.__attach__(inputs, true, true);
+        return this.__attach__(inputs, true, true);
     };
     SyncEvent.prototype.attach = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
-        this.__attach__(inputs, false, false);
+        return this.__attach__(inputs, false, false);
     };
     SyncEvent.prototype.attachExtract = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
-        this.__attach__(inputs, false, true);
+        return this.__attach__(inputs, false, true);
     };
     SyncEvent.prototype.readAttachParams = function (inputs) {
         var outAsArray = undefined;
@@ -227,8 +227,9 @@ var SyncEvent = (function () {
         var _a = this.readAttachParams(inputs), matcher = _a.matcher, boundTo = _a.boundTo, handler = _a.handler;
         this.callbackHandlers.push({ matcher: matcher, boundTo: boundTo, handler: handler, once: once, extract: extract });
         if (!this.evtAttach)
-            return;
+            return this;
         this.evtAttach.post("attach" + once ? "Once" : "" + extract ? "Extract" : "");
+        return this;
     };
     SyncEvent.prototype.readDetachParams = function (inputs) {
         if (inputs.length === 0)
@@ -275,10 +276,12 @@ var SyncEvent = (function () {
         });
         if (!Object.keys(by).length)
             this.stopWaiting();
+        return this;
     };
     SyncEvent.prototype.post = function (data) {
         this.postCount++;
         this.postPromise(data);
+        return this;
     };
     SyncEvent.prototype.postCallback = function (data) {
         var _this = this;
@@ -315,7 +318,7 @@ var VoidSyncEvent = (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     VoidSyncEvent.prototype.post = function () {
-        _super.prototype.post.call(this, undefined);
+        return _super.prototype.post.call(this, undefined);
     };
     return VoidSyncEvent;
 }(SyncEvent));

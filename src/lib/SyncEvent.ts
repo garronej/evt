@@ -185,88 +185,88 @@ export class SyncEvent<T> {
 
 
 
-    public attachOnce<Q extends T>(matcher: (data: T) => data is Q, handler: (data: Q) => void): void;
-    public attachOnce<Q extends T>(matcher: (data: T) => data is Q, boundTo: Object, handler: (data: Q) => void): void;
-    public attachOnce<Q extends T>(matcher: (data: T) => data is Q, event: Postable<Q>): void;
+    public attachOnce<Q extends T>(matcher: (data: T) => data is Q, handler: (data: Q) => void): this;
+    public attachOnce<Q extends T>(matcher: (data: T) => data is Q, boundTo: Object, handler: (data: Q) => void): this;
+    public attachOnce<Q extends T>(matcher: (data: T) => data is Q, event: Postable<Q>): this;
 
-    public attachOnce(event: Postable<T>): void; //1 Post
-    public attachOnce(handler: (data: T) => void): void; //1 Function
+    public attachOnce(event: Postable<T>): this; //1 Post
+    public attachOnce(handler: (data: T) => void): this; //1 Function
 
-    public attachOnce(matcher: (data: T) => boolean, event: Postable<T>): void; //2 Function Post
-    public attachOnce(matcher: (data: T) => boolean, handler: (data: T) => void): void; //2 Function Function
-    public attachOnce(boundTo: Object, handler: (data: T) => void): void; //2 any Function
+    public attachOnce(matcher: (data: T) => boolean, event: Postable<T>): this; //2 Function Post
+    public attachOnce(matcher: (data: T) => boolean, handler: (data: T) => void): this; //2 Function Function
+    public attachOnce(boundTo: Object, handler: (data: T) => void): this; //2 any Function
 
-    public attachOnce(matcher: (data: T) => boolean, boundTo: Object, handler: (data: T) => void): void; //3
-
-
-    public attachOnce(...inputs: any[]): any {
-
-        this.__attach__(inputs, true, false);
-
-    }
+    public attachOnce(matcher: (data: T) => boolean, boundTo: Object, handler: (data: T) => void): this; //3
 
 
+    public attachOnce(...inputs: any[]): this {
 
-    public attacheOnceExtract<Q extends T>(matcher: (data: T) => data is Q, handler: (data: Q) => void): void;
-    public attacheOnceExtract<Q extends T>(matcher: (data: T) => data is Q, boundTo: Object, handler: (data: Q) => void): void;
-    public attacheOnceExtract<Q extends T>(matcher: (data: T) => data is Q, event: Postable<Q>): void;
-
-    public attacheOnceExtract(event: Postable<T>): void; //1 Post
-    public attacheOnceExtract(handler: (data: T) => void): void; //1 Function
-
-    public attacheOnceExtract(matcher: (data: T) => boolean, event: Postable<T>): void; //2 Function Post
-    public attacheOnceExtract(matcher: (data: T) => boolean, handler: (data: T) => void): void; //2 Function Function
-    public attacheOnceExtract(boundTo: Object, handler: (data: T) => void): void; //2 any Function
-
-    public attacheOnceExtract(matcher: (data: T) => boolean, boundTo: Object, handler: (data: T) => void): void; //3
-
-
-    public attacheOnceExtract(...inputs: any[]): any {
-
-        this.__attach__(inputs, true, true);
+        return this.__attach__(inputs, true, false);
 
     }
 
 
 
-    public attach<Q extends T>(matcher: (data: T) => data is Q, handler: (data: Q) => void): void;
-    public attach<Q extends T>(matcher: (data: T) => data is Q, boundTo: Object, handler: (data: Q) => void): void;
-    public attach<Q extends T>(matcher: (data: T) => data is Q, event: Postable<Q>): void;
+    public attachOnceExtract<Q extends T>(matcher: (data: T) => data is Q, handler: (data: Q) => void): this;
+    public attachOnceExtract<Q extends T>(matcher: (data: T) => data is Q, boundTo: Object, handler: (data: Q) => void): this;
+    public attachOnceExtract<Q extends T>(matcher: (data: T) => data is Q, event: Postable<Q>): this;
 
-    public attach(event: Postable<T>): void; //1 Post
-    public attach(handler: (data: T) => void): void; //1 Function
+    public attachOnceExtract(event: Postable<T>): this; //1 Post
+    public attachOnceExtract(handler: (data: T) => void): this; //1 Function
 
-    public attach(matcher: (data: T) => boolean, event: Postable<T>): void; //2 Function Post
-    public attach(matcher: (data: T) => boolean, handler: (data: T) => void): void; //2 Function Function
+    public attachOnceExtract(matcher: (data: T) => boolean, event: Postable<T>): this; //2 Function Post
+    public attachOnceExtract(matcher: (data: T) => boolean, handler: (data: T) => void): this; //2 Function Function
+    public attachOnceExtract(boundTo: Object, handler: (data: T) => void): this; //2 any Function
+
+    public attachOnceExtract(matcher: (data: T) => boolean, boundTo: Object, handler: (data: T) => void): this; //3
+
+
+    public attachOnceExtract(...inputs: any[]): this {
+
+        return this.__attach__(inputs, true, true);
+
+    }
+
+
+
+    public attach<Q extends T>(matcher: (data: T) => data is Q, handler: (data: Q) => void): this;
+    public attach<Q extends T>(matcher: (data: T) => data is Q, boundTo: Object, handler: (data: Q) => void): this;
+    public attach<Q extends T>(matcher: (data: T) => data is Q, event: Postable<Q>): this;
+
+    public attach(event: Postable<T>): this; //1 Post
+    public attach(handler: (data: T) => void): this; //1 Function
+
+    public attach(matcher: (data: T) => boolean, event: Postable<T>): this; //2 Function Post
+    public attach(matcher: (data: T) => boolean, handler: (data: T) => void): this; //2 Function Function
     public attach(boundTo: Object, handler: (data: T) => void): void; //2 any Function
 
-    public attach(matcher: (data: T) => boolean, boundTo: Object, handler: (data: T) => void): void; //3
+    public attach(matcher: (data: T) => boolean, boundTo: Object, handler: (data: T) => void): this; //3
 
 
-    public attach(...inputs: any[]): any {
+    public attach(...inputs: any[]): this {
 
-        this.__attach__(inputs, false, false);
+        return this.__attach__(inputs, false, false);
 
     }
 
 
-    public attachExtract<Q extends T>(matcher: (data: T) => data is Q, handler: (data: Q) => void): void;
-    public attachExtract<Q extends T>(matcher: (data: T) => data is Q, boundTo: Object, handler: (data: Q) => void): void;
-    public attachExtract<Q extends T>(matcher: (data: T) => data is Q, event: Postable<Q>): void;
+    public attachExtract<Q extends T>(matcher: (data: T) => data is Q, handler: (data: Q) => void): this;
+    public attachExtract<Q extends T>(matcher: (data: T) => data is Q, boundTo: Object, handler: (data: Q) => void): this;
+    public attachExtract<Q extends T>(matcher: (data: T) => data is Q, event: Postable<Q>): this;
 
-    public attachExtract(event: Postable<T>): void; //1 Post
-    public attachExtract(handler: (data: T) => void): void; //1 Function
+    public attachExtract(event: Postable<T>): this; //1 Post
+    public attachExtract(handler: (data: T) => void): this; //1 Function
 
-    public attachExtract(matcher: (data: T) => boolean, event: Postable<T>): void; //2 Function Post
-    public attachExtract(matcher: (data: T) => boolean, handler: (data: T) => void): void; //2 Function Function
-    public attachExtract(boundTo: Object, handler: (data: T) => void): void; //2 any Function
+    public attachExtract(matcher: (data: T) => boolean, event: Postable<T>): this; //2 Function Post
+    public attachExtract(matcher: (data: T) => boolean, handler: (data: T) => void): this; //2 Function Function
+    public attachExtract(boundTo: Object, handler: (data: T) => void): this; //2 any Function
 
-    public attachExtract(matcher: (data: T) => boolean, boundTo: Object, handler: (data: T) => void): void; //3
+    public attachExtract(matcher: (data: T) => boolean, boundTo: Object, handler: (data: T) => void): this; //3
 
 
-    public attachExtract(...inputs: any[]): any {
+    public attachExtract(...inputs: any[]): this {
 
-        this.__attach__(inputs, false, true);
+        return this.__attach__(inputs, false, true);
 
     }
 
@@ -342,15 +342,17 @@ export class SyncEvent<T> {
         inputs: any[],
         once: boolean,
         extract: boolean
-    ): void {
+    ): this {
 
         let { matcher, boundTo, handler } = this.readAttachParams(inputs);
 
         this.callbackHandlers.push({ matcher, boundTo, handler, once, extract });
 
-        if (!this.evtAttach) return;
+        if (!this.evtAttach) return this;
 
         this.evtAttach.post("attach" + once?"Once":"" + extract?"Extract":"" as any);
+
+        return this;
 
     }
 
@@ -409,15 +411,15 @@ export class SyncEvent<T> {
 
 
 
-    public detach(): void; //0
+    public detach(): this; //0
 
-    public detach(event: Postable<T>): void; //1
-    public detach(by: Partial<AttachParams<T>>): void; //1
-    public detach(boundTo: Object): void; //1
-    public detach(handler: (data: T) => void): void; //1
+    public detach(event: Postable<T>): this; //1
+    public detach(by: Partial<AttachParams<T>>): this; //1
+    public detach(boundTo: Object): this; //1
+    public detach(handler: (data: T) => void): this; //1
 
-    public detach(boundTo: Object, handler: (data: T) => void): void; //2
-    public detach(...inputs: any[]): void {
+    public detach(boundTo: Object, handler: (data: T) => void): this; //2
+    public detach(...inputs: any[]): this {
 
         let by = this.readDetachParams(inputs);
 
@@ -434,14 +436,18 @@ export class SyncEvent<T> {
 
         if (!Object.keys(by).length) this.stopWaiting();
 
+        return this;
+
 
     }
 
-    public post(data: T): void {
+    public post(data: T): this {
 
         this.postCount++;
 
         this.postPromise(data);
+
+        return this;
 
 
     }
@@ -542,7 +548,7 @@ export class SyncEvent<T> {
 }
 
 export class VoidSyncEvent extends SyncEvent<void> {
-    public post(): void {
-        super.post(undefined);
+    public post(): this {
+        return super.post(undefined);
     }
 }
