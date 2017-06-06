@@ -40,3 +40,5 @@ Post once:  tick
 Post:  tick
 Post count:  2
 ````
+
+TODO: Attach once and attach should return the emmiter.
