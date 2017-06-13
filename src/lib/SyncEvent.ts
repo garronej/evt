@@ -423,7 +423,7 @@ export class SyncEvent<T> {
 
         let by = this.readDetachParams(inputs);
 
-        [ ...this.callbackHandlers ].forEach( ({matcher, boundTo, handler}, index)=>{
+        [...this.callbackHandlers].forEach(({ matcher, boundTo, handler }, index) => {
 
             if (
                 (by.hasOwnProperty("matcher") ? (by.matcher === matcher) : true) &&
@@ -478,11 +478,12 @@ export class SyncEvent<T> {
 
                 if (!promiseHandler.extract) return;
 
-                extracted = match_run_detach(index, promiseHandler);
+                if (match_run_detach(index, promiseHandler))
+                    extracted = true;
 
             });
 
-            let matched= extracted;
+            let matched = extracted;
 
             if (!extracted) {
 
@@ -490,7 +491,8 @@ export class SyncEvent<T> {
 
                     if (promiseHandler.extract) return;
 
-                    matched = match_run_detach(index, promiseHandler);
+                    if (match_run_detach(index, promiseHandler))
+                        matched = true;
 
                 });
 
@@ -498,7 +500,7 @@ export class SyncEvent<T> {
 
             }
 
-            if (matched) setImmediate( ()=> callback!());
+            if (matched) setImmediate(() => callback!());
             else callback!();
 
         }
@@ -507,13 +509,13 @@ export class SyncEvent<T> {
 
     private postCallback(data: T) {
 
-        let match_run_detach= (index: number, callbackHandler: typeof SyncEvent.prototype.callbackHandlers[number] ): boolean=> {
+        let match_run_detach = (index: number, callbackHandler: typeof SyncEvent.prototype.callbackHandlers[number]): boolean => {
 
             let { matcher, boundTo, handler, once } = callbackHandler;
 
             if (!matcher(data)) return false;
 
-            if ( once ) this.callbackHandlers.splice(index, 1);
+            if (once) this.callbackHandlers.splice(index, 1);
 
             handler.call(boundTo, data);
 
@@ -524,19 +526,19 @@ export class SyncEvent<T> {
 
         let extracted = false;
 
-        [ ...this.callbackHandlers ].forEach( (callbackHandler, index)=> {
+        [...this.callbackHandlers].forEach((callbackHandler, index) => {
 
-            if( !callbackHandler.extract ) return;
+            if (!callbackHandler.extract) return;
 
-            extracted= match_run_detach(index, callbackHandler);
+            extracted = match_run_detach(index, callbackHandler);
 
         });
 
-        if( extracted ) return;
+        if (extracted) return;
 
-        [ ...this.callbackHandlers ].forEach( (callbackHandler, index)=> {
+        [...this.callbackHandlers].forEach((callbackHandler, index) => {
 
-            if( callbackHandler.extract ) return;
+            if (callbackHandler.extract) return;
 
             match_run_detach(index, callbackHandler);
 

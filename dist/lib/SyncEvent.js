@@ -32,14 +32,16 @@ var SyncEvent = (function () {
             _this.promiseHandlers.slice().forEach(function (promiseHandler, index) {
                 if (!promiseHandler.extract)
                     return;
-                extracted = match_run_detach(index, promiseHandler);
+                if (match_run_detach(index, promiseHandler))
+                    extracted = true;
             });
             var matched = extracted;
             if (!extracted) {
                 _this.promiseHandlers.slice().forEach(function (promiseHandler, index) {
                     if (promiseHandler.extract)
                         return;
-                    matched = match_run_detach(index, promiseHandler);
+                    if (match_run_detach(index, promiseHandler))
+                        matched = true;
                 });
                 _this.postCallback(data);
             }
