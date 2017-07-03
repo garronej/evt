@@ -1,6 +1,6 @@
 {
   "name": "ts-events-extended",
-  "version": "3.0.2",
+  "version": "3.1.0",
   "description": "An extension of ts-events",
   "repository": {
     "type": "git",
@@ -19,7 +19,7 @@
     "ts-exec-queue": "garronej/ts-exec-queue"
   },
   "devDependencies": {
-    "typescript": "^2.2.1",
+    "typescript": "^2.4.1",
     "colors": "^1.1.2",
     "@types/node": "^4.0.0",
     "@types/colors": "^1.1.1"

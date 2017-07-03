@@ -146,9 +146,8 @@ var SyncEvent = (function () {
             }
             var promiseHandler = { matcher: matcher, timer: timer, resolve: resolve, extract: extract };
             _this.promiseHandlers.push(promiseHandler);
-            if (!_this.evtAttach)
-                return;
-            _this.evtAttach.post("waitFor" + extract ? "Extract" : "");
+            if (_this.evtAttach)
+                _this.evtAttach.post("waitFor" + (extract ? "Extract" : ""));
         });
     };
     SyncEvent.prototype.attachOnce = function () {
@@ -156,28 +155,42 @@ var SyncEvent = (function () {
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
-        return this.__attach__(inputs, true, false);
+        return this.__attach__(inputs, true, false, false);
+    };
+    SyncEvent.prototype.attachOncePrepend = function () {
+        var inputs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            inputs[_i] = arguments[_i];
+        }
+        return this.__attach__(inputs, true, false, true);
     };
     SyncEvent.prototype.attachOnceExtract = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
-        return this.__attach__(inputs, true, true);
+        return this.__attach__(inputs, true, true, false);
     };
     SyncEvent.prototype.attach = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
-        return this.__attach__(inputs, false, false);
+        return this.__attach__(inputs, false, false, false);
+    };
+    SyncEvent.prototype.attachPrepend = function () {
+        var inputs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            inputs[_i] = arguments[_i];
+        }
+        return this.__attach__(inputs, false, false, true);
     };
     SyncEvent.prototype.attachExtract = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
-        return this.__attach__(inputs, false, true);
+        return this.__attach__(inputs, false, true, false);
     };
     SyncEvent.prototype.readAttachParams = function (inputs) {
         var outAsArray = undefined;
@@ -225,12 +238,14 @@ var SyncEvent = (function () {
         var _a = outAsArray, matcher = _a[0], boundTo = _a[1], handler = _a[2];
         return { matcher: matcher, boundTo: boundTo, handler: handler };
     };
-    SyncEvent.prototype.__attach__ = function (inputs, once, extract) {
+    SyncEvent.prototype.__attach__ = function (inputs, once, extract, prepend) {
         var _a = this.readAttachParams(inputs), matcher = _a.matcher, boundTo = _a.boundTo, handler = _a.handler;
-        this.callbackHandlers.push({ matcher: matcher, boundTo: boundTo, handler: handler, once: once, extract: extract });
-        if (!this.evtAttach)
-            return this;
-        this.evtAttach.post("attach" + once ? "Once" : "" + extract ? "Extract" : "");
+        if (prepend)
+            this.callbackHandlers.unshift({ matcher: matcher, boundTo: boundTo, handler: handler, once: once, extract: extract });
+        else
+            this.callbackHandlers.push({ matcher: matcher, boundTo: boundTo, handler: handler, once: once, extract: extract });
+        if (this.evtAttach)
+            this.evtAttach.post("attach" + (once ? "Once" : "") + (extract ? "Extract" : "") + (prepend ? "Prepend" : ""));
         return this;
     };
     SyncEvent.prototype.readDetachParams = function (inputs) {
@@ -310,9 +325,9 @@ var SyncEvent = (function () {
             match_run_detach(index, callbackHandler);
         });
     };
+    SyncEvent.defaultEvtMatcher = function () { return true; };
     return SyncEvent;
 }());
-SyncEvent.defaultEvtMatcher = function () { return true; };
 exports.SyncEvent = SyncEvent;
 var VoidSyncEvent = (function (_super) {
     __extends(VoidSyncEvent, _super);
@@ -325,4 +340,3 @@ var VoidSyncEvent = (function (_super) {
     return VoidSyncEvent;
 }(SyncEvent));
 exports.VoidSyncEvent = VoidSyncEvent;
-//# sourceMappingURL=SyncEvent.js.map

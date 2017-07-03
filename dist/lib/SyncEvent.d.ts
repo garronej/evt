@@ -9,7 +9,7 @@ export declare type AttachParams<T> = {
 export declare class SyncEvent<T> {
     private static readonly defaultEvtMatcher;
     postCount: number;
-    readonly evtAttach: SyncEvent<"attach" | "attachOnce" | "waitFor" | "attachExtract" | "attachOnceExtract" | "waitForExtract">;
+    readonly evtAttach: SyncEvent<"attach" | "attachPrepend" | "attachOnce" | "attachOncePrepend" | "waitFor" | "attachExtract" | "attachOnceExtract" | "waitForExtract">;
     private readonly callbackHandlers;
     private readonly promiseHandlers;
     stopWaiting(): void;
@@ -40,6 +40,15 @@ export declare class SyncEvent<T> {
     attachOnce(matcher: (data: T) => boolean, handler: (data: T) => void): this;
     attachOnce(boundTo: Object, handler: (data: T) => void): this;
     attachOnce(matcher: (data: T) => boolean, boundTo: Object, handler: (data: T) => void): this;
+    attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, handler: (data: Q) => void): this;
+    attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, boundTo: Object, handler: (data: Q) => void): this;
+    attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, event: Postable<Q>): this;
+    attachOncePrepend(event: Postable<T>): this;
+    attachOncePrepend(handler: (data: T) => void): this;
+    attachOncePrepend(matcher: (data: T) => boolean, event: Postable<T>): this;
+    attachOncePrepend(matcher: (data: T) => boolean, handler: (data: T) => void): this;
+    attachOncePrepend(boundTo: Object, handler: (data: T) => void): this;
+    attachOncePrepend(matcher: (data: T) => boolean, boundTo: Object, handler: (data: T) => void): this;
     attachOnceExtract<Q extends T>(matcher: (data: T) => data is Q, handler: (data: Q) => void): this;
     attachOnceExtract<Q extends T>(matcher: (data: T) => data is Q, boundTo: Object, handler: (data: Q) => void): this;
     attachOnceExtract<Q extends T>(matcher: (data: T) => data is Q, event: Postable<Q>): this;
@@ -58,6 +67,15 @@ export declare class SyncEvent<T> {
     attach(matcher: (data: T) => boolean, handler: (data: T) => void): this;
     attach(boundTo: Object, handler: (data: T) => void): void;
     attach(matcher: (data: T) => boolean, boundTo: Object, handler: (data: T) => void): this;
+    attachPrepend<Q extends T>(matcher: (data: T) => data is Q, handler: (data: Q) => void): this;
+    attachPrepend<Q extends T>(matcher: (data: T) => data is Q, boundTo: Object, handler: (data: Q) => void): this;
+    attachPrepend<Q extends T>(matcher: (data: T) => data is Q, event: Postable<Q>): this;
+    attachPrepend(event: Postable<T>): this;
+    attachPrepend(handler: (data: T) => void): this;
+    attachPrepend(matcher: (data: T) => boolean, event: Postable<T>): this;
+    attachPrepend(matcher: (data: T) => boolean, handler: (data: T) => void): this;
+    attachPrepend(boundTo: Object, handler: (data: T) => void): void;
+    attachPrepend(matcher: (data: T) => boolean, boundTo: Object, handler: (data: T) => void): this;
     attachExtract<Q extends T>(matcher: (data: T) => data is Q, handler: (data: Q) => void): this;
     attachExtract<Q extends T>(matcher: (data: T) => data is Q, boundTo: Object, handler: (data: Q) => void): this;
     attachExtract<Q extends T>(matcher: (data: T) => data is Q, event: Postable<Q>): this;
@@ -68,7 +86,7 @@ export declare class SyncEvent<T> {
     attachExtract(boundTo: Object, handler: (data: T) => void): this;
     attachExtract(matcher: (data: T) => boolean, boundTo: Object, handler: (data: T) => void): this;
     private readAttachParams(inputs);
-    private __attach__(inputs, once, extract);
+    private __attach__(inputs, once, extract, prepend);
     private readDetachParams(inputs);
     detach(): this;
     detach(event: Postable<T>): this;

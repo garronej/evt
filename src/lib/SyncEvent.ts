@@ -19,7 +19,7 @@ export class SyncEvent<T> {
     public postCount = 0;
 
     public readonly evtAttach: SyncEvent<
-    "attach" | "attachOnce" | "waitFor" | "attachExtract" | "attachOnceExtract" | "waitForExtract"
+    "attach" | "attachPrepend" | "attachOnce" | "attachOncePrepend" | "waitFor" | "attachExtract" | "attachOnceExtract" | "waitForExtract"
     >;
 
     private readonly callbackHandlers: (AttachParams<T> & { once: boolean; extract: boolean; })[] = [];
@@ -168,9 +168,8 @@ export class SyncEvent<T> {
 
             this.promiseHandlers.push(promiseHandler);
 
-            if (!this.evtAttach) return;
-
-            this.evtAttach.post("waitFor" + extract?"Extract":"" as any);
+            if (this.evtAttach)
+                this.evtAttach.post(`waitFor${extract?"Extract":""}` as any);
 
         });
 
@@ -201,7 +200,27 @@ export class SyncEvent<T> {
 
     public attachOnce(...inputs: any[]): this {
 
-        return this.__attach__(inputs, true, false);
+        return this.__attach__(inputs, true, false, false);
+
+    }
+
+    public attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, handler: (data: Q) => void): this;
+    public attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, boundTo: Object, handler: (data: Q) => void): this;
+    public attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, event: Postable<Q>): this;
+
+    public attachOncePrepend(event: Postable<T>): this; //1 Post
+    public attachOncePrepend(handler: (data: T) => void): this; //1 Function
+
+    public attachOncePrepend(matcher: (data: T) => boolean, event: Postable<T>): this; //2 Function Post
+    public attachOncePrepend(matcher: (data: T) => boolean, handler: (data: T) => void): this; //2 Function Function
+    public attachOncePrepend(boundTo: Object, handler: (data: T) => void): this; //2 any Function
+
+    public attachOncePrepend(matcher: (data: T) => boolean, boundTo: Object, handler: (data: T) => void): this; //3
+
+
+    public attachOncePrepend(...inputs: any[]): this {
+
+        return this.__attach__(inputs, true, false, true);
 
     }
 
@@ -223,7 +242,7 @@ export class SyncEvent<T> {
 
     public attachOnceExtract(...inputs: any[]): this {
 
-        return this.__attach__(inputs, true, true);
+        return this.__attach__(inputs, true, true, false);
 
     }
 
@@ -245,7 +264,28 @@ export class SyncEvent<T> {
 
     public attach(...inputs: any[]): this {
 
-        return this.__attach__(inputs, false, false);
+        return this.__attach__(inputs, false, false, false);
+
+    }
+
+
+    public attachPrepend<Q extends T>(matcher: (data: T) => data is Q, handler: (data: Q) => void): this;
+    public attachPrepend<Q extends T>(matcher: (data: T) => data is Q, boundTo: Object, handler: (data: Q) => void): this;
+    public attachPrepend<Q extends T>(matcher: (data: T) => data is Q, event: Postable<Q>): this;
+
+    public attachPrepend(event: Postable<T>): this; //1 Post
+    public attachPrepend(handler: (data: T) => void): this; //1 Function
+
+    public attachPrepend(matcher: (data: T) => boolean, event: Postable<T>): this; //2 Function Post
+    public attachPrepend(matcher: (data: T) => boolean, handler: (data: T) => void): this; //2 Function Function
+    public attachPrepend(boundTo: Object, handler: (data: T) => void): void; //2 any Function
+
+    public attachPrepend(matcher: (data: T) => boolean, boundTo: Object, handler: (data: T) => void): this; //3
+
+
+    public attachPrepend(...inputs: any[]): this {
+
+        return this.__attach__(inputs, false, false, true);
 
     }
 
@@ -266,7 +306,7 @@ export class SyncEvent<T> {
 
     public attachExtract(...inputs: any[]): this {
 
-        return this.__attach__(inputs, false, true);
+        return this.__attach__(inputs, false, true, false);
 
     }
 
@@ -341,16 +381,19 @@ export class SyncEvent<T> {
     private __attach__(
         inputs: any[],
         once: boolean,
-        extract: boolean
+        extract: boolean,
+        prepend: boolean
     ): this {
 
         let { matcher, boundTo, handler } = this.readAttachParams(inputs);
 
-        this.callbackHandlers.push({ matcher, boundTo, handler, once, extract });
+        if( prepend )
+            this.callbackHandlers.unshift({ matcher, boundTo, handler, once, extract });
+        else
+            this.callbackHandlers.push({ matcher, boundTo, handler, once, extract });
 
-        if (!this.evtAttach) return this;
-
-        this.evtAttach.post("attach" + once?"Once":"" + extract?"Extract":"" as any);
+        if( this.evtAttach)
+            this.evtAttach.post(`attach${once ? "Once" : ""}${extract ? "Extract" : ""}${prepend ? "Prepend" : ""}` as any);
 
         return this;
 
