@@ -8,11 +8,13 @@ export interface Postable<T> {
 export type AttachParams<T>= {
         matcher(data: T): boolean;
         boundTo: Object;
-        handler(data: T):void;
+        handler(data: T): any;
 }
 
 
 export class SyncEvent<T> {
+
+    public static readonly stopPropagation = {};
 
     private static readonly defaultEvtMatcher = () => true;
 
@@ -50,15 +52,11 @@ export class SyncEvent<T> {
     }
 
     public get permanentHandlerCount(): number {
-
         return this.callbackHandlers.filter( ({ once }) => !once ).length;
-
     }
 
     public get onceHandlerCount(): number {
-
         return this.callbackHandlers.length - this.permanentHandlerCount;
-
     }
 
     constructor() {
@@ -101,7 +99,6 @@ export class SyncEvent<T> {
         else this.attach(matcher, evt);
 
         return evt;
-
 
     }
 
@@ -184,18 +181,18 @@ export class SyncEvent<T> {
 
 
 
-    public attachOnce<Q extends T>(matcher: (data: T) => data is Q, handler: (data: Q) => void): this;
-    public attachOnce<Q extends T>(matcher: (data: T) => data is Q, boundTo: Object, handler: (data: Q) => void): this;
+    public attachOnce<Q extends T>(matcher: (data: T) => data is Q, handler: (data: Q) => any ): this;
+    public attachOnce<Q extends T>(matcher: (data: T) => data is Q, boundTo: Object, handler: (data: Q) => any): this;
     public attachOnce<Q extends T>(matcher: (data: T) => data is Q, event: Postable<Q>): this;
 
     public attachOnce(event: Postable<T>): this; //1 Post
-    public attachOnce(handler: (data: T) => void): this; //1 Function
+    public attachOnce(handler: (data: T) => any ): this; //1 Function
 
     public attachOnce(matcher: (data: T) => boolean, event: Postable<T>): this; //2 Function Post
-    public attachOnce(matcher: (data: T) => boolean, handler: (data: T) => void): this; //2 Function Function
-    public attachOnce(boundTo: Object, handler: (data: T) => void): this; //2 any Function
+    public attachOnce(matcher: (data: T) => boolean, handler: (data: T) => any ): this; //2 Function Function
+    public attachOnce(boundTo: Object, handler: (data: T) => any): this; //2 any Function
 
-    public attachOnce(matcher: (data: T) => boolean, boundTo: Object, handler: (data: T) => void): this; //3
+    public attachOnce(matcher: (data: T) => boolean, boundTo: Object, handler: (data: T) => any): this; //3
 
 
     public attachOnce(...inputs: any[]): this {
@@ -204,18 +201,18 @@ export class SyncEvent<T> {
 
     }
 
-    public attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, handler: (data: Q) => void): this;
-    public attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, boundTo: Object, handler: (data: Q) => void): this;
+    public attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, handler: (data: Q) => any): this;
+    public attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, boundTo: Object, handler: (data: Q) => any): this;
     public attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, event: Postable<Q>): this;
 
     public attachOncePrepend(event: Postable<T>): this; //1 Post
-    public attachOncePrepend(handler: (data: T) => void): this; //1 Function
+    public attachOncePrepend(handler: (data: T) => any): this; //1 Function
 
     public attachOncePrepend(matcher: (data: T) => boolean, event: Postable<T>): this; //2 Function Post
-    public attachOncePrepend(matcher: (data: T) => boolean, handler: (data: T) => void): this; //2 Function Function
-    public attachOncePrepend(boundTo: Object, handler: (data: T) => void): this; //2 any Function
+    public attachOncePrepend(matcher: (data: T) => boolean, handler: (data: T) => any): this; //2 Function Function
+    public attachOncePrepend(boundTo: Object, handler: (data: T) => any): this; //2 any Function
 
-    public attachOncePrepend(matcher: (data: T) => boolean, boundTo: Object, handler: (data: T) => void): this; //3
+    public attachOncePrepend(matcher: (data: T) => boolean, boundTo: Object, handler: (data: T) => any): this; //3
 
 
     public attachOncePrepend(...inputs: any[]): this {
@@ -248,18 +245,18 @@ export class SyncEvent<T> {
 
 
 
-    public attach<Q extends T>(matcher: (data: T) => data is Q, handler: (data: Q) => void): this;
-    public attach<Q extends T>(matcher: (data: T) => data is Q, boundTo: Object, handler: (data: Q) => void): this;
+    public attach<Q extends T>(matcher: (data: T) => data is Q, handler: (data: Q) => any): this;
+    public attach<Q extends T>(matcher: (data: T) => data is Q, boundTo: Object, handler: (data: Q) => any): this;
     public attach<Q extends T>(matcher: (data: T) => data is Q, event: Postable<Q>): this;
 
     public attach(event: Postable<T>): this; //1 Post
-    public attach(handler: (data: T) => void): this; //1 Function
+    public attach(handler: (data: T) => any): this; //1 Function
 
     public attach(matcher: (data: T) => boolean, event: Postable<T>): this; //2 Function Post
-    public attach(matcher: (data: T) => boolean, handler: (data: T) => void): this; //2 Function Function
-    public attach(boundTo: Object, handler: (data: T) => void): void; //2 any Function
+    public attach(matcher: (data: T) => boolean, handler: (data: T) => any): this; //2 Function Function
+    public attach(boundTo: Object, handler: (data: T) => any): this; //2 any Function
 
-    public attach(matcher: (data: T) => boolean, boundTo: Object, handler: (data: T) => void): this; //3
+    public attach(matcher: (data: T) => boolean, boundTo: Object, handler: (data: T) => any): this; //3
 
 
     public attach(...inputs: any[]): this {
@@ -269,18 +266,18 @@ export class SyncEvent<T> {
     }
 
 
-    public attachPrepend<Q extends T>(matcher: (data: T) => data is Q, handler: (data: Q) => void): this;
-    public attachPrepend<Q extends T>(matcher: (data: T) => data is Q, boundTo: Object, handler: (data: Q) => void): this;
+    public attachPrepend<Q extends T>(matcher: (data: T) => data is Q, handler: (data: Q) => any): this;
+    public attachPrepend<Q extends T>(matcher: (data: T) => data is Q, boundTo: Object, handler: (data: Q) => any): this;
     public attachPrepend<Q extends T>(matcher: (data: T) => data is Q, event: Postable<Q>): this;
 
     public attachPrepend(event: Postable<T>): this; //1 Post
-    public attachPrepend(handler: (data: T) => void): this; //1 Function
+    public attachPrepend(handler: (data: T) => any): this; //1 Function
 
     public attachPrepend(matcher: (data: T) => boolean, event: Postable<T>): this; //2 Function Post
-    public attachPrepend(matcher: (data: T) => boolean, handler: (data: T) => void): this; //2 Function Function
-    public attachPrepend(boundTo: Object, handler: (data: T) => void): void; //2 any Function
+    public attachPrepend(matcher: (data: T) => boolean, handler: (data: T) => any): this; //2 Function Function
+    public attachPrepend(boundTo: Object, handler: (data: T) => any): this; //2 any Function
 
-    public attachPrepend(matcher: (data: T) => boolean, boundTo: Object, handler: (data: T) => void): this; //3
+    public attachPrepend(matcher: (data: T) => boolean, boundTo: Object, handler: (data: T) => any): this; //3
 
 
     public attachPrepend(...inputs: any[]): this {
@@ -552,40 +549,56 @@ export class SyncEvent<T> {
 
     private postCallback(data: T) {
 
-        let match_run_detach = (index: number, callbackHandler: typeof SyncEvent.prototype.callbackHandlers[number]): boolean => {
+
+        let match_run_detach = ( index: number, callbackHandler: typeof SyncEvent.prototype.callbackHandlers[number]): { matched: boolean, stopPropagation: boolean} => {
 
             let { matcher, boundTo, handler, once } = callbackHandler;
 
-            if (!matcher(data)) return false;
+            if (!matcher(data)) return { "matched": false, "stopPropagation": false };
 
             if (once) this.callbackHandlers.splice(index, 1);
 
-            handler.call(boundTo, data);
-
-            return true;
+            if( SyncEvent.stopPropagation === handler.call(boundTo, data) )
+                return { "matched": true, "stopPropagation": true };
+            else
+                return { "matched": true, "stopPropagation": false };
 
         }
 
 
         let extracted = false;
 
+
         [...this.callbackHandlers].forEach((callbackHandler, index) => {
 
             if (!callbackHandler.extract) return;
 
-            extracted = match_run_detach(index, callbackHandler);
+            extracted = match_run_detach(index, callbackHandler).matched;
 
         });
 
         if (extracted) return;
 
-        [...this.callbackHandlers].forEach((callbackHandler, index) => {
+        let breakForEach = {};
 
-            if (callbackHandler.extract) return;
+        try {
 
-            match_run_detach(index, callbackHandler);
+            [...this.callbackHandlers].forEach((callbackHandler, index) => {
 
-        });
+                if (callbackHandler.extract) return;
+
+                let { stopPropagation } = match_run_detach(index, callbackHandler);
+
+                if (stopPropagation) throw breakForEach;
+
+            });
+
+        } catch (error) {
+
+            if (error !== breakForEach) throw error;
+
+        }
+
 
     }
 

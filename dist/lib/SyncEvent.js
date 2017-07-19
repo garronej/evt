@@ -305,26 +305,38 @@ var SyncEvent = (function () {
         var match_run_detach = function (index, callbackHandler) {
             var matcher = callbackHandler.matcher, boundTo = callbackHandler.boundTo, handler = callbackHandler.handler, once = callbackHandler.once;
             if (!matcher(data))
-                return false;
+                return { "matched": false, "stopPropagation": false };
             if (once)
                 _this.callbackHandlers.splice(index, 1);
-            handler.call(boundTo, data);
-            return true;
+            if (SyncEvent.stopPropagation === handler.call(boundTo, data))
+                return { "matched": true, "stopPropagation": true };
+            else
+                return { "matched": true, "stopPropagation": false };
         };
         var extracted = false;
         this.callbackHandlers.slice().forEach(function (callbackHandler, index) {
             if (!callbackHandler.extract)
                 return;
-            extracted = match_run_detach(index, callbackHandler);
+            extracted = match_run_detach(index, callbackHandler).matched;
         });
         if (extracted)
             return;
-        this.callbackHandlers.slice().forEach(function (callbackHandler, index) {
-            if (callbackHandler.extract)
-                return;
-            match_run_detach(index, callbackHandler);
-        });
+        var breakForEach = {};
+        try {
+            this.callbackHandlers.slice().forEach(function (callbackHandler, index) {
+                if (callbackHandler.extract)
+                    return;
+                var stopPropagation = match_run_detach(index, callbackHandler).stopPropagation;
+                if (stopPropagation)
+                    throw breakForEach;
+            });
+        }
+        catch (error) {
+            if (error !== breakForEach)
+                throw error;
+        }
     };
+    SyncEvent.stopPropagation = {};
     SyncEvent.defaultEvtMatcher = function () { return true; };
     return SyncEvent;
 }());
