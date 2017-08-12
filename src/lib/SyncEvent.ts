@@ -1,5 +1,5 @@
 import { EventEmitter as NodeJS_EventEmitter } from "events";
-import { execQueue } from "ts-exec-queue";
+import * as runExclusive from "run-exclusive";
 
 export interface Postable<T> {
     post(data: T): void;
@@ -493,8 +493,8 @@ export class SyncEvent<T> {
     }
 
 
-    private postPromise = execQueue(
-        (data: T, callback?: () => void) => {
+    private postPromise = runExclusive.buildMethodCb(
+        (data: T, callback?) => {
 
             let match_run_detach = (index: number, promiseHandler: typeof SyncEvent.prototype.promiseHandlers[number]) => {
 
@@ -540,8 +540,8 @@ export class SyncEvent<T> {
 
             }
 
-            if (matched) setImmediate(() => callback!());
-            else callback!();
+            if (matched) setImmediate(() => callback());
+            else callback();
 
         }
     );

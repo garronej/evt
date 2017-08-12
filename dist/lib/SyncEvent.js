@@ -10,14 +10,14 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var ts_exec_queue_1 = require("ts-exec-queue");
+var runExclusive = require("run-exclusive");
 var SyncEvent = (function () {
     function SyncEvent() {
         var _this = this;
         this.postCount = 0;
         this.callbackHandlers = [];
         this.promiseHandlers = [];
-        this.postPromise = ts_exec_queue_1.execQueue(function (data, callback) {
+        this.postPromise = runExclusive.buildMethodCb(function (data, callback) {
             var match_run_detach = function (index, promiseHandler) {
                 var matcher = promiseHandler.matcher, timer = promiseHandler.timer, resolve = promiseHandler.resolve;
                 if (!matcher(data))
