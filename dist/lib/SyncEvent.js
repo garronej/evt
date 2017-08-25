@@ -45,8 +45,9 @@ var SyncEvent = (function () {
                 });
                 _this.postCallback(data);
             }
+            //if (matched) setImmediate(() => callback());
             if (matched)
-                setImmediate(function () { return callback(); });
+                setTimeout(function () { return callback(); }, 0);
             else
                 callback();
         });

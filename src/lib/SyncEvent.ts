@@ -11,7 +11,6 @@ export type AttachParams<T>= {
         handler(data: T): any;
 }
 
-
 export class SyncEvent<T> {
 
     public static readonly stopPropagation = {};
@@ -540,7 +539,8 @@ export class SyncEvent<T> {
 
             }
 
-            if (matched) setImmediate(() => callback());
+            //if (matched) setImmediate(() => callback());
+            if (matched) setTimeout(() => callback(), 0);
             else callback();
 
         }
