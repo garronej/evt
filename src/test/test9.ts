@@ -65,26 +65,26 @@ let sourceEvt: Person[] = [
 ];
 
 
-console.assert( evt.handlerCount === 0);
-console.assert( evt.onceHandlerCount === 0);
-console.assert( evt.permanentHandlerCount === 0);
-console.assert( evt.waiterCount === 0);
+console.assert( evt.getHandlerCount() === 0);
+console.assert( evt.getOnceHandlerCount() === 0);
+console.assert( evt.getPermanentHandlerCount() === 0);
+console.assert( evt.getWaiterCount() === 0);
 
 evt.attachOnce(isTyped, tpi, tpi.introduce);
 
-console.assert( evt.handlerCount === 1);
-console.assert( evt.onceHandlerCount === 1);
-console.assert( evt.permanentHandlerCount === 0);
-console.assert( evt.waiterCount === 0);
+console.assert( evt.getHandlerCount() === 1);
+console.assert( evt.getOnceHandlerCount() === 1);
+console.assert( evt.getPermanentHandlerCount() === 0);
+console.assert( evt.getWaiterCount() === 0);
 
 let resultAttach: Person[]= [];
 
 evt.attach( person => resultAttach.push(person) );
 
-console.assert( evt.handlerCount === 2);
-console.assert( evt.onceHandlerCount === 1);
-console.assert( evt.permanentHandlerCount === 1);
-console.assert( evt.waiterCount === 0);
+console.assert( evt.getHandlerCount() === 2);
+console.assert( evt.getOnceHandlerCount() === 1);
+console.assert( evt.getPermanentHandlerCount() === 1);
+console.assert( evt.getWaiterCount() === 0);
 
 
 
@@ -96,10 +96,10 @@ setTimeout(() => {
     evt.post(sourceEvt[0]);
     evt.post(sourceEvt[1]);
 
-    console.assert(evt.handlerCount === 1);
-    console.assert(evt.onceHandlerCount === 0);
-    console.assert(evt.permanentHandlerCount === 1);
-    console.assert(evt.waiterCount === 0);
+    console.assert(evt.getHandlerCount() === 1);
+    console.assert(evt.getOnceHandlerCount() === 0);
+    console.assert(evt.getPermanentHandlerCount() === 1);
+    console.assert(evt.getWaiterCount() === 0);
 
     evt.post(sourceEvt[2]);
 
@@ -107,10 +107,10 @@ setTimeout(() => {
 
 setTimeout(() => {
 
-    console.assert(evt.handlerCount === 2);
-    console.assert(evt.onceHandlerCount === 0);
-    console.assert(evt.permanentHandlerCount === 1);
-    console.assert(evt.waiterCount === 1);
+    console.assert(evt.getHandlerCount() === 2);
+    console.assert(evt.getOnceHandlerCount() === 0);
+    console.assert(evt.getPermanentHandlerCount() === 1);
+    console.assert(evt.getWaiterCount() === 1);
 
     evt.post(sourceEvt[3]);
     evt.post(sourceEvt[4]);
@@ -136,7 +136,7 @@ setTimeout(() => {
 
         let typedPerson = await evt.waitFor(isTyped);
 
-        console.assert(evt.waiterCount === 0);
+        console.assert(evt.getWaiterCount() === 0);
 
         arr.push(typedPerson);
 

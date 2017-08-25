@@ -43,20 +43,20 @@ export class SyncEvent<T> {
     }
 
 
-    public get handlerCount(): number {
+    public getHandlerCount(): number {
         return this.callbackHandlers.length + this.promiseHandlers.length;
     }
 
-    public get waiterCount(): number {
+    public getWaiterCount(): number {
         return this.promiseHandlers.length;
     }
 
-    public get permanentHandlerCount(): number {
+    public getPermanentHandlerCount(): number {
         return this.callbackHandlers.filter( ({ once }) => !once ).length;
     }
 
-    public get onceHandlerCount(): number {
-        return this.callbackHandlers.length - this.permanentHandlerCount;
+    public getOnceHandlerCount(): number {
+        return this.callbackHandlers.length - this.getPermanentHandlerCount();
     }
 
     constructor() {

@@ -19,8 +19,6 @@ evt.attachOnce(str=>{
 
     output+= str;
 
-    console.log("third", str);
-
 });
 
 evt.attachOncePrepend(str=> {
@@ -36,4 +34,4 @@ evt.post("b");
 
 console.assert(output="a");
 
-console.log("PASS");
+console.log("PASS".green);

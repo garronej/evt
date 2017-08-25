@@ -1,7 +1,7 @@
 {
   "name": "ts-events-extended",
-  "version": "3.1.3",
-  "description": "An extension of ts-events",
+  "version": "3.1.4",
+  "description": "An EventEmitter for TypeScript",
   "repository": {
     "type": "git",
     "url": "git://github.com/garronej/ts-events-extended.git"
@@ -15,10 +15,10 @@
   "author": "Joseph Garrone",
   "license": "MIT",
   "dependencies": {
-    "rejection-tracker": "garronej/rejection-tracker",
     "run-exclusive": "github:garronej/run-exclusive"
   },
   "devDependencies": {
+    "rejection-tracker": "garronej/rejection-tracker",
     "typescript": "^2.4.1",
     "colors": "^1.1.2",
     "@types/node": "^4.0.0",

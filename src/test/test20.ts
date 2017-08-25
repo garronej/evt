@@ -35,4 +35,4 @@ evt.post("a");
 
 console.assert(output="aaa");
 
-console.log("PASS");
+console.log("PASS".green);

@@ -14,10 +14,10 @@ export declare class SyncEvent<T> {
     private readonly callbackHandlers;
     private readonly promiseHandlers;
     stopWaiting(): void;
-    readonly handlerCount: number;
-    readonly waiterCount: number;
-    readonly permanentHandlerCount: number;
-    readonly onceHandlerCount: number;
+    getHandlerCount(): number;
+    getWaiterCount(): number;
+    getPermanentHandlerCount(): number;
+    getOnceHandlerCount(): number;
     constructor();
     createProxy<Q extends T>(matcher: (data: T) => data is Q): SyncEvent<Q>;
     createProxy(matcher?: (data: T) => boolean): SyncEvent<T>;

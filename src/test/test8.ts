@@ -42,7 +42,7 @@ let evt = new SyncEvent<Person>();
 
 evt.attach(isTyped, tpi, tpi.introduce);
 
-console.assert(evt.handlerCount === 1);
+console.assert(evt.getHandlerCount() === 1);
 
 evt.post({
     "name": "Sienna",
@@ -52,7 +52,7 @@ evt.post({
 
 evt.detach(tpi);
 
-console.assert( evt.handlerCount === 0);
+console.assert( evt.getHandlerCount() === 0);
 
 evt.post({
     "name": "Antonin",
@@ -63,7 +63,7 @@ evt.post({
 
 evt.attach(isTyped, tpi, tpi.introduce);
 
-console.assert(evt.handlerCount === 1);
+console.assert(evt.getHandlerCount() === 1);
 
 evt.post({
     "name": "Sienna",
@@ -74,7 +74,7 @@ evt.post({
 
 evt.detach({ "matcher": isTyped } );
 
-console.assert( evt.handlerCount === 0);
+console.assert( evt.getHandlerCount() === 0);
 
 evt.post({
     "name": "Antonin",
@@ -85,7 +85,7 @@ evt.post({
 
 evt.attach(isTyped, tpi, tpi.introduce);
 
-console.assert(evt.handlerCount === 1);
+console.assert(evt.getHandlerCount() === 1);
 
 evt.post({
     "name": "Sienna",
@@ -95,7 +95,7 @@ evt.post({
 
 evt.detach(tpi.introduce);
 
-console.assert( evt.handlerCount === 0);
+console.assert( evt.getHandlerCount() === 0);
 
 evt.post({
     "name": "Antonin",

@@ -9,7 +9,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var runExclusive = require("run-exclusive");
 var SyncEvent = (function () {
     function SyncEvent() {
@@ -61,37 +61,21 @@ var SyncEvent = (function () {
         }
         this.promiseHandlers.splice(0, this.promiseHandlers.length);
     };
-    Object.defineProperty(SyncEvent.prototype, "handlerCount", {
-        get: function () {
-            return this.callbackHandlers.length + this.promiseHandlers.length;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(SyncEvent.prototype, "waiterCount", {
-        get: function () {
-            return this.promiseHandlers.length;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(SyncEvent.prototype, "permanentHandlerCount", {
-        get: function () {
-            return this.callbackHandlers.filter(function (_a) {
-                var once = _a.once;
-                return !once;
-            }).length;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(SyncEvent.prototype, "onceHandlerCount", {
-        get: function () {
-            return this.callbackHandlers.length - this.permanentHandlerCount;
-        },
-        enumerable: true,
-        configurable: true
-    });
+    SyncEvent.prototype.getHandlerCount = function () {
+        return this.callbackHandlers.length + this.promiseHandlers.length;
+    };
+    SyncEvent.prototype.getWaiterCount = function () {
+        return this.promiseHandlers.length;
+    };
+    SyncEvent.prototype.getPermanentHandlerCount = function () {
+        return this.callbackHandlers.filter(function (_a) {
+            var once = _a.once;
+            return !once;
+        }).length;
+    };
+    SyncEvent.prototype.getOnceHandlerCount = function () {
+        return this.callbackHandlers.length - this.getPermanentHandlerCount();
+    };
     SyncEvent.prototype.createProxy = function (matcher) {
         return this.__createProxy__(matcher, false);
     };

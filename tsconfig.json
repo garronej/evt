@@ -1,7 +1,7 @@
 {
         "compilerOptions": {
                 "module": "commonjs",
-                "target": "es5",
+                "target": "es3",
                 "lib": [
                         "es5",
                         "es2015"
