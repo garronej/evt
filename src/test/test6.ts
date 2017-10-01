@@ -24,7 +24,6 @@ setTimeout(() => {
         let message = await evt.waitFor(200);
 
     } catch (error) {
-        console.assert(error.message === "waitFor() timeout after 200 ms");
         console.log("PASS".green);
     }
 

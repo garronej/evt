@@ -2,6 +2,8 @@ import {
     SyncEvent
 } from "../lib/index";
 
+import { isCallable } from "../lib/SyncEvent";
+
 require("colors");
 
 export interface Person {
@@ -28,7 +30,7 @@ export class TypedPersonIntro {
 
     public introduce( tp: TypedPerson): void{
 
-        console.assert(this.intro + tp.sex === "this person is female");
+        console.assert(this.intro + tp.sex === "this person is female", "m1");
 
         testCount++;
 
@@ -42,7 +44,7 @@ let evt = new SyncEvent<Person>();
 
 evt.attach(isTyped, tpi, tpi.introduce);
 
-console.assert(evt.getHandlerCount() === 1);
+console.assert(evt.getHandlerCount() === 1,"m2");
 
 evt.post({
     "name": "Sienna",
@@ -52,7 +54,7 @@ evt.post({
 
 evt.detach(tpi);
 
-console.assert( evt.getHandlerCount() === 0);
+console.assert( evt.getHandlerCount() === 0, "m3");
 
 evt.post({
     "name": "Antonin",
@@ -63,7 +65,7 @@ evt.post({
 
 evt.attach(isTyped, tpi, tpi.introduce);
 
-console.assert(evt.getHandlerCount() === 1);
+console.assert(evt.getHandlerCount() === 1,"m4");
 
 evt.post({
     "name": "Sienna",
@@ -74,7 +76,7 @@ evt.post({
 
 evt.detach({ "matcher": isTyped } );
 
-console.assert( evt.getHandlerCount() === 0);
+console.assert( evt.getHandlerCount() === 0, "m5");
 
 evt.post({
     "name": "Antonin",
@@ -85,7 +87,7 @@ evt.post({
 
 evt.attach(isTyped, tpi, tpi.introduce);
 
-console.assert(evt.getHandlerCount() === 1);
+console.assert(evt.getHandlerCount() === 1, "m6");
 
 evt.post({
     "name": "Sienna",
@@ -95,7 +97,7 @@ evt.post({
 
 evt.detach(tpi.introduce);
 
-console.assert( evt.getHandlerCount() === 0);
+console.assert( evt.getHandlerCount() === 0, "m7");
 
 evt.post({
     "name": "Antonin",
@@ -104,6 +106,6 @@ evt.post({
 });
 
 
-console.assert(testCount === 3);
+console.assert(testCount === 3, "m8");
 
 console.log("PASS".green);

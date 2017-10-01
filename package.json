@@ -15,11 +15,11 @@
   "author": "Joseph Garrone",
   "license": "MIT",
   "dependencies": {
-    "run-exclusive": "github:garronej/run-exclusive"
+    "run-exclusive": "github:garronej/run-exclusive",
+    "typescript": "^2.5.3"
   },
   "devDependencies": {
     "rejection-tracker": "garronej/rejection-tracker",
-    "typescript": "^2.4.1",
     "colors": "^1.1.2",
     "@types/node": "^4.0.0",
     "@types/colors": "^1.1.1"

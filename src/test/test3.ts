@@ -25,7 +25,6 @@ evtProxy.attach(data => {
 
 evt.post("ok");
 
-
 console.assert(success);
 
 console.log("PASS".green);
