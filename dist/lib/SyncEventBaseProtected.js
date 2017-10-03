@@ -9,7 +9,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 exports.__esModule = true;
 var runExclusive = require("run-exclusive");
-var Map = require("es6-map");
+var MapLike = require("es6-map");
 var defaultFormatter = function () {
     var inputs = [];
     for (var _i = 0; _i < arguments.length; _i++) {
@@ -17,6 +17,7 @@ var defaultFormatter = function () {
     }
     return inputs[0];
 };
+var tick = 0;
 /** SyncEvent without evtAttach property and without overload */
 var SyncEventBaseProtected = /** @class */ (function () {
     function SyncEventBaseProtected() {
@@ -30,24 +31,38 @@ var SyncEventBaseProtected = /** @class */ (function () {
         this.traceFormatter = function (data) { return JSON.stringify(data, null, 2); };
         this.handlers = [];
         this.handlerTriggers = new Map();
-        this.postAsync = runExclusive.buildCb(function (handlersDump, data, releaseLock) {
+        this.postAsync = runExclusive.buildCb(function (data, postTick, releaseLock) {
             var isHandled = false;
-            for (var _i = 0, handlersDump_1 = handlersDump; _i < handlersDump_1.length; _i++) {
-                var handler = handlersDump_1[_i];
+            for (var _i = 0, _a = _this.handlers.slice(); _i < _a.length; _i++) {
+                var handler = _a[_i];
                 var async = handler.async, matcher = handler.matcher;
                 if (!async || !matcher(data))
                     continue;
                 var handlerTrigger = _this.handlerTriggers.get(handler);
                 if (!handlerTrigger)
                     continue;
+                if (handlerTrigger.handlerTick > postTick)
+                    continue;
                 isHandled = true;
-                handlerTrigger(data);
+                handlerTrigger.trigger(data);
             }
-            if (isHandled) {
-                setTimeout(releaseLock, 0);
+            if (!isHandled) {
+                releaseLock();
             }
             else {
-                releaseLock();
+                var handlersDump_1 = _this.handlers.slice();
+                setTimeout(function () {
+                    for (var _i = 0, _a = _this.handlers; _i < _a.length; _i++) {
+                        var handler = _a[_i];
+                        var async = handler.async;
+                        if (!async)
+                            continue;
+                        if (handlersDump_1.indexOf(handler) >= 0)
+                            continue;
+                        _this.handlerTriggers.get(handler).handlerTick = postTick;
+                    }
+                    releaseLock();
+                }, 0);
             }
         });
         if (!inputs.length)
@@ -83,35 +98,32 @@ var SyncEventBaseProtected = /** @class */ (function () {
             }, "promise": null });
         handler.promise = new Promise(function (resolve, reject) {
             var timer = undefined;
-            if (handler.timeout) {
+            if (typeof handler.timeout === "number") {
                 timer = setTimeout(function () {
                     handler.detach();
                     reject(new Error("SyncEvent timeout after " + handler.timeout + "ms"));
                 }, handler.timeout);
             }
-            _this.handlerTriggers.set(handler, function (data) {
+            var handlerTick = tick++;
+            var trigger = function (data) {
                 var callback = handler.callback, once = handler.once;
-                if (timer) {
+                if (timer)
                     clearTimeout(timer);
-                }
-                if (once) {
+                if (once)
                     handler.detach();
-                }
-                if (callback) {
+                if (callback)
                     callback.call(handler.boundTo, data);
-                }
                 resolve(data);
-            });
+            };
+            _this.handlerTriggers.set(handler, { handlerTick: handlerTick, trigger: trigger });
         });
         if (handler.prepend) {
             var i = void 0;
             for (i = 0; i < this.handlers.length; i++) {
-                if (this.handlers[i].extract) {
+                if (this.handlers[i].extract)
                     continue;
-                }
-                else {
+                else
                     break;
-                }
             }
             this.handlers.splice(i, 0, handler);
         }
@@ -150,10 +162,10 @@ var SyncEventBaseProtected = /** @class */ (function () {
     SyncEventBaseProtected.prototype.post = function (data) {
         this.trace(data);
         this.postCount++;
-        var handlersDup = this.handlers.slice();
+        var postTick = tick++;
         var isExtracted = this.postSync(data);
         if (!isExtracted) {
-            this.postAsync(handlersDup, data);
+            this.postAsync(data, postTick);
         }
         return this.postCount;
     };
@@ -163,7 +175,10 @@ var SyncEventBaseProtected = /** @class */ (function () {
             var async = handler.async, matcher = handler.matcher, extract = handler.extract;
             if (async || !matcher(data))
                 continue;
-            this.handlerTriggers.get(handler)(data);
+            var handlerTrigger = this.handlerTriggers.get(handler);
+            if (!handlerTrigger)
+                continue;
+            handlerTrigger.trigger(data);
             if (extract)
                 return true;
         }

@@ -4,13 +4,16 @@ import {
 
 require("colors");
 
+let pass= false;
+
 let evt = new VoidSyncEvent();
+
 
 
 setTimeout(() => {
     evt.post();
     setImmediate( ()=> evt.post());
-}, 100);
+}, 0);
 
 
 (async () => {
@@ -21,11 +24,21 @@ setTimeout(() => {
 
     try{
 
-        await evt.waitFor(200);
+        await evt.waitFor(10);
 
     }catch( error ){
-        console.log("PASS".green);
+
+        pass= true;
     }
 
 
 })();
+
+
+setTimeout(()=> {
+
+    console.assert(pass);
+
+    console.log("PASS".green);
+
+}, 2000);

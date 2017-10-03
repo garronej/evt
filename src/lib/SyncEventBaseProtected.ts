@@ -1,11 +1,12 @@
 import { EventEmitter as NodeJS_EventEmitter } from "events";
 import * as runExclusive from "run-exclusive";
-import * as Map from "es6-map";
 import { UserProvidedParams, ImplicitParams, Bindable, Handler } from "./defs";
 
+const MapLike= require("es6-map");
 
+const defaultFormatter = (...inputs) => inputs[0];
 
-const defaultFormatter= (...inputs)=> inputs[0];
+let tick = 0;
 
 /** SyncEvent without evtAttach property and without overload */
 export class SyncEventBaseProtected<T> {
@@ -13,23 +14,24 @@ export class SyncEventBaseProtected<T> {
     public postCount = 0;
 
     private traceId: string | null = null;
-    private traceFormatter: (data: T)=> string= data=> JSON.stringify(data, null, 2);
+    private traceFormatter: (data: T) => string = data => JSON.stringify(data, null, 2);
 
     public enableTrace(
-        id: string, 
-        formatter?: (data: T)=> string
-    ){ 
-        this.traceId = id; 
-        if( formatter ){
-            this.traceFormatter= formatter;
+        id: string,
+        formatter?: (data: T) => string
+    ) {
+        this.traceId = id;
+        if (formatter) {
+            this.traceFormatter = formatter;
         }
     }
-    public disableTrace() { 
-        this.traceId = null; 
+    public disableTrace() {
+        this.traceId = null;
     }
 
     private readonly handlers: Handler<T>[] = [];
-    private readonly handlerTriggers: Map<Handler<T>, (data: T)=> void>= new Map();
+
+    private readonly handlerTriggers: Map<Handler<T>,{ handlerTick: number; trigger: (data: T)=> void }> = new Map();
 
     protected addHandler(
         attachParams: UserProvidedParams<T>,
@@ -54,7 +56,7 @@ export class SyncEventBaseProtected<T> {
 
                 let timer: NodeJS.Timer | undefined = undefined;
 
-                if (handler.timeout) {
+                if (typeof handler.timeout === "number") {
 
                     timer = setTimeout(() => {
 
@@ -66,25 +68,23 @@ export class SyncEventBaseProtected<T> {
 
                 }
 
-                this.handlerTriggers.set(handler, (data: T) => {
+                let handlerTick = tick++;
+
+                let trigger = (data: T) => {
 
                     let { callback, once } = handler;
 
-                    if (timer) {
-                        clearTimeout(timer);
-                    }
+                    if (timer) clearTimeout(timer);
 
-                    if (once) {
-                        handler.detach();
-                    }
+                    if (once) handler.detach();
 
-                    if (callback) {
-                        callback.call(handler.boundTo, data);
-                    }
+                    if (callback) callback.call(handler.boundTo, data);
 
                     resolve(data);
 
-                });
+                };
+
+                this.handlerTriggers.set(handler, { handlerTick, trigger });
 
             }
         );
@@ -95,11 +95,8 @@ export class SyncEventBaseProtected<T> {
 
             for (i = 0; i < this.handlers.length; i++) {
 
-                if (this.handlers[i].extract) {
-                    continue;
-                } else {
-                    break;
-                }
+                if (this.handlers[i].extract) continue;
+                else break;
 
             }
 
@@ -124,8 +121,8 @@ export class SyncEventBaseProtected<T> {
 
         let message = `(${this.traceId}) `;
 
-        let isExtracted= !!this.handlers.find(
-            ({ extract, matcher })=> extract && matcher(data)
+        let isExtracted = !!this.handlers.find(
+            ({ extract, matcher }) => extract && matcher(data)
         );
 
         if (isExtracted) {
@@ -163,12 +160,12 @@ export class SyncEventBaseProtected<T> {
 
         this.postCount++;
 
-        let handlersDup= [ ...this.handlers ];
+        let postTick = tick++;
 
-        let isExtracted= this.postSync(data);
+        let isExtracted = this.postSync(data);
 
-        if( !isExtracted ){
-            this.postAsync(handlersDup, data);
+        if (!isExtracted) {
+            this.postAsync(data, postTick);
         }
 
         return this.postCount;
@@ -177,15 +174,19 @@ export class SyncEventBaseProtected<T> {
 
     private postSync(data: T): boolean {
 
-        for (let handler of [...this.handlers ]) {
+        for (let handler of [...this.handlers]) {
 
             let { async, matcher, extract } = handler;
 
             if (async || !matcher(data)) continue;
 
-            this.handlerTriggers.get(handler)!(data);
+            let handlerTrigger = this.handlerTriggers.get(handler);
 
-            if( extract ) return true;
+            if( !handlerTrigger ) continue;
+
+            handlerTrigger.trigger(data);
+
+            if (extract) return true;
 
         }
 
@@ -195,11 +196,11 @@ export class SyncEventBaseProtected<T> {
 
 
     private readonly postAsync = runExclusive.buildCb(
-        (handlersDump: Handler<T>[], data: T, releaseLock?) => {
+        (data: T, postTick: number, releaseLock?) => {
 
             let isHandled = false;
 
-            for (let handler of handlersDump) {
+            for (let handler of [...this.handlers]) {
 
                 let { async, matcher } = handler;
 
@@ -209,16 +210,40 @@ export class SyncEventBaseProtected<T> {
 
                 if (!handlerTrigger) continue;
 
+                if (handlerTrigger.handlerTick > postTick) continue;
+
                 isHandled = true;
 
-                handlerTrigger(data);
+                handlerTrigger.trigger(data);
 
             }
 
-            if (isHandled) {
-                setTimeout(releaseLock, 0);
-            } else {
+            if (!isHandled) {
+
                 releaseLock();
+
+            } else {
+
+                let handlersDump = [...this.handlers];
+
+                setTimeout(() => {
+
+                    for (let handler of this.handlers) {
+
+                        let { async } = handler;
+
+                        if (!async) continue;
+
+                        if (handlersDump.indexOf(handler) >= 0) continue;
+
+                        this.handlerTriggers.get(handler)!.handlerTick = postTick;
+
+                    }
+
+                    releaseLock();
+
+                }, 0);
+
             }
 
         }

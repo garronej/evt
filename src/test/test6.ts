@@ -12,6 +12,7 @@ setTimeout(() => {
     setImmediate(() => evt.post("bar"));
 }, 100);
 
+let success= false;
 
 (async () => {
 
@@ -23,13 +24,22 @@ setTimeout(() => {
 
         let message = await evt.waitFor(200);
 
+        console.assert(false);
+
     } catch (error) {
-        console.log("PASS".green);
+
+        success= true;
+
     }
 
-
-
 })();
+
+setTimeout(()=>{
+
+    console.assert(success);
+    console.log("PASS".green);
+
+},2000);
 
 
 

@@ -4,7 +4,6 @@ import {
 
 require("colors");
 
-
 let evt = new SyncEvent<string>();
 
 //evt.enableTrace("evt");

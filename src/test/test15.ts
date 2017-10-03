@@ -23,14 +23,17 @@ evt.attach(data => data === 666, evtSatan);
 
 //evtSatan.enableTrace("evtSatan");
 
+
+
 (async ()=> {
 
     await evtSatan.waitFor();
 
-    throw new Error("Satan came");
+    console.assert(false, "satan came");
 
 })();
 
+let result_count= 0;
 
 (async ()=> {
 
@@ -47,6 +50,8 @@ evt.attach(data => data === 666, evtSatan);
     }
 
     evtSatan.detach();
+
+    result_count++;
 
 })();
 
@@ -65,6 +70,8 @@ evt.attach(data => data === 666, evtSatan);
 
     }
 
+    result_count++;
+
 })();
 
 (async ()=> {
@@ -81,6 +88,8 @@ evt.attach(data => data === 666, evtSatan);
 
     }
 
+    result_count++;
+
 })();
 
 
@@ -95,6 +104,14 @@ evt.attach(data => data === 666, evtSatan);
 
     }
 
-    console.log("PASS".green);
+    result_count++;
 
 })();
+
+setTimeout(()=>{
+
+    console.assert(result_count === 4 );
+
+    console.log("PASS".green);
+
+},2000);

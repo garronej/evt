@@ -12,6 +12,7 @@ setTimeout(() => {
     setImmediate( ()=> evt.post("bar"));
 }, 100);
 
+let success= false;
 
 (async () => {
     
@@ -19,9 +20,18 @@ setTimeout(() => {
 
     console.assert(await evt.waitFor() === "bar");
 
-    console.log("PASS".green);
+    success= true;
 
 })();
+
+
+setTimeout(()=>{
+
+    console.assert(success);
+
+    console.log("PASS".green);
+
+}, 2000);
 
 
 

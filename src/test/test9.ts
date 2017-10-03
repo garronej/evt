@@ -89,8 +89,6 @@ console.assert(evt.getHandlers().filter(({ once }) => !once).length === 1);
 console.assert(evt.getHandlers().filter(({ async }) => async).length === 0);
 
 
-
-
 setTimeout(() => {
 
     console.assert(evt.postCount === 0);
@@ -125,11 +123,11 @@ setTimeout(() => {
 
     for (let i = 0; i < resultAttach.length; i++)
         console.assert(resultAttach[i] === sourceEvt[i]);
-
-    console.log("PASS".green);
-
+    
 }, 200);
 
+
+let success= false;
 
 (async () => {
 
@@ -150,4 +148,16 @@ setTimeout(() => {
 
     console.assert(arr[0] === sourceEvt[1] && arr[1] === sourceEvt[2] && arr[2] === sourceEvt[4], "m");
 
+    success= true;
+
 })();
+
+
+
+setTimeout(()=>{
+
+    console.assert(success);
+
+    console.log("PASS".green);
+
+}, 2000);

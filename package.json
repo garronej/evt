@@ -1,6 +1,6 @@
 {
   "name": "ts-events-extended",
-  "version": "3.1.5",
+  "version": "4.0.0",
   "description": "An EventEmitter for TypeScript",
   "repository": {
     "type": "git",
@@ -10,16 +10,17 @@
   "types": "./dist/lib/index.d.ts",
   "scripts": {
     "tsc": "./node_modules/.bin/tsc -p ./tsconfig.json",
+    "tsc-w": "node ./node_modules/typescript/bin/tsc -w -p ./tsconfig.json",
     "test": "node ./dist/test/index"
   },
   "author": "Joseph Garrone",
   "license": "MIT",
   "dependencies": {
-    "es6-map": "^0.1.5",
-    "run-exclusive": "github:garronej/run-exclusive",
-    "typescript": "^2.5.3"
+    "es6-map": "^0.1.5"
   },
   "devDependencies": {
+    "run-exclusive": "github:garronej/run-exclusive",
+    "typescript": "^2.5.3",
     "rejection-tracker": "garronej/rejection-tracker",
     "colors": "^1.1.2",
     "@types/node": "^4.0.0",

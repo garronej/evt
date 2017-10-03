@@ -4,6 +4,8 @@ import {
 
 require("colors");
 
+let success= false;
+
 let evt = new SyncEvent<string>();
 
 
@@ -28,7 +30,8 @@ evt.attachOnce(async str=> {
 
     }
 
-    console.log("PASS".green);
+    success= true;
+
 
 
 });
@@ -38,3 +41,12 @@ evt.post("foo");
 evt.post("bar");
 evt.post("baz");
 evt.post("done");
+
+
+setTimeout(()=>{
+
+    console.assert(success);
+
+    console.log("PASS".green);
+
+}, 2000);

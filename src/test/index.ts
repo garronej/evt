@@ -9,8 +9,12 @@ if (n) {
     require("./test" + n);
 
 } else {
+    
+    let n= 25;
 
-    for (let i = 1; i <= 22; i++) {
+    console.log(`Running ${n} tests`);
+
+    for (let i = 1; i <= n; i++) {
 
         try {
             require("./test" + i);
