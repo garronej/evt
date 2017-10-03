@@ -4,12 +4,16 @@ import { UserProvidedParams, ImplicitParams, Bindable, Handler } from "./defs";
 
 const MapLike= require("es6-map");
 
-const defaultFormatter = (...inputs) => inputs[0];
 
-let tick = 0;
 
 /** SyncEvent without evtAttach property and without overload */
 export class SyncEventBaseProtected<T> {
+
+    private tick= 0;
+
+    private defaultFormatter(...inputs: any[]): T{
+        return inputs[0];
+    }
 
     public postCount = 0;
 
@@ -68,7 +72,7 @@ export class SyncEventBaseProtected<T> {
 
                 }
 
-                let handlerTick = tick++;
+                let handlerTick = this.tick++;
 
                 let trigger = (data: T) => {
 
@@ -160,7 +164,7 @@ export class SyncEventBaseProtected<T> {
 
         this.postCount++;
 
-        let postTick = tick++;
+        let postTick = this.tick++;
 
         let isExtracted = this.postSync(data);
 
@@ -263,10 +267,10 @@ export class SyncEventBaseProtected<T> {
 
         let [eventEmitter, eventName] = inputs;
 
-        let formatter = inputs[2] || defaultFormatter;
+        let formatter: (...inputs: any[])=> T = inputs[2] || this.defaultFormatter;
 
         eventEmitter.on(eventName,
-            (...inputs) => this.post(defaultFormatter(inputs))
+            (...inputs) => this.post(formatter.apply(null, inputs))
         );
 
     }

@@ -3,6 +3,8 @@ import { EventEmitter as NodeJS_EventEmitter } from "events";
 import { UserProvidedParams, ImplicitParams, Bindable, Handler } from "./defs";
 /** SyncEvent without evtAttach property and without overload */
 export declare class SyncEventBaseProtected<T> {
+    private tick;
+    private defaultFormatter(...inputs);
     postCount: number;
     private traceId;
     private traceFormatter;

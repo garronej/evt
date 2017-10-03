@@ -10,7 +10,7 @@ if (n) {
 
 } else {
     
-    let n= 25;
+    let n= 26;
 
     console.log(`Running ${n} tests`);
 

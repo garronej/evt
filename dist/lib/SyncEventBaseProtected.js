@@ -10,14 +10,6 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 exports.__esModule = true;
 var runExclusive = require("run-exclusive");
 var MapLike = require("es6-map");
-var defaultFormatter = function () {
-    var inputs = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        inputs[_i] = arguments[_i];
-    }
-    return inputs[0];
-};
-var tick = 0;
 /** SyncEvent without evtAttach property and without overload */
 var SyncEventBaseProtected = /** @class */ (function () {
     function SyncEventBaseProtected() {
@@ -26,6 +18,7 @@ var SyncEventBaseProtected = /** @class */ (function () {
             inputs[_i] = arguments[_i];
         }
         var _this = this;
+        this.tick = 0;
         this.postCount = 0;
         this.traceId = null;
         this.traceFormatter = function (data) { return JSON.stringify(data, null, 2); };
@@ -68,15 +61,22 @@ var SyncEventBaseProtected = /** @class */ (function () {
         if (!inputs.length)
             return;
         var eventEmitter = inputs[0], eventName = inputs[1];
-        var formatter = inputs[2] || defaultFormatter;
+        var formatter = inputs[2] || this.defaultFormatter;
         eventEmitter.on(eventName, function () {
             var inputs = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 inputs[_i] = arguments[_i];
             }
-            return _this.post(defaultFormatter(inputs));
+            return _this.post(formatter.apply(null, inputs));
         });
     }
+    SyncEventBaseProtected.prototype.defaultFormatter = function () {
+        var inputs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            inputs[_i] = arguments[_i];
+        }
+        return inputs[0];
+    };
     SyncEventBaseProtected.prototype.enableTrace = function (id, formatter) {
         this.traceId = id;
         if (formatter) {
@@ -104,7 +104,7 @@ var SyncEventBaseProtected = /** @class */ (function () {
                     reject(new Error("SyncEvent timeout after " + handler.timeout + "ms"));
                 }, handler.timeout);
             }
-            var handlerTick = tick++;
+            var handlerTick = _this.tick++;
             var trigger = function (data) {
                 var callback = handler.callback, once = handler.once;
                 if (timer)
@@ -162,7 +162,7 @@ var SyncEventBaseProtected = /** @class */ (function () {
     SyncEventBaseProtected.prototype.post = function (data) {
         this.trace(data);
         this.postCount++;
-        var postTick = tick++;
+        var postTick = this.tick++;
         var isExtracted = this.postSync(data);
         if (!isExtracted) {
             this.postAsync(data, postTick);
