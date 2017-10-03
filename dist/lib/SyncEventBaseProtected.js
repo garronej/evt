@@ -243,11 +243,10 @@ var SyncEventBaseProtected = /** @class */ (function () {
     SyncEventBaseProtected.prototype.getHandlers = function () { return this.handlers.slice(); };
     /** Detach every handler bound to a given object or all handlers, return the detached handlers */
     SyncEventBaseProtected.prototype.detach = function (boundTo) {
-        var n = arguments.length;
         var detachedHandlers = [];
-        for (var _i = 0, _a = this.handlers; _i < _a.length; _i++) {
+        for (var _i = 0, _a = this.handlers.slice(); _i < _a.length; _i++) {
             var handler = _a[_i];
-            if (!n || handler.boundTo === boundTo) {
+            if (boundTo === undefined || handler.boundTo === boundTo) {
                 handler.detach();
                 detachedHandlers.push(handler);
             }

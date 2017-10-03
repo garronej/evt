@@ -1,7 +1,7 @@
 {
   "name": "ts-events-extended",
-  "version": "4.0.1",
-  "description": "An EventEmitter for TypeScript",
+  "version": "4.0.2",
+  "description": "An EventEmitter implementation for TypeScript",
   "repository": {
     "type": "git",
     "url": "git://github.com/garronej/ts-events-extended.git"

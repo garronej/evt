@@ -390,13 +390,11 @@ export class SyncEventBaseProtected<T> {
     /** Detach every handler bound to a given object or all handlers, return the detached handlers */
     public detach(boundTo?: Bindable): Handler<T>[] {
 
-        let n = arguments.length;
-
         let detachedHandlers: Handler<T>[] = [];
 
-        for (let handler of this.handlers) {
+        for (let handler of [ ...this.handlers ]) {
 
-            if (!n || handler.boundTo === boundTo) {
+            if ( boundTo === undefined || handler.boundTo === boundTo) {
                 handler.detach();
                 detachedHandlers.push(handler);
             }
