@@ -7,6 +7,8 @@ require("colors");
 let evt = new SyncEvent<string>();
 
 
+//evt.enableTrace("evt");
+
 let expectQueue= [
     "foo",
     "bar",
@@ -36,8 +38,3 @@ evt.post("foo");
 evt.post("bar");
 evt.post("baz");
 evt.post("done");
-
-
-
-
-

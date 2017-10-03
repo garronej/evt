@@ -25,9 +25,9 @@ evt.attachOncePrepend(str=> {
 
     output+= str;
 
-    return SyncEvent.stopPropagation;
-
 });
+
+evt.getHandlers().find(({ prepend })=> prepend )!.extract= true;
 
 evt.post("a");
 evt.post("b");

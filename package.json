@@ -15,6 +15,7 @@
   "author": "Joseph Garrone",
   "license": "MIT",
   "dependencies": {
+    "es6-map": "^0.1.5",
     "run-exclusive": "github:garronej/run-exclusive",
     "typescript": "^2.5.3"
   },

@@ -14,19 +14,19 @@ evt.attachOnce(str => {
 
 })
 
-evt.attachOnce(str=>{
+evt.attachOnce("m", str=>{
 
     output+= str;
-
-    return SyncEvent.stopPropagation;
 
 });
 
+evt.getHandlers().find(({ boundTo })=> boundTo === "m")!.extract= true;
+
 evt.attachOnce(str=>{
 
     output+= str;
 
-    console.log("third", str);
+    //console.log("third", str);
 
 
 });

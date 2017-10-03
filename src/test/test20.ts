@@ -14,19 +14,19 @@ evt.attach(str => {
 
 })
 
-evt.attach(str=>{
+let pr= evt.attach(str=>{
 
     output+= str;
-
-    return SyncEvent.stopPropagation;
 
 });
 
+evt.getHandlers().find(({ promise })=> promise === pr )!.extract= true;
+
 evt.attach(str=>{
 
     output+= str;
 
-    console.log("third", str);
+    //console.log("third", str);
 
 
 });

@@ -15,17 +15,17 @@ export interface TypedPerson extends Person {
 }
 
 export function isTyped(p: Person): p is TypedPerson {
-    return p.sex ? true: false;
+    return p.sex ? true : false;
 }
 
-let testCount= 0;
+let testCount = 0;
 
 export class TypedPersonIntro {
 
 
-    private intro= "this person is ";
+    private intro = "this person is ";
 
-    public introduce( tp: TypedPerson): void{
+    public introduce(tp: TypedPerson): void {
 
         console.assert(this.intro + tp.sex === "this person is female" && tp === sourceEvt[1]);
 
@@ -34,9 +34,11 @@ export class TypedPersonIntro {
     }
 }
 
-let tpi= new TypedPersonIntro();
+let tpi = new TypedPersonIntro();
 
 let evt = new SyncEvent<Person>();
+
+//evt.enableTrace("evt");
 
 let sourceEvt: Person[] = [
     {
@@ -65,26 +67,26 @@ let sourceEvt: Person[] = [
 ];
 
 
-console.assert( evt.getHandlerCount() === 0);
-console.assert( evt.getOnceHandlerCount() === 0);
-console.assert( evt.getPermanentHandlerCount() === 0);
-console.assert( evt.getWaiterCount() === 0);
+console.assert(evt.getHandlers().length === 0);
+console.assert(evt.getHandlers().filter(({ once, async }) => once && !async).length === 0);
+console.assert(evt.getHandlers().filter(({ once }) => !once).length === 0);
+console.assert(evt.getHandlers().filter(({ async }) => async).length === 0);
 
 evt.attachOnce(isTyped, tpi, tpi.introduce);
 
-console.assert( evt.getHandlerCount() === 1);
-console.assert( evt.getOnceHandlerCount() === 1);
-console.assert( evt.getPermanentHandlerCount() === 0);
-console.assert( evt.getWaiterCount() === 0);
+console.assert(evt.getHandlers().length === 1);
+console.assert(evt.getHandlers().filter(({ once, async }) => once && !async).length === 1);
+console.assert(evt.getHandlers().filter(({ once }) => !once).length === 0);
+console.assert(evt.getHandlers().filter(({ async }) => async).length === 0);
 
-let resultAttach: Person[]= [];
+let resultAttach: Person[] = [];
 
-evt.attach( person => resultAttach.push(person) );
+evt.attach(person => resultAttach.push(person));
 
-console.assert( evt.getHandlerCount() === 2);
-console.assert( evt.getOnceHandlerCount() === 1);
-console.assert( evt.getPermanentHandlerCount() === 1);
-console.assert( evt.getWaiterCount() === 0);
+console.assert(evt.getHandlers().length === 2);
+console.assert(evt.getHandlers().filter(({ once, async }) => once && !async).length === 1);
+console.assert(evt.getHandlers().filter(({ once }) => !once).length === 1);
+console.assert(evt.getHandlers().filter(({ async }) => async).length === 0);
 
 
 
@@ -96,10 +98,11 @@ setTimeout(() => {
     evt.post(sourceEvt[0]);
     evt.post(sourceEvt[1]);
 
-    console.assert(evt.getHandlerCount() === 1);
-    console.assert(evt.getOnceHandlerCount() === 0);
-    console.assert(evt.getPermanentHandlerCount() === 1);
-    console.assert(evt.getWaiterCount() === 0);
+    console.assert(evt.getHandlers().length === 1);
+    console.assert(evt.getHandlers().filter(({ once, async }) => once && !async).length === 0);
+    console.assert(evt.getHandlers().filter(({ once }) => !once).length === 1);
+    console.assert(evt.getHandlers().filter(({ async }) => async).length === 0);
+
 
     evt.post(sourceEvt[2]);
 
@@ -107,20 +110,21 @@ setTimeout(() => {
 
 setTimeout(() => {
 
-    console.assert(evt.getHandlerCount() === 2);
-    console.assert(evt.getOnceHandlerCount() === 0);
-    console.assert(evt.getPermanentHandlerCount() === 1);
-    console.assert(evt.getWaiterCount() === 1);
+    console.assert(evt.getHandlers().length === 2);
+    console.assert(evt.getHandlers().filter(({ once, async }) => once && !async).length === 0);
+    console.assert(evt.getHandlers().filter(({ once }) => !once).length === 1);
+    console.assert(evt.getHandlers().filter(({ async }) => async).length === 1);
+
 
     evt.post(sourceEvt[3]);
     evt.post(sourceEvt[4]);
 
     console.assert(evt.postCount === 5);
 
-    console.assert(testCount ===1 );
+    console.assert(testCount === 1);
 
-    for( let i=0; i< resultAttach.length; i++)
-        console.assert(resultAttach[i] === sourceEvt[i] );
+    for (let i = 0; i < resultAttach.length; i++)
+        console.assert(resultAttach[i] === sourceEvt[i]);
 
     console.log("PASS".green);
 
@@ -136,7 +140,7 @@ setTimeout(() => {
 
         let typedPerson = await evt.waitFor(isTyped);
 
-        console.assert(evt.getWaiterCount() === 0);
+        console.assert(evt.getHandlers().filter(({ async }) => async).length === 0);
 
         arr.push(typedPerson);
 
@@ -144,6 +148,6 @@ setTimeout(() => {
 
     }
 
-    console.assert( arr[0] === sourceEvt[1] && arr[1]=== sourceEvt[2] && arr[2] === sourceEvt[4]);
+    console.assert(arr[0] === sourceEvt[1] && arr[1] === sourceEvt[2] && arr[2] === sourceEvt[4], "m");
 
 })();

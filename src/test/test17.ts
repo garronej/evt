@@ -1,9 +1,6 @@
-import {
-    SyncEvent,
-} from "../lib/index";
+import { SyncEvent } from "../lib/index";
 
 require("colors");
-
 
 interface Animal {
     type: "CAT" | "SPIDER";
@@ -29,41 +26,28 @@ const animals: Animal[] = [
 ];
 
 
-let cats= animals.filter(({ type })=> type === "CAT");
-let spiders= animals.filter(({ type })=> type === "SPIDER");
+let cats = animals.filter(({ type }) => type === "CAT");
+let spiders = animals.filter(({ type }) => type === "SPIDER");
 
 let evtAnimal = new SyncEvent<Animal>();
 
-
-
 evtAnimal.attach(
-    animal => {
-
-        console.assert(spiders.shift() === animal);
-        
-
-    }
+    animal => console.assert(spiders.shift() === animal)
 );
 
-
-(async () => {
-
-    while( cats.length ){
-
-        let cat= await evtAnimal.waitForExtract(
-            (animal): animal is Cat => animal.type === "CAT"
-        );
+evtAnimal.attachExtract(
+    (animal: Animal): animal is Cat => animal.type === "CAT",
+    "extractCats",
+    cat => {
 
         console.assert(cats.shift() === cat);
 
+        if (!cats.length) evtAnimal.detach("extractCats");
+
+        console.log("PASS".green);
+
     }
-
-    console.log("PASS".green);
-
-
-})();
-
-
+);
 
 (function main() {
 

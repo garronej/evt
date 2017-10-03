@@ -8,14 +8,19 @@ type T= string;
 
 let evt = new SyncEvent<T>();
 
+//evt.enableTrace("evt");
+
 let evtProxy= new SyncEvent<T>();
+
+//evtProxy.enableTrace("evtProxy");
 
 evt.attach(data=>{
 
-    if( !evtProxy.evtAttach.postCount )
-        evtProxy.evtAttach.attachOnce(()=> evtProxy.post(data));
-    else
+    if( !evtProxy.evtAttach.postCount ){
+        evtProxy.evtAttach.attachOnce(data,()=> evtProxy.post(data));
+    }else{
         evtProxy.post(data);
+    }
 
 });
 
@@ -39,10 +44,3 @@ console.assert(alphabet=== "abcdefgh");
 //cSpell: enable
 
 console.log("PASS".green);
-
-
-
-
-
-
-

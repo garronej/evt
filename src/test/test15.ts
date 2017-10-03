@@ -6,11 +6,22 @@ require("colors");
 
 let evt = new SyncEvent<string | number>();
 
-let evtNumber= evt.createProxy((data): data is number => typeof(data) === "number");
+//evt.enableTrace("evt");
 
-let evtString= evt.createProxy(data => typeof(data) === "string");
+let evtNumber = new SyncEvent<number>();
+evt.attach((data): data is number=> typeof data === "number", evtNumber);
 
-let evtSatan= evt.createProxy(data => data === 666);
+//evtNumber.enableTrace("evtNumber");
+
+let evtString= new SyncEvent<string>();
+evt.attach((data: string | number): data is string=> typeof data === "string", evtString as any);
+
+//evtString.enableTrace("evtString");
+
+let evtSatan= new SyncEvent<string | number>();
+evt.attach(data => data === 666, evtSatan);
+
+//evtSatan.enableTrace("evtSatan");
 
 (async ()=> {
 
@@ -35,7 +46,7 @@ let evtSatan= evt.createProxy(data => data === 666);
 
     }
 
-    evtSatan.stopWaiting();
+    evtSatan.detach();
 
 })();
 
@@ -87,14 +98,3 @@ let evtSatan= evt.createProxy(data => data === 666);
     console.log("PASS".green);
 
 })();
-
-
-
-
-
-
-
-
-
-
-
