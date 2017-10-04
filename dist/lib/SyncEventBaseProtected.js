@@ -9,6 +9,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 exports.__esModule = true;
 var runExclusive = require("run-exclusive");
+var defs_1 = require("./defs");
 var MapLike = require("es6-map");
 /** SyncEvent without evtAttach property and without overload */
 var SyncEventBaseProtected = /** @class */ (function () {
@@ -88,27 +89,35 @@ var SyncEventBaseProtected = /** @class */ (function () {
     };
     SyncEventBaseProtected.prototype.addHandler = function (attachParams, implicitAttachParams) {
         var _this = this;
-        var handler = __assign({}, attachParams, implicitAttachParams, { "detach": function () {
+        var handler = __assign({}, attachParams, implicitAttachParams, { "detach": null, "promise": null });
+        handler.promise = new Promise(function (resolve, reject) {
+            var timer = undefined;
+            if (typeof handler.timeout === "number") {
+                timer = setTimeout(function () {
+                    timer = undefined;
+                    handler.detach();
+                    reject(new defs_1.EvtError.Timeout(handler.timeout));
+                }, handler.timeout);
+            }
+            handler.detach = function () {
                 var index = _this.handlers.indexOf(handler);
                 if (index < 0)
                     return false;
                 _this.handlers.splice(index, 1);
                 _this.handlerTriggers["delete"](handler);
+                if (timer) {
+                    clearTimeout(timer);
+                    reject(new defs_1.EvtError.Detached());
+                }
                 return true;
-            }, "promise": null });
-        handler.promise = new Promise(function (resolve, reject) {
-            var timer = undefined;
-            if (typeof handler.timeout === "number") {
-                timer = setTimeout(function () {
-                    handler.detach();
-                    reject(new Error("SyncEvent timeout after " + handler.timeout + "ms"));
-                }, handler.timeout);
-            }
+            };
             var handlerTick = _this.tick++;
             var trigger = function (data) {
                 var callback = handler.callback, once = handler.once;
-                if (timer)
+                if (timer) {
                     clearTimeout(timer);
+                    timer = undefined;
+                }
                 if (once)
                     handler.detach();
                 if (callback)

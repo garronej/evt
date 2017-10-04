@@ -1,5 +1,5 @@
 import {
-    VoidSyncEvent
+    VoidSyncEvent, EvtError
 } from "../lib/index";
 
 require("colors");
@@ -27,6 +27,8 @@ setTimeout(() => {
         await evt.waitFor(10);
 
     }catch( error ){
+
+        console.assert( error instanceof EvtError.Timeout );
 
         pass= true;
     }

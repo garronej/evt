@@ -1,10 +1,14 @@
 import { EventEmitter as NodeJS_EventEmitter } from "events";
 import * as runExclusive from "run-exclusive";
-import { UserProvidedParams, ImplicitParams, Bindable, Handler } from "./defs";
+import { 
+    UserProvidedParams, 
+    ImplicitParams, 
+    Bindable, 
+    Handler, 
+    EvtError
+} from "./defs";
 
 const MapLike= require("es6-map");
-
-
 
 /** SyncEvent without evtAttach property and without overload */
 export class SyncEventBaseProtected<T> {
@@ -45,13 +49,7 @@ export class SyncEventBaseProtected<T> {
         let handler: Handler<T> = {
             ...attachParams,
             ...implicitAttachParams,
-            "detach": () => {
-                let index = this.handlers.indexOf(handler);
-                if (index < 0) return false;
-                this.handlers.splice(index, 1);
-                this.handlerTriggers.delete(handler);
-                return true;
-            },
+            "detach": null as any,
             "promise": null as any
         };
 
@@ -64,13 +62,37 @@ export class SyncEventBaseProtected<T> {
 
                     timer = setTimeout(() => {
 
+                        timer= undefined;
+
                         handler.detach();
 
-                        reject(new Error(`SyncEvent timeout after ${handler.timeout}ms`));
+                        reject(new EvtError.Timeout(handler.timeout!));
 
                     }, handler.timeout);
 
                 }
+
+                handler.detach= () => {
+
+                    let index = this.handlers.indexOf(handler);
+
+                    if (index < 0) return false;
+
+                    this.handlers.splice(index, 1);
+
+                    this.handlerTriggers.delete(handler);
+
+                    if( timer ){ 
+
+                        clearTimeout(timer);
+
+                        reject( new EvtError.Detached() );
+
+                    }
+
+                    return true;
+
+                };
 
                 let handlerTick = this.tick++;
 
@@ -78,7 +100,10 @@ export class SyncEventBaseProtected<T> {
 
                     let { callback, once } = handler;
 
-                    if (timer) clearTimeout(timer);
+                    if (timer) {
+                        clearTimeout(timer);
+                        timer= undefined;
+                    }
 
                     if (once) handler.detach();
 
@@ -116,9 +141,6 @@ export class SyncEventBaseProtected<T> {
 
     }
 
-
-
-
     private trace(data: T) {
 
         if (typeof this.traceId !== "string") return;
@@ -154,9 +176,6 @@ export class SyncEventBaseProtected<T> {
         }
 
     }
-
-
-
 
     public post(data: T): number {
 
@@ -252,9 +271,6 @@ export class SyncEventBaseProtected<T> {
 
         }
     );
-
-
-
 
     constructor();
     constructor(
@@ -404,7 +420,6 @@ export class SyncEventBaseProtected<T> {
         return detachedHandlers;
 
     }
-
 
 
 }

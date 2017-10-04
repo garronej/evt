@@ -1,4 +1,4 @@
-import { SyncEvent } from "../lib";
+import { SyncEvent, EvtError } from "../lib";
 import "colors";
 
 let evt= new SyncEvent<string>();
@@ -24,6 +24,8 @@ let success= false;
         console.assert(false);
 
     }catch(error){ 
+
+        console.assert(error instanceof EvtError.Timeout);
 
         success = true;
 

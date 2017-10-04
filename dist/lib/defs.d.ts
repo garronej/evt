@@ -23,3 +23,12 @@ export interface Handler<T> extends UserProvidedParams<T>, ImplicitParams {
     detach(): boolean;
     promise: Promise<T>;
 }
+export declare namespace EvtError {
+    class Timeout extends Error {
+        readonly timeout: number;
+        constructor(timeout: number);
+    }
+    class Detached extends Error {
+        constructor();
+    }
+}
