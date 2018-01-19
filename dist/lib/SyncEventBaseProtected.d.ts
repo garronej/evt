@@ -1,5 +1,3 @@
-/// <reference types="node" />
-import { EventEmitter as NodeJS_EventEmitter } from "events";
 import { UserProvidedParams, ImplicitParams, Bindable, Handler } from "./defs";
 /** SyncEvent without evtAttach property and without overload */
 export declare class SyncEventBaseProtected<T> {
@@ -18,7 +16,9 @@ export declare class SyncEventBaseProtected<T> {
     private postSync(data);
     private readonly postAsync;
     constructor();
-    constructor(eventEmitter: NodeJS_EventEmitter, eventName: string, formatter?: (...inputs) => T);
+    constructor(eventEmitter: {
+        on(eventName: string, listener: Function);
+    }, eventName: string, formatter?: (...inputs) => T);
     protected __waitFor(attachParams: UserProvidedParams<T>): Promise<T>;
     protected __attach(attachParams: UserProvidedParams<T>): Promise<T>;
     protected __attachExtract(attachParams: UserProvidedParams<T>): Promise<T>;

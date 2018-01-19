@@ -1,4 +1,3 @@
-import { EventEmitter as NodeJS_EventEmitter } from "events";
 import * as runExclusive from "run-exclusive";
 import { 
     UserProvidedParams, 
@@ -9,6 +8,7 @@ import {
 } from "./defs";
 
 const MapLike= require("es6-map");
+
 
 /** SyncEvent without evtAttach property and without overload */
 export class SyncEventBaseProtected<T> {
@@ -274,7 +274,7 @@ export class SyncEventBaseProtected<T> {
 
     constructor();
     constructor(
-        eventEmitter: NodeJS_EventEmitter,
+        eventEmitter: { on(eventName: string, listener: Function); },
         eventName: string,
         formatter?: (...inputs) => T);
     constructor(...inputs: any[]) {

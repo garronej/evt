@@ -1,6 +1,6 @@
 {
   "name": "ts-events-extended",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "description": "An EventEmitter implementation for TypeScript",
   "repository": {
     "type": "git",
@@ -9,7 +9,7 @@
   "main": "./dist/lib/index.js",
   "types": "./dist/lib/index.d.ts",
   "scripts": {
-    "tsc": "./node_modules/.bin/tsc -p ./tsconfig.json",
+    "tsc": "node ./node_modules/typescript/bin/tsc -p ./tsconfig.json",
     "tsc-w": "node ./node_modules/typescript/bin/tsc -w -p ./tsconfig.json",
     "test": "node ./dist/test/index"
   },
@@ -23,7 +23,7 @@
     "typescript": "^2.5.3",
     "rejection-tracker": "garronej/rejection-tracker",
     "colors": "^1.1.2",
-    "@types/node": "^4.0.0",
-    "@types/colors": "^1.1.1"
+    "@types/colors": "^1.1.1",
+    "@types/node": "^4.0.0"
   }
 }
