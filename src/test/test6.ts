@@ -22,7 +22,7 @@ let success= false;
 
     try {
 
-        let message = await evt.waitFor(200);
+        await evt.waitFor(200);
 
         console.assert(false);
 

@@ -1,5 +1,3 @@
-import { EventEmitter as NodeJS_EventEmitter } from "events";
-import * as runExclusive from "run-exclusive";
 import { SyncEventBase } from "./SyncEventBase";
 import { Handler, UserProvidedParams, ImplicitParams } from "./defs";
 

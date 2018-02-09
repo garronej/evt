@@ -18,6 +18,7 @@ evt.attach(()=>{
 
 });
 
+//@ts-ignore: unused i
 for( let i in [ ".", ".", ".", ".", "." ])
     evt.post();
 
@@ -30,6 +31,7 @@ evtProxy.attach(() => {
 });
 
 
+//@ts-ignore: unused i
 for( let i in [ "f", "g", "h" ])
     evt.post();
 

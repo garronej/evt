@@ -10,7 +10,11 @@
                 "outDir": "./dist",
                 "strictNullChecks": true,
                 "sourceMap": false,
-                "newLine": "LF"
+                "newLine": "LF",
+                "noUnusedLocals": true,
+                "noUnusedParameters": false,
+                "strictPropertyInitialization": true,
+                "strictFunctionTypes": true
         },
         "filesGlob": [
                 "./src/**/*.ts"

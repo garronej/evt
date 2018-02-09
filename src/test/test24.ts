@@ -11,7 +11,7 @@ let success= false;
 
     for( let _ of new Array<void>(6) ){
 
-        let letter= await evt.waitFor();
+        await evt.waitFor();
 
     }
 

@@ -17,6 +17,7 @@ interface Cat extends Animal {
     cute: true;
 }
 
+//@ts-ignore: unused
 interface Spider extends Animal {
     type: "SPIDER";
     cute: false;

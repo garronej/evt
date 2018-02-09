@@ -10,7 +10,6 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 exports.__esModule = true;
 var runExclusive = require("run-exclusive");
 var defs_1 = require("./defs");
-var MapLike = require("es6-map");
 /** SyncEvent without evtAttach property and without overload */
 var SyncEventBaseProtected = /** @class */ (function () {
     function SyncEventBaseProtected() {

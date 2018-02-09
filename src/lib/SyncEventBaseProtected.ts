@@ -7,8 +7,6 @@ import {
     EvtError
 } from "./defs";
 
-const MapLike= require("es6-map");
-
 
 /** SyncEvent without evtAttach property and without overload */
 export class SyncEventBaseProtected<T> {
