@@ -1,14 +1,12 @@
+
 import { SyncEvent } from "../lib";
 
+let evt = new SyncEvent<number>();
 
-let evt= new SyncEvent<string>();
+evt.enableTrace("myEvent", n => n.toString(), str => console.assert(str === "(myEvent) 1 handler => 666" ));
 
+evt.attachOnce(n => console.assert(n === 666));
 
-evt.attach(
-    str=> str === "foo",
-    str=> {
+evt.post(666);
 
-
-
-    }
-);
+console.log("PASS".green);

@@ -2,8 +2,6 @@ import {
     VoidSyncEvent, EvtError
 } from "../lib/index";
 
-require("colors");
-
 let pass= false;
 
 let evt = new VoidSyncEvent();

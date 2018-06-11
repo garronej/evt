@@ -1,6 +1,12 @@
-require("rejection-tracker").main();
 
-require("colors");
+import "colors";
+
+process.once("unhandledRejection", error => {
+
+    throw error;
+
+});
+
 
 let n = process.argv[2];
 
@@ -10,7 +16,7 @@ if (n) {
 
 } else {
     
-    let n= 28;
+    let n= 29;
 
     console.log(`Running ${n} tests`);
 

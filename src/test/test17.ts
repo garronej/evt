@@ -1,7 +1,5 @@
 import { SyncEvent } from "../lib/index";
 
-require("colors");
-
 interface Animal {
     type: "CAT" | "SPIDER";
     cute: boolean;

@@ -1,5 +1,4 @@
 import { SyncEvent } from "../lib";
-import "colors";
 
 
 let matcher = (object: Object): object is Array<any> => object instanceof Array;

@@ -2,8 +2,6 @@ import {
     SyncEvent
 } from "../lib/index";
 
-require("colors");
-
 let evt = new SyncEvent<{ init: boolean}>();
 
 evt.evtAttach.attachOnce(handler=> console.assert( !handler.once && handler.boundTo ==="foo"));

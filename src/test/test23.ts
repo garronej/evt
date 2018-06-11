@@ -1,5 +1,4 @@
 import { SyncEvent, EvtError } from "../lib";
-import "colors";
 
 let evt= new SyncEvent<string>();
 

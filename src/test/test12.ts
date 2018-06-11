@@ -2,8 +2,6 @@ import {
     VoidSyncEvent
 } from "../lib/index";
 
-require("colors");
-
 let evt = new VoidSyncEvent();
 
 setTimeout(() => {

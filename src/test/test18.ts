@@ -2,8 +2,6 @@ import {
     VoidSyncEvent
 } from "../lib/index";
 
-require("colors");
-
 let count= 0;
 
 let evt= new VoidSyncEvent();

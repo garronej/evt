@@ -2,8 +2,6 @@ import {
     SyncEvent
 } from "../lib/index";
 
-require("colors");
-
 type T= string;
 
 let evt = new SyncEvent<T>();

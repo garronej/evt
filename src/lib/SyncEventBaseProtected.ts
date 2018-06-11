@@ -11,25 +11,44 @@ import {
 /** SyncEvent without evtAttach property and without overload */
 export class SyncEventBaseProtected<T> {
 
-    private tick= 0;
+    private tick = 0;
 
-    private defaultFormatter(...inputs: any[]): T{
+    private defaultFormatter(...inputs: any[]): T {
         return inputs[0];
     }
 
     public postCount = 0;
 
     private traceId: string | null = null;
-    private traceFormatter: (data: T) => string = data => JSON.stringify(data, null, 2);
+    private traceFormatter!: (data: T) => string;
+    private log!: typeof console.log;
 
     public enableTrace(
         id: string,
-        formatter?: (data: T) => string
+        formatter?: (data: T) => string,
+        log?: typeof console.log,
     ) {
         this.traceId = id;
-        if (formatter) {
+        if (!!formatter) {
+
             this.traceFormatter = formatter;
+
+        } else {
+            this.traceFormatter = data => {
+                try {
+                    return JSON.stringify(data, null, 2);
+                } catch{
+                    return `${data}`;
+                }
+            }
         }
+
+        if (!!log) {
+            this.log = log;
+        } else {
+            this.log = (...inputs) => console.log.apply(console, inputs);
+        }
+
     }
     public disableTrace() {
         this.traceId = null;
@@ -37,7 +56,7 @@ export class SyncEventBaseProtected<T> {
 
     private readonly handlers: Handler<T>[] = [];
 
-    private readonly handlerTriggers: Map<Handler<T>,{ handlerTick: number; trigger: (data: T)=> void }> = new Map();
+    private readonly handlerTriggers: Map<Handler<T>, { handlerTick: number; trigger: (data: T) => void }> = new Map();
 
     protected addHandler(
         attachParams: UserProvidedParams<T>,
@@ -60,7 +79,7 @@ export class SyncEventBaseProtected<T> {
 
                     timer = setTimeout(() => {
 
-                        timer= undefined;
+                        timer = undefined;
 
                         handler.detach();
 
@@ -70,7 +89,7 @@ export class SyncEventBaseProtected<T> {
 
                 }
 
-                handler.detach= () => {
+                handler.detach = () => {
 
                     let index = this.handlers.indexOf(handler);
 
@@ -80,11 +99,11 @@ export class SyncEventBaseProtected<T> {
 
                     this.handlerTriggers.delete(handler);
 
-                    if( timer ){ 
+                    if (timer) {
 
                         clearTimeout(timer);
 
-                        reject( new EvtError.Detached() );
+                        reject(new EvtError.Detached());
 
                     }
 
@@ -100,7 +119,7 @@ export class SyncEventBaseProtected<T> {
 
                     if (timer) {
                         clearTimeout(timer);
-                        timer= undefined;
+                        timer = undefined;
                     }
 
                     if (once) handler.detach();
@@ -141,7 +160,9 @@ export class SyncEventBaseProtected<T> {
 
     private trace(data: T) {
 
-        if (typeof this.traceId !== "string") return;
+        if (this.traceId === null) {
+            return;
+        }
 
         let message = `(${this.traceId}) `;
 
@@ -163,15 +184,7 @@ export class SyncEventBaseProtected<T> {
 
         }
 
-        try {
-
-            console.log(message + this.traceFormatter(data));
-
-        } catch (error) {
-
-            console.log(message, data);
-
-        }
+        this.log(message + this.traceFormatter(data));
 
     }
 
@@ -203,7 +216,7 @@ export class SyncEventBaseProtected<T> {
 
             let handlerTrigger = this.handlerTriggers.get(handler);
 
-            if( !handlerTrigger ) continue;
+            if (!handlerTrigger) continue;
 
             handlerTrigger.trigger(data);
 
@@ -281,7 +294,7 @@ export class SyncEventBaseProtected<T> {
 
         let [eventEmitter, eventName] = inputs;
 
-        let formatter: (...inputs: any[])=> T = inputs[2] || this.defaultFormatter;
+        let formatter: (...inputs: any[]) => T = inputs[2] || this.defaultFormatter;
 
         eventEmitter.on(eventName,
             (...inputs) => this.post(formatter.apply(null, inputs))
@@ -406,9 +419,9 @@ export class SyncEventBaseProtected<T> {
 
         let detachedHandlers: Handler<T>[] = [];
 
-        for (let handler of [ ...this.handlers ]) {
+        for (let handler of [...this.handlers]) {
 
-            if ( boundTo === undefined || handler.boundTo === boundTo) {
+            if (boundTo === undefined || handler.boundTo === boundTo) {
                 handler.detach();
                 detachedHandlers.push(handler);
             }

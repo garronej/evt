@@ -2,8 +2,6 @@ import {
     SyncEvent
 } from "../lib/index";
 
-require("colors");
-
 export interface Person {
     name: string;
     age: number;

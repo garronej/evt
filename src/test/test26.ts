@@ -1,6 +1,5 @@
 import { SyncEvent } from "../lib";
 import { EventEmitter } from "events";
-import "colors";
 
 let success = 0;
 

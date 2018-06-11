@@ -2,8 +2,6 @@ import {
     SyncEvent
 } from "../lib/index";
 
-require("colors");
-
 let evt = new SyncEvent<string | number>();
 
 //evt.enableTrace("evt");

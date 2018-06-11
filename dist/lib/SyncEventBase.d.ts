@@ -3,8 +3,8 @@ import { Postable, Bindable } from "./defs";
 /** SyncEvent without evtAttach property */
 export declare class SyncEventBase<T> extends SyncEventBaseProtected<T> {
     private defaultParams;
-    private getDefaultParams();
-    private readParams(inputs);
+    private getDefaultParams;
+    private readParams;
     /**
      *
      * 'await' a specific event. Can be used in async loop without missing events.

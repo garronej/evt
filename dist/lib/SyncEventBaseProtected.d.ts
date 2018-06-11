@@ -2,23 +2,24 @@ import { UserProvidedParams, ImplicitParams, Bindable, Handler } from "./defs";
 /** SyncEvent without evtAttach property and without overload */
 export declare class SyncEventBaseProtected<T> {
     private tick;
-    private defaultFormatter(...inputs);
+    private defaultFormatter;
     postCount: number;
     private traceId;
     private traceFormatter;
-    enableTrace(id: string, formatter?: (data: T) => string): void;
+    private log;
+    enableTrace(id: string, formatter?: (data: T) => string, log?: typeof console.log): void;
     disableTrace(): void;
     private readonly handlers;
     private readonly handlerTriggers;
     protected addHandler(attachParams: UserProvidedParams<T>, implicitAttachParams: ImplicitParams): Handler<T>;
-    private trace(data);
+    private trace;
     post(data: T): number;
-    private postSync(data);
+    private postSync;
     private readonly postAsync;
     constructor();
     constructor(eventEmitter: {
-        on(eventName: string, listener: Function);
-    }, eventName: string, formatter?: (...inputs) => T);
+        on(eventName: string, listener: Function): any;
+    }, eventName: string, formatter?: (...inputs: any[]) => T);
     protected __waitFor(attachParams: UserProvidedParams<T>): Promise<T>;
     protected __attach(attachParams: UserProvidedParams<T>): Promise<T>;
     protected __attachExtract(attachParams: UserProvidedParams<T>): Promise<T>;

@@ -21,7 +21,6 @@ var SyncEventBaseProtected = /** @class */ (function () {
         this.tick = 0;
         this.postCount = 0;
         this.traceId = null;
-        this.traceFormatter = function (data) { return JSON.stringify(data, null, 2); };
         this.handlers = [];
         this.handlerTriggers = new Map();
         this.postAsync = runExclusive.buildCb(function (data, postTick, releaseLock) {
@@ -77,10 +76,32 @@ var SyncEventBaseProtected = /** @class */ (function () {
         }
         return inputs[0];
     };
-    SyncEventBaseProtected.prototype.enableTrace = function (id, formatter) {
+    SyncEventBaseProtected.prototype.enableTrace = function (id, formatter, log) {
         this.traceId = id;
-        if (formatter) {
+        if (!!formatter) {
             this.traceFormatter = formatter;
+        }
+        else {
+            this.traceFormatter = function (data) {
+                try {
+                    return JSON.stringify(data, null, 2);
+                }
+                catch (_a) {
+                    return "" + data;
+                }
+            };
+        }
+        if (!!log) {
+            this.log = log;
+        }
+        else {
+            this.log = function () {
+                var inputs = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    inputs[_i] = arguments[_i];
+                }
+                return console.log.apply(console, inputs);
+            };
         }
     };
     SyncEventBaseProtected.prototype.disableTrace = function () {
@@ -141,8 +162,9 @@ var SyncEventBaseProtected = /** @class */ (function () {
         return handler;
     };
     SyncEventBaseProtected.prototype.trace = function (data) {
-        if (typeof this.traceId !== "string")
+        if (this.traceId === null) {
             return;
+        }
         var message = "(" + this.traceId + ") ";
         var isExtracted = !!this.handlers.find(function (_a) {
             var extract = _a.extract, matcher = _a.matcher;
@@ -160,12 +182,7 @@ var SyncEventBaseProtected = /** @class */ (function () {
                 .length;
             message += handlerCount + " handler" + ((handlerCount > 1) ? "s" : "") + " => ";
         }
-        try {
-            console.log(message + this.traceFormatter(data));
-        }
-        catch (error) {
-            console.log(message, data);
-        }
+        this.log(message + this.traceFormatter(data));
     };
     SyncEventBaseProtected.prototype.post = function (data) {
         this.trace(data);
