@@ -21,6 +21,12 @@ export class SyncEvent<T> extends SyncEventBase<T> {
 
 }
 
+export namespace SyncEvent {
+
+    export type Type<T> = T extends SyncEvent<infer U> ? U : never;
+
+}
+
 export class VoidSyncEvent extends SyncEvent<void> {
     public post(): number {
         return super.post(undefined);

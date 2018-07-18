@@ -9,4 +9,8 @@ evt.attachOnce(n => console.assert(n === 666));
 
 evt.post(666);
 
+const n: SyncEvent.Type<typeof evt>= 666;
+
+n;
+
 console.log("PASS".green);
