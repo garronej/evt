@@ -10,6 +10,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 exports.__esModule = true;
+var setPrototypeOf = require("setprototypeof");
 var EvtError;
 (function (EvtError) {
     var Timeout = /** @class */ (function (_super) {
@@ -18,7 +19,7 @@ var EvtError;
             var _newTarget = this.constructor;
             var _this = _super.call(this, "Evt timeout after " + timeout + "ms") || this;
             _this.timeout = timeout;
-            Object.setPrototypeOf(_this, _newTarget.prototype);
+            setPrototypeOf(_this, _newTarget.prototype);
             return _this;
         }
         return Timeout;
@@ -29,7 +30,7 @@ var EvtError;
         function Detached() {
             var _newTarget = this.constructor;
             var _this = _super.call(this, "Evt handler detached") || this;
-            Object.setPrototypeOf(_this, _newTarget.prototype);
+            setPrototypeOf(_this, _newTarget.prototype);
             return _this;
         }
         return Detached;
