@@ -1,4 +1,3 @@
-
 import "colors";
 
 process.once("unhandledRejection", error => {

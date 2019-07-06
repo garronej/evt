@@ -1,3 +1,8 @@
+
+
+import { Polyfill as Map, LightMap } from "minimal-polyfills/dist/lib/Map";
+import "minimal-polyfills/dist/lib/Array.prototype.find";
+
 import * as runExclusive from "run-exclusive";
 import { 
     UserProvidedParams, 
@@ -56,7 +61,7 @@ export class SyncEventBaseProtected<T> {
 
     private readonly handlers: Handler<T>[] = [];
 
-    private readonly handlerTriggers: Map<Handler<T>, { handlerTick: number; trigger: (data: T) => void }> = new Map();
+    private readonly handlerTriggers: LightMap<Handler<T>, { handlerTick: number; trigger: (data: T) => void }> = new Map();
 
     protected addHandler(
         attachParams: UserProvidedParams<T>,

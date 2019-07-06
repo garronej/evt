@@ -8,6 +8,8 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 exports.__esModule = true;
+var Map_1 = require("minimal-polyfills/dist/lib/Map");
+require("minimal-polyfills/dist/lib/Array.prototype.find");
 var runExclusive = require("run-exclusive");
 var defs_1 = require("./defs");
 /** SyncEvent without evtAttach property and without overload */
@@ -22,7 +24,7 @@ var SyncEventBaseProtected = /** @class */ (function () {
         this.postCount = 0;
         this.traceId = null;
         this.handlers = [];
-        this.handlerTriggers = new Map();
+        this.handlerTriggers = new Map_1.Polyfill();
         this.postAsync = runExclusive.buildCb(function (data, postTick, releaseLock) {
             var isHandled = false;
             for (var _i = 0, _a = _this.handlers.slice(); _i < _a.length; _i++) {
