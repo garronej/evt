@@ -4,19 +4,16 @@ import { Polyfill as Map, LightMap } from "minimal-polyfills/dist/lib/Map";
 import "minimal-polyfills/dist/lib/Array.prototype.find";
 
 import * as runExclusive from "run-exclusive";
-import { 
-    UserProvidedParams, 
-    ImplicitParams, 
-    Bindable, 
-    Handler, 
+import {
+    UserProvidedParams,
+    ImplicitParams,
+    Bindable,
+    Handler,
     EvtError
 } from "./defs";
 
-
 /** SyncEvent without evtAttach property and without overload */
 export class SyncEventBaseProtected<T> {
-
-    private tick = 0;
 
     private defaultFormatter(...inputs: any[]): T {
         return inputs[0];
@@ -31,7 +28,7 @@ export class SyncEventBaseProtected<T> {
     public enableTrace(
         id: string,
         formatter?: (data: T) => string,
-        log?: typeof console.log,
+        log?: (message?: any, ...optionalParams: any[]) => void //NOTE: we don't want to expose types from node
     ) {
         this.traceId = id;
         if (!!formatter) {
@@ -51,7 +48,7 @@ export class SyncEventBaseProtected<T> {
         if (!!log) {
             this.log = log;
         } else {
-            this.log = (...inputs) => console.log.apply(console, inputs);
+            this.log = (...inputs) => console.log(...inputs);
         }
 
     }
@@ -61,19 +58,54 @@ export class SyncEventBaseProtected<T> {
 
     private readonly handlers: Handler<T>[] = [];
 
-    private readonly handlerTriggers: LightMap<Handler<T>, { handlerTick: number; trigger: (data: T) => void }> = new Map();
+    private readonly handlerTriggers: LightMap<Handler<T>, (data: T) => void> = new Map();
+    //NOTE: An async handler ( attached with waitFor ) is only eligible to handle a post if the post
+    //occurred after the handler was set. We don't want to waitFor event from the past.
+    private readonly asyncHandlerChronologyMark = new WeakMap<ImplicitParams.Async, number>();
+    //NOTE: There is an exception to the above rule, we want to allow async waitFor loop 
+    //do so we have to handle the case where multiple event would be posted synchronously.
+    private readonly asyncHandlerChronologyExceptionRange = new WeakMap<
+        ImplicitParams.Async,
+        {
+            lowerMark: number;
+            upperMark: number;
+        }
+    >();
+
+    /*
+    NOTE: Used as Date.now() would be used to compare if an event is anterior 
+    or posterior to an other. We don't use Date.now() because two call within
+    less than a ms will return the same value unlike this function.
+    */
+    private readonly getChronologyMark = (() => {
+
+        let currentChronologyMark = 0;
+
+        return () => currentChronologyMark++;
+
+    })();
+
 
     protected addHandler(
         attachParams: UserProvidedParams<T>,
         implicitAttachParams: ImplicitParams
     ): Handler<T> {
 
-        let handler: Handler<T> = {
+        const handler: Handler<T> = {
             ...attachParams,
             ...implicitAttachParams,
             "detach": null as any,
             "promise": null as any
         };
+
+        if (handler.async) {
+
+            this.asyncHandlerChronologyMark.set(
+                handler,
+                this.getChronologyMark()
+            );
+
+        }
 
         handler.promise = new Promise<T>(
             (resolve, reject) => {
@@ -116,38 +148,40 @@ export class SyncEventBaseProtected<T> {
 
                 };
 
-                let handlerTick = this.tick++;
+                this.handlerTriggers.set(
+                    handler,
+                    (data: T) => {
 
-                let trigger = (data: T) => {
+                        let { callback, once } = handler;
 
-                    let { callback, once } = handler;
+                        if (timer) {
+                            clearTimeout(timer);
+                            timer = undefined;
+                        }
 
-                    if (timer) {
-                        clearTimeout(timer);
-                        timer = undefined;
+                        if (once) handler.detach();
+
+                        callback?.call(handler.boundTo, data);
+
+                        resolve(data);
+
                     }
-
-                    if (once) handler.detach();
-
-                    if (callback) callback.call(handler.boundTo, data);
-
-                    resolve(data);
-
-                };
-
-                this.handlerTriggers.set(handler, { handlerTick, trigger });
+                );
 
             }
         );
 
         if (handler.prepend) {
 
-            let i;
+            let i: number;
 
             for (i = 0; i < this.handlers.length; i++) {
 
-                if (this.handlers[i].extract) continue;
-                else break;
+                if (this.handlers[i].extract) {
+                    continue;
+                }
+
+                break;
 
             }
 
@@ -193,39 +227,57 @@ export class SyncEventBaseProtected<T> {
 
     }
 
+
+    /** Returns post count */
     public post(data: T): number {
 
         this.trace(data);
 
         this.postCount++;
 
-        let postTick = this.tick++;
+        //NOTE: Must be before postSync.
+        const postChronologyMark = this.getChronologyMark();
 
-        let isExtracted = this.postSync(data);
+        const isExtracted = this.postSync(data);
 
         if (!isExtracted) {
-            this.postAsync(data, postTick);
+            this.postAsync(
+                data,
+                postChronologyMark
+            );
         }
 
         return this.postCount;
 
     }
 
+    /** Return isExtracted */
     private postSync(data: T): boolean {
 
         for (let handler of [...this.handlers]) {
 
             let { async, matcher, extract } = handler;
 
-            if (async || !matcher(data)) continue;
+            if (async) {
+                continue;
+            }
 
-            let handlerTrigger = this.handlerTriggers.get(handler);
+            if (!matcher(data)) {
+                continue;
+            }
 
-            if (!handlerTrigger) continue;
+            const handlerTrigger = this.handlerTriggers.get(handler);
 
-            handlerTrigger.trigger(data);
+            //NOTE: Possible if detached while in the loop.
+            if (!handlerTrigger) {
+                continue;
+            }
 
-            if (extract) return true;
+            handlerTrigger(data);
+
+            if (extract) {
+                return true;
+            }
 
         }
 
@@ -235,62 +287,111 @@ export class SyncEventBaseProtected<T> {
 
 
     private readonly postAsync = runExclusive.buildCb(
-        (data: T, postTick: number, releaseLock?) => {
+        (data: T, postChronologyMark: number, releaseLock?) => {
 
-            let isHandled = false;
+            const promises: Promise<T>[] = [];
 
-            for (let handler of [...this.handlers]) {
+            let chronologyMarkStartResolveTick: number;
 
-                let { async, matcher } = handler;
+            //NOTE: Must be before handlerTrigger call.
+            Promise.resolve().then(
+                () => chronologyMarkStartResolveTick = this.getChronologyMark()
+            );
 
-                if (!async || !matcher(data)) continue;
+            for (const handler of [...this.handlers]) {
 
-                let handlerTrigger = this.handlerTriggers.get(handler);
+                if (!handler.async) {
+                    continue;
+                }
 
-                if (!handlerTrigger) continue;
+                if (!handler.matcher(data)) {
+                    continue;
+                }
 
-                if (handlerTrigger.handlerTick > postTick) continue;
+                const handlerTrigger = this.handlerTriggers.get(handler);
 
-                isHandled = true;
+                if (!handlerTrigger) {
+                    continue;
+                }
 
-                handlerTrigger.trigger(data);
+                const shouldCallHandlerTrigger = (() => {
+
+                    const handlerMark = this.asyncHandlerChronologyMark.get(handler)!;
+
+                    if (postChronologyMark > handlerMark) {
+                        return true;
+                    }
+
+                    const exceptionRange = this.asyncHandlerChronologyExceptionRange.get(handler);
+
+                    if (exceptionRange === undefined) {
+                        return false;
+                    }
+
+                    if (
+                        exceptionRange.lowerMark < postChronologyMark && 
+                        postChronologyMark < exceptionRange.upperMark
+                    ) {
+                        return true;
+                    }
+
+                    return false;
+
+                })();
+
+                if (!shouldCallHandlerTrigger) {
+                    continue;
+                }
+
+                promises.push(handler.promise);
+
+                handlerTrigger(data);
 
             }
 
-            if (!isHandled) {
+            if (promises.length !== 0) {
 
-                releaseLock();
+                const handlersDump = [...this.handlers];
 
-            } else {
-
-                let handlersDump = [...this.handlers];
-
-                setTimeout(() => {
+                Promise.all(promises).then(() => {
 
                     for (let handler of this.handlers) {
 
-                        let { async } = handler;
 
-                        if (!async) continue;
+                        if (!handler.async) {
+                            continue;
+                        }
 
-                        if (handlersDump.indexOf(handler) >= 0) continue;
+                        if (handlersDump.indexOf(handler) >= 0) {
+                            continue;
+                        }
 
-                        this.handlerTriggers.get(handler)!.handlerTick = postTick;
+                        this.asyncHandlerChronologyExceptionRange.set(
+                            handler,
+                            {
+                                "lowerMark": postChronologyMark,
+                                "upperMark": chronologyMarkStartResolveTick
+                            }
+                        );
 
                     }
 
                     releaseLock();
 
-                }, 0);
+                });
 
+
+            } else {
+                releaseLock();
             }
+
 
         }
     );
 
     constructor();
     constructor(
-        eventEmitter: { on(eventName: string, listener: Function); },
+        eventEmitter: { on(eventName: string, listener: Function): any; },
         eventName: string,
         formatter?: (...inputs) => T);
     constructor(...inputs: any[]) {

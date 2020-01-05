@@ -17,17 +17,31 @@ export interface UserProvidedParams<T> {
     callback: ((data: T) => any) | undefined;
 }
 
-export interface ImplicitParams {
-    once: boolean;
-    prepend: boolean;
-    extract: boolean;
-    async: boolean;
+export type ImplicitParams = ImplicitParams.Sync | ImplicitParams.Async;
+
+export namespace ImplicitParams {
+
+    export type _Base = {
+        once: boolean;
+        prepend: boolean;
+        extract: boolean;
+    };
+
+    export type Sync = _Base & {
+        async: false;
+    };
+
+    export type Async = _Base & {
+        async: true;
+    };
+
+
 }
 
-export interface Handler<T> extends UserProvidedParams<T>, ImplicitParams {
+export type Handler<T>= UserProvidedParams<T> & ImplicitParams & {
     detach(): boolean;
     promise: Promise<T>;
-}
+};
 
 export namespace EvtError {
 

@@ -32,6 +32,6 @@ evt.attachOnce(str=>{
 evt.post("a");
 evt.post("b");
 
-console.assert(output="aaa");
+console.assert(output==="aab");
 
 console.log("PASS".green);

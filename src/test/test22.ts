@@ -30,6 +30,6 @@ evt.getHandlers().find(({ prepend })=> prepend )!.extract= true;
 evt.post("a");
 evt.post("b");
 
-console.assert(output="a");
+console.assert(output==="abb");
 
 console.log("PASS".green);

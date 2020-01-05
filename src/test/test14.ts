@@ -1,11 +1,14 @@
+/*
 import {
-    SyncEvent
-} from "../lib/index";
+    SyncEventBase as SyncEvent
+} from "../lib/SyncEventBase";
+*/
+
+import { SyncEvent } from "../lib";
 
 let success= false;
 
 let evt = new SyncEvent<string>();
-
 
 //evt.enableTrace("evt");
 
@@ -15,14 +18,14 @@ let expectQueue= [
     "baz"
 ];
 
-
 evt.attachOnce(async str=> {
+
 
     while( true ){
 
         if( str === "done" ) break;
 
-        console.assert(expectQueue.shift() === str);
+        console.assert(expectQueue.shift() === str, str);
     
         str = await evt.waitFor();
 

@@ -2,19 +2,23 @@ import "minimal-polyfills/dist/lib/Array.prototype.find";
 import { UserProvidedParams, ImplicitParams, Bindable, Handler } from "./defs";
 /** SyncEvent without evtAttach property and without overload */
 export declare class SyncEventBaseProtected<T> {
-    private tick;
     private defaultFormatter;
     postCount: number;
     private traceId;
     private traceFormatter;
     private log;
-    enableTrace(id: string, formatter?: (data: T) => string, log?: typeof console.log): void;
+    enableTrace(id: string, formatter?: (data: T) => string, log?: (message?: any, ...optionalParams: any[]) => void): void;
     disableTrace(): void;
     private readonly handlers;
     private readonly handlerTriggers;
+    private readonly asyncHandlerChronologyMark;
+    private readonly asyncHandlerChronologyExceptionRange;
+    private readonly getChronologyMark;
     protected addHandler(attachParams: UserProvidedParams<T>, implicitAttachParams: ImplicitParams): Handler<T>;
     private trace;
+    /** Returns post count */
     post(data: T): number;
+    /** Return isExtracted */
     private postSync;
     private readonly postAsync;
     constructor();

@@ -1,3 +1,4 @@
+//import { SyncEventBase as SyncEvent } from "../lib/SyncEventBase";
 import { SyncEvent } from "../lib";
 
 
@@ -22,6 +23,7 @@ let success= false;
     try{
 
         await evt.waitFor(200);
+
 
         console.assert(false,"satan came");
 

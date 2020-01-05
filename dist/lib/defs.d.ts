@@ -13,16 +13,24 @@ export interface UserProvidedParams<T> {
     timeout: number | undefined;
     callback: ((data: T) => any) | undefined;
 }
-export interface ImplicitParams {
-    once: boolean;
-    prepend: boolean;
-    extract: boolean;
-    async: boolean;
+export declare type ImplicitParams = ImplicitParams.Sync | ImplicitParams.Async;
+export declare namespace ImplicitParams {
+    type _Base = {
+        once: boolean;
+        prepend: boolean;
+        extract: boolean;
+    };
+    type Sync = _Base & {
+        async: false;
+    };
+    type Async = _Base & {
+        async: true;
+    };
 }
-export interface Handler<T> extends UserProvidedParams<T>, ImplicitParams {
+export declare type Handler<T> = UserProvidedParams<T> & ImplicitParams & {
     detach(): boolean;
     promise: Promise<T>;
-}
+};
 export declare namespace EvtError {
     class Timeout extends Error {
         readonly timeout: number;

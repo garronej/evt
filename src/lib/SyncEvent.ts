@@ -18,7 +18,6 @@ export class SyncEvent<T> extends SyncEventBase<T> {
 
     }
 
-
 }
 
 export namespace SyncEvent {

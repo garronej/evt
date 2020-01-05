@@ -22,15 +22,13 @@ evt.getHandlers().find(({ promise })=> promise === pr )!.extract= true;
 
 evt.attach(str=>{
 
-    output+= str;
-
-    //console.log("third", str);
+    throw new Error("never");
 
 
 });
 
 evt.post("a");
 
-console.assert(output="aaa");
+console.assert(output==="aa");
 
 console.log("PASS".green);

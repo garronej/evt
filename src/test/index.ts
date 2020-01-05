@@ -6,6 +6,11 @@ process.once("unhandledRejection", error => {
 
 });
 
+console.assert = (condition: any, msg?: string): asserts condition => {
+    if (!condition) {
+        throw new Error(msg);
+    }
+};
 
 let n = process.argv[2];
 
@@ -15,7 +20,7 @@ if (n) {
 
 } else {
     
-    let n= 29;
+    let n= 32;
 
     console.log(`Running ${n} tests`);
 
