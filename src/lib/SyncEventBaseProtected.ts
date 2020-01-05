@@ -56,21 +56,32 @@ export class SyncEventBaseProtected<T> {
         this.traceId = null;
     }
 
+
     private readonly handlers: Handler<T>[] = [];
 
     private readonly handlerTriggers: LightMap<Handler<T>, (data: T) => void> = new Map();
+
     //NOTE: An async handler ( attached with waitFor ) is only eligible to handle a post if the post
     //occurred after the handler was set. We don't want to waitFor event from the past.
-    private readonly asyncHandlerChronologyMark = new WeakMap<ImplicitParams.Async, number>();
+    //private readonly asyncHandlerChronologyMark = new WeakMap<ImplicitParams.Async, number>();
+    private readonly asyncHandlerChronologyMark: WeakMap<ImplicitParams.Async, number> =
+        typeof WeakMap !== "undefined" ?
+            new WeakMap() :
+            new Map()
+        ;
+
     //NOTE: There is an exception to the above rule, we want to allow async waitFor loop 
     //do so we have to handle the case where multiple event would be posted synchronously.
-    private readonly asyncHandlerChronologyExceptionRange = new WeakMap<
+    private readonly asyncHandlerChronologyExceptionRange: WeakMap<
         ImplicitParams.Async,
         {
             lowerMark: number;
             upperMark: number;
         }
-    >();
+    > = typeof WeakMap !== "undefined" ?
+            new WeakMap() :
+            new Map()
+        ;
 
     /*
     NOTE: Used as Date.now() would be used to compare if an event is anterior 
@@ -329,7 +340,7 @@ export class SyncEventBaseProtected<T> {
                     }
 
                     if (
-                        exceptionRange.lowerMark < postChronologyMark && 
+                        exceptionRange.lowerMark < postChronologyMark &&
                         postChronologyMark < exceptionRange.upperMark
                     ) {
                         return true;

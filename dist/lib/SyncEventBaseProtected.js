@@ -36,10 +36,15 @@ var SyncEventBaseProtected = /** @class */ (function () {
         this.handlerTriggers = new Map_1.Polyfill();
         //NOTE: An async handler ( attached with waitFor ) is only eligible to handle a post if the post
         //occurred after the handler was set. We don't want to waitFor event from the past.
-        this.asyncHandlerChronologyMark = new WeakMap();
+        //private readonly asyncHandlerChronologyMark = new WeakMap<ImplicitParams.Async, number>();
+        this.asyncHandlerChronologyMark = typeof WeakMap !== "undefined" ?
+            new WeakMap() :
+            new Map_1.Polyfill();
         //NOTE: There is an exception to the above rule, we want to allow async waitFor loop 
         //do so we have to handle the case where multiple event would be posted synchronously.
-        this.asyncHandlerChronologyExceptionRange = new WeakMap();
+        this.asyncHandlerChronologyExceptionRange = typeof WeakMap !== "undefined" ?
+            new WeakMap() :
+            new Map_1.Polyfill();
         /*
         NOTE: Used as Date.now() would be used to compare if an event is anterior
         or posterior to an other. We don't use Date.now() because two call within
