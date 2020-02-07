@@ -10,6 +10,7 @@ featuring type safety and making use promises.
 Similar to Qt signal/slot or C# events. 
 
 Target es3, will run anywhere including in the browser ( with browserify ).
+Will transpile used in projects with old version of typescript ( 2.1 and up ).
 
 #History
 
