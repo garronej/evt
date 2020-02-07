@@ -1,5 +1,5 @@
 import {
-    SyncEvent
+    Evt
 } from "../lib/index";
 
 interface Animal {
@@ -30,7 +30,7 @@ const animals: Animal[] = [
 let cats= animals.filter(({ type })=> type === "CAT");
 let spiders= animals.filter(({ type })=> type === "SPIDER");
 
-let evtAnimal = new SyncEvent<Animal>();
+let evtAnimal = new Evt<Animal>();
 
 
 

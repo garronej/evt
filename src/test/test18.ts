@@ -1,10 +1,10 @@
 import {
-    VoidSyncEvent
+    VoidEvt
 } from "../lib/index";
 
 let count= 0;
 
-let evt= new VoidSyncEvent();
+let evt= new VoidEvt();
 
 //evt.enableTrace("evt");
 

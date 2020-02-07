@@ -1,4 +1,4 @@
-import { SyncEvent } from "../lib";
+import { Evt } from "../lib";
 import { EventEmitter } from "events";
 
 let success = 0;
@@ -7,7 +7,7 @@ let success = 0;
 
     let e = new EventEmitter();
 
-    let evt = new SyncEvent<string>(e, "click");
+    let evt = new Evt<string>(e, "click");
 
 
     evt.waitFor(200).catch(() => console.assert(false)).then(
@@ -29,7 +29,7 @@ let success = 0;
 
     let e = new EventEmitter();
 
-    let evt = new SyncEvent<string>(e, "click", (a, b)=> a + b);
+    let evt = new Evt<string>(e, "click", (a, b)=> a + b);
 
     evt.waitFor(200).then(
         str => {

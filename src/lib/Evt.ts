@@ -1,9 +1,9 @@
-import { SyncEventBase } from "./SyncEventBase";
+import { EvtBase } from "./EvtBase";
 import { Handler, UserProvidedParams, ImplicitParams } from "./defs";
 
-export class SyncEvent<T> extends SyncEventBase<T> {
+export class Evt<T> extends EvtBase<T> {
 
-    public readonly evtAttach = new SyncEventBase<Handler<T>>()
+    public readonly evtAttach = new EvtBase<Handler<T>>()
 
     protected addHandler(
         attachParams: UserProvidedParams<T>,
@@ -35,13 +35,13 @@ export class SyncEvent<T> extends SyncEventBase<T> {
 
 }
 
-export namespace SyncEvent {
+export namespace Evt {
 
-    export type Type<T> = T extends SyncEvent<infer U> ? U : never;
+    export type Unpack<T> = T extends Evt<infer U> ? U : never;
 
 }
 
-export class VoidSyncEvent extends SyncEvent<void> {
+export class VoidEvt extends Evt<void> {
     public post(): number {
         return super.post(undefined);
     }

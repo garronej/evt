@@ -1,14 +1,12 @@
-import {
-    SyncEvent
-} from "../lib/index";
+import { Evt } from "../lib/index";
 
 type T= string;
 
-let evt = new SyncEvent<T>();
+let evt = new Evt<T>();
 
 //evt.enableTrace("evt");
 
-let evtProxy= new SyncEvent<T>();
+let evtProxy= new Evt<T>();
 
 //evtProxy.enableTrace("evtProxy");
 

@@ -49,22 +49,22 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-var SyncEventBase_1 = require("./SyncEventBase");
-var SyncEvent = /** @class */ (function (_super) {
-    __extends(SyncEvent, _super);
-    function SyncEvent() {
+var EvtBase_1 = require("./EvtBase");
+var Evt = /** @class */ (function (_super) {
+    __extends(Evt, _super);
+    function Evt() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.evtAttach = new SyncEventBase_1.SyncEventBase();
+        _this.evtAttach = new EvtBase_1.EvtBase();
         return _this;
     }
-    SyncEvent.prototype.addHandler = function (attachParams, implicitAttachParams) {
+    Evt.prototype.addHandler = function (attachParams, implicitAttachParams) {
         var handler = _super.prototype.addHandler.call(this, attachParams, implicitAttachParams);
         this.evtAttach.post(handler);
         return handler;
     };
     /** Wait until an handler that match the event data have been attached
      * return a promise that resolve with post count */
-    SyncEvent.prototype.postOnceMatched = function (eventData) {
+    Evt.prototype.postOnceMatched = function (eventData) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -79,20 +79,20 @@ var SyncEvent = /** @class */ (function (_super) {
             });
         });
     };
-    return SyncEvent;
-}(SyncEventBase_1.SyncEventBase));
-exports.SyncEvent = SyncEvent;
-var VoidSyncEvent = /** @class */ (function (_super) {
-    __extends(VoidSyncEvent, _super);
-    function VoidSyncEvent() {
+    return Evt;
+}(EvtBase_1.EvtBase));
+exports.Evt = Evt;
+var VoidEvt = /** @class */ (function (_super) {
+    __extends(VoidEvt, _super);
+    function VoidEvt() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    VoidSyncEvent.prototype.post = function () {
+    VoidEvt.prototype.post = function () {
         return _super.prototype.post.call(this, undefined);
     };
-    VoidSyncEvent.prototype.postOnceMatched = function () {
+    VoidEvt.prototype.postOnceMatched = function () {
         return _super.prototype.postOnceMatched.call(this, undefined);
     };
-    return VoidSyncEvent;
-}(SyncEvent));
-exports.VoidSyncEvent = VoidSyncEvent;
+    return VoidEvt;
+}(Evt));
+exports.VoidEvt = VoidEvt;

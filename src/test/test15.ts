@@ -1,22 +1,22 @@
 import {
-    SyncEvent
+    Evt
 } from "../lib/index";
 
-let evt = new SyncEvent<string | number>();
+let evt = new Evt<string | number>();
 
 //evt.enableTrace("evt");
 
-let evtNumber = new SyncEvent<number>();
+let evtNumber = new Evt<number>();
 evt.attach((data): data is number=> typeof data === "number", evtNumber);
 
 //evtNumber.enableTrace("evtNumber");
 
-let evtString= new SyncEvent<string>();
+let evtString= new Evt<string>();
 evt.attach((data: string | number): data is string=> typeof data === "string", evtString as any);
 
 //evtString.enableTrace("evtString");
 
-let evtSatan= new SyncEvent<string | number>();
+let evtSatan= new Evt<string | number>();
 evt.attach(data => data === 666, evtSatan);
 
 //evtSatan.enableTrace("evtSatan");

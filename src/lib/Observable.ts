@@ -1,15 +1,14 @@
 
-
-import { SyncEvent } from "./SyncEvent";
+import { Evt } from "./Evt";
 
 export interface Observable<T> {
     readonly value: T;
-    readonly evtChange: Omit<SyncEvent<T>, "post">
+    readonly evtChange: Omit<Evt<T>, "post">
 }
 
 export class ObservableImpl<T> implements Observable<T> {
 
-    public readonly evtChange = new SyncEvent<T>();
+    public readonly evtChange = new Evt<T>();
 
     //NOTE: Not really readonly but we want to prevent user from setting the value
     //manually and we cant user accessor because we target es3.
@@ -17,7 +16,8 @@ export class ObservableImpl<T> implements Observable<T> {
 
     constructor(
         initialValue: T,
-        private areSame: (oldValue: T, newValue: T) => boolean = (oldValue, newValue) => oldValue === newValue
+        private areSame: (oldValue: T, newValue: T) => boolean = 
+            (oldValue, newValue) => oldValue === newValue
     ) {
         this.overwriteReadonlyValue(initialValue);
     }
@@ -28,7 +28,7 @@ export class ObservableImpl<T> implements Observable<T> {
         const propertyDescriptor: PropertyDescriptor = {
             "configurable": true,
             "enumerable": true,
-            "writable": false,
+            "writable": false
         };
 
         return (newValue: T) => {
@@ -48,7 +48,6 @@ export class ObservableImpl<T> implements Observable<T> {
         }
 
         this.overwriteReadonlyValue(newValue);
-
 
         this.evtChange.post(this.value);
 

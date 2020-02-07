@@ -22,14 +22,14 @@ AsyncEvent and QueuedEvent have been scraped out focusing only on the SyncEvent 
 */
 
 
-import { SyncEvent } from "./lib";
+import { Evt } from "./lib";
 
 {
 
-    const evtText = new SyncEvent<string>();
+    const evtText = new Evt<string>();
     //Unlike in node's events we use a different instance of SyncEvent
     //for every event type
-    const evtTime = new SyncEvent<number>();
+    const evtTime = new Evt<number>();
 
     evtText.attach(text => console.log(text));
     evtTime.attachOnce(time => console.log(time));
@@ -71,7 +71,7 @@ import { EventEmitter } from "events";
 
 {
 
-    const evtText = new SyncEvent<string>();
+    const evtText = new Evt<string>();
 
     (async ()=>{
 
@@ -94,7 +94,7 @@ import {  EvtError } from "./lib";
 
 {
 
-    const evtText = new SyncEvent<string>();
+    const evtText = new Evt<string>();
 
 
     (async ()=>{
@@ -142,7 +142,7 @@ only eventData that satisfies certain properties:
 
 {
 
-    const evtText= new SyncEvent<string>();
+    const evtText= new Evt<string>();
 
     evtText.attach(
         text=> text.startsWith("H"), //A matcher function take an argument of type T ( here string ) and returns a boolean.
@@ -182,7 +182,7 @@ const matchCircle = (shape: Shape): shape is Circle =>
 {
 
 
-    const evtShape = new SyncEvent<Shape>();
+    const evtShape = new Evt<Shape>();
 
     evtShape.attach(
         matchCircle,
@@ -216,7 +216,7 @@ const matchCircle = (shape: Shape): shape is Circle =>
 
 {
 
-    const evtShape = new SyncEvent<Shape>();
+    const evtShape = new Evt<Shape>();
 
     evtShape.attachOnce(
         (shape): shape is Square => (
@@ -270,12 +270,12 @@ A TypeScript annoyance: when you create an event with a void argument, TypeScrip
 To overcome this, we added VoidSyncEvent class.
 */
 
-import { VoidSyncEvent } from "./lib";
+import { VoidEvt } from "./lib";
 
 
 {
 
-    const evtSocketConnect = new VoidSyncEvent();
+    const evtSocketConnect = new VoidEvt();
 
     evtSocketConnect.attach(() => console.log("SOCKET CONNECTED"));
 
@@ -294,7 +294,7 @@ import { VoidSyncEvent } from "./lib";
 
 {
 
-    const evtConnect = new VoidSyncEvent();
+    const evtConnect = new VoidEvt();
 
     evtConnect.attach(() => console.log("B"));
     evtConnect.attach(() => console.log("C"));
@@ -313,7 +313,7 @@ import { VoidSyncEvent } from "./lib";
 
 {
 
-    const evtCircle = new SyncEvent<Circle>();
+    const evtCircle = new Evt<Circle>();
 
 
     evtCircle.attach(
@@ -333,7 +333,7 @@ import { VoidSyncEvent } from "./lib";
 
 {
 
-    const evtText = new SyncEvent<string>();
+    const evtText = new Evt<string>();
 
     //detach with no argument will detach all handlers (attach, attachOnce, waitFor... )
     evtText.detach();
@@ -346,7 +346,7 @@ import { VoidSyncEvent } from "./lib";
 //To detach a particular handler for which we have the reference of the callback function:
 {
 
-    const evtText = new SyncEvent<string>();
+    const evtText = new Evt<string>();
 
     const callback = (_text: string) => { };
 
@@ -360,7 +360,7 @@ import { VoidSyncEvent } from "./lib";
 //as more often that not we don't keep the reference of the callback function.
 {
 
-    const evtText = new SyncEvent<string>();
+    const evtText = new Evt<string>();
 
     //boundTo can be anything but a number, a callable function (i.e. not a constructor), undefined  or null.
     const boundTo = [];
@@ -382,7 +382,7 @@ import { VoidSyncEvent } from "./lib";
 //A more advanced example here detaching all handler that have a given matcher:
 {
 
-    const evtShape = new SyncEvent<Shape>();
+    const evtShape = new Evt<Shape>();
 
     evtShape.attach(
         matchCircle,
@@ -408,7 +408,7 @@ import { VoidSyncEvent } from "./lib";
 //Misc
 {
 
-    const evtText = new SyncEvent<string>();
+    const evtText = new Evt<string>();
 
     //Number of type post() have been called.
     const n = evtText.postCount;
@@ -444,7 +444,7 @@ so that you can combine matcher, timeout or boundTo.
 {
 
 
-    const evtText = new SyncEvent<string>();
+    const evtText = new Evt<string>();
 
     evtText.postOnceMatched("Foo Bar");
 
@@ -456,13 +456,14 @@ so that you can combine matcher, timeout or boundTo.
 }
 
 //ObservableImpl is a class that allow to track mutation on
-//a perticular data type.
+//a particular data type.
 
 import { Observable, ObservableImpl } from "./lib";
 
 {
 
     const obsText= new ObservableImpl<string>("foo");
+
 
     console.assert(obsText.value === "foo");
 
@@ -492,8 +493,8 @@ import { Observable, ObservableImpl } from "./lib";
     //modified by the user.
     const exposedObsText: Observable<string> = obsText;
 
-
-
+    exposedObsText.value;
+    exposedObsText.evtChange;
 
 }
 
@@ -537,7 +538,7 @@ import { Observable, ObservableImpl } from "./lib";
 {
 
 
-    const evtText = new SyncEvent<string>();
+    const evtText = new Evt<string>();
 
     (async ()=>{
 
@@ -584,81 +585,6 @@ To track changes of the data we use a library that we have build in house called
 node's EventEmitter was not designed to support types so we build our onw alternative.
 
 */
-
-
-
-
-
-
-
-
-
-//Filtering event: It is possible to attach an handler with 
-//an matcher function.
-
-{
-
-    const evtPerson = new SyncEvent<Person>();
-
-
-    evtPerson.attach(
-        person => person.age > 30,
-        person => {
-            //This handler will be invoked only when person.age > 30 are posted.
-        }
-    );
-
-    evtPerson.attach(
-        Person.Student.match,
-        person => {
-            //When the matcher function passed to attach is a Type Guard
-            //the type of the event data will be inferred.
-            //Here person is of type Person.Student.
-            person.grades;
-        }
-    );
-
-    //matcher can (and are most useful) used with attachOnce of waitFor
-
-    evtPerson.attachOnce(
-        ({ name }) => name === "Bob",
-        bob => {
-            //This handler will be called only one time,
-            //when a person with name "Bob" is posted.
-        }
-    );
-
-    (async () => {
-
-
-        //Wait for the next teacher to be posted.
-        const teacher: Person.Teacher = await evtPerson.waitFor(Person.Teacher.match);
-
-        assert(typeof teacher.subject === "string");
-
-
-        teacher.subject;
-
-        //wait for the the next student to have a perfect score in math
-        //and get he's name.
-        const { name } = await evtPerson.waitFor(
-            person => (
-                Person.Student.match(person) &&
-                person.grades.maths === 20
-            )
-        );
-
-        assert(typeof name === "string");
-
-    })();
-
-}
-
-
-
-//Evt that does not post any data:
-
-
 
 
 

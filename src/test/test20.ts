@@ -1,8 +1,8 @@
 import {
-    SyncEvent
+    Evt
 } from "../lib/index";
 
-let evt = new SyncEvent<string>();
+let evt = new Evt<string>();
 
 let output= "";
 

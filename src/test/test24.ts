@@ -1,8 +1,8 @@
-//import { SyncEventBase as SyncEvent } from "../lib/SyncEventBase";
-import { SyncEvent } from "../lib";
+//import { EvtBase as Evt } from "../lib/EvtBase";
+import { Evt } from "../lib";
 
 
-let evt= new SyncEvent<string>();
+let evt= new Evt<string>();
 
 let success= false;
 

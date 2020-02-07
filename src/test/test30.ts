@@ -1,7 +1,7 @@
 
-import { SyncEventBase as SyncEvent } from "../lib/SyncEventBase";
+import { EvtBase as Evt } from "../lib/EvtBase";
 
-let evt = new SyncEvent<string>();
+let evt = new Evt<string>();
 
 (async () => {
 

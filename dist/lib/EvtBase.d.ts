@@ -1,7 +1,7 @@
-import { SyncEventBaseProtected } from "./SyncEventBaseProtected";
+import { EvtBaseProtected } from "./EvtBaseProtected";
 import { Postable, Bindable } from "./defs";
-/** SyncEvent without evtAttach property */
-export declare class SyncEventBase<T> extends SyncEventBaseProtected<T> {
+/** Evt without evtAttach property */
+export declare class EvtBase<T> extends EvtBaseProtected<T> {
     private defaultParams;
     private getDefaultParams;
     private readParams;

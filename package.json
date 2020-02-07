@@ -1,10 +1,10 @@
 {
-  "name": "ts-events-extended",
-  "version": "4.3.0",
-  "description": "An EventEmitter implementation for TypeScript",
+  "name": "ts-evt",
+  "version": "4.3.1",
+  "description": "An intended replacement for node's EventEmitter that feature types safety",
   "repository": {
     "type": "git",
-    "url": "git://github.com/garronej/ts-events-extended.git"
+    "url": "git://github.com/garronej/ts-evt"
   },
   "main": "./dist/lib/index.js",
   "types": "./dist/lib/index.d.ts",
@@ -20,9 +20,8 @@
     "setprototypeof": "^1.1.1"
   },
   "devDependencies": {
-    "@types/colors": "^1.2.1",
     "@types/node": "^8.9.1",
     "colors": "^1.3.0",
-    "typescript": "^3.7.4"
+    "typescript": "^3.7.5"
   }
 }

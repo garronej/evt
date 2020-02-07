@@ -1,10 +1,10 @@
 import {
-    VoidSyncEvent, EvtError
+    VoidEvt, EvtError
 } from "../lib/index";
 
 let pass= false;
 
-let evt = new VoidSyncEvent();
+let evt = new VoidEvt();
 
 
 

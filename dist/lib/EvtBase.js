@@ -24,7 +24,7 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 exports.__esModule = true;
-var SyncEventBaseProtected_1 = require("./SyncEventBaseProtected");
+var EvtBaseProtected_1 = require("./EvtBaseProtected");
 function matchPostable(o) {
     return o instanceof Object && typeof o.post === "function";
 }
@@ -44,10 +44,10 @@ function isCallable(o) {
         return false;
     return true;
 }
-/** SyncEvent without evtAttach property */
-var SyncEventBase = /** @class */ (function (_super) {
-    __extends(SyncEventBase, _super);
-    function SyncEventBase() {
+/** Evt without evtAttach property */
+var EvtBase = /** @class */ (function (_super) {
+    __extends(EvtBase, _super);
+    function EvtBase() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.defaultParams = {
             "matcher": function matchAll() { return true; },
@@ -57,14 +57,15 @@ var SyncEventBase = /** @class */ (function (_super) {
         };
         return _this;
     }
-    SyncEventBase.prototype.getDefaultParams = function () {
+    EvtBase.prototype.getDefaultParams = function () {
         return __assign({}, this.defaultParams);
     };
-    SyncEventBase.prototype.readParams = function (inputs) {
+    EvtBase.prototype.readParams = function (inputs) {
         var out = this.getDefaultParams();
         var n = inputs.length;
-        if (!n)
+        if (!n) {
             return out;
+        }
         //[ matcher, boundTo, timeout, callback ]
         //[ matcher, boundTo, callback ]
         //[ matcher, timeout, callback ]
@@ -152,7 +153,7 @@ var SyncEventBase = /** @class */ (function (_super) {
         }
         return out;
     };
-    SyncEventBase.prototype.waitFor = function () {
+    EvtBase.prototype.waitFor = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
@@ -175,48 +176,48 @@ var SyncEventBase = /** @class */ (function (_super) {
         }
         return _super.prototype.__waitFor.call(this, params);
     };
-    SyncEventBase.prototype.attach = function () {
+    EvtBase.prototype.attach = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
         return this.__attach(this.readParams(inputs));
     };
-    SyncEventBase.prototype.attachOnce = function () {
+    EvtBase.prototype.attachOnce = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
         return this.__attachOnce(this.readParams(inputs));
     };
-    SyncEventBase.prototype.attachExtract = function () {
+    EvtBase.prototype.attachExtract = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
         return this.__attachExtract(this.readParams(inputs));
     };
-    SyncEventBase.prototype.attachPrepend = function () {
+    EvtBase.prototype.attachPrepend = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
         return this.__attachPrepend(this.readParams(inputs));
     };
-    SyncEventBase.prototype.attachOncePrepend = function () {
+    EvtBase.prototype.attachOncePrepend = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
         return this.__attachOncePrepend(this.readParams(inputs));
     };
-    SyncEventBase.prototype.attachOnceExtract = function () {
+    EvtBase.prototype.attachOnceExtract = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
         return this.__attachOnceExtract(this.readParams(inputs));
     };
-    return SyncEventBase;
-}(SyncEventBaseProtected_1.SyncEventBaseProtected));
-exports.SyncEventBase = SyncEventBase;
+    return EvtBase;
+}(EvtBaseProtected_1.EvtBaseProtected));
+exports.EvtBase = EvtBase;

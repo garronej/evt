@@ -22,9 +22,9 @@ var Map_1 = require("minimal-polyfills/dist/lib/Map");
 require("minimal-polyfills/dist/lib/Array.prototype.find");
 var runExclusive = require("run-exclusive");
 var defs_1 = require("./defs");
-/** SyncEvent without evtAttach property and without overload */
-var SyncEventBaseProtected = /** @class */ (function () {
-    function SyncEventBaseProtected() {
+/** Evt without evtAttach property and without overload */
+var EvtBaseProtected = /** @class */ (function () {
+    function EvtBaseProtected() {
         var _this = this;
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
@@ -130,14 +130,14 @@ var SyncEventBaseProtected = /** @class */ (function () {
             return _this.post(formatter.apply(null, inputs));
         });
     }
-    SyncEventBaseProtected.prototype.defaultFormatter = function () {
+    EvtBaseProtected.prototype.defaultFormatter = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
         return inputs[0];
     };
-    SyncEventBaseProtected.prototype.enableTrace = function (id, formatter, log //NOTE: we don't want to expose types from node
+    EvtBaseProtected.prototype.enableTrace = function (id, formatter, log //NOTE: we don't want to expose types from node
     ) {
         this.traceId = id;
         if (!!formatter) {
@@ -166,10 +166,10 @@ var SyncEventBaseProtected = /** @class */ (function () {
             };
         }
     };
-    SyncEventBaseProtected.prototype.disableTrace = function () {
+    EvtBaseProtected.prototype.disableTrace = function () {
         this.traceId = null;
     };
-    SyncEventBaseProtected.prototype.addHandler = function (attachParams, implicitAttachParams) {
+    EvtBaseProtected.prototype.addHandler = function (attachParams, implicitAttachParams) {
         var _this = this;
         var handler = __assign(__assign(__assign({}, attachParams), implicitAttachParams), { "detach": null, "promise": null });
         if (handler.async) {
@@ -224,7 +224,7 @@ var SyncEventBaseProtected = /** @class */ (function () {
         }
         return handler;
     };
-    SyncEventBaseProtected.prototype.trace = function (data) {
+    EvtBaseProtected.prototype.trace = function (data) {
         if (this.traceId === null) {
             return;
         }
@@ -248,7 +248,7 @@ var SyncEventBaseProtected = /** @class */ (function () {
         this.log(message + this.traceFormatter(data));
     };
     /** Returns post count */
-    SyncEventBaseProtected.prototype.post = function (data) {
+    EvtBaseProtected.prototype.post = function (data) {
         this.trace(data);
         this.postCount++;
         //NOTE: Must be before postSync.
@@ -260,7 +260,7 @@ var SyncEventBaseProtected = /** @class */ (function () {
         return this.postCount;
     };
     /** Return isExtracted */
-    SyncEventBaseProtected.prototype.postSync = function (data) {
+    EvtBaseProtected.prototype.postSync = function (data) {
         for (var _i = 0, _a = __spreadArrays(this.handlers); _i < _a.length; _i++) {
             var handler = _a[_i];
             var async = handler.async, matcher = handler.matcher, extract = handler.extract;
@@ -282,7 +282,7 @@ var SyncEventBaseProtected = /** @class */ (function () {
         }
         return false;
     };
-    SyncEventBaseProtected.prototype.__waitFor = function (attachParams) {
+    EvtBaseProtected.prototype.__waitFor = function (attachParams) {
         return this.addHandler(attachParams, {
             "async": true,
             "extract": false,
@@ -290,7 +290,7 @@ var SyncEventBaseProtected = /** @class */ (function () {
             "prepend": false
         }).promise;
     };
-    SyncEventBaseProtected.prototype.__attach = function (attachParams) {
+    EvtBaseProtected.prototype.__attach = function (attachParams) {
         return this.addHandler(attachParams, {
             "async": false,
             "extract": false,
@@ -298,7 +298,7 @@ var SyncEventBaseProtected = /** @class */ (function () {
             "prepend": false
         }).promise;
     };
-    SyncEventBaseProtected.prototype.__attachExtract = function (attachParams) {
+    EvtBaseProtected.prototype.__attachExtract = function (attachParams) {
         return this.addHandler(attachParams, {
             "async": false,
             "extract": true,
@@ -306,7 +306,7 @@ var SyncEventBaseProtected = /** @class */ (function () {
             "prepend": true
         }).promise;
     };
-    SyncEventBaseProtected.prototype.__attachPrepend = function (attachParams) {
+    EvtBaseProtected.prototype.__attachPrepend = function (attachParams) {
         return this.addHandler(attachParams, {
             "async": false,
             "extract": false,
@@ -314,7 +314,7 @@ var SyncEventBaseProtected = /** @class */ (function () {
             "prepend": true
         }).promise;
     };
-    SyncEventBaseProtected.prototype.__attachOnce = function (attachParams) {
+    EvtBaseProtected.prototype.__attachOnce = function (attachParams) {
         return this.addHandler(attachParams, {
             "async": false,
             "extract": false,
@@ -322,7 +322,7 @@ var SyncEventBaseProtected = /** @class */ (function () {
             "prepend": false
         }).promise;
     };
-    SyncEventBaseProtected.prototype.__attachOncePrepend = function (attachParams) {
+    EvtBaseProtected.prototype.__attachOncePrepend = function (attachParams) {
         return this.addHandler(attachParams, {
             "async": false,
             "extract": false,
@@ -330,7 +330,7 @@ var SyncEventBaseProtected = /** @class */ (function () {
             "prepend": true
         }).promise;
     };
-    SyncEventBaseProtected.prototype.__attachOnceExtract = function (attachParams) {
+    EvtBaseProtected.prototype.__attachOnceExtract = function (attachParams) {
         return this.addHandler(attachParams, {
             "async": false,
             "extract": true,
@@ -338,9 +338,9 @@ var SyncEventBaseProtected = /** @class */ (function () {
             "prepend": true
         }).promise;
     };
-    SyncEventBaseProtected.prototype.getHandlers = function () { return __spreadArrays(this.handlers); };
+    EvtBaseProtected.prototype.getHandlers = function () { return __spreadArrays(this.handlers); };
     /** Detach every handler bound to a given object or all handlers, return the detached handlers */
-    SyncEventBaseProtected.prototype.detach = function (boundTo) {
+    EvtBaseProtected.prototype.detach = function (boundTo) {
         var detachedHandlers = [];
         for (var _i = 0, _a = __spreadArrays(this.handlers); _i < _a.length; _i++) {
             var handler = _a[_i];
@@ -351,6 +351,6 @@ var SyncEventBaseProtected = /** @class */ (function () {
         }
         return detachedHandlers;
     };
-    return SyncEventBaseProtected;
+    return EvtBaseProtected;
 }());
-exports.SyncEventBaseProtected = SyncEventBaseProtected;
+exports.EvtBaseProtected = EvtBaseProtected;

@@ -1,6 +1,4 @@
-import {
-    SyncEvent
-} from "../lib/index";
+import { Evt } from "../lib/index";
 
 export interface Person {
     name: string;
@@ -36,7 +34,7 @@ export class TypedPersonIntro {
 let tpi= new TypedPersonIntro();
 
 
-let evt = new SyncEvent<Person>();
+let evt = new Evt<Person>();
 
 evt.attach(isTyped, tpi, tpi.introduce);
 

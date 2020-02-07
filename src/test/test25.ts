@@ -1,4 +1,4 @@
-import { SyncEvent } from "../lib";
+import { Evt } from "../lib";
 
 
 let matcher = (object: Object): object is Array<any> => object instanceof Array;
@@ -46,7 +46,7 @@ function mustReject(p: Promise<Object>){
 
 (()=>{
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -66,7 +66,7 @@ function mustReject(p: Promise<Object>){
 
 (()=>{
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -86,7 +86,7 @@ function mustReject(p: Promise<Object>){
 
 (()=>{
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -107,7 +107,7 @@ function mustReject(p: Promise<Object>){
 (()=>{
 
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -128,7 +128,7 @@ function mustReject(p: Promise<Object>){
 (()=>{
 
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -149,7 +149,7 @@ function mustReject(p: Promise<Object>){
 (()=>{
 
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -170,7 +170,7 @@ function mustReject(p: Promise<Object>){
 (()=>{
 
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -190,7 +190,7 @@ function mustReject(p: Promise<Object>){
 
 (()=>{
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -204,7 +204,7 @@ function mustReject(p: Promise<Object>){
 
 (()=>{
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -218,7 +218,7 @@ function mustReject(p: Promise<Object>){
 
 (()=>{
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -239,7 +239,7 @@ function mustReject(p: Promise<Object>){
 
 (()=>{
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -260,7 +260,7 @@ function mustReject(p: Promise<Object>){
 
 (()=>{
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -281,7 +281,7 @@ function mustReject(p: Promise<Object>){
 
 (()=>{
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -303,7 +303,7 @@ function mustReject(p: Promise<Object>){
 (()=>{
 
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -325,7 +325,7 @@ function mustReject(p: Promise<Object>){
 (()=>{
 
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -347,7 +347,7 @@ function mustReject(p: Promise<Object>){
 (()=>{
 
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -369,7 +369,7 @@ function mustReject(p: Promise<Object>){
 (()=>{
 
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -390,7 +390,7 @@ function mustReject(p: Promise<Object>){
 
 (()=>{
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -405,7 +405,7 @@ function mustReject(p: Promise<Object>){
 
 (()=>{
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -420,7 +420,7 @@ function mustReject(p: Promise<Object>){
 
 (()=>{
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -437,7 +437,7 @@ function mustReject(p: Promise<Object>){
 
 (()=>{
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -457,7 +457,7 @@ function mustReject(p: Promise<Object>){
 
 (()=>{
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -477,7 +477,7 @@ function mustReject(p: Promise<Object>){
 
 (()=>{
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -498,7 +498,7 @@ function mustReject(p: Promise<Object>){
 (()=>{
 
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -519,7 +519,7 @@ function mustReject(p: Promise<Object>){
 (()=>{
 
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -540,7 +540,7 @@ function mustReject(p: Promise<Object>){
 (()=>{
 
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -561,7 +561,7 @@ function mustReject(p: Promise<Object>){
 (()=>{
 
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -581,7 +581,7 @@ function mustReject(p: Promise<Object>){
 
 (()=>{
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -595,7 +595,7 @@ function mustReject(p: Promise<Object>){
 
 (()=>{
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -609,7 +609,7 @@ function mustReject(p: Promise<Object>){
 
 (()=>{
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -627,7 +627,7 @@ function mustReject(p: Promise<Object>){
 
 (()=>{
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -653,7 +653,7 @@ function mustReject(p: Promise<Object>){
 
 (()=>{
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -679,7 +679,7 @@ function mustReject(p: Promise<Object>){
 
 (()=>{
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -706,7 +706,7 @@ function mustReject(p: Promise<Object>){
 (()=>{
 
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -733,7 +733,7 @@ function mustReject(p: Promise<Object>){
 (()=>{
 
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -760,7 +760,7 @@ function mustReject(p: Promise<Object>){
 (()=>{
 
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -787,7 +787,7 @@ function mustReject(p: Promise<Object>){
 (()=>{
 
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -813,7 +813,7 @@ function mustReject(p: Promise<Object>){
 
 (()=>{
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -827,7 +827,7 @@ function mustReject(p: Promise<Object>){
 
 (()=>{
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 
@@ -841,7 +841,7 @@ function mustReject(p: Promise<Object>){
 
 (()=>{
 
-    let evt = new SyncEvent<Object>();
+    let evt = new Evt<Object>();
 
     //evt.enableTrace("evt");
 

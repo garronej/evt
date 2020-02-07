@@ -1,8 +1,6 @@
-import {
-    SyncEvent
-} from "../lib/index";
+import { Evt } from "../lib/index";
 
-let evt = new SyncEvent<string>();
+let evt = new Evt<string>();
 
 
 setTimeout(() => {

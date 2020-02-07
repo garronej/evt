@@ -1,10 +1,10 @@
 import {
-    VoidSyncEvent
+    VoidEvt
 } from "../lib/index";
 
-let evt = new VoidSyncEvent();
+let evt = new VoidEvt();
 
-let evtProxy= new VoidSyncEvent();
+let evtProxy= new VoidEvt();
 
 evt.attach(()=>{
 

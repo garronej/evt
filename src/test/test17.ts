@@ -1,4 +1,4 @@
-import { SyncEvent } from "../lib/index";
+import { Evt } from "../lib/index";
 
 interface Animal {
     type: "CAT" | "SPIDER";
@@ -28,7 +28,7 @@ const animals: Animal[] = [
 let cats = animals.filter(({ type }) => type === "CAT");
 let spiders = animals.filter(({ type }) => type === "SPIDER");
 
-let evtAnimal = new SyncEvent<Animal>();
+let evtAnimal = new Evt<Animal>();
 
 evtAnimal.attach(
     animal => console.assert(spiders.shift() === animal)

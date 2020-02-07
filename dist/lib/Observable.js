@@ -1,18 +1,30 @@
 "use strict";
 exports.__esModule = true;
-var SyncEvent_1 = require("./SyncEvent");
+var Evt_1 = require("./Evt");
 var ObservableImpl = /** @class */ (function () {
-    function ObservableImpl(value, areSame) {
+    function ObservableImpl(initialValue, areSame) {
+        var _this = this;
         if (areSame === void 0) { areSame = function (oldValue, newValue) { return oldValue === newValue; }; }
-        this.value = value;
         this.areSame = areSame;
-        this.evtChange = new SyncEvent_1.SyncEvent();
+        this.evtChange = new Evt_1.Evt();
+        this.overwriteReadonlyValue = (function () {
+            var propertyDescriptor = {
+                "configurable": true,
+                "enumerable": true,
+                "writable": false
+            };
+            return function (newValue) {
+                propertyDescriptor.value = newValue;
+                Object.defineProperty(_this, "value", propertyDescriptor);
+            };
+        })();
+        this.overwriteReadonlyValue(initialValue);
     }
     ObservableImpl.prototype.onPotentialChange = function (newValue) {
         if (this.areSame(this.value, newValue)) {
             return;
         }
-        this.value = newValue;
+        this.overwriteReadonlyValue(newValue);
         this.evtChange.post(this.value);
     };
     return ObservableImpl;

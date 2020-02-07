@@ -1,8 +1,8 @@
 import {
-    SyncEvent
+    Evt
 } from "../lib/index";
 
-let evt = new SyncEvent<{ init: boolean}>();
+let evt = new Evt<{ init: boolean}>();
 
 evt.evtAttach.attachOnce(handler=> console.assert( !handler.once && handler.boundTo ==="foo"));
 

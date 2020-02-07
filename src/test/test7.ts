@@ -1,8 +1,6 @@
-import {
-    SyncEvent
-} from "../lib/index";
+import { Evt } from "../lib/index";
 
-let evt = new SyncEvent<number>();
+let evt = new Evt<number>();
 
 
 process.nextTick(() => evt.post(666));

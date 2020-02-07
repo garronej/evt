@@ -12,8 +12,8 @@ import {
     EvtError
 } from "./defs";
 
-/** SyncEvent without evtAttach property and without overload */
-export class SyncEventBaseProtected<T> {
+/** Evt without evtAttach property and without overload */
+export class EvtBaseProtected<T> {
 
     private defaultFormatter(...inputs: any[]): T {
         return inputs[0];

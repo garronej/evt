@@ -1,4 +1,4 @@
-import { SyncEventBaseProtected } from "./SyncEventBaseProtected";
+import { EvtBaseProtected } from "./EvtBaseProtected";
 import { Postable, Bindable, UserProvidedParams } from "./defs"
 
 function matchPostable(o: any): o is Postable<any> {
@@ -28,8 +28,8 @@ function isCallable(o: any): boolean {
 }
 
 
-/** SyncEvent without evtAttach property */
-export class SyncEventBase<T> extends SyncEventBaseProtected<T> {
+/** Evt without evtAttach property */
+export class EvtBase<T> extends EvtBaseProtected<T> {
 
     private defaultParams: UserProvidedParams<T> = {
         "matcher": function matchAll() { return true; },
@@ -44,11 +44,13 @@ export class SyncEventBase<T> extends SyncEventBaseProtected<T> {
 
     private readParams(inputs: any[]): UserProvidedParams<T> {
 
-        let out = this.getDefaultParams();
+        const out = this.getDefaultParams();
 
-        let n = inputs.length;
+        const n = inputs.length;
 
-        if (!n) return out;
+        if (!n) {
+            return out;
+        }
 
         //[ matcher, boundTo, timeout, callback ]
         //[ matcher, boundTo, callback ]
@@ -77,7 +79,7 @@ export class SyncEventBase<T> extends SyncEventBaseProtected<T> {
         //[ callback ]
         if (n === 4) {
             //[ matcher, boundTo, timeout, callback ]
-            let [p1, p2, p3, p4] = inputs;
+            const [p1, p2, p3, p4] = inputs;
             out.matcher = p1;
             out.boundTo = p2;
             out.timeout = p3;
@@ -86,7 +88,7 @@ export class SyncEventBase<T> extends SyncEventBaseProtected<T> {
             //[ matcher, boundTo, callback ]
             //[ matcher, timeout, callback ]
             //[ boundTo, timeout, callback ]
-            let [p1, p2, p3] = inputs;
+            const [p1, p2, p3] = inputs;
             if (typeof p2 === "number") {
                 //[ matcher, timeout, callback ]
                 //[ boundTo, timeout, callback ]
@@ -109,7 +111,7 @@ export class SyncEventBase<T> extends SyncEventBaseProtected<T> {
             //[ matcher, callback ]
             //[ boundTo, callback ]
             //[ timeout, callback ]
-            let [p1, p2] = inputs;
+            const [p1, p2] = inputs;
             if (typeof p1 === "number") {
                 //[ timeout, callback ]
                 out.timeout = p1;
@@ -126,7 +128,7 @@ export class SyncEventBase<T> extends SyncEventBaseProtected<T> {
             }
         } else if (n === 1) {
             //[ callback ]
-            let [p] = inputs;
+            const [p] = inputs;
             out.callback = p;
         }
 
@@ -183,20 +185,20 @@ export class SyncEventBase<T> extends SyncEventBaseProtected<T> {
 
     public waitFor(...inputs: any[]) {
 
-        let params = this.getDefaultParams();
+        const params = this.getDefaultParams();
 
-        let n = inputs.length;
+        const n = inputs.length;
 
         if (n === 2) {
 
-            let [p1, p2] = inputs;
+            const [p1, p2] = inputs;
 
             params.matcher = p1;
             params.timeout = p2;
 
         } else {
 
-            let [p] = inputs;
+            const [p] = inputs;
 
             if( isCallable(p) ){
                 params.matcher= p;

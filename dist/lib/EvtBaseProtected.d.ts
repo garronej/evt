@@ -1,7 +1,7 @@
 import "minimal-polyfills/dist/lib/Array.prototype.find";
 import { UserProvidedParams, ImplicitParams, Bindable, Handler } from "./defs";
-/** SyncEvent without evtAttach property and without overload */
-export declare class SyncEventBaseProtected<T> {
+/** Evt without evtAttach property and without overload */
+export declare class EvtBaseProtected<T> {
     private defaultFormatter;
     postCount: number;
     private traceId;

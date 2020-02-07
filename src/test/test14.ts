@@ -1,14 +1,14 @@
 /*
 import {
-    SyncEventBase as SyncEvent
-} from "../lib/SyncEventBase";
+    EvtBase as Evt
+} from "../lib/EvtBase";
 */
 
-import { SyncEvent } from "../lib";
+import { Evt } from "../lib";
 
 let success= false;
 
-let evt = new SyncEvent<string>();
+let evt = new Evt<string>();
 
 //evt.enableTrace("evt");
 

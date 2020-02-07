@@ -1,8 +1,8 @@
 import {
-    VoidSyncEvent
+    VoidEvt
 } from "../lib/index";
 
-let evt = new VoidSyncEvent();
+let evt = new VoidEvt();
 
 let i = 0;
 

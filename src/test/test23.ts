@@ -1,6 +1,6 @@
-import { SyncEvent, EvtError } from "../lib";
+import { Evt, EvtError } from "../lib";
 
-let evt= new SyncEvent<string>();
+let evt= new Evt<string>();
 
 process.nextTick(()=>{
 

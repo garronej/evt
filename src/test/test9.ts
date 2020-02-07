@@ -1,5 +1,5 @@
 import {
-    SyncEvent
+    Evt
 } from "../lib/index";
 
 export interface Person {
@@ -34,7 +34,7 @@ export class TypedPersonIntro {
 
 let tpi = new TypedPersonIntro();
 
-let evt = new SyncEvent<Person>();
+let evt = new Evt<Person>();
 
 //evt.enableTrace("evt");
 

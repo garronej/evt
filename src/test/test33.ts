@@ -1,7 +1,7 @@
 
-import { SyncEvent } from "../lib";
+import { Evt } from "../lib";
 
-let evt = new SyncEvent<number | string>();
+let evt = new Evt<number | string>();
 
 evt.enableTrace("myEvent", n => n.toString(), str => console.assert(str === "(myEvent) 1 handler => 666" ));
 

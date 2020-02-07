@@ -1,6 +1,6 @@
-import { SyncEvent } from "../lib";
+import { Evt } from "../lib";
 
-let evt= new SyncEvent<string>();
+let evt= new Evt<string>();
 
 evt.attach(()=>{});
 
