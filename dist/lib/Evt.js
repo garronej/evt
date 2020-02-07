@@ -49,13 +49,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-var EvtBase_1 = require("./EvtBase");
+var EvtBase_2 = require("./EvtBase");
 var Evt = /** @class */ (function (_super) {
     __extends(Evt, _super);
     function Evt() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.evtAttach = new EvtBase_1.EvtBase();
-        return _this;
+        var _this_1 = _super !== null && _super.apply(this, arguments) || this;
+        _this_1.evtAttach = new EvtBase_2.EvtBase();
+        return _this_1;
     }
     Evt.prototype.addHandler = function (attachParams, implicitAttachParams) {
         var handler = _super.prototype.addHandler.call(this, attachParams, implicitAttachParams);
@@ -80,7 +80,7 @@ var Evt = /** @class */ (function (_super) {
         });
     };
     return Evt;
-}(EvtBase_1.EvtBase));
+}(EvtBase_2.EvtBase));
 exports.Evt = Evt;
 var VoidEvt = /** @class */ (function (_super) {
     __extends(VoidEvt, _super);

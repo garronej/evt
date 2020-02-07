@@ -1,6 +1,6 @@
 {
   "name": "ts-evt",
-  "version": "4.3.2",
+  "version": "4.3.3",
   "description": "An intended replacement for node's EventEmitter that feature types safety",
   "repository": {
     "type": "git",

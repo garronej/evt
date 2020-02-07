@@ -10,7 +10,7 @@ featuring type safety and making use promises.
 Similar to Qt signal/slot or C# events. 
 
 Target es3, will run anywhere including in the browser ( with browserify ).
-Will transpile used in projects with old version of typescript ( 2.1 and up ).
+Will transpile used in projects with old version of typescript ( 2.8 and up ).
 
 #History
 
@@ -353,7 +353,12 @@ import { VoidEvt } from "./lib";
 
     evtText.attach(callback);
 
-    evtText.getHandlers().find(handler => handler.callback === callback)?.detach();
+    //evtText.getHandlers().find(handler => handler.callback === callback)?.detach();
+    const h = evtText.getHandlers().find(handler => handler.callback === callback);
+
+    if( h ){
+        h.detach();
+    }
 
 }
 

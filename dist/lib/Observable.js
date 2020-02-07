@@ -3,7 +3,7 @@ exports.__esModule = true;
 var Evt_1 = require("./Evt");
 var ObservableImpl = /** @class */ (function () {
     function ObservableImpl(initialValue, areSame) {
-        var _this = this;
+        var _this_1 = this;
         if (areSame === void 0) { areSame = function (oldValue, newValue) { return oldValue === newValue; }; }
         this.areSame = areSame;
         this.evtChange = new Evt_1.Evt();
@@ -15,7 +15,7 @@ var ObservableImpl = /** @class */ (function () {
             };
             return function (newValue) {
                 propertyDescriptor.value = newValue;
-                Object.defineProperty(_this, "value", propertyDescriptor);
+                Object.defineProperty(_this_1, "value", propertyDescriptor);
             };
         })();
         this.overwriteReadonlyValue(initialValue);

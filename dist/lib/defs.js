@@ -20,10 +20,10 @@ var EvtError;
         __extends(Timeout, _super);
         function Timeout(timeout) {
             var _newTarget = this.constructor;
-            var _this = _super.call(this, "Evt timeout after " + timeout + "ms") || this;
-            _this.timeout = timeout;
-            setPrototypeOf(_this, _newTarget.prototype);
-            return _this;
+            var _this_1 = _super.call(this, "Evt timeout after " + timeout + "ms") || this;
+            _this_1.timeout = timeout;
+            setPrototypeOf(_this_1, _newTarget.prototype);
+            return _this_1;
         }
         return Timeout;
     }(Error));
@@ -32,9 +32,9 @@ var EvtError;
         __extends(Detached, _super);
         function Detached() {
             var _newTarget = this.constructor;
-            var _this = _super.call(this, "Evt handler detached") || this;
-            setPrototypeOf(_this, _newTarget.prototype);
-            return _this;
+            var _this_1 = _super.call(this, "Evt handler detached") || this;
+            setPrototypeOf(_this_1, _newTarget.prototype);
+            return _this_1;
         }
         return Detached;
     }(Error));

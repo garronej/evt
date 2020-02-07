@@ -300,7 +300,7 @@ export class EvtBaseProtected<T> {
     private readonly postAsync = runExclusive.buildCb(
         (data: T, postChronologyMark: number, releaseLock?) => {
 
-            const promises: Promise<T>[] = [];
+            const promises: Promise<void>[] = [];
 
             let chronologyMarkStartResolveTick: number;
 
@@ -354,7 +354,13 @@ export class EvtBaseProtected<T> {
                     continue;
                 }
 
-                promises.push(handler.promise);
+                promises.push(
+                    new Promise<void>(
+                        resolve => handler.promise
+                            .then(() => resolve())
+                            .catch(() => resolve())
+                    )
+                );
 
                 handlerTrigger(data);
 
@@ -367,7 +373,6 @@ export class EvtBaseProtected<T> {
                 Promise.all(promises).then(() => {
 
                     for (let handler of this.handlers) {
-
 
                         if (!handler.async) {
                             continue;

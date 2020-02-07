@@ -25,7 +25,7 @@ var defs_1 = require("./defs");
 /** Evt without evtAttach property and without overload */
 var EvtBaseProtected = /** @class */ (function () {
     function EvtBaseProtected() {
-        var _this = this;
+        var _this_1 = this;
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
@@ -58,7 +58,7 @@ var EvtBaseProtected = /** @class */ (function () {
             var promises = [];
             var chronologyMarkStartResolveTick;
             //NOTE: Must be before handlerTrigger call.
-            Promise.resolve().then(function () { return chronologyMarkStartResolveTick = _this.getChronologyMark(); });
+            Promise.resolve().then(function () { return chronologyMarkStartResolveTick = _this_1.getChronologyMark(); });
             var _loop_1 = function (handler) {
                 if (!handler.async) {
                     return "continue";
@@ -66,16 +66,16 @@ var EvtBaseProtected = /** @class */ (function () {
                 if (!handler.matcher(data)) {
                     return "continue";
                 }
-                var handlerTrigger = _this.handlerTriggers.get(handler);
+                var handlerTrigger = _this_1.handlerTriggers.get(handler);
                 if (!handlerTrigger) {
                     return "continue";
                 }
                 var shouldCallHandlerTrigger = (function () {
-                    var handlerMark = _this.asyncHandlerChronologyMark.get(handler);
+                    var handlerMark = _this_1.asyncHandlerChronologyMark.get(handler);
                     if (postChronologyMark > handlerMark) {
                         return true;
                     }
-                    var exceptionRange = _this.asyncHandlerChronologyExceptionRange.get(handler);
+                    var exceptionRange = _this_1.asyncHandlerChronologyExceptionRange.get(handler);
                     if (exceptionRange === undefined) {
                         return false;
                     }
@@ -88,17 +88,18 @@ var EvtBaseProtected = /** @class */ (function () {
                 if (!shouldCallHandlerTrigger) {
                     return "continue";
                 }
-                promises.push(handler.promise);
+                promises.push(new Promise(function (resolve) { return handler.promise
+                    .then(function () { return resolve(); })["catch"](function () { return resolve(); }); }));
                 handlerTrigger(data);
             };
-            for (var _i = 0, _a = __spreadArrays(_this.handlers); _i < _a.length; _i++) {
+            for (var _i = 0, _a = __spreadArrays(_this_1.handlers); _i < _a.length; _i++) {
                 var handler = _a[_i];
                 _loop_1(handler);
             }
             if (promises.length !== 0) {
-                var handlersDump_1 = __spreadArrays(_this.handlers);
+                var handlersDump_1 = __spreadArrays(_this_1.handlers);
                 Promise.all(promises).then(function () {
-                    for (var _i = 0, _a = _this.handlers; _i < _a.length; _i++) {
+                    for (var _i = 0, _a = _this_1.handlers; _i < _a.length; _i++) {
                         var handler = _a[_i];
                         if (!handler.async) {
                             continue;
@@ -106,7 +107,7 @@ var EvtBaseProtected = /** @class */ (function () {
                         if (handlersDump_1.indexOf(handler) >= 0) {
                             continue;
                         }
-                        _this.asyncHandlerChronologyExceptionRange.set(handler, {
+                        _this_1.asyncHandlerChronologyExceptionRange.set(handler, {
                             "lowerMark": postChronologyMark,
                             "upperMark": chronologyMarkStartResolveTick
                         });
@@ -127,7 +128,7 @@ var EvtBaseProtected = /** @class */ (function () {
             for (var _i = 0; _i < arguments.length; _i++) {
                 inputs[_i] = arguments[_i];
             }
-            return _this.post(formatter.apply(null, inputs));
+            return _this_1.post(formatter.apply(null, inputs));
         });
     }
     EvtBaseProtected.prototype.defaultFormatter = function () {
@@ -170,7 +171,7 @@ var EvtBaseProtected = /** @class */ (function () {
         this.traceId = null;
     };
     EvtBaseProtected.prototype.addHandler = function (attachParams, implicitAttachParams) {
-        var _this = this;
+        var _this_1 = this;
         var handler = __assign(__assign(__assign({}, attachParams), implicitAttachParams), { "detach": null, "promise": null });
         if (handler.async) {
             this.asyncHandlerChronologyMark.set(handler, this.getChronologyMark());
@@ -185,18 +186,18 @@ var EvtBaseProtected = /** @class */ (function () {
                 }, handler.timeout);
             }
             handler.detach = function () {
-                var index = _this.handlers.indexOf(handler);
+                var index = _this_1.handlers.indexOf(handler);
                 if (index < 0)
                     return false;
-                _this.handlers.splice(index, 1);
-                _this.handlerTriggers["delete"](handler);
+                _this_1.handlers.splice(index, 1);
+                _this_1.handlerTriggers["delete"](handler);
                 if (timer) {
                     clearTimeout(timer);
                     reject(new defs_1.EvtError.Detached());
                 }
                 return true;
             };
-            _this.handlerTriggers.set(handler, function (data) {
+            _this_1.handlerTriggers.set(handler, function (data) {
                 var _a;
                 var callback = handler.callback, once = handler.once;
                 if (timer) {

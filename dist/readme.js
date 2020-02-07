@@ -9,7 +9,7 @@ featuring type safety and making use promises.
 Similar to Qt signal/slot or C# events.
 
 Target es3, will run anywhere including in the browser ( with browserify ).
-Will transpile used in projects with old version of typescript ( 2.1 and up ).
+Will transpile used in projects with old version of typescript ( 2.8 and up ).
 
 #History
 
@@ -56,17 +56,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var _a;
 exports.__esModule = true;
 var lib_1 = require("./lib");
 {
-    var evtText = new lib_1.Evt();
+    var evtText_1 = new lib_1.Evt();
     //Unlike in node's events we use a different instance of SyncEvent
     //for every event type
     var evtTime = new lib_1.Evt();
-    evtText.attach(function (text) { return console.log(text); });
+    evtText_1.attach(function (text) { return console.log(text); });
     evtTime.attachOnce(function (time) { return console.log(time); });
-    evtText.post("hi!");
+    evtText_1.post("hi!");
     // at this point, "hi!" have been printed to the console.
     evtTime.post(123);
     // at this point, "123" have been printed to the console.
@@ -88,12 +87,12 @@ var events_1 = require("events");
 # Uses of Promise, waiting until the next event is posted.
 */
 {
-    var evtText_1 = new lib_1.Evt();
+    var evtText_2 = new lib_1.Evt();
     (function () { return __awaiter(void 0, void 0, void 0, function () {
         var text;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, evtText_1.waitFor()];
+                case 0: return [4 /*yield*/, evtText_2.waitFor()];
                 case 1:
                     text = _a.sent();
                     console.log(text);
@@ -101,20 +100,20 @@ var events_1 = require("events");
             }
         });
     }); })();
-    evtText_1.post("Hi");
+    evtText_2.post("Hi");
 }
 //It is possible to set how long we wait for the next event before
 //the promise returned by waitFor reject.
 var lib_2 = require("./lib");
 {
-    var evtText_2 = new lib_1.Evt();
+    var evtText_3 = new lib_1.Evt();
     (function () { return __awaiter(void 0, void 0, void 0, function () {
         var text, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, evtText_2.waitFor(500)];
+                    return [4 /*yield*/, evtText_3.waitFor(500)];
                 case 1:
                     text = _a.sent();
                     console.log(text);
@@ -134,7 +133,7 @@ var lib_2 = require("./lib");
     var timeout = ~~(Math.random() * 1000);
     //There is a fifty-fifty chance "Hi!" is printed to the console
     //else "TIMEOUT!" is printed.
-    setTimeout(function () { return evtText_2.post("Hi!"); }, timeout);
+    setTimeout(function () { return evtText_3.post("Hi!"); }, timeout);
 }
 //Filtering events.
 /*
@@ -142,17 +141,17 @@ Matcher function are used to attach a callback that will handle
 only eventData that satisfies certain properties:
 */
 {
-    var evtText = new lib_1.Evt();
-    evtText.attach(function (text) { return text.startsWith("H"); }, //A matcher function take an argument of type T ( here string ) and returns a boolean.
+    var evtText_4 = new lib_1.Evt();
+    evtText_4.attach(function (text) { return text.startsWith("H"); }, //A matcher function take an argument of type T ( here string ) and returns a boolean.
     function (//A matcher function take an argument of type T ( here string ) and returns a boolean.
     text) {
         console.assert(text.startsWith("H"));
         console.log(text);
     });
     //Nothing will be printed to the console.
-    evtText.post("Bonjour");
+    evtText_4.post("Bonjour");
     //"Hi!" will be printed to the console.
-    evtText.post("Hi!");
+    evtText_4.post("Hi!");
 }
 var matchCircle = function (shape) {
     return shape.type === "CIRCLE";
@@ -252,26 +251,30 @@ var lib_3 = require("./lib");
 }
 //Detaching events
 {
-    var evtText = new lib_1.Evt();
+    var evtText_5 = new lib_1.Evt();
     //detach with no argument will detach all handlers (attach, attachOnce, waitFor... )
-    evtText.detach();
+    evtText_5.detach();
 }
 //To detach a particular handler for which we have the reference of the callback function:
 {
-    var evtText = new lib_1.Evt();
+    var evtText_6 = new lib_1.Evt();
     var callback_1 = function (_text) { };
-    evtText.attach(callback_1);
-    (_a = evtText.getHandlers().find(function (handler) { return handler.callback === callback_1; })) === null || _a === void 0 ? void 0 : _a.detach();
+    evtText_6.attach(callback_1);
+    //evtText.getHandlers().find(handler => handler.callback === callback)?.detach();
+    var h = evtText_6.getHandlers().find(function (handler) { return handler.callback === callback_1; });
+    if (h) {
+        h.detach();
+    }
 }
 //By far the preferred way of detaching an handler is by using "boundTo" context 
 //as more often that not we don't keep the reference of the callback function.
 {
-    var evtText = new lib_1.Evt();
+    var evtText_7 = new lib_1.Evt();
     //boundTo can be anything but a number, a callable function (i.e. not a constructor), undefined  or null.
     var boundTo = [];
-    evtText.attach(boundTo, function (_text) { });
-    evtText.attachOnce(boundTo, function (_text) { });
-    evtText.detach(boundTo);
+    evtText_7.attach(boundTo, function (_text) { });
+    evtText_7.attachOnce(boundTo, function (_text) { });
+    evtText_7.detach(boundTo);
 }
 //A more advanced example here detaching all handler that have a given matcher:
 {
@@ -293,12 +296,12 @@ var lib_3 = require("./lib");
 }
 //Misc
 {
-    var evtText = new lib_1.Evt();
+    var evtText_8 = new lib_1.Evt();
     //Number of type post() have been called.
-    var n = evtText.postCount;
+    var n = evtText_8.postCount;
     console.assert(n === 0);
     //A SyncEvent<Handler<string>> that track when handler are attached to evt.
-    evtText.evtAttach;
+    evtText_8.evtAttach;
 }
 // Combining Once, Prepend, matcher, timeout and boundTo
 /*
@@ -318,10 +321,10 @@ so that you can combine matcher, timeout or boundTo.
 //When we are not sure if the handlers have been attached already
 //postOnceMatched can be used.
 {
-    var evtText = new lib_1.Evt();
-    evtText.postOnceMatched("Foo Bar");
+    var evtText_9 = new lib_1.Evt();
+    evtText_9.postOnceMatched("Foo Bar");
     //"before"\n"Foo Bar" will be printed to the console.
-    evtText.attachOnce(function (text) { return console.log(text); });
+    evtText_9.attachOnce(function (text) { return console.log(text); });
     console.log("before");
 }
 //ObservableImpl is a class that allow to track mutation on
@@ -349,15 +352,15 @@ var lib_4 = require("./lib");
 }
 //Edge cases: 
 {
-    var evtText_3 = new lib_1.Evt();
+    var evtText_10 = new lib_1.Evt();
     (function () { return __awaiter(void 0, void 0, void 0, function () {
         var text1, text2;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, evtText_3.waitFor()];
+                case 0: return [4 /*yield*/, evtText_10.waitFor()];
                 case 1:
                     text1 = _a.sent();
-                    return [4 /*yield*/, evtText_3.waitFor()];
+                    return [4 /*yield*/, evtText_10.waitFor()];
                 case 2:
                     text2 = _a.sent();
                     console.log(text1 + " " + text2);
@@ -365,8 +368,8 @@ var lib_4 = require("./lib");
             }
         });
     }); })();
-    evtText_3.post("FOO");
-    evtText_3.post("BAR");
+    evtText_10.post("FOO");
+    evtText_10.post("BAR");
     //"FOO BAR" is printed to the console ( Voodoo involved )
 }
 /*

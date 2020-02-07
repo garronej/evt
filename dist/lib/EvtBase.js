@@ -48,14 +48,14 @@ function isCallable(o) {
 var EvtBase = /** @class */ (function (_super) {
     __extends(EvtBase, _super);
     function EvtBase() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.defaultParams = {
+        var _this_1 = _super !== null && _super.apply(this, arguments) || this;
+        _this_1.defaultParams = {
             "matcher": function matchAll() { return true; },
-            "boundTo": _this,
+            "boundTo": _this_1,
             "timeout": undefined,
             "callback": undefined
         };
-        return _this;
+        return _this_1;
     }
     EvtBase.prototype.getDefaultParams = function () {
         return __assign({}, this.defaultParams);
