@@ -44,7 +44,7 @@ function isCallable(o) {
         return false;
     return true;
 }
-/** Evt without evtAttach property */
+/** Evt without evtAttach property, attachOnceMatched and createDelegate */
 var EvtBase = /** @class */ (function (_super) {
     __extends(EvtBase, _super);
     function EvtBase() {

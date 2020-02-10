@@ -1,6 +1,6 @@
 import "minimal-polyfills/dist/lib/Array.prototype.find";
 import { UserProvidedParams, ImplicitParams, Bindable, Handler } from "./defs";
-/** Evt without evtAttach property and without overload */
+/** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 export declare class EvtBaseProtected<T> {
     private defaultFormatter;
     postCount: number;

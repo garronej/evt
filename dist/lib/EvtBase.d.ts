@@ -1,6 +1,6 @@
 import { EvtBaseProtected } from "./EvtBaseProtected";
 import { Postable, Bindable } from "./defs";
-/** Evt without evtAttach property */
+/** Evt without evtAttach property, attachOnceMatched and createDelegate */
 export declare class EvtBase<T> extends EvtBaseProtected<T> {
     private defaultParams;
     private getDefaultParams;

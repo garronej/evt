@@ -19,10 +19,11 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 };
 exports.__esModule = true;
 var Map_1 = require("minimal-polyfills/dist/lib/Map");
+var WeakMap_1 = require("minimal-polyfills/dist/lib/WeakMap");
 require("minimal-polyfills/dist/lib/Array.prototype.find");
 var runExclusive = require("run-exclusive");
 var defs_1 = require("./defs");
-/** Evt without evtAttach property and without overload */
+/** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 var EvtBaseProtected = /** @class */ (function () {
     function EvtBaseProtected() {
         var _this_1 = this;
@@ -37,14 +38,10 @@ var EvtBaseProtected = /** @class */ (function () {
         //NOTE: An async handler ( attached with waitFor ) is only eligible to handle a post if the post
         //occurred after the handler was set. We don't want to waitFor event from the past.
         //private readonly asyncHandlerChronologyMark = new WeakMap<ImplicitParams.Async, number>();
-        this.asyncHandlerChronologyMark = typeof WeakMap !== "undefined" ?
-            new WeakMap() :
-            new Map_1.Polyfill();
+        this.asyncHandlerChronologyMark = new WeakMap_1.Polyfill();
         //NOTE: There is an exception to the above rule, we want to allow async waitFor loop 
         //do so we have to handle the case where multiple event would be posted synchronously.
-        this.asyncHandlerChronologyExceptionRange = typeof WeakMap !== "undefined" ?
-            new WeakMap() :
-            new Map_1.Polyfill();
+        this.asyncHandlerChronologyExceptionRange = new WeakMap_1.Polyfill();
         /*
         NOTE: Used as Date.now() would be used to compare if an event is anterior
         or posterior to an other. We don't use Date.now() because two call within
@@ -54,7 +51,7 @@ var EvtBaseProtected = /** @class */ (function () {
             var currentChronologyMark = 0;
             return function () { return currentChronologyMark++; };
         })();
-        this.postAsync = runExclusive.buildCb(function (data, postChronologyMark, releaseLock) {
+        this.postAsync = runExclusive.buildMethodCb(function (data, postChronologyMark, releaseLock) {
             var promises = [];
             var chronologyMarkStartResolveTick;
             //NOTE: Must be before handlerTrigger call.
@@ -141,31 +138,21 @@ var EvtBaseProtected = /** @class */ (function () {
     EvtBaseProtected.prototype.enableTrace = function (id, formatter, log //NOTE: we don't want to expose types from node
     ) {
         this.traceId = id;
-        if (!!formatter) {
-            this.traceFormatter = formatter;
-        }
-        else {
-            this.traceFormatter = function (data) {
-                try {
-                    return JSON.stringify(data, null, 2);
-                }
-                catch (_a) {
-                    return "" + data;
-                }
-            };
-        }
-        if (!!log) {
-            this.log = log;
-        }
-        else {
-            this.log = function () {
-                var inputs = [];
-                for (var _i = 0; _i < arguments.length; _i++) {
-                    inputs[_i] = arguments[_i];
-                }
-                return console.log.apply(console, inputs);
-            };
-        }
+        this.traceFormatter = (formatter !== null && formatter !== void 0 ? formatter : (function (data) {
+            try {
+                return JSON.stringify(data, null, 2);
+            }
+            catch (_a) {
+                return "" + data;
+            }
+        }));
+        this.log = (log !== null && log !== void 0 ? log : (function () {
+            var inputs = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                inputs[_i] = arguments[_i];
+            }
+            return console.log.apply(console, inputs);
+        }));
     };
     EvtBaseProtected.prototype.disableTrace = function () {
         this.traceId = null;

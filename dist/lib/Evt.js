@@ -56,6 +56,52 @@ var Evt = /** @class */ (function (_super) {
         var _this_1 = _super !== null && _super.apply(this, arguments) || this;
         _this_1.evtAttach = new EvtBase_2.EvtBase();
         return _this_1;
+        /*
+        public createDelegateExperiment<R>( matcher: (data: T)=> Evt.Formated<R>): Evt<R>;
+        public createDelegateExperiment<Q extends T>( matcher: (data: T)=> data is Q): Evt<Q>;
+        public createDelegateExperiment(matcher: (data: T)=> boolean): Evt<T>;
+        public createDelegateExperiment( matcher: (data: T)=> boolean | Evt.Formated<any>): Evt<any> {
+    
+            return this.__createDelegateExperiment(
+                data => {
+    
+                    const v= matcher(data)
+    
+                    return typeof v === "boolean" ?
+                         v ? Evt.Formated.Matched.create(data) : Evt.Formated.NotMatched.inst
+                         :
+                         v
+                         ;
+    
+    
+                }
+            );
+    
+        }
+    
+        public __createDelegateExperiment<R>(matcher: (data: T) => Evt.Formated<R>): Evt<R> {
+    
+    
+            const evtDelegate = new Evt<R>();
+    
+            this.attach(
+                data => {
+    
+                    const formated = matcher(data);
+    
+                    if (formated.isMatched === false) {
+                        return;
+                    }
+    
+                    evtDelegate.post(formated.formatedData);
+    
+                }
+            );
+    
+            return evtDelegate;
+    
+        }
+        */
     }
     Evt.prototype.addHandler = function (attachParams, implicitAttachParams) {
         var handler = _super.prototype.addHandler.call(this, attachParams, implicitAttachParams);
@@ -78,6 +124,14 @@ var Evt = /** @class */ (function (_super) {
                 }
             });
         });
+    };
+    Evt.prototype.__createDelegate = function (matcher) {
+        var evtDelegate = new Evt();
+        this.attach(matcher, function (data) { return evtDelegate.post(data); });
+        return evtDelegate;
+    };
+    Evt.prototype.createDelegate = function (matcher) {
+        return this.__createDelegate(function (data) { return matcher(data); });
     };
     return Evt;
 }(EvtBase_2.EvtBase));

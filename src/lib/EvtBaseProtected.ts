@@ -1,6 +1,8 @@
 
 
 import { Polyfill as Map, LightMap } from "minimal-polyfills/dist/lib/Map";
+import { Polyfill as WeakMap } from "minimal-polyfills/dist/lib/WeakMap";
+
 import "minimal-polyfills/dist/lib/Array.prototype.find";
 
 import * as runExclusive from "run-exclusive";
@@ -12,7 +14,7 @@ import {
     EvtError
 } from "./defs";
 
-/** Evt without evtAttach property and without overload */
+/** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 export class EvtBaseProtected<T> {
 
     private defaultFormatter(...inputs: any[]): T {
@@ -31,25 +33,18 @@ export class EvtBaseProtected<T> {
         log?: (message?: any, ...optionalParams: any[]) => void //NOTE: we don't want to expose types from node
     ) {
         this.traceId = id;
-        if (!!formatter) {
 
-            this.traceFormatter = formatter;
-
-        } else {
-            this.traceFormatter = data => {
+        this.traceFormatter = formatter ?? (
+            data => {
                 try {
                     return JSON.stringify(data, null, 2);
                 } catch{
                     return `${data}`;
                 }
             }
-        }
+        );
 
-        if (!!log) {
-            this.log = log;
-        } else {
-            this.log = (...inputs) => console.log(...inputs);
-        }
+        this.log = log ?? ((...inputs) => console.log(...inputs));
 
     }
     public disableTrace() {
@@ -64,24 +59,17 @@ export class EvtBaseProtected<T> {
     //NOTE: An async handler ( attached with waitFor ) is only eligible to handle a post if the post
     //occurred after the handler was set. We don't want to waitFor event from the past.
     //private readonly asyncHandlerChronologyMark = new WeakMap<ImplicitParams.Async, number>();
-    private readonly asyncHandlerChronologyMark: WeakMap<ImplicitParams.Async, number> =
-        typeof WeakMap !== "undefined" ?
-            new WeakMap() :
-            new Map()
-        ;
+    private readonly asyncHandlerChronologyMark= new WeakMap<ImplicitParams.Async, number>();
 
     //NOTE: There is an exception to the above rule, we want to allow async waitFor loop 
     //do so we have to handle the case where multiple event would be posted synchronously.
-    private readonly asyncHandlerChronologyExceptionRange: WeakMap<
+    private readonly asyncHandlerChronologyExceptionRange= new WeakMap<
         ImplicitParams.Async,
         {
             lowerMark: number;
             upperMark: number;
         }
-    > = typeof WeakMap !== "undefined" ?
-            new WeakMap() :
-            new Map()
-        ;
+    >();
 
     /*
     NOTE: Used as Date.now() would be used to compare if an event is anterior 
@@ -296,8 +284,7 @@ export class EvtBaseProtected<T> {
 
     }
 
-
-    private readonly postAsync = runExclusive.buildCb(
+    private readonly postAsync = runExclusive.buildMethodCb(
         (data: T, postChronologyMark: number, releaseLock?) => {
 
             const promises: Promise<void>[] = [];
@@ -553,6 +540,10 @@ export class EvtBaseProtected<T> {
         return detachedHandlers;
 
     }
+
+
+
+
 
 
 }

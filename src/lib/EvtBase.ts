@@ -28,7 +28,7 @@ function isCallable(o: any): boolean {
 }
 
 
-/** Evt without evtAttach property */
+/** Evt without evtAttach property, attachOnceMatched and createDelegate */
 export class EvtBase<T> extends EvtBaseProtected<T> {
 
     private defaultParams: UserProvidedParams<T> = {

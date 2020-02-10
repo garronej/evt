@@ -9,7 +9,7 @@
   "main": "./dist/lib/index.js",
   "types": "./dist/lib/index.d.ts",
   "scripts": {
-    "tsc": "npx tsc -p ./tsconfig.json",
+    "tsc": "npx tsc",
     "test": "node ./dist/test/index"
   },
   "author": "Joseph Garrone",

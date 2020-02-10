@@ -22,23 +22,62 @@ Similar to Qt signal/slot or C# events.
 
 - No polyfills needed ✅  
 - Transpiled down to ES3 ✅  
-- Very light-weight ✅
+- Very light-weight ✅   
 
 # Motivation
 
 Overcoming those EventEmitter's common problems:
 - Hard to type.
-- Removing a particular listener is a pain because it forces us to keep a reference of the cb function.
-- It is a headreach to add a one-time listener for the next event satisfying a given conditions.
-- Promises where an afterthought.
+- Removing a particular listener is a pain as it require to have a reference of the listener.
+- Can't easily add a one-time listener for the next event satisfying a given conditions.
+- Promise support was an afterthought.
+
+# Try it in your browser right now
+
+Thanks to Stackblitz you can start experimenting right now in your browser.
+
+![demo_ts-evt_fixed_4](https://user-images.githubusercontent.com/6702424/74102835-7a9b9800-4b47-11ea-854d-062fe1f42bba.gif)
+
+[__Run Hello World__](https://stackblitz.com/edit/ts-evt-demo-hello-world?embed=1&file=index.ts)
+
+# Table of content
+
+- [Motivation](#motivation)
+- [Try it in your browser right now](#try-it-in-your-browser-right-now)
+- [Table of content](#table-of-content)
+- [Usage](#usage)
+  - [ts-evt Evt vs events EventEmitter](#ts-evt-evt-vs-events-eventemitter)
+  - [Waiting for the next event.](#waiting-for-the-next-event)
+    - [Without timeout](#without-timeout)
+    - [With timeout](#with-timeout)
+  - [Filtering events with matcher function](#filtering-events-with-matcher-function)
+  - [Combining Matcher and waitFor or attachOnce.](#combining-matcher-and-waitfor-or-attachonce)
+  - [No type arguments](#no-type-arguments)
+  - [Handler priority](#handler-priority)
+  - [Extracting events](#extracting-events)
+  - [Detaching events](#detaching-events)
+  - [Combining Once, Prepend, matcher, timeout and boundTo](#combining-once-prepend-matcher-timeout-and-boundto)
+  - [Creating delegate](#creating-delegate)
+  - [postCount](#postcount)
+  - [evtAttach](#evtattach)
+  - [postOnceMatched](#postoncematched)
+  - [Unpacking the type argument.](#unpacking-the-type-argument)
+  - [Enable trace ( for debugging purpose )](#enable-trace--for-debugging-purpose-)
+- [The Observer class](#the-observer-class)
+- [Asynchronously handling events posted synchronously (Edge case):](#asynchronously-handling-events-posted-synchronously-edge-case)
+- [History of the project](#history-of-the-project)
+
+
+
+
+
 
 # Usage
 
-## TLDR
 
+## ts-evt Evt vs events EventEmitter
 
 ````typescript
-
 import { Evt } from "ts-evt";
 
 const evtText = new Evt<string>();
@@ -74,13 +113,18 @@ eventEmitter.emit("time", 123);
 
 ````
 
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-compared-with-events?embed=1&file=index.ts)
+
 ## Waiting for the next event.
 
-````typescript
+### Without timeout
 
+````typescript
 import { Evt } from "ts-evt";
 
 const evtText = new Evt<string>();
+
+setTimeout(()=> evtText.post("Hi!"), 1500);
 
 (async ()=>{
 
@@ -91,10 +135,10 @@ const evtText = new Evt<string>();
     console.log(text);
 
 })();
-
-evtText.post("Hi");
-
 ````
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-waitfor?embed=1&file=index.ts)
+
+### With timeout
 
 It is possible to set how long we wait for the next event before
 the promise returned by waitFor rejects.
@@ -106,7 +150,6 @@ import { Evt, EvtError } from "ts-evt";
 const evtText = new Evt<string>();
 
 (async ()=>{
-
 
     try{
     
@@ -121,11 +164,10 @@ const evtText = new Evt<string>();
         //  -EvtError.Timeout if the timeout delay way reached.
         //  -EvtError.Detached if the handler was detached before 
         //  the promise returned by waitFor have resolved. 
+
         console.log("TIMEOUT!");
 
-
     }
-
 
 })();
 
@@ -139,7 +181,9 @@ setTimeout(
 );
 ```
 
-## Filtering events, introducing matcher function
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-waitfor-timeout?embed=1&file=index.ts)
+
+## Filtering events with matcher function
 
 Matcher functions are used to attach handlers that should only be called against events data
 satisfying certain conditions.
@@ -164,6 +208,8 @@ evtText.post("Bonjour");
 //"Hi!" will be printed to the console.
 evtText.post("Hi!");
 ```
+
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-matcher-return-boolean?embed=1&file=index.ts)
 
 If the the matcher function is a type guard the type of the event data  will be narrowed down
 to the subtype the matcher function is matching.  
@@ -212,18 +258,15 @@ evtShape.post({
 });
 
 ```
-
-
+The type of the shape object is narrowed down to ``Circle``  
 ![Screenshot 2020-02-08 at 19 17 46](https://user-images.githubusercontent.com/6702424/74090059-baab3e00-4aa7-11ea-9c75-97f1fb99666d.png)
 
-
-
-
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-matcher-type-guard?embed=1&file=index.ts)
 
 ## Combining Matcher and waitFor or attachOnce.
 
 ``waitFor`` and ``attachOnce`` combined with matcher address the main shortcoming of EventEmitter
-allowing us for example to asynchronously wait for the next shape that is a circle.
+allowing us to asynchronously wait for the next shape that is a circle for example.
 
 ```typescript
 import { Evt } from "ts-evt";
@@ -274,7 +317,9 @@ evtShape.post({
 
 ```
 
-## No arguments
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-matcher-and-waitfor?embed=1&file=index.ts)
+
+## No type arguments
 
 When you create an Evt with a void argument, TypeScript forces you to pass ``undefined`` to post(). 
 To address this, we added the VoidEvt class.
@@ -290,12 +335,13 @@ evtSocketConnect.post();
 //"SOCKET CONNECTED" have been printed to the console.
 ```
 
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-hello-world-vgzzgk?embed=1&file=index.ts)
+
 ## Handler priority
 
 Similar to node's ``emitter.prependListener()`` 
 
 ```typescript
-
 import { VoidEvt } from "ts-evt";
 
 const evtConnect = new VoidEvt();
@@ -310,7 +356,10 @@ evtConnect.post();
 
 ```
 
-## Extracting events.
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-prepend?embed=1&file=index.ts)
+
+
+## Extracting events
 
 To handle edge cases that haven't been anticipated without having to rethink the all model
 we provide a way to extract particular type of events.
@@ -339,8 +388,9 @@ evtCircle.attachPrepend(
         console.assert(circle.radius > 0);
     }
 );
-
 ```
+
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-extract?embed=1&file=index.ts)
 
 ## Detaching events
 
@@ -378,6 +428,8 @@ evtText.attachOnce(
 evtText.detach(boundTo);
 ```
 
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-detach-with-contex?embed=1&file=index.ts)
+
 To detach a particular handler for which we have the reference of the callback function
 as we do in node's EventEmitter: 
 
@@ -395,6 +447,8 @@ evtText.getHandlers()
 ;
 
 ```
+
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-detach-classic?embed=1&file=index.ts)
 
 A more advanced example here detaching all handler that have a given matcher:
 
@@ -421,9 +475,9 @@ evtShape.getHandlers()
     .filter(({ matcher }) => matcher === matchCircle)
     .forEach(({ detach }) => detach())
     ;
-
-
 ```
+
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-detach-matcher?embed=1&file=index.ts)
 
 ## Combining Once, Prepend, matcher, timeout and boundTo
 
@@ -436,7 +490,341 @@ so that you can combine matcher, timeout or boundTo.
 
 ![Screenshot 2020-02-08 at 19 27 56](https://user-images.githubusercontent.com/6702424/74090245-6c973a00-4aa9-11ea-8e48-90d49a0ed20b.png)
 
-## Asynchronously handling events posted synchronously (Edge cases):
+
+## Creating delegate
+
+Using ``createDelegate(matcher)`` you can create a new instance of Evt on which will be  
+posted all the events matched by the matcher function.
+
+```typescript
+import { Evt } from "ts-evt";
+
+const evtShape = new Evt<Shape>();
+
+//evtCircle is of type Evt<Circle> because matchCircle is a type guard.
+const evtCircle = evtShape.createDelegate(matchCircle);
+
+//evtLargeShape is of type Evt<Shape>
+const evtLargeShape = evtShape.createDelegate(shape => {
+  switch (shape.type) {
+    case "CIRCLE":
+      return shape.radius > 5;
+    case "SQUARE":
+      return shape.sideLength > 3;
+  }
+});
+
+evtCircle.attach(({ radius }) =>
+  console.log(`Got a circle, radius: ${radius}`)
+);
+
+evtLargeShape.attach(
+    shape => console.log(`Got a large ${shape.type}`)
+);
+
+//"Got a circle, radius: 66" and "Got a large CIRCLE" will be printed.
+evtShape.post({
+  "type": "CIRCLE",
+  "radius": 66
+});
+
+//Only "Got a circle, radius: 3" will be printed
+evtShape.post({
+  "type": "CIRCLE",
+  "radius": 3
+});
+
+//Only "Got a large SQUARE" will be printed
+evtShape.post({
+  "type": "SQUARE",
+  "sideLength": 30
+});
+
+//Nothing will be printed
+evtShape.post({
+  "type": "SQUARE",
+  "sideLength": 1
+});
+
+```
+
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-delegate?embed=1&file=index.ts)
+
+## postCount
+
+The number of times ``post()`` have been called can be tracked by the ``postCount`` property.
+
+```typescript
+import { Evt } from "ts-evt";
+
+const evtText= new Evt<string>();
+
+//prints 0
+console.log(evtText.postCount);
+
+evtText.post("foo");
+evtText.post("bar");
+evtText.post("baz");
+
+//prints 3
+console.log(evtText.postCount);
+
+```
+
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-postcount?embed=1&file=index.ts)
+
+## evtAttach
+
+``.evtAttach`` is an ``Evt<Handler<T>>``that let track in realtime the handler that are being attached
+to the Evt.
+
+```typescript
+import * as console from "./consoleToPage";
+
+import { Evt } from "ts-evt";
+
+const evtText= new Evt<string>();
+
+const callback = (text: string)=> {};
+
+evtText.evtAttach.attachOnce(handler => 
+  console.log(handler.callback === callback)
+);
+
+evtText.attach(callback);
+//"true" is printed to the console.
+```
+
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-evtattach?embed=1&file=index.ts)
+
+## postOnceMatched
+
+When using ``postOnceMatched()`` in place of ``post()`` the event data will be stored and posted only once there will be a handler candidate for it.
+
+```typescript
+const evtText = new Evt<string>();
+
+evtText.postOnceMatched("Foo Bar");
+
+evtText.attachOnce(text=> console.log(text));
+
+console.log("before");
+
+//"before" then "Foo Bar" will be printed to the console.
+```
+
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-postoncematched?embed=1&file=index.ts)
+
+## Unpacking the type argument.
+
+```typescript
+import * as console from "./consoleToPage";
+
+import { Evt } from "ts-evt";
+
+const evtHuman = new Evt<{
+    name: string;
+    age: number;
+    gender: "MALE" | "FEMALE"
+}>();
+
+type Human = Evt.Unpack<typeof evtHuman>;
+
+const human1: Human = {
+    "name": "bob",
+    "age": 89,
+    "gender": "MALE"
+};
+
+evtHuman.post(human1);
+
+//To avoid having to import the module if it isnt's needed
+type UnpackEvt<T> = import("ts-evt").Evt.Unpack<T>;
+
+const human2: UnpackEvt<typeof evtHuman> = {
+      "name": "alice",
+    "age": 3,
+    "gender": "FEMALE"
+};
+
+evtHuman.post(human2);
+```
+
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-unpack-type-argument?embed=1&file=index.ts)
+
+
+## Enable trace ( for debugging purpose )
+
+If you need help to track down a bug you can use ``enableTrace`` to log what's going on with an Evt.
+
+```typescript
+import { Evt } from "ts-evt";
+
+{
+    const evtCircle = new Evt<Circle>();
+
+    evtCircle.enableTrace("evtCircle n°1");
+
+    evtCircle.post(circle1);
+
+    evtCircle.attachOnce(circle => {});
+
+    evtCircle.post(circle2);
+
+}
+
+console.log("\n");
+
+//Optional arguments 
+{
+
+    const evtCircle = new Evt<Circle>();
+
+    evtCircle.enableTrace(
+        "evtCircle n°2",
+        circle => `CIRCLE(${circle.radius})`, //Formatter
+        (...args)=> console.log(...["[myPrefix]",...args]) // Log function ( default console.log )
+    );
+
+    evtCircle.attach(
+        ({ radius }) => radius > 15, 
+        circle => {}
+    );
+
+    evtCircle.post(circle1);
+    evtCircle.post(circle2);
+
+}
+```
+
+This will print: 
+
+```log
+(evtCircle n°1) 0 handler => { "type": "CIRCLE", "radius": 12 }
+(evtCircle n°1) 1 handler => { "type": "CIRCLE", "radius": 33 }
+
+[myPrefix] (evtCircle n°2) 0 handler => CIRCLE(12)
+[myPrefix] (evtCircle n°2) 1 handler => CIRCLE(33)
+```
+
+
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-trace?embed=1&file=index.ts)
+
+
+# The Observer class
+
+``ObservableImpl`` is a class that leverage ``Evt`` to enable mutation tracking.
+
+```typescript
+
+import { Observable, ObservableImpl } from "ts-evt";
+
+const obsText= new ObservableImpl<string>("foo");
+
+console.assert(obsText.value === "foo");
+
+obsText.evtChange.attachOnce(
+    ({ newValue, previousValue })=> {
+
+        console.assert(newValue === obsText.value);
+
+        console.log(`newValue: ${newValue}, previousValue ${previousValue}`);
+
+    }
+);
+
+//Nothing will be printed as the value did not change.
+let hasChanged = obsText.onPotentialChange("foo");
+
+console.assert( hasChanged === false );
+
+hasChanged = obsText.onPotentialChange("bar");
+//"newValue: bar, previousValue foo" have been printed to the console.
+
+console.assert(hasChanged === true);
+
+console.assert(obsText.value === "bar");
+
+//ObservableImpl is assignable to Observable but
+//Observable is missing the onPotentialChange method.
+//the Observable interface is used to expose an observable that should not be
+//modified by the user.
+const exposedObsText: Observable<string> = obsText;
+
+```
+
+![Screenshot 2020-02-10 at 08 50 14](https://user-images.githubusercontent.com/6702424/74130842-568d9480-4be3-11ea-851a-dc3cc0c83034.png)
+
+If it build then you are using it right:
+
+The TSC wont let the value to be set directly.
+
+![Screenshot 2020-02-10 at 09 00 49](https://user-images.githubusercontent.com/6702424/74131123-f0554180-4be3-11ea-96e1-a235ec46e20f.png)
+
+
+It wont allow either the ``evtChange`` to be posted manually, ``post()``  
+and ``postOnceMatched()`` are not exposed.
+
+![Screenshot 2020-02-10 at 10 45 10](https://user-images.githubusercontent.com/6702424/74138812-8bedae80-4bf2-11ea-9ce3-0f31eb22df1a.png)
+
+
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-observer?embed=1&file=index.ts)
+
+It is also possible to define the criteria upon witch the value will be deemed
+changed.
+
+```typescript
+import { ObservableImpl } from "ts-evt";
+
+const obsNames = new ObservableImpl<string[]>(
+    [
+        "alice",
+        "bob",
+        "louis"
+    ],
+    //areSame function, optional parameter to determine if the new candidate 
+    //value should be considered a change from the previous one
+    //default (value, newValue)=> value === newValue
+    //Here we tell that two array of name are considered same if they represent 
+    //the same set of names, we don't care about order.
+    (names, newNames) => {
+
+        if (names.length !== newNames.length) {
+            return false;
+        }
+
+        return names.every(name => newNames.indexOf(name) >= 0);
+
+    }
+);
+
+obsNames.evtChange.attach(
+    ({ previousValue: previousNames }) => {
+
+        if (previousNames.length > obsNames.value.length) {
+            console.log("Less names");
+            return;
+        }
+
+        if (previousNames.length < obsNames.value.length) {
+            console.log("More names");
+            return;
+        }
+
+        console.log("Same amount of names");
+
+    });
+
+//Same set of names in a different order, nothing will be printed.
+obsNames.onPotentialChange(["bob", "louis", "alice"]);
+
+//"Less names" will be printed
+obsNames.onPotentialChange(["bob", "louis"]);
+```
+
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-observable-change-condition?embed=1&file=index.ts)
+
+# Asynchronously handling events posted synchronously (Edge case):
 
 Consider this example.
 
@@ -448,108 +836,28 @@ const evtText = new Evt<string>();
 (async ()=>{
 
     const text1 = await evtText.waitFor();
-    const text2 = await evtText.waitFor(); 
+    const text2 = await evtText.waitFor();
 
     console.log(`${text1} ${text2}`);
-
 
 })();
 
 evtText.post("FOO");
 evtText.post("BAR");
 
-//"FOO BAR" is printed to the console ( Voodoo involved )
-
+//"FOO BAR" is printed to the console.
 ```
 
 If you think about it, in a more straightforward implementation
-text2 would not be grabbed as ``post("BAR")`` is executed 
-after the second ``waitFor()`` but we got you covered.
+text2 would not be grabbed as ``post("BAR")`` is executed
+after the second ``waitFor()``.
+However we work some voodoo behind the scene to achieve this behavior 
+so that you don't have to wonder if it is possible for two events to be 
+posted in the same tick in the same tick.
 
-## Miscellaneous features
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-edge-case?embed=1&file=index.ts)
 
-### postCount
-
-The number of times ``post()`` have been called can be tracked by the ``postCount`` property.
-
-```typescript
-evtText.postCount;
-```
-
-### evtAttach
-
-``.evtAttach`` is an ``Evt<Handler<T>>``that let track in realtime the handler that are attached
-to the Evt.
-
-```typescript
-evtText.evtAttach;
-```
-
-### postOnceMatched
-
-
-when using ``postOnceMatched()`` in place of ``post()`` the event data will be stored and posted only once there will be a handler candidate for it.
-
-```typescript
-
-    const evtText = new Evt<string>();
-
-    evtText.postOnceMatched("Foo Bar");
-
-    //"before" then "Foo Bar" will be printed to the console.
-    evtText.attachOnce(text=> console.log(text));
-
-    console.log("before");
-
-```
-
-# The Observer class
-
-``ObservableImpl`` is a class that leverage ``Evt`` to enable mutation tracking.
-
-```typescript
-
-import { Observable, ObservableImpl } from "Observable";
-
-const obsText= new ObservableImpl<string>("foo");
-
-console.assert(obsText.value === "foo");
-
-obsText.evtChange.attach(
-    newValue=> {
-
-        console.assert(newValue === obsText.value);
-
-        console.log(`newValue: ${newValue}`);
-
-    }
-);
-
-//Nothing will be printed to the console as the value did not change.
-obsText.onPotentialChange("foo");
-
-
-obsText.onPotentialChange("bar");
-//"newValue: bar" have been printed to the console.
-
-console.assert(obsText.value === "bar");
-
-
-//ObservableImpl is assignable to Observable but
-//Observable is missing the onPotentialChange method.
-//the Observable interface is used to expose an observable that should not be
-//modified by the user.
-const exposedObsText: Observable<string> = obsText;
-
-```
-
-![Screenshot 2020-02-08 at 19 42 19](https://user-images.githubusercontent.com/6702424/74090395-2642da80-4aab-11ea-82b3-ccf61bc1f794.png)
-
-
-
-
-
-# History
+# History of the project
 
 This project was originally a fork aimed to add features to ``rogierschouten/ts-events``.  
 Along the way it has been re-implemented from scratch keeping only the 
