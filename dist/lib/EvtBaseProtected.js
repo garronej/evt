@@ -32,11 +32,26 @@ function invokeMatcher(matcher, data) {
             matcherResult;
 }
 exports.invokeMatcher = invokeMatcher;
+exports.overwriteReadonlyProp = function (obj, propertyName, value) {
+    try {
+        obj[propertyName] = value;
+        if (obj[propertyName] === value) {
+            return;
+        }
+    }
+    catch (_a) {
+    }
+    Object.defineProperty(obj, propertyName, __assign(__assign({}, Object.getOwnPropertyDescriptor(obj, propertyName)), { value: value }));
+};
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 var EvtBaseProtected = /** @class */ (function () {
     function EvtBaseProtected() {
         var _this_1 = this;
-        this.postCount = 0;
+        this.incrementPostCount = (function () {
+            var setPostCount = function (value) { return exports.overwriteReadonlyProp(_this_1, "postCount", value); };
+            setPostCount(0);
+            return function () { return setPostCount(_this_1.postCount + 1); };
+        })();
         this.traceId = null;
         this.handlers = [];
         this.handlerTriggers = new Map_1.Polyfill();
@@ -118,7 +133,8 @@ var EvtBaseProtected = /** @class */ (function () {
             });
         });
     }
-    EvtBaseProtected.prototype.enableTrace = function (id, formatter, log //NOTE: we don't want to expose types from node
+    EvtBaseProtected.prototype.enableTrace = function (id, formatter, log
+    //NOTE: Not typeof console.log as we don't want to expose types from node
     ) {
         this.traceId = id;
         this.traceFormatter = (formatter !== null && formatter !== void 0 ? formatter : (function (data) {
@@ -223,7 +239,7 @@ var EvtBaseProtected = /** @class */ (function () {
     /** Returns post count */
     EvtBaseProtected.prototype.post = function (data) {
         this.trace(data);
-        this.postCount++;
+        this.incrementPostCount();
         //NOTE: Must be before postSync.
         var postChronologyMark = this.getChronologyMark();
         var isExtracted = this.postSync(data);

@@ -32,10 +32,49 @@ export function invokeMatcher<T, U>(
 
 }
 
+export const overwriteReadonlyProp = (obj: { [key: string]: any; }, propertyName: string, value: any): void => {
+
+    try {
+
+        obj[propertyName] = value;
+
+        if (obj[propertyName] === value) {
+            return;
+        }
+
+    } catch{
+    }
+
+    Object.defineProperty(
+        obj,
+        propertyName,
+        {
+            ...Object.getOwnPropertyDescriptor(obj, propertyName),
+            value
+        }
+    );
+
+};
+
+
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 export class EvtBaseProtected<T> {
 
-    public postCount = 0;
+    //NOTE: Not really readonly but we want to prevent user from setting the value
+    //manually and we cant user accessor because we target es3.
+    public readonly postCount!: number;
+
+    private incrementPostCount = (() => {
+
+        const setPostCount = (value: number) => overwriteReadonlyProp(this, "postCount", value);
+
+        setPostCount(0);
+
+        return () => setPostCount(this.postCount + 1);
+
+    })();
+
+
 
     private traceId: string | null = null;
     private traceFormatter!: (data: T) => string;
@@ -44,7 +83,8 @@ export class EvtBaseProtected<T> {
     public enableTrace(
         id: string,
         formatter?: (data: T) => string,
-        log?: (message?: any, ...optionalParams: any[]) => void //NOTE: we don't want to expose types from node
+        log?: (message?: any, ...optionalParams: any[]) => void
+        //NOTE: Not typeof console.log as we don't want to expose types from node
     ) {
         this.traceId = id;
 
@@ -250,7 +290,7 @@ export class EvtBaseProtected<T> {
 
         this.trace(data);
 
-        this.postCount++;
+        this.incrementPostCount();
 
         //NOTE: Must be before postSync.
         const postChronologyMark = this.getChronologyMark();

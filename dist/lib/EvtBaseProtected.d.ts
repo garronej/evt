@@ -2,9 +2,13 @@ import "minimal-polyfills/dist/lib/Array.prototype.find";
 import { UserProvidedParams, ImplicitParams, Bindable, Handler } from "./defs";
 /** If the matcher is not transformative then the transformedData will be the input data */
 export declare function invokeMatcher<T, U>(matcher: (data: T) => boolean | [U] | null, data: T): [T | U] | null;
+export declare const overwriteReadonlyProp: (obj: {
+    [key: string]: any;
+}, propertyName: string, value: any) => void;
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 export declare class EvtBaseProtected<T> {
-    postCount: number;
+    readonly postCount: number;
+    private incrementPostCount;
     private traceId;
     private traceFormatter;
     private log;

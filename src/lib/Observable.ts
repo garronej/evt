@@ -1,5 +1,6 @@
 
 import { Evt } from "./Evt";
+import { overwriteReadonlyProp } from "./EvtBaseProtected";
 
 import { Omit } from "./defs";
 
@@ -19,6 +20,11 @@ export interface Observable<T> {
     /** when value changed post the new value */
     readonly evtChange: NonPostable<T>;
 };
+
+
+
+
+
 
 /* Implementation of the Observable interface that expose a method to update the value*/
 export class ObservableImpl<T> implements Observable<T> {
@@ -56,32 +62,10 @@ export class ObservableImpl<T> implements Observable<T> {
 
     }
 
-    private readonly overwriteReadonlyValue = (() => {
+    private overwriteReadonlyValue(newValue: T){
+        overwriteReadonlyProp(this, "value", newValue);
+    }
 
-        const propertyDescriptor: PropertyDescriptor = {
-            "configurable": true,
-            "enumerable": true,
-            "writable": false
-        };
-
-        return (newValue: T) => {
-
-            propertyDescriptor.value = newValue;
-
-            try {
-
-                Object.defineProperty(this, "value", propertyDescriptor);
-
-            } catch{
-
-                //For very old browser:
-                (this.value as any) = newValue;
-
-            }
-
-        };
-
-    })();
 
     /** Return true if the value have been changed */
     public onPotentialChange(newValue: T): boolean {

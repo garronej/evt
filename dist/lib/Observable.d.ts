@@ -21,7 +21,7 @@ export declare class ObservableImpl<T> implements Observable<T> {
     readonly evtChange: Observable<T>["evtChange"];
     readonly value: T;
     constructor(initialValue: T, areSame?: (currentValue: T, newValue: T) => boolean);
-    private readonly overwriteReadonlyValue;
+    private overwriteReadonlyValue;
     /** Return true if the value have been changed */
     onPotentialChange(newValue: T): boolean;
 }
