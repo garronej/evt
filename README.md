@@ -24,6 +24,10 @@ type inference features to provide __type safety__ while keeping things __concis
 - Transpiled down to ES3 ✅  
 - Very light-weight ✅   
 
+
+
+
+
 # Motivation
 
 Addressing the common problems faced with EventEmitter:
@@ -45,6 +49,7 @@ Thanks to Stackblitz you can start experimenting right now in your browser.
 - [Motivation](#motivation)
 - [Try it in your browser right now](#try-it-in-your-browser-right-now)
 - [Table of content](#table-of-content)
+- [Dependency requirement](#dependency-requirement)
 - [Usage](#usage)
   - [ts-evt Evt vs events EventEmitter](#ts-evt-evt-vs-events-eventemitter)
   - [Waiting for the next event.](#waiting-for-the-next-event)
@@ -67,10 +72,14 @@ Thanks to Stackblitz you can start experimenting right now in your browser.
 - [Asynchronously handling events posted synchronously (Edge case):](#asynchronously-handling-events-posted-synchronously-edge-case)
 - [History of the project](#history-of-the-project)
 
+# Dependency requirement
 
+Minimum version of typescript your project need to be using.
 
+- For importing ``Evt``:  typescript >= __2.2__ ( Feb 2017 )
+- For importing ``Observable``:  typescript >= __2.8__ ( Mar 2018 )
 
-
+Exposed interfaces use typescript keywords that where added in specified version.
 
 # Usage
 
@@ -617,10 +626,13 @@ console.log("before");
 
 ## Unpacking the type argument.
 
+UnpackEvt is an helper type to infer the type argument of an Evt instance.  
+
 ```typescript
 import * as console from "./consoleToPage";
 
 import { Evt } from "ts-evt";
+import { UnpackEvt } from "ts-evt/dist/lib/UnpackEvt";
 
 const evtHuman = new Evt<{
     name: string;
@@ -628,7 +640,7 @@ const evtHuman = new Evt<{
     gender: "MALE" | "FEMALE"
 }>();
 
-type Human = Evt.Unpack<typeof evtHuman>;
+type Human = UnpackEvt<typeof evtHuman>;
 
 const human1: Human = {
     "name": "bob",
@@ -638,10 +650,10 @@ const human1: Human = {
 
 evtHuman.post(human1);
 
-//To avoid having to import the module if it isnt's needed
-type UnpackEvt<T> = import("ts-evt").Evt.Unpack<T>;
+//To avoid having to import the module if it isn't needed
+type UnpackEvt_<T> = import("ts-evt/dist/lib/UnpackEvt").UnpackEvt<T>;
 
-const human2: UnpackEvt<typeof evtHuman> = {
+const human2: UnpackEvt_<typeof evtHuman> = {
       "name": "alice",
     "age": 3,
     "gender": "FEMALE"
@@ -649,6 +661,13 @@ const human2: UnpackEvt<typeof evtHuman> = {
 
 evtHuman.post(human2);
 ```
+Note that if you try unpacking the type of an evt instantiated ``ts-evt``
+by a module that use a different version of ``ts-evt`` that the one you 
+included in the your project dependency the inference will fail.
+
+Note also that we do not directly included the UnpackEvt in the default export
+of the module because doing so would restrict ``ts-evt`` to be used in projects  
+using typescript version before 2.8 ( version when the infer keyword was introduced ).
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-unpack-type-argument?embed=1&file=index.ts)
 
@@ -717,7 +736,7 @@ This will print:
 
 ```typescript
 
-import { Observable, ObservableImpl } from "ts-evt";
+import { Observable, ObservableImpl } from "ts-evt/dist/lib/Observable";
 
 const obsText= new ObservableImpl<string>("foo");
 
@@ -783,7 +802,7 @@ It is also possible to define the criteria upon witch the value will be deemed
 changed.
 
 ```typescript
-import { ObservableImpl } from "ts-evt";
+import { ObservableImpl } from "ts-evt/dist/lib/Observable";
 
 const obsNames = new ObservableImpl<string[]>(
     [

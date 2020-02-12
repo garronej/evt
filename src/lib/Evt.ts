@@ -67,13 +67,14 @@ export class Evt<T> extends EvtBase<T> {
 
     }
 
+
 }
 
-
-
+/*
 export namespace Evt {
     export type Unpack<T> = T extends Evt<infer U> ? U : never;
 }
+*/
 
 export class VoidEvt extends Evt<void> {
     public post(): number {

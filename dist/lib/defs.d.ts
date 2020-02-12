@@ -1,7 +1,3 @@
-/**
- * Construct a type with the properties of T except for those in type K.
- */
-export declare type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
 /** Anything but a number, a callable function (constructors are bindable), undefined  or null */
 export declare type Bindable = Bindable.Object_ | string;
 export declare namespace Bindable {

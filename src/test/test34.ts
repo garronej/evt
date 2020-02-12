@@ -1,5 +1,5 @@
 
-import { ObservableImpl } from "../lib";
+import { ObservableImpl } from "../lib/Observable";
 
 const names1 = [
     "alice",

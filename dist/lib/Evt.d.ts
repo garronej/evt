@@ -14,9 +14,6 @@ export declare class Evt<T> extends EvtBase<T> {
     createDelegate(matcher: (data: T) => boolean): Evt<T>;
     createDelegate(): Evt<T>;
 }
-export declare namespace Evt {
-    type Unpack<T> = T extends Evt<infer U> ? U : never;
-}
 export declare class VoidEvt extends Evt<void> {
     post(): number;
     postOnceMatched(): Promise<number>;

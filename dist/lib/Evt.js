@@ -93,6 +93,11 @@ var Evt = /** @class */ (function (_super) {
     return Evt;
 }(EvtBase_2.EvtBase));
 exports.Evt = Evt;
+/*
+export namespace Evt {
+    export type Unpack<T> = T extends Evt<infer U> ? U : never;
+}
+*/
 var VoidEvt = /** @class */ (function (_super) {
     __extends(VoidEvt, _super);
     function VoidEvt() {

@@ -2,12 +2,22 @@
 import { Evt } from "./Evt";
 import { overwriteReadonlyProp } from "./EvtBaseProtected";
 
-import { Omit } from "./defs";
-
 type ChangeDiff<T> = {
     newValue: T;
     previousValue: T;
 };
+
+//NOTE: Exclude only introduced in typescript 2.8
+/**
+ * Exclude from T those types that are assignable to U
+ */
+type Exclude<T, U> = T extends U ? never : T;
+
+//NOTE: Pick was only introduced with typescript 3.5
+/**
+ * Construct a type with the properties of T except for those in type K.
+ */
+export type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
 
 type NonPostable<T> = Omit<Evt<T>, "post" | "postOnceMatched">
 
@@ -20,11 +30,6 @@ export interface Observable<T> {
     /** when value changed post the new value */
     readonly evtChange: NonPostable<T>;
 };
-
-
-
-
-
 
 /* Implementation of the Observable interface that expose a method to update the value*/
 export class ObservableImpl<T> implements Observable<T> {

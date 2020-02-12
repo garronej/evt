@@ -184,6 +184,8 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
 
     }
 
+
+
     public waitFor<U>(
         matcher: (data: T) => [U] | null,
         timeout?: number

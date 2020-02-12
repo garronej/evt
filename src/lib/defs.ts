@@ -1,12 +1,5 @@
 import setPrototypeOf = require("setprototypeof");
 
-//NOTE: Pick was only introduced with typescript 3.5
-/**
- * Construct a type with the properties of T except for those in type K.
- */
-export type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
-
-
 /** Anything but a number, a callable function (constructors are bindable), undefined  or null */
 export type Bindable = Bindable.Object_ | string;
 
@@ -40,9 +33,6 @@ export namespace UserProvidedParams {
     }>;
 
 }
-
-
-
 
 export type ImplicitParams = ImplicitParams.Sync | ImplicitParams.Async;
 
