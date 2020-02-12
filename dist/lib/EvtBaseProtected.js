@@ -23,14 +23,19 @@ var WeakMap_1 = require("minimal-polyfills/dist/lib/WeakMap");
 require("minimal-polyfills/dist/lib/Array.prototype.find");
 var runExclusive = require("run-exclusive");
 var defs_1 = require("./defs");
+/** If the matcher is not transformative then the transformedData will be the input data */
+function invokeMatcher(matcher, data) {
+    var matcherResult = matcher(data);
+    return typeof matcherResult === "boolean" ?
+        (matcherResult ? [data] : null)
+        :
+            matcherResult;
+}
+exports.invokeMatcher = invokeMatcher;
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 var EvtBaseProtected = /** @class */ (function () {
     function EvtBaseProtected() {
         var _this_1 = this;
-        var inputs = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            inputs[_i] = arguments[_i];
-        }
         this.postCount = 0;
         this.traceId = null;
         this.handlers = [];
@@ -60,7 +65,8 @@ var EvtBaseProtected = /** @class */ (function () {
                 if (!handler.async) {
                     return "continue";
                 }
-                if (!handler.matcher(data)) {
+                var transformativeMatcherResult = invokeMatcher(handler.matcher, data);
+                if (transformativeMatcherResult === null) {
                     return "continue";
                 }
                 var handlerTrigger = _this_1.handlerTriggers.get(handler);
@@ -73,68 +79,45 @@ var EvtBaseProtected = /** @class */ (function () {
                         return true;
                     }
                     var exceptionRange = _this_1.asyncHandlerChronologyExceptionRange.get(handler);
-                    if (exceptionRange === undefined) {
-                        return false;
-                    }
-                    if (exceptionRange.lowerMark < postChronologyMark &&
-                        postChronologyMark < exceptionRange.upperMark) {
-                        return true;
-                    }
-                    return false;
+                    return (exceptionRange !== undefined &&
+                        exceptionRange.lowerMark < postChronologyMark &&
+                        postChronologyMark < exceptionRange.upperMark &&
+                        handlerMark > exceptionRange.upperMark);
                 })();
                 if (!shouldCallHandlerTrigger) {
                     return "continue";
                 }
                 promises.push(new Promise(function (resolve) { return handler.promise
                     .then(function () { return resolve(); })["catch"](function () { return resolve(); }); }));
-                handlerTrigger(data);
+                handlerTrigger(transformativeMatcherResult[0]);
             };
             for (var _i = 0, _a = __spreadArrays(_this_1.handlers); _i < _a.length; _i++) {
                 var handler = _a[_i];
                 _loop_1(handler);
             }
-            if (promises.length !== 0) {
-                var handlersDump_1 = __spreadArrays(_this_1.handlers);
-                Promise.all(promises).then(function () {
-                    for (var _i = 0, _a = _this_1.handlers; _i < _a.length; _i++) {
-                        var handler = _a[_i];
-                        if (!handler.async) {
-                            continue;
-                        }
-                        if (handlersDump_1.indexOf(handler) >= 0) {
-                            continue;
-                        }
-                        _this_1.asyncHandlerChronologyExceptionRange.set(handler, {
-                            "lowerMark": postChronologyMark,
-                            "upperMark": chronologyMarkStartResolveTick
-                        });
-                    }
-                    releaseLock();
-                });
-            }
-            else {
+            if (promises.length === 0) {
                 releaseLock();
+                return;
             }
-        });
-        if (!inputs.length)
-            return;
-        var eventEmitter = inputs[0], eventName = inputs[1];
-        var formatter = inputs[2] || this.defaultFormatter;
-        eventEmitter.on(eventName, function () {
-            var inputs = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                inputs[_i] = arguments[_i];
-            }
-            return _this_1.post(formatter.apply(null, inputs));
+            var handlersDump = __spreadArrays(_this_1.handlers);
+            Promise.all(promises).then(function () {
+                for (var _i = 0, _a = _this_1.handlers; _i < _a.length; _i++) {
+                    var handler = _a[_i];
+                    if (!handler.async) {
+                        continue;
+                    }
+                    if (handlersDump.indexOf(handler) >= 0) {
+                        continue;
+                    }
+                    _this_1.asyncHandlerChronologyExceptionRange.set(handler, {
+                        "lowerMark": postChronologyMark,
+                        "upperMark": chronologyMarkStartResolveTick
+                    });
+                }
+                releaseLock();
+            });
         });
     }
-    EvtBaseProtected.prototype.defaultFormatter = function () {
-        var inputs = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            inputs[_i] = arguments[_i];
-        }
-        return inputs[0];
-    };
     EvtBaseProtected.prototype.enableTrace = function (id, formatter, log //NOTE: we don't want to expose types from node
     ) {
         this.traceId = id;
@@ -174,27 +157,29 @@ var EvtBaseProtected = /** @class */ (function () {
             }
             handler.detach = function () {
                 var index = _this_1.handlers.indexOf(handler);
-                if (index < 0)
+                if (index < 0) {
                     return false;
+                }
                 _this_1.handlers.splice(index, 1);
                 _this_1.handlerTriggers["delete"](handler);
-                if (timer) {
+                if (timer !== undefined) {
                     clearTimeout(timer);
                     reject(new defs_1.EvtError.Detached());
                 }
                 return true;
             };
-            _this_1.handlerTriggers.set(handler, function (data) {
+            _this_1.handlerTriggers.set(handler, function (dataOrTransformedData) {
                 var _a;
                 var callback = handler.callback, once = handler.once;
-                if (timer) {
+                if (timer !== undefined) {
                     clearTimeout(timer);
                     timer = undefined;
                 }
-                if (once)
+                if (once) {
                     handler.detach();
-                (_a = callback) === null || _a === void 0 ? void 0 : _a.call(handler.boundTo, data);
-                resolve(data);
+                }
+                (_a = callback) === null || _a === void 0 ? void 0 : _a.call(handler.boundTo, dataOrTransformedData);
+                resolve(dataOrTransformedData);
             });
         });
         if (handler.prepend) {
@@ -255,7 +240,8 @@ var EvtBaseProtected = /** @class */ (function () {
             if (async) {
                 continue;
             }
-            if (!matcher(data)) {
+            var transformativeMatcherResult = invokeMatcher(matcher, data);
+            if (transformativeMatcherResult === null) {
                 continue;
             }
             var handlerTrigger = this.handlerTriggers.get(handler);
@@ -263,7 +249,7 @@ var EvtBaseProtected = /** @class */ (function () {
             if (!handlerTrigger) {
                 continue;
             }
-            handlerTrigger(data);
+            handlerTrigger(transformativeMatcherResult[0]);
             if (extract) {
                 return true;
             }
@@ -326,7 +312,9 @@ var EvtBaseProtected = /** @class */ (function () {
             "prepend": true
         }).promise;
     };
-    EvtBaseProtected.prototype.getHandlers = function () { return __spreadArrays(this.handlers); };
+    EvtBaseProtected.prototype.getHandlers = function () {
+        return __spreadArrays(this.handlers);
+    };
     /** Detach every handler bound to a given object or all handlers, return the detached handlers */
     EvtBaseProtected.prototype.detach = function (boundTo) {
         var detachedHandlers = [];

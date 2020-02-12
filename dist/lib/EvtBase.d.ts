@@ -1,10 +1,10 @@
 import { EvtBaseProtected } from "./EvtBaseProtected";
-import { Postable, Bindable } from "./defs";
+import { Bindable } from "./defs";
 /** Evt without evtAttach property, attachOnceMatched and createDelegate */
 export declare class EvtBase<T> extends EvtBaseProtected<T> {
     private defaultParams;
-    private getDefaultParams;
     private readParams;
+    waitFor<U>(matcher: (data: T) => [U] | null, timeout?: number): Promise<U>;
     /**
      *
      * 'await' a specific event. Can be used in async loop without missing events.
@@ -41,6 +41,52 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      */
     waitFor(timeout?: number): Promise<T>;
+    /**
+     *
+     * Enqueue a permanent handler.
+     *
+     * matcher -
+     *
+     * boundTo - Call context of callback, used as id to detach.
+     *
+     * timeout - ms after witch the returned promise will reject if no event matched.
+     *
+     * callback - Receive the matched events casted by the matcher.
+     *
+     * Return - Promise that resolve on first matched event or reject on timeout.
+     */
+    attach_<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, timeout: number, callback: (transformedData: U) => any): Promise<U>;
+    /**
+     *
+     * Enqueue a permanent handler.
+     *
+     * boundTo - Call context of callback, used as id to detach.
+     *
+     * callback - Receive the matched events casted by the matcher.
+     *
+     * Return - Promise that resolve on first matched event.
+     */
+    attach_<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, callback: (transformedData: U) => any): Promise<U>;
+    /**
+     *
+     * Enqueue a permanent handler.
+     *
+     * timeout - ms after witch the returned promise will reject if no event matched.
+     *
+     * callback - Receive the matched events casted by the matcher.
+     *
+     * Return - Promise that resolve on first matched event or reject on timeout.
+     */
+    attach_<U>(matcher: (data: T) => [U] | null, timeout: number, callback: (transformedData: U) => any): Promise<U>;
+    /**
+     *
+     * Enqueue a permanent handler.
+     *
+     * callback - Receive the matched events casted by the matcher.
+     *
+     * Return - Promise that resolve on first matched event.
+     */
+    attach_<U>(matcher: (data: T) => [U] | null, callback: (transformedData: U) => any): Promise<U>;
     /**
      *
      * Enqueue a permanent handler.
@@ -191,72 +237,46 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
     attach(callback: (data: T) => any): Promise<T>;
     /**
      *
-     * Enqueue a permanent handler.
-     *
-     * matcher - Filter events that should be passed to the callback.
+     * Enqueue a handler called only one time.
      *
      * timeout - ms after witch the returned promise will reject if no event matched.
      *
-     * evt - Will post the matched events casted by the matcher.
+     * callback - Receive the matched events casted by the matcher.
      *
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * Return - Promise that resolve on matched event or reject on timeout.
      */
-    attach<Q extends T>(matcher: (data: T) => data is Q, timeout: number, evt: Postable<Q>): Promise<Q>;
+    attachOnce_<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, timeout: number, callback: (transformedData: U) => any): Promise<U>;
     /**
      *
-     * Enqueue a permanent handler.
+     * Enqueue a handler called only one time.
      *
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo - Call context of callback, used as id to detach.
      *
-     * timeout - ms after with the returned promise will reject if no event matched.
+     * callback - Receive the matched events casted by the matcher.
      *
-     * evt - Will post the matched events.
-     *
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * Return - Promise that resolve on matched event.
      */
-    attach(matcher: (data: T) => boolean, timeout: number, evt: Postable<T>): Promise<T>;
+    attachOnce_<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, callback: (transformedData: U) => any): Promise<U>;
     /**
      *
-     * Enqueue a permanent handler.
+     * Enqueue a handler called only one time.
      *
-     * matcher - Filter events that should be passed to the callback.
+     * timeout - ms after witch the returned promise will reject if no event matched.
      *
-     * evt - Will post the matched events casted by the matcher.
+     * callback - Receive the matched events casted by the matcher.
      *
-     * Return - Promise that resolve on first matched event.
+     * Return - Promise that resolve on matched event or reject on timeout.
      */
-    attach<Q extends T>(matcher: (data: T) => data is Q, evt: Postable<Q>): Promise<Q>;
+    attachOnce_<U>(matcher: (data: T) => [U] | null, timeout: number, callback: (transformedData: U) => any): Promise<U>;
     /**
      *
-     * Enqueue a permanent handler.
+     * Enqueue a handler called only one time.
      *
-     * matcher - Filter events that should be passed to the callback.
+     * callback - Receive the matched events casted by the matcher.
      *
-     * evt - Will post the matched events.
-     *
-     * Return - Promise that resolve on first matched event.
+     * Return - Promise that resolve on matched event.
      */
-    attach(matcher: (data: T) => boolean, evt: Postable<T>): Promise<T>;
-    /**
-     *
-     * Enqueue a permanent handler.
-     *
-     * timeout - ms after with the returned promise will reject if no event matched.
-     *
-     * evt - Will post events.
-     *
-     * Return - Promise that resolve on first event or reject on timeout.
-     */
-    attach(timeout: number, evt: Postable<T>): Promise<T>;
-    /**
-     *
-     * Enqueue a permanent handler.
-     *
-     * evt - Will post events.
-     *
-     * Return - Promise that resolve on first event.
-     */
-    attach(evt: Postable<T>): Promise<T>;
+    attachOnce_<U>(matcher: (data: T) => [U] | null, callback: (transformedData: U) => any): Promise<U>;
     /**
      *
      * Enqueue a handler called only one time.
@@ -407,72 +427,48 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
     attachOnce(callback: (data: T) => any): Promise<T>;
     /**
      *
-     * Enqueue a handler called only one time.
+     * Unshift a permanent handler that will extract matched events.
      *
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo - Call context of callback, used as id to detach.
      *
      * timeout - ms after witch the returned promise will reject if no event matched.
      *
-     * evt - Will post the matched events casted by the matcher.
+     * callback - Receive the matched events casted by the matcher.
      *
-     * Return - Promise that resolve on matched event or reject on timeout.
+     * Return - Promise that resolve on first matched event or reject on timeout.
      */
-    attachOnce<Q extends T>(matcher: (data: T) => data is Q, timeout: number, evt: Postable<Q>): Promise<Q>;
+    attachExtract_<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, timeout: number, callback: (transformedData: U) => any): Promise<U>;
     /**
      *
-     * Enqueue a handler called only one time.
+     * Unshift a permanent handler that will extract matched events.
      *
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo - Call context of callback, used as id to detach.
      *
-     * timeout - ms after with the returned promise will reject if no event matched.
+     * callback - Receive the matched events casted by the matcher.
      *
-     * evt - Will post the matched events.
-     *
-     * Return - Promise that resolve on matched event or reject on timeout.
+     * Return - Promise that resolve on first matched event.
      */
-    attachOnce(matcher: (data: T) => boolean, timeout: number, evt: Postable<T>): Promise<T>;
+    attachExtract_<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, callback: (transformedData: U) => any): Promise<U>;
     /**
      *
-     * Enqueue a handler called only one time.
+     * Unshift a permanent handler that will extract matched events.
      *
-     * matcher - Filter events that should be passed to the callback.
+     * timeout - ms after witch the returned promise will reject if no event matched.
      *
-     * evt - Will post the matched events casted by the matcher.
+     * callback - Receive the matched events casted by the matcher.
      *
-     * Return - Promise that resolve on matched event.
+     * Return - Promise that resolve on first matched event or reject on timeout.
      */
-    attachOnce<Q extends T>(matcher: (data: T) => data is Q, evt: Postable<Q>): Promise<Q>;
+    attachExtract_<U>(matcher: (data: T) => [U] | null, timeout: number, callback: (transformedData: U) => any): Promise<U>;
     /**
      *
-     * Enqueue a handler called only one time.
+     * Unshift a permanent handler that will extract matched events.
      *
-     * matcher - Filter events that should be passed to the callback.
+     * callback - Receive the matched events casted by the matcher.
      *
-     * evt - Will post the matched events.
-     *
-     * Return - Promise that resolve on matched event.
+     * Return - Promise that resolve on first matched event.
      */
-    attachOnce(matcher: (data: T) => boolean, evt: Postable<T>): Promise<T>;
-    /**
-     *
-     * Enqueue a handler called only one time.
-     *
-     * timeout - ms after with the returned promise will reject if no event matched.
-     *
-     * evt - Will post events.
-     *
-     * Return - Promise that resolve on event or reject on timeout.
-     */
-    attachOnce(timeout: number, evt: Postable<T>): Promise<T>;
-    /**
-     *
-     * Enqueue a handler called only one time.
-     *
-     * evt - Will post events.
-     *
-     * Return - Promise that resolve on event.
-     */
-    attachOnce(evt: Postable<T>): Promise<T>;
+    attachExtract_<U>(matcher: (data: T) => [U] | null, callback: (transformedData: U) => any): Promise<U>;
     /**
      *
      * Unshift a permanent handler that will extract matched events.
@@ -579,61 +575,48 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
     attachExtract(matcher: (data: T) => boolean, callback: (data: T) => any): Promise<T>;
     /**
      *
-     * Unshift a permanent handler that will extract matched events.
+     * Unshift a permanent handler to the queue..
      *
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo - Call context of callback, used as id to detach.
      *
      * timeout - ms after witch the returned promise will reject if no event matched.
      *
-     * evt - Will post the matched events casted by the matcher.
+     * callback - Receive the matched events casted by the matcher.
      *
      * Return - Promise that resolve on first matched event or reject on timeout.
      */
-    attachExtract<Q extends T>(matcher: (data: T) => data is Q, timeout: number, evt: Postable<Q>): Promise<Q>;
+    attachPrepend_<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, timeout: number, callback: (transformedData: U) => any): Promise<U>;
     /**
      *
-     * Unshift a permanent handler that will extract matched events.
+     * Unshift a permanent handler to the queue..
      *
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo - Call context of callback, used as id to detach.
      *
-     * timeout - ms after with the returned promise will reject if no event matched.
+     * callback - Receive the matched events casted by the matcher.
      *
-     * evt - Will post the matched events.
+     * Return - Promise that resolve on first matched event.
+     */
+    attachPrepend_<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, callback: (transformedData: U) => any): Promise<U>;
+    /**
+     *
+     * Unshift a permanent handler to the queue..
+     *
+     * timeout - ms after witch the returned promise will reject if no event matched.
+     *
+     * callback - Receive the matched events casted by the matcher.
      *
      * Return - Promise that resolve on first matched event or reject on timeout.
      */
-    attachExtract(matcher: (data: T) => boolean, timeout: number, evt: Postable<T>): Promise<T>;
+    attachPrepend_<U>(matcher: (data: T) => [U] | null, timeout: number, callback: (transformedData: U) => any): Promise<U>;
     /**
      *
-     * Unshift a permanent handler that will extract matched events.
+     * Unshift a permanent handler to the queue..
      *
-     * matcher - Filter events that should be passed to the callback.
-     *
-     * evt - Will post the matched events casted by the matcher.
+     * callback - Receive the matched events casted by the matcher.
      *
      * Return - Promise that resolve on first matched event.
      */
-    attachExtract<Q extends T>(matcher: (data: T) => data is Q, evt: Postable<Q>): Promise<Q>;
-    /**
-     *
-     * Unshift a permanent handler that will extract matched events.
-     *
-     * matcher - Filter events that should be passed to the callback.
-     *
-     * evt - Will post the matched events.
-     *
-     * Return - Promise that resolve on first matched event.
-     */
-    attachExtract(matcher: (data: T) => boolean, evt: Postable<T>): Promise<T>;
-    /**
-     *
-     * Unshift a permanent handler that will extract matched events.
-     *
-     * evt - Will post events.
-     *
-     * Return - Promise that resolve on first event.
-     */
-    attachExtract(evt: Postable<T>): Promise<T>;
+    attachPrepend_<U>(matcher: (data: T) => [U] | null, callback: (transformedData: U) => any): Promise<U>;
     /**
      *
      * Unshift a permanent handler to the queue..
@@ -784,72 +767,48 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
     attachPrepend(callback: (data: T) => any): Promise<T>;
     /**
      *
-     * Unshift a permanent handler to the queue..
+     * Unshift a handler called only one time.
      *
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo - Call context of callback, used as id to detach.
      *
      * timeout - ms after witch the returned promise will reject if no event matched.
      *
-     * evt - Will post the matched events casted by the matcher.
+     * callback - Receive the matched events casted by the matcher.
      *
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * Return - Promise that resolve on matched event or reject on timeout.
      */
-    attachPrepend<Q extends T>(matcher: (data: T) => data is Q, timeout: number, evt: Postable<Q>): Promise<Q>;
+    attachOncePrepend_<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, timeout: number, callback: (transformedData: U) => any): Promise<U>;
     /**
      *
-     * Unshift a permanent handler to the queue..
+     * Unshift a handler called only one time.
      *
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo - Call context of callback, used as id to detach.
      *
-     * timeout - ms after with the returned promise will reject if no event matched.
+     * callback - Receive the matched events casted by the matcher.
      *
-     * evt - Will post the matched events.
-     *
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * Return - Promise that resolve on matched event.
      */
-    attachPrepend(matcher: (data: T) => boolean, timeout: number, evt: Postable<T>): Promise<T>;
+    attachOncePrepend_<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, callback: (transformedData: U) => any): Promise<U>;
     /**
      *
-     * Unshift a permanent handler to the queue..
+     * Unshift a handler called only one time.
      *
-     * matcher - Filter events that should be passed to the callback.
+     * timeout - ms after witch the returned promise will reject if no event matched.
      *
-     * evt - Will post the matched events casted by the matcher.
+     * callback - Receive the matched events casted by the matcher.
      *
-     * Return - Promise that resolve on first matched event.
+     * Return - Promise that resolve on matched event or reject on timeout.
      */
-    attachPrepend<Q extends T>(matcher: (data: T) => data is Q, evt: Postable<Q>): Promise<Q>;
+    attachOncePrepend_<U>(matcher: (data: T) => [U] | null, timeout: number, callback: (transformedData: U) => any): Promise<U>;
     /**
      *
-     * Unshift a permanent handler to the queue..
+     * Unshift a handler called only one time.
      *
-     * matcher - Filter events that should be passed to the callback.
+     * callback - Receive the matched events casted by the matcher.
      *
-     * evt - Will post the matched events.
-     *
-     * Return - Promise that resolve on first matched event.
+     * Return - Promise that resolve on matched event.
      */
-    attachPrepend(matcher: (data: T) => boolean, evt: Postable<T>): Promise<T>;
-    /**
-     *
-     * Unshift a permanent handler to the queue..
-     *
-     * timeout - ms after with the returned promise will reject if no event matched.
-     *
-     * evt - Will post events.
-     *
-     * Return - Promise that resolve on first event or reject on timeout.
-     */
-    attachPrepend(timeout: number, evt: Postable<T>): Promise<T>;
-    /**
-     *
-     * Unshift a permanent handler to the queue..
-     *
-     * evt - Will post events.
-     *
-     * Return - Promise that resolve on first event.
-     */
-    attachPrepend(evt: Postable<T>): Promise<T>;
+    attachOncePrepend_<U>(matcher: (data: T) => [U] | null, callback: (transformedData: U) => any): Promise<U>;
     /**
      *
      * Unshift a handler called only one time.
@@ -1000,72 +959,48 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
     attachOncePrepend(callback: (data: T) => any): Promise<T>;
     /**
      *
-     * Unshift a handler called only one time.
+     * Unshift a handler called only one time that will extract the event.
      *
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo - Call context of callback, used as id to detach.
      *
      * timeout - ms after witch the returned promise will reject if no event matched.
      *
-     * evt - Will post the matched events casted by the matcher.
+     * callback - Receive the matched events casted by the matcher.
      *
      * Return - Promise that resolve on matched event or reject on timeout.
      */
-    attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, timeout: number, evt: Postable<Q>): Promise<Q>;
+    attachOnceExtract_<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, timeout: number, callback: (transformedData: U) => any): Promise<U>;
     /**
      *
-     * Unshift a handler called only one time.
+     * Unshift a handler called only one time that will extract the event.
      *
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo - Call context of callback, used as id to detach.
      *
-     * timeout - ms after with the returned promise will reject if no event matched.
+     * callback - Receive the matched events casted by the matcher.
      *
-     * evt - Will post the matched events.
+     * Return - Promise that resolve on matched event.
+     */
+    attachOnceExtract_<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, callback: (transformedData: U) => any): Promise<U>;
+    /**
+     *
+     * Unshift a handler called only one time that will extract the event.
+     *
+     * timeout - ms after witch the returned promise will reject if no event matched.
+     *
+     * callback - Receive the matched events casted by the matcher.
      *
      * Return - Promise that resolve on matched event or reject on timeout.
      */
-    attachOncePrepend(matcher: (data: T) => boolean, timeout: number, evt: Postable<T>): Promise<T>;
+    attachOnceExtract_<U>(matcher: (data: T) => [U] | null, timeout: number, callback: (transformedData: U) => any): Promise<U>;
     /**
      *
-     * Unshift a handler called only one time.
+     * Unshift a handler called only one time that will extract the event.
      *
-     * matcher - Filter events that should be passed to the callback.
-     *
-     * evt - Will post the matched events casted by the matcher.
+     * callback - Receive the matched events casted by the matcher.
      *
      * Return - Promise that resolve on matched event.
      */
-    attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, evt: Postable<Q>): Promise<Q>;
-    /**
-     *
-     * Unshift a handler called only one time.
-     *
-     * matcher - Filter events that should be passed to the callback.
-     *
-     * evt - Will post the matched events.
-     *
-     * Return - Promise that resolve on matched event.
-     */
-    attachOncePrepend(matcher: (data: T) => boolean, evt: Postable<T>): Promise<T>;
-    /**
-     *
-     * Unshift a handler called only one time.
-     *
-     * timeout - ms after with the returned promise will reject if no event matched.
-     *
-     * evt - Will post events.
-     *
-     * Return - Promise that resolve on event or reject on timeout.
-     */
-    attachOncePrepend(timeout: number, evt: Postable<T>): Promise<T>;
-    /**
-     *
-     * Unshift a handler called only one time.
-     *
-     * evt - Will post events.
-     *
-     * Return - Promise that resolve on event.
-     */
-    attachOncePrepend(evt: Postable<T>): Promise<T>;
+    attachOnceExtract_<U>(matcher: (data: T) => [U] | null, callback: (transformedData: U) => any): Promise<U>;
     /**
      *
      * Unshift a handler called only one time that will extract the event.
@@ -1214,72 +1149,4 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      * Return - Promise that resolve on event.
      */
     attachOnceExtract(callback: (data: T) => any): Promise<T>;
-    /**
-     *
-     * Unshift a handler called only one time that will extract the event.
-     *
-     * matcher - Filter events that should be passed to the callback.
-     *
-     * timeout - ms after witch the returned promise will reject if no event matched.
-     *
-     * evt - Will post the matched events casted by the matcher.
-     *
-     * Return - Promise that resolve on matched event or reject on timeout.
-     */
-    attachOnceExtract<Q extends T>(matcher: (data: T) => data is Q, timeout: number, evt: Postable<Q>): Promise<Q>;
-    /**
-     *
-     * Unshift a handler called only one time that will extract the event.
-     *
-     * matcher - Filter events that should be passed to the callback.
-     *
-     * timeout - ms after with the returned promise will reject if no event matched.
-     *
-     * evt - Will post the matched events.
-     *
-     * Return - Promise that resolve on matched event or reject on timeout.
-     */
-    attachOnceExtract(matcher: (data: T) => boolean, timeout: number, evt: Postable<T>): Promise<T>;
-    /**
-     *
-     * Unshift a handler called only one time that will extract the event.
-     *
-     * matcher - Filter events that should be passed to the callback.
-     *
-     * evt - Will post the matched events casted by the matcher.
-     *
-     * Return - Promise that resolve on matched event.
-     */
-    attachOnceExtract<Q extends T>(matcher: (data: T) => data is Q, evt: Postable<Q>): Promise<Q>;
-    /**
-     *
-     * Unshift a handler called only one time that will extract the event.
-     *
-     * matcher - Filter events that should be passed to the callback.
-     *
-     * evt - Will post the matched events.
-     *
-     * Return - Promise that resolve on matched event.
-     */
-    attachOnceExtract(matcher: (data: T) => boolean, evt: Postable<T>): Promise<T>;
-    /**
-     *
-     * Unshift a handler called only one time that will extract the event.
-     *
-     * timeout - ms after with the returned promise will reject if no event matched.
-     *
-     * evt - Will post events.
-     *
-     * Return - Promise that resolve on event or reject on timeout.
-     */
-    attachOnceExtract(timeout: number, evt: Postable<T>): Promise<T>;
-    /**
-     *
-     * Unshift a handler called only one time that will extract the event.
-     *
-     * evt - Will post events.
-     *
-     * Return - Promise that resolve on event.
-     */
-    attachOnceExtract(evt: Postable<T>): Promise<T>;
 }

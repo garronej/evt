@@ -1,27 +1,31 @@
 
 import { Evt } from "./Evt";
 
-//NOTE: Pick was only introduced with typescript 3.5
-/**
- * Construct a type with the properties of T except for those in type K.
- */
-type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
+import { Omit } from "./defs";
 
-type EvtChange<T> = Evt<{
+type ChangeDiff<T> = {
     newValue: T;
     previousValue: T;
-}>;
+};
 
+type NonPostable<T> = Omit<Evt<T>, "post" | "postOnceMatched">
+
+/** The interface that should be exposed to users that should 
+ * have read only access on the observable */
 export interface Observable<T> {
     readonly value: T;
-    readonly evtChange: Omit<EvtChange<T>, "post" | "postOnceMatched">;
-}
+    /** when value changed post the new value and the value it previously replaced */
+    readonly evtChangeDiff: NonPostable<ChangeDiff<T>>;
+    /** when value changed post the new value */
+    readonly evtChange: NonPostable<T>;
+};
 
+/* Implementation of the Observable interface that expose a method to update the value*/
 export class ObservableImpl<T> implements Observable<T> {
 
+    private readonly evtChangeDiff_post: (data: ChangeDiff<T>) => void;
 
-    private readonly evtChange_post: EvtChange<T>["post"];
-
+    public readonly evtChangeDiff: Observable<T>["evtChangeDiff"];
     public readonly evtChange: Observable<T>["evtChange"];
 
     //NOTE: Not really readonly but we want to prevent user from setting the value
@@ -36,11 +40,15 @@ export class ObservableImpl<T> implements Observable<T> {
 
         {
 
-            const evtChange: EvtChange<T> = new Evt();
+            const evtChangeDiff: Evt<ChangeDiff<T>> = new Evt();
 
-            this.evtChange_post = (...args) => evtChange.post(...args);
+            this.evtChangeDiff_post = changeDiff => evtChangeDiff.post(changeDiff);
 
-            this.evtChange = evtChange;
+            this.evtChange = evtChangeDiff.createDelegate(
+                ({ newValue }) => [newValue]
+            );
+
+            this.evtChangeDiff = evtChangeDiff;
 
         }
 
@@ -60,7 +68,16 @@ export class ObservableImpl<T> implements Observable<T> {
 
             propertyDescriptor.value = newValue;
 
-            Object.defineProperty(this, "value", propertyDescriptor);
+            try {
+
+                Object.defineProperty(this, "value", propertyDescriptor);
+
+            } catch{
+
+                //For very old browser:
+                (this.value as any) = newValue;
+
+            }
 
         };
 
@@ -77,7 +94,7 @@ export class ObservableImpl<T> implements Observable<T> {
 
         this.overwriteReadonlyValue(newValue);
 
-        this.evtChange_post({ previousValue, newValue });
+        this.evtChangeDiff_post({ previousValue, newValue });
 
         return true;
 

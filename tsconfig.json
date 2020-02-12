@@ -14,7 +14,8 @@
                 "noUnusedLocals": true,
                 "noUnusedParameters": false,
                 "strictPropertyInitialization": true,
-                "strictFunctionTypes": true
+                "strictFunctionTypes": true,
+                "noImplicitAny": true
         },
         "filesGlob": [
                 "./src/**/*.ts"

@@ -7,17 +7,17 @@ let evt = new Evt<string | number>();
 //evt.enableTrace("evt");
 
 let evtNumber = new Evt<number>();
-evt.attach((data): data is number=> typeof data === "number", evtNumber);
+evt.attach((data): data is number=> typeof data === "number", n => evtNumber.post(n));
 
 //evtNumber.enableTrace("evtNumber");
 
 let evtString= new Evt<string>();
-evt.attach((data: string | number): data is string=> typeof data === "string", evtString as any);
+evt.attach((data: string | number): data is string=> typeof data === "string", str=> evtString.post(str));
 
 //evtString.enableTrace("evtString");
 
 let evtSatan= new Evt<string | number>();
-evt.attach(data => data === 666, evtSatan);
+evt.attach(data => data === 666, n => evtSatan.post(n));
 
 //evtSatan.enableTrace("evtSatan");
 

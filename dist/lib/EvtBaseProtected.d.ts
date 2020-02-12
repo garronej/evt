@@ -1,8 +1,9 @@
 import "minimal-polyfills/dist/lib/Array.prototype.find";
 import { UserProvidedParams, ImplicitParams, Bindable, Handler } from "./defs";
+/** If the matcher is not transformative then the transformedData will be the input data */
+export declare function invokeMatcher<T, U>(matcher: (data: T) => boolean | [U] | null, data: T): [T | U] | null;
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 export declare class EvtBaseProtected<T> {
-    private defaultFormatter;
     postCount: number;
     private traceId;
     private traceFormatter;
@@ -14,25 +15,21 @@ export declare class EvtBaseProtected<T> {
     private readonly asyncHandlerChronologyMark;
     private readonly asyncHandlerChronologyExceptionRange;
     private readonly getChronologyMark;
-    protected addHandler(attachParams: UserProvidedParams<T>, implicitAttachParams: ImplicitParams): Handler<T>;
+    protected addHandler<U>(attachParams: UserProvidedParams<T, U>, implicitAttachParams: ImplicitParams): Handler<T, U>;
     private trace;
     /** Returns post count */
     post(data: T): number;
     /** Return isExtracted */
     private postSync;
     private readonly postAsync;
-    constructor();
-    constructor(eventEmitter: {
-        on(eventName: string, listener: Function): any;
-    }, eventName: string, formatter?: (...inputs: any[]) => T);
-    protected __waitFor(attachParams: UserProvidedParams<T>): Promise<T>;
-    protected __attach(attachParams: UserProvidedParams<T>): Promise<T>;
-    protected __attachExtract(attachParams: UserProvidedParams<T>): Promise<T>;
-    protected __attachPrepend(attachParams: UserProvidedParams<T>): Promise<T>;
-    protected __attachOnce(attachParams: UserProvidedParams<T>): Promise<T>;
-    protected __attachOncePrepend(attachParams: UserProvidedParams<T>): Promise<T>;
-    protected __attachOnceExtract(attachParams: UserProvidedParams<T>): Promise<T>;
-    getHandlers(): Handler<T>[];
+    protected __waitFor<U>(attachParams: UserProvidedParams<T, U>): Promise<U>;
+    protected __attach<U>(attachParams: UserProvidedParams<T, U>): Promise<U>;
+    protected __attachExtract<U>(attachParams: UserProvidedParams<T, U>): Promise<U>;
+    protected __attachPrepend<U>(attachParams: UserProvidedParams<T, U>): Promise<U>;
+    protected __attachOnce<U>(attachParams: UserProvidedParams<T, U>): Promise<U>;
+    protected __attachOncePrepend<U>(attachParams: UserProvidedParams<T, U>): Promise<U>;
+    protected __attachOnceExtract<U>(attachParams: UserProvidedParams<T, U>): Promise<U>;
+    getHandlers(): Handler<T, any>[];
     /** Detach every handler bound to a given object or all handlers, return the detached handlers */
-    detach(boundTo?: Bindable): Handler<T>[];
+    detach(boundTo?: Bindable): Handler<T, any>[];
 }

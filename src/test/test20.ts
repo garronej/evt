@@ -1,34 +1,42 @@
-import {
-    Evt
-} from "../lib/index";
+import { Evt, EvtError } from "../lib";
 
-let evt = new Evt<string>();
+let evt= new Evt<string>();
 
-let output= "";
+process.nextTick(()=>{
 
-evt.attach(str => {
-
-    output+= str;
-
-})
-
-let pr= evt.attach(str=>{
-
-    output+= str;
-
+    evt.post("foo");
+    
 });
 
-evt.getHandlers().find(({ promise })=> promise === pr )!.extract= true;
+let success= false;
 
-evt.attach(str=>{
+(async ()=>{
 
-    throw new Error("never");
+    let str= await evt.attachOnce(0, ()=>{});
+
+    console.assert(str === "foo");
+
+    try{
+
+        await evt.attach(0,() => { });
+
+        console.assert(false);
+
+    }catch(error){ 
+
+        console.assert(error instanceof EvtError.Timeout);
+
+        success = true;
+
+    }
 
 
-});
+})();
 
-evt.post("a");
+setTimeout(()=>{
 
-console.assert(output==="aa");
+    console.assert(success);
 
-console.log("PASS".green);
+    console.log("PASS".green);
+
+},2000);

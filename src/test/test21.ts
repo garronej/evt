@@ -1,37 +1,54 @@
-import {
-    Evt
-} from "../lib/index";
-
-let evt = new Evt<string>();
-
-let output= "";
-
-evt.attachOnce(str => {
-
-    output+= str;
-
-})
-
-evt.attachOnce("m", str=>{
-
-    output+= str;
-
-});
-
-evt.getHandlers().find(({ boundTo })=> boundTo === "m")!.extract= true;
-
-evt.attachOnce(str=>{
-
-    output+= str;
-
-    //console.log("third", str);
+//import { EvtBase as Evt } from "../lib/EvtBase";
+import { Evt } from "../lib";
 
 
-});
+let evt= new Evt<string>();
 
-evt.post("a");
-evt.post("b");
+let success= false;
 
-console.assert(output==="aab");
+(async ()=>{
 
-console.log("PASS".green);
+
+    for( let _ of new Array<void>(6) ){
+
+        await evt.waitFor();
+
+    }
+
+    evt.post("satan");
+    evt.post("satan");
+    evt.post("satan");
+    evt.post("satan");
+
+    try{
+
+        await evt.waitFor(200);
+
+
+        console.assert(false,"satan came");
+
+    }catch{
+
+        success= true;
+
+    }
+
+
+})();
+
+
+for( let letter of [ "a", "b", "c", "d", "e" ] ){
+
+    evt.post(letter);
+
+}
+
+setTimeout(()=> evt.post("f"), 100);
+
+setTimeout(()=>{
+
+    console.assert(success);
+
+    console.log("PASS".green);
+
+},2000);

@@ -1,36 +1,50 @@
-export interface Postable<T> {
-    post(data: T): void;
+/**
+ * Construct a type with the properties of T except for those in type K.
+ */
+export declare type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
+/** Anything but a number, a callable function (constructors are bindable), undefined  or null */
+export declare type Bindable = Bindable.Object_ | string;
+export declare namespace Bindable {
+    /** Way of defining Object so it does not match number and string */
+    type Object_ = {
+        [k: string]: any;
+    };
 }
-/** Way of defining Object so it does not match number and string */
-export declare type Object_ = {
-    [k: string]: any;
-};
-/** Anything but a number, a callable function (i.e. not a constructor), undefined  or null */
-export declare type Bindable = Object_ | string;
-export interface UserProvidedParams<T> {
-    matcher: (data: T) => boolean;
-    boundTo: Bindable;
-    timeout: number | undefined;
-    callback: ((data: T) => any) | undefined;
+export declare type UserProvidedParams<T, U> = UserProvidedParams.WithNonTransformativeMatcher<T> | UserProvidedParams.WithTransformativeMatcher<T, U>;
+export declare namespace UserProvidedParams {
+    type Common = Readonly<{
+        boundTo: Bindable;
+        timeout: number | undefined;
+    }>;
+    export type WithTransformativeMatcher<T, U> = Common & Readonly<{
+        matcher: (data: T) => [U] | null;
+        callback: ((transformedData: U) => void) | undefined;
+    }>;
+    export type WithNonTransformativeMatcher<T> = Common & Readonly<{
+        matcher: (data: T) => boolean;
+        callback: ((data: T) => void) | undefined;
+    }>;
+    export {};
 }
 export declare type ImplicitParams = ImplicitParams.Sync | ImplicitParams.Async;
 export declare namespace ImplicitParams {
-    type _Base = {
+    type Common = Readonly<{
         once: boolean;
         prepend: boolean;
         extract: boolean;
-    };
-    type Sync = _Base & {
+    }>;
+    export type Sync = Common & Readonly<{
         async: false;
-    };
-    type Async = _Base & {
+    }>;
+    export type Async = Common & Readonly<{
         async: true;
-    };
+    }>;
+    export {};
 }
-export declare type Handler<T> = UserProvidedParams<T> & ImplicitParams & {
+export declare type Handler<T, U> = UserProvidedParams<T, U> & ImplicitParams & Readonly<{
     detach(): boolean;
-    promise: Promise<T>;
-};
+    promise: Promise<U>;
+}>;
 export declare namespace EvtError {
     class Timeout extends Error {
         readonly timeout: number;

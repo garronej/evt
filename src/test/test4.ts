@@ -6,7 +6,7 @@ let evt = new Evt<T>();
 
 let evtProxy= new Evt<T>();
 
-evt.attachOnce(evtProxy);
+evt.attachOnce(data => evtProxy.post(data));
 
 let success= false;
 

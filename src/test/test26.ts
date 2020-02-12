@@ -1,63 +1,16 @@
+
 import { Evt } from "../lib";
-import { EventEmitter } from "events";
 
-let success = 0;
+let evt = new Evt<number>();
 
-(() => {
+evt.enableTrace("myEvent", n => n.toString(), str => console.assert(str === "(myEvent) 1 handler => 666" ));
 
-    let e = new EventEmitter();
+evt.attachOnce(n => console.assert(n === 666));
 
-    let evt = new Evt<string>(e, "click");
+evt.post(666);
 
+const n: Evt.Unpack<typeof evt>= 666;
 
-    evt.waitFor(200).catch(() => console.assert(false)).then(
-        str => {
+n;
 
-            console.assert(str === "foo");
-
-            success++;
-
-        }
-    );
-
-    e.emit("click", "foo");
-
-
-})();
-
-(() => {
-
-    let e = new EventEmitter();
-
-    let evt = new Evt<string>(e, "click", (a, b)=> a + b);
-
-    evt.waitFor(200).then(
-        str => {
-
-            console.assert(str === "foobar", "m");
-
-            success++;
-
-        }
-    );
-
-    e.emit("click", "foo", "bar");
-
-})();
-
-
-
-setTimeout(() => {
-
-    console.assert(success === 2);
-
-    console.log("PASS".green);
-
-}, 2000);
-
-
-
-
-
-
-
+console.log("PASS".green);

@@ -1,19 +1,47 @@
-import { Evt } from "../lib";
 
-let evt= new Evt<string>();
+import { EvtBase as Evt } from "../lib/EvtBase";
 
-evt.attach(()=>{});
+let evt = new Evt<string>();
 
-evt.attachOnce(()=>{});
+(async () => {
 
-evt.waitFor();
+    {
 
-evt.attachPrepend({},()=>{});
+        const letter = await evt.waitFor();
 
-let detachedHandlers= evt.detach();
+        console.assert(letter === "a");
 
-console.assert( detachedHandlers.length === 4, "m1" );
+    }
 
-console.assert( !evt.getHandlers().length ,"m2");
 
-console.log("PASS".green);
+    evt.post("never");
+
+    {
+
+        let letter: string;
+
+        try {
+
+            letter = await evt.waitFor(1000);
+
+            throw new Error(`fail ${letter}`);
+
+        } catch{
+            console.log("PASS".green);
+        }
+
+
+    }
+
+
+
+
+})();
+
+evt.post("a");
+
+
+
+
+
+

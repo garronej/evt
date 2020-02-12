@@ -50,58 +50,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var EvtBase_2 = require("./EvtBase");
+var EvtBaseProtected_1 = require("./EvtBaseProtected");
 var Evt = /** @class */ (function (_super) {
     __extends(Evt, _super);
     function Evt() {
         var _this_1 = _super !== null && _super.apply(this, arguments) || this;
         _this_1.evtAttach = new EvtBase_2.EvtBase();
         return _this_1;
-        /*
-        public createDelegateExperiment<R>( matcher: (data: T)=> Evt.Formated<R>): Evt<R>;
-        public createDelegateExperiment<Q extends T>( matcher: (data: T)=> data is Q): Evt<Q>;
-        public createDelegateExperiment(matcher: (data: T)=> boolean): Evt<T>;
-        public createDelegateExperiment( matcher: (data: T)=> boolean | Evt.Formated<any>): Evt<any> {
-    
-            return this.__createDelegateExperiment(
-                data => {
-    
-                    const v= matcher(data)
-    
-                    return typeof v === "boolean" ?
-                         v ? Evt.Formated.Matched.create(data) : Evt.Formated.NotMatched.inst
-                         :
-                         v
-                         ;
-    
-    
-                }
-            );
-    
-        }
-    
-        public __createDelegateExperiment<R>(matcher: (data: T) => Evt.Formated<R>): Evt<R> {
-    
-    
-            const evtDelegate = new Evt<R>();
-    
-            this.attach(
-                data => {
-    
-                    const formated = matcher(data);
-    
-                    if (formated.isMatched === false) {
-                        return;
-                    }
-    
-                    evtDelegate.post(formated.formatedData);
-    
-                }
-            );
-    
-            return evtDelegate;
-    
-        }
-        */
     }
     Evt.prototype.addHandler = function (attachParams, implicitAttachParams) {
         var handler = _super.prototype.addHandler.call(this, attachParams, implicitAttachParams);
@@ -109,29 +64,31 @@ var Evt = /** @class */ (function (_super) {
         return handler;
     };
     /** Wait until an handler that match the event data have been attached
-     * return a promise that resolve with post count */
-    Evt.prototype.postOnceMatched = function (eventData) {
+     * return a promise that resolve with post count.
+     * The event is not posted synchronously when the candidate handler attach.
+     *  */
+    Evt.prototype.postOnceMatched = function (data) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!!this.getHandlers().find(function (handler) { return handler.matcher(eventData); })) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.evtAttach.waitFor(function (handler) { return handler.matcher(eventData); })];
+                        if (!!this.getHandlers().find(function (handler) { return handler.matcher(data); })) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.evtAttach.waitFor(function (handler) { return EvtBaseProtected_1.invokeMatcher(handler.matcher, data) !== null; })];
                     case 1:
                         _a.sent();
                         _a.label = 2;
-                    case 2: return [2 /*return*/, this.post(eventData)];
+                    case 2: return [2 /*return*/, this.post(data)];
                 }
             });
         });
     };
     Evt.prototype.__createDelegate = function (matcher) {
         var evtDelegate = new Evt();
-        this.attach(matcher, function (data) { return evtDelegate.post(data); });
+        this.attach_(matcher, function (transformedData) { return evtDelegate.post(transformedData); });
         return evtDelegate;
     };
     Evt.prototype.createDelegate = function (matcher) {
-        return this.__createDelegate(function (data) { return matcher(data); });
+        return this.__createDelegate(function (data) { return EvtBaseProtected_1.invokeMatcher((matcher !== null && matcher !== void 0 ? matcher : (function () { return true; })), data); });
     };
     return Evt;
 }(EvtBase_2.EvtBase));

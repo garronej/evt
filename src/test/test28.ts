@@ -1,77 +1,56 @@
-import { Evt, EvtError } from "../lib";
+
+import { EvtBase as Evt } from "../lib/EvtBase";
+
 
 let evt = new Evt<string>();
 
-let success= 0;
 
 (async () => {
 
-    try {
+    {
 
-        await evt.waitFor(0);
+        const letter = await evt.waitFor();
 
-        console.assert(false);
+        console.assert(letter === "a");
 
-    } catch (error) {
+    }
 
-        console.assert(error instanceof EvtError.Detached);
+    {
 
-        success++;
+        const letter = await evt.waitFor();
+
+        console.assert(letter === "b");
+
+    }
+
+    evt.post("never");
+
+    {
+
+        let letter: string;
+
+        try {
+
+            letter = await evt.waitFor(1000);
+
+            throw new Error(`fail ${letter}`);
+
+        } catch{
+            console.log("PASS".green);
+        }
+
 
     }
 
 
-})();
-
-(async () => {
-
-    try {
-
-        await evt.attach(0,()=>{});
-
-        console.assert(false);
-
-    } catch (error) {
-
-        console.assert(error instanceof EvtError.Detached);
-
-        success++;
-
-    }
 
 
 })();
 
-(async () => {
-
-    try {
-
-        await evt.attachOnce(0,()=>{});
-
-        console.assert(false);
-
-    } catch (error) {
-
-        console.assert(error instanceof EvtError.Detached);
-
-        success++;
-
-    }
+evt.post("a");
+evt.post("b");
 
 
-})();
-
-evt.detach();
-
-evt.post("foo");
-
-setTimeout(()=>{
-
-    console.assert(success === 3);
-
-    console.log("PASS".green);
-
-},2000);
 
 
 

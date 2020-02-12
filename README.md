@@ -1,9 +1,9 @@
 
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/6702424/74091145-b89bac00-4ab4-11ea-9a2f-f53463d56009.png">  
+    <img src="https://user-images.githubusercontent.com/6702424/74260343-acecf700-4cf9-11ea-8890-9dd81fb2d251.png">  
 </p>
 <p align="center">
-    <i> 💫 Type safe, feature rich, replacement for node's EventEmitter 💫 </i>
+    <i> 💫 Type safe replacement for node's EventEmitter embracing function programing 💫 </i>
     <br>
     <br>
     <img src="https://img.shields.io/bundlephobia/min/ts-evt">
@@ -14,9 +14,9 @@
 
 ---
 
-``ts-evt`` is a library intended to be a replacement for node's ``events`` featuring type safety and making extensive use promises.
-
-Similar to Qt signal/slot or C# events. 
+``ts-evt`` is intended to be a replacement for node's ``events``.  
+It enable and encourage __functional programing__ and make heavy use of __typescript__'s 
+type inference features to provide __type safety__ while keeping things __concise and elegant__ 🍸.
 
  <b>Browserify friendly:</b>
 
@@ -26,11 +26,11 @@ Similar to Qt signal/slot or C# events.
 
 # Motivation
 
-Overcoming those EventEmitter's common problems:
+Addressing the common problems faced with EventEmitter:
 - Hard to type.
-- Removing a particular listener is a pain as it require to have a reference of the listener.
+- Removing a particular listener is a pain, it require to keep the listener.
 - Can't easily add a one-time listener for the next event satisfying a given conditions.
-- Promise support was an afterthought.
+- Promise support was added as an afterthought.
 
 # Try it in your browser right now
 
@@ -724,6 +724,13 @@ const obsText= new ObservableImpl<string>("foo");
 console.assert(obsText.value === "foo");
 
 obsText.evtChange.attachOnce(
+    newText=> {
+        console.assert(newText === obsText.value);
+        console.log(`newValue: ${newText}`);
+    }
+);
+
+obsText.evtChangeDiff.attachOnce(
     ({ newValue, previousValue })=> {
 
         console.assert(newValue === obsText.value);
@@ -739,6 +746,7 @@ let hasChanged = obsText.onPotentialChange("foo");
 console.assert( hasChanged === false );
 
 hasChanged = obsText.onPotentialChange("bar");
+//"newValue: bar" have been printed to the console.
 //"newValue: bar, previousValue foo" have been printed to the console.
 
 console.assert(hasChanged === true);
@@ -753,16 +761,17 @@ const exposedObsText: Observable<string> = obsText;
 
 ```
 
+Impossible to unintentionally misuse:
+
 ![Screenshot 2020-02-10 at 08 50 14](https://user-images.githubusercontent.com/6702424/74130842-568d9480-4be3-11ea-851a-dc3cc0c83034.png)
 
-If it build then you are using it right:
 
 The TSC wont let the value to be set directly.
 
 ![Screenshot 2020-02-10 at 09 00 49](https://user-images.githubusercontent.com/6702424/74131123-f0554180-4be3-11ea-96e1-a235ec46e20f.png)
 
 
-It wont allow either the ``evtChange`` to be posted manually, ``post()``  
+It wont allow either the ``evtChange`` or ``evtChangeDiff`` to be posted manually, ``post()``  
 and ``postOnceMatched()`` are not exposed.
 
 ![Screenshot 2020-02-10 at 10 45 10](https://user-images.githubusercontent.com/6702424/74138812-8bedae80-4bf2-11ea-9ce3-0f31eb22df1a.png)
@@ -798,7 +807,7 @@ const obsNames = new ObservableImpl<string[]>(
     }
 );
 
-obsNames.evtChange.attach(
+obsNames.evtChangeDiff.attach(
     ({ previousValue: previousNames }) => {
 
         if (previousNames.length > obsNames.value.length) {

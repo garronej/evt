@@ -1,47 +1,25 @@
 
-import { EvtBase as Evt } from "../lib/EvtBase";
+import { Evt } from "../lib";
 
-let evt = new Evt<string>();
+let evt = new Evt<number | string>();
 
-(async () => {
+evt.enableTrace("myEvent", n => n.toString(), str => console.assert(str === "(myEvent) 1 handler => 666" ));
 
-    {
+evt.postOnceMatched(666);
 
-        const letter = await evt.waitFor();
+evt.attachOnce(
+    evtData => typeof evtData === "string",
+    ()=> { throw new Error(); }
+);
 
-        console.assert(letter === "a");
+evt.attachOnce(
+    evtData=> {
 
-    }
+        console.assert(evtData === 666);
 
-
-    evt.post("never");
-
-    {
-
-        let letter: string;
-
-        try {
-
-            letter = await evt.waitFor(1000);
-
-            throw new Error(`fail ${letter}`);
-
-        } catch{
-            console.log("PASS".green);
-        }
-
+        console.log("PASS".green);
 
     }
-
-
-
-
-})();
-
-evt.post("a");
-
-
-
-
+);
 
 

@@ -10,7 +10,7 @@ let evtProxy= new Evt<T>();
 
 //evtProxy.enableTrace("evtProxy");
 
-evt.attach(evtProxy);
+evt.attach(data=> evtProxy.post(data));
 
 let success= false;
 

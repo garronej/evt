@@ -11,15 +11,29 @@ import {
     ImplicitParams,
     Bindable,
     Handler,
-    EvtError
+    EvtError,
 } from "./defs";
+
+/** If the matcher is not transformative then the transformedData will be the input data */
+export function invokeMatcher<T, U>(
+    matcher: (data: T) => boolean | [U] | null,
+    data: T
+): [T | U] | null {
+
+    const matcherResult = matcher(data);
+
+    return typeof matcherResult === "boolean" ?
+        (
+            matcherResult ? [data] : null
+        )
+        :
+        matcherResult
+        ;
+
+}
 
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 export class EvtBaseProtected<T> {
-
-    private defaultFormatter(...inputs: any[]): T {
-        return inputs[0];
-    }
 
     public postCount = 0;
 
@@ -52,18 +66,18 @@ export class EvtBaseProtected<T> {
     }
 
 
-    private readonly handlers: Handler<T>[] = [];
+    private readonly handlers: Handler<T, any>[] = [];
 
-    private readonly handlerTriggers: LightMap<Handler<T>, (data: T) => void> = new Map();
+    private readonly handlerTriggers: LightMap<Handler<T, any>, (dataOrTransformedData: any) => void> = new Map();
 
     //NOTE: An async handler ( attached with waitFor ) is only eligible to handle a post if the post
     //occurred after the handler was set. We don't want to waitFor event from the past.
     //private readonly asyncHandlerChronologyMark = new WeakMap<ImplicitParams.Async, number>();
-    private readonly asyncHandlerChronologyMark= new WeakMap<ImplicitParams.Async, number>();
+    private readonly asyncHandlerChronologyMark = new WeakMap<ImplicitParams.Async, number>();
 
     //NOTE: There is an exception to the above rule, we want to allow async waitFor loop 
     //do so we have to handle the case where multiple event would be posted synchronously.
-    private readonly asyncHandlerChronologyExceptionRange= new WeakMap<
+    private readonly asyncHandlerChronologyExceptionRange = new WeakMap<
         ImplicitParams.Async,
         {
             lowerMark: number;
@@ -85,12 +99,12 @@ export class EvtBaseProtected<T> {
     })();
 
 
-    protected addHandler(
-        attachParams: UserProvidedParams<T>,
+    protected addHandler<U>(
+        attachParams: UserProvidedParams<T, U>,
         implicitAttachParams: ImplicitParams
-    ): Handler<T> {
+    ): Handler<T, U> {
 
-        const handler: Handler<T> = {
+        const handler: Handler<T, U> = {
             ...attachParams,
             ...implicitAttachParams,
             "detach": null as any,
@@ -106,7 +120,7 @@ export class EvtBaseProtected<T> {
 
         }
 
-        handler.promise = new Promise<T>(
+        (handler.promise as (typeof handler)["promise"]) = new Promise<U>(
             (resolve, reject) => {
 
                 let timer: NodeJS.Timer | undefined = undefined;
@@ -125,17 +139,19 @@ export class EvtBaseProtected<T> {
 
                 }
 
-                handler.detach = () => {
+                (handler.detach as (typeof handler)["detach"]) = () => {
 
-                    let index = this.handlers.indexOf(handler);
+                    const index = this.handlers.indexOf(handler);
 
-                    if (index < 0) return false;
+                    if (index < 0) {
+                        return false;
+                    }
 
                     this.handlers.splice(index, 1);
 
                     this.handlerTriggers.delete(handler);
 
-                    if (timer) {
+                    if (timer !== undefined) {
 
                         clearTimeout(timer);
 
@@ -149,20 +165,22 @@ export class EvtBaseProtected<T> {
 
                 this.handlerTriggers.set(
                     handler,
-                    (data: T) => {
+                    (dataOrTransformedData: U) => {
 
-                        let { callback, once } = handler;
+                        const { callback, once } = handler;
 
-                        if (timer) {
+                        if (timer !== undefined) {
                             clearTimeout(timer);
                             timer = undefined;
                         }
 
-                        if (once) handler.detach();
+                        if (once) {
+                            handler.detach();
+                        }
 
-                        callback?.call(handler.boundTo, data);
+                        callback?.call(handler.boundTo, dataOrTransformedData);
 
-                        resolve(data);
+                        resolve(dataOrTransformedData);
 
                     }
                 );
@@ -250,20 +268,25 @@ export class EvtBaseProtected<T> {
 
     }
 
+
     /** Return isExtracted */
     private postSync(data: T): boolean {
 
-        for (let handler of [...this.handlers]) {
 
-            let { async, matcher, extract } = handler;
+        for (const handler of [...this.handlers]) {
+
+            const { async, matcher, extract } = handler;
 
             if (async) {
                 continue;
             }
 
-            if (!matcher(data)) {
+            const transformativeMatcherResult = invokeMatcher(matcher, data);
+
+            if (transformativeMatcherResult === null) {
                 continue;
             }
+
 
             const handlerTrigger = this.handlerTriggers.get(handler);
 
@@ -272,7 +295,7 @@ export class EvtBaseProtected<T> {
                 continue;
             }
 
-            handlerTrigger(data);
+            handlerTrigger(transformativeMatcherResult[0]);
 
             if (extract) {
                 return true;
@@ -302,9 +325,12 @@ export class EvtBaseProtected<T> {
                     continue;
                 }
 
-                if (!handler.matcher(data)) {
+                const transformativeMatcherResult = invokeMatcher(handler.matcher, data);
+
+                if (transformativeMatcherResult === null) {
                     continue;
                 }
+
 
                 const handlerTrigger = this.handlerTriggers.get(handler);
 
@@ -322,18 +348,12 @@ export class EvtBaseProtected<T> {
 
                     const exceptionRange = this.asyncHandlerChronologyExceptionRange.get(handler);
 
-                    if (exceptionRange === undefined) {
-                        return false;
-                    }
-
-                    if (
+                    return (
+                        exceptionRange !== undefined &&
                         exceptionRange.lowerMark < postChronologyMark &&
-                        postChronologyMark < exceptionRange.upperMark
-                    ) {
-                        return true;
-                    }
-
-                    return false;
+                        postChronologyMark < exceptionRange.upperMark &&
+                        handlerMark > exceptionRange.upperMark
+                    );
 
                 })();
 
@@ -349,69 +369,51 @@ export class EvtBaseProtected<T> {
                     )
                 );
 
-                handlerTrigger(data);
+                handlerTrigger(transformativeMatcherResult[0]);
 
             }
 
-            if (promises.length !== 0) {
+            if (promises.length === 0) {
+                releaseLock();
+                return;
+            }
 
-                const handlersDump = [...this.handlers];
 
-                Promise.all(promises).then(() => {
+            const handlersDump = [...this.handlers];
 
-                    for (let handler of this.handlers) {
+            Promise.all(promises).then(() => {
 
-                        if (!handler.async) {
-                            continue;
-                        }
+                for (const handler of this.handlers) {
 
-                        if (handlersDump.indexOf(handler) >= 0) {
-                            continue;
-                        }
-
-                        this.asyncHandlerChronologyExceptionRange.set(
-                            handler,
-                            {
-                                "lowerMark": postChronologyMark,
-                                "upperMark": chronologyMarkStartResolveTick
-                            }
-                        );
-
+                    if (!handler.async) {
+                        continue;
                     }
 
-                    releaseLock();
+                    if (handlersDump.indexOf(handler) >= 0) {
+                        continue;
+                    }
 
-                });
+                    this.asyncHandlerChronologyExceptionRange.set(
+                        handler,
+                        {
+                            "lowerMark": postChronologyMark,
+                            "upperMark": chronologyMarkStartResolveTick
+                        }
+                    );
 
+                }
 
-            } else {
                 releaseLock();
-            }
+
+            });
+
+
 
 
         }
     );
 
-    constructor();
-    constructor(
-        eventEmitter: { on(eventName: string, listener: Function): any; },
-        eventName: string,
-        formatter?: (...inputs) => T);
-    constructor(...inputs: any[]) {
-
-        if (!inputs.length) return;
-
-        let [eventEmitter, eventName] = inputs;
-
-        let formatter: (...inputs: any[]) => T = inputs[2] || this.defaultFormatter;
-
-        eventEmitter.on(eventName,
-            (...inputs) => this.post(formatter.apply(null, inputs))
-        );
-
-    }
-
-    protected __waitFor(attachParams: UserProvidedParams<T>): Promise<T> {
+    protected __waitFor<U>(attachParams: UserProvidedParams<T, U>): Promise<U> {
 
         return this.addHandler(
             attachParams,
@@ -425,9 +427,9 @@ export class EvtBaseProtected<T> {
 
     }
 
-    protected __attach(
-        attachParams: UserProvidedParams<T>
-    ): Promise<T> {
+    protected __attach<U>(
+        attachParams: UserProvidedParams<T, U>
+    ): Promise<U> {
 
         return this.addHandler(
             attachParams,
@@ -441,9 +443,9 @@ export class EvtBaseProtected<T> {
 
     }
 
-    protected __attachExtract(
-        attachParams: UserProvidedParams<T>
-    ): Promise<T> {
+    protected __attachExtract<U>(
+        attachParams: UserProvidedParams<T, U>
+    ): Promise<U> {
 
         return this.addHandler(
             attachParams,
@@ -457,9 +459,9 @@ export class EvtBaseProtected<T> {
 
     }
 
-    protected __attachPrepend(
-        attachParams: UserProvidedParams<T>
-    ): Promise<T> {
+    protected __attachPrepend<U>(
+        attachParams: UserProvidedParams<T, U>
+    ): Promise<U> {
 
         return this.addHandler(
             attachParams,
@@ -473,9 +475,9 @@ export class EvtBaseProtected<T> {
 
     }
 
-    protected __attachOnce(
-        attachParams: UserProvidedParams<T>
-    ): Promise<T> {
+    protected __attachOnce<U>(
+        attachParams: UserProvidedParams<T, U>
+    ): Promise<U> {
 
         return this.addHandler(
             attachParams,
@@ -489,9 +491,9 @@ export class EvtBaseProtected<T> {
 
     }
 
-    protected __attachOncePrepend(
-        attachParams: UserProvidedParams<T>
-    ): Promise<T> {
+    protected __attachOncePrepend<U>(
+        attachParams: UserProvidedParams<T, U>
+    ): Promise<U> {
 
         return this.addHandler(
             attachParams,
@@ -505,9 +507,9 @@ export class EvtBaseProtected<T> {
 
     }
 
-    protected __attachOnceExtract(
-        attachParams: UserProvidedParams<T>
-    ): Promise<T> {
+    protected __attachOnceExtract<U>(
+        attachParams: UserProvidedParams<T, U>
+    ): Promise<U> {
 
         return this.addHandler(
             attachParams,
@@ -521,12 +523,14 @@ export class EvtBaseProtected<T> {
 
     }
 
-    public getHandlers(): Handler<T>[] { return [...this.handlers]; }
+    public getHandlers(): Handler<T, any>[] {
+        return [...this.handlers];
+    }
 
     /** Detach every handler bound to a given object or all handlers, return the detached handlers */
-    public detach(boundTo?: Bindable): Handler<T>[] {
+    public detach(boundTo?: Bindable): Handler<T, any>[] {
 
-        let detachedHandlers: Handler<T>[] = [];
+        let detachedHandlers: Handler<T, any>[] = [];
 
         for (let handler of [...this.handlers]) {
 
@@ -540,11 +544,6 @@ export class EvtBaseProtected<T> {
         return detachedHandlers;
 
     }
-
-
-
-
-
 
 }
 

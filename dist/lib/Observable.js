@@ -1,6 +1,8 @@
 "use strict";
 exports.__esModule = true;
 var Evt_1 = require("./Evt");
+;
+/* Implementation of the Observable interface that expose a method to update the value*/
 var ObservableImpl = /** @class */ (function () {
     function ObservableImpl(initialValue, areSame) {
         var _this_1 = this;
@@ -14,19 +16,23 @@ var ObservableImpl = /** @class */ (function () {
             };
             return function (newValue) {
                 propertyDescriptor.value = newValue;
-                Object.defineProperty(_this_1, "value", propertyDescriptor);
+                try {
+                    Object.defineProperty(_this_1, "value", propertyDescriptor);
+                }
+                catch (_a) {
+                    //For very old browser:
+                    _this_1.value = newValue;
+                }
             };
         })();
         {
-            var evtChange_1 = new Evt_1.Evt();
-            this.evtChange_post = function () {
-                var args = [];
-                for (var _i = 0; _i < arguments.length; _i++) {
-                    args[_i] = arguments[_i];
-                }
-                return evtChange_1.post.apply(evtChange_1, args);
-            };
-            this.evtChange = evtChange_1;
+            var evtChangeDiff_1 = new Evt_1.Evt();
+            this.evtChangeDiff_post = function (changeDiff) { return evtChangeDiff_1.post(changeDiff); };
+            this.evtChange = evtChangeDiff_1.createDelegate(function (_a) {
+                var newValue = _a.newValue;
+                return [newValue];
+            });
+            this.evtChangeDiff = evtChangeDiff_1;
         }
         this.overwriteReadonlyValue(initialValue);
     }
@@ -37,7 +43,7 @@ var ObservableImpl = /** @class */ (function () {
         }
         var previousValue = this.value;
         this.overwriteReadonlyValue(newValue);
-        this.evtChange_post({ previousValue: previousValue, newValue: newValue });
+        this.evtChangeDiff_post({ previousValue: previousValue, newValue: newValue });
         return true;
     };
     return ObservableImpl;

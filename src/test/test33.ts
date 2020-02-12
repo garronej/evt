@@ -1,25 +1,93 @@
 
 import { Evt } from "../lib";
 
-let evt = new Evt<number | string>();
+type Circle = {
+    type: "CIRCLE";
+    radius: number;
+};
 
-evt.enableTrace("myEvent", n => n.toString(), str => console.assert(str === "(myEvent) 1 handler => 666" ));
+type Square = {
+    type: "SQUARE";
+    sideLength: number;
+};
 
-evt.postOnceMatched(666);
+type Shape = Circle | Square;
 
-evt.attachOnce(
-    evtData => typeof evtData === "string",
-    ()=> { throw new Error(); }
-);
+const matchCircle = (shape: Shape): shape is Circle => shape.type === "CIRCLE";
 
-evt.attachOnce(
-    evtData=> {
+{
 
-        console.assert(evtData === 666);
+    const evtShape = new Evt<Shape>();
 
-        console.log("PASS".green);
+    const circle: Circle = {
+        "type": "CIRCLE",
+        "radius": 33
+    };
 
-    }
-);
+    const square: Square = {
+        "type": "SQUARE",
+        "sideLength": 12
+    };
+
+    const evtCircle = evtShape.createDelegate(matchCircle);
+
+    evtCircle.attachOnce(
+        10,
+        circle_ => console.assert(circle_ === circle)
+    );
+
+    evtShape.post(circle);
+
+    evtCircle.waitFor(10)
+        .then(
+            ()=> console.assert(false),
+            ()=> {}
+        )
+        ;
+
+    evtShape.post(square);
+
+}
+
+{
+
+    const evtShape = new Evt<Shape>();
+
+    const smallCircle: Circle = {
+        "type": "CIRCLE",
+        "radius": 3
+    };
+
+    const bigCircle: Circle = {
+        "type": "CIRCLE",
+        "radius": 10
+    };
 
 
+    const evtLargeShape = evtShape.createDelegate(
+        shape => {
+            switch (shape.type) {
+                case "CIRCLE": return shape.radius > 5;
+                case "SQUARE": return shape.sideLength > 3;
+            }
+        }
+    );
+
+
+    evtLargeShape.waitFor(circle => circle === smallCircle, 10)
+        .then(
+            ()=> console.assert(false),
+            ()=> {}
+        )
+        ;
+
+
+    evtLargeShape.waitFor(circle => circle === bigCircle, 10);
+
+    evtShape.post(smallCircle);
+
+    evtShape.post(bigCircle);
+
+}
+
+setTimeout(()=> console.log("PASS".green), 100);

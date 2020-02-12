@@ -1,42 +1,66 @@
-import { Evt, EvtError } from "../lib";
+import { Evt } from "../lib";
+import { EventEmitter } from "events";
 
-let evt= new Evt<string>();
+let success = 0;
 
-process.nextTick(()=>{
+(() => {
 
-    evt.post("foo");
-    
-});
+    let e = new EventEmitter();
 
-let success= false;
+    let evt = new Evt<string>();
 
-(async ()=>{
+    e.on("click", str=> evt.post(str));
 
-    let str= await evt.attachOnce(0, ()=>{});
+    evt.waitFor(200).then(
+        str => {
 
-    console.assert(str === "foo");
+            console.assert(str === "foo");
 
-    try{
+            success++;
 
-        await evt.attach(0,() => { });
+        }
+    );
 
-        console.assert(false);
-
-    }catch(error){ 
-
-        console.assert(error instanceof EvtError.Timeout);
-
-        success = true;
-
-    }
+    e.emit("click", "foo");
 
 
 })();
 
-setTimeout(()=>{
+(() => {
 
-    console.assert(success);
+    let e = new EventEmitter();
+
+    let evt = new Evt<string>();
+
+    e.on("click", (a, b)=> evt.post(a+b));
+
+    evt.waitFor(200).then(
+        str => {
+
+            console.assert(str === "foobar", "m");
+
+            success++;
+
+        }
+    );
+
+    e.emit("click", "foo", "bar");
+
+})();
+
+
+
+setTimeout(() => {
+
+    console.assert(success === 2);
 
     console.log("PASS".green);
 
-},2000);
+}, 2000);
+
+
+
+
+
+
+

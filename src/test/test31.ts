@@ -1,56 +1,19 @@
 
-import { EvtBase as Evt } from "../lib/EvtBase";
+import { EvtBase } from "../lib/EvtBase";
 
-
-let evt = new Evt<string>();
-
+const evtText = new EvtBase<string>();
 
 (async () => {
 
-    {
+    const t1 = await evtText.waitFor(10);
+    const t2 = await evtText.waitFor(10);
 
-        const letter = await evt.waitFor();
+    console.assert(`${t1}${t2}` === "AB");
 
-        console.assert(letter === "a");
-
-    }
-
-    {
-
-        const letter = await evt.waitFor();
-
-        console.assert(letter === "b");
-
-    }
-
-    evt.post("never");
-
-    {
-
-        let letter: string;
-
-        try {
-
-            letter = await evt.waitFor(1000);
-
-            throw new Error(`fail ${letter}`);
-
-        } catch{
-            console.log("PASS".green);
-        }
-
-
-    }
-
-
-
+    console.log("PASS".green);
 
 })();
 
-evt.post("a");
-evt.post("b");
-
-
-
-
+evtText.post("A");
+evtText.post("B");
 

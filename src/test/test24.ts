@@ -1,54 +1,19 @@
-//import { EvtBase as Evt } from "../lib/EvtBase";
 import { Evt } from "../lib";
-
 
 let evt= new Evt<string>();
 
-let success= false;
+evt.attach(()=>{});
 
-(async ()=>{
+evt.attachOnce(()=>{});
 
+evt.waitFor();
 
-    for( let _ of new Array<void>(6) ){
+evt.attachPrepend({},()=>{});
 
-        await evt.waitFor();
+let detachedHandlers= evt.detach();
 
-    }
+console.assert( detachedHandlers.length === 4, "m1" );
 
-    evt.post("satan");
-    evt.post("satan");
-    evt.post("satan");
-    evt.post("satan");
+console.assert( !evt.getHandlers().length ,"m2");
 
-    try{
-
-        await evt.waitFor(200);
-
-
-        console.assert(false,"satan came");
-
-    }catch{
-
-        success= true;
-
-    }
-
-
-})();
-
-
-for( let letter of [ "a", "b", "c", "d", "e" ] ){
-
-    evt.post(letter);
-
-}
-
-setTimeout(()=> evt.post("f"), 100);
-
-setTimeout(()=>{
-
-    console.assert(success);
-
-    console.log("PASS".green);
-
-},2000);
+console.log("PASS".green);
