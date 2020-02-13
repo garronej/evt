@@ -38,7 +38,8 @@ Thanks to Stackblitz you can start experimenting right now in your browser.
 
 ![demo_ts-evt_fixed_4](https://user-images.githubusercontent.com/6702424/74102835-7a9b9800-4b47-11ea-854d-062fe1f42bba.gif)
 
-[__Run Hello World__](https://stackblitz.com/edit/ts-evt-demo-hello-world?embed=1&file=index.ts)
+<a href="https://stackblitz.com/edit/ts-evt-demo-hello-world?embed=1&file=index.ts" target="_blank">__Run Hello World__</a>
+
 
 # Table of content
 
