@@ -151,7 +151,7 @@ var EvtBase = /** @class */ (function (_super) {
         }
         return _super.prototype.__waitFor.call(this, params);
     };
-    EvtBase.prototype.attach_ = function () {
+    EvtBase.prototype.$attach = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
@@ -165,7 +165,7 @@ var EvtBase = /** @class */ (function (_super) {
         }
         return this.__attach(this.readParams(inputs));
     };
-    EvtBase.prototype.attachOnce_ = function () {
+    EvtBase.prototype.$attachOnce = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
@@ -179,7 +179,7 @@ var EvtBase = /** @class */ (function (_super) {
         }
         return this.__attachOnce(this.readParams(inputs));
     };
-    EvtBase.prototype.attachExtract_ = function () {
+    EvtBase.prototype.$attachExtract = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
@@ -193,7 +193,7 @@ var EvtBase = /** @class */ (function (_super) {
         }
         return this.__attachExtract(this.readParams(inputs));
     };
-    EvtBase.prototype.attachPrepend_ = function () {
+    EvtBase.prototype.$attachPrepend = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
@@ -207,7 +207,7 @@ var EvtBase = /** @class */ (function (_super) {
         }
         return this.__attachPrepend(this.readParams(inputs));
     };
-    EvtBase.prototype.attachOncePrepend_ = function () {
+    EvtBase.prototype.$attachOncePrepend = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
@@ -221,7 +221,7 @@ var EvtBase = /** @class */ (function (_super) {
         }
         return this.__attachOncePrepend(this.readParams(inputs));
     };
-    EvtBase.prototype.attachOnceExtract_ = function () {
+    EvtBase.prototype.$attachOnceExtract = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];

@@ -1,9 +1,7 @@
 
 import { VoidEvt } from "../lib";
 
-
 const evt= new VoidEvt();
-
 
 evt.waitFor(0);
 

@@ -20,7 +20,6 @@ const matchCircle = (shape: Shape): shape is Circle =>
 
 const evtShape = new Evt<Shape>();
 
-
 const evtCircle = evtShape.createDelegate(matchCircle);
 id<Evt<Circle>>(evtCircle);
 

@@ -1,49 +1,18 @@
-import { EvtBase } from "./EvtBase";
-import { invokeMatcher } from "./EvtBaseProtected";
-import { Handler, UserProvidedParams, ImplicitParams } from "./defs";
 
-export class Evt<T> extends EvtBase<T> {
+import { EvtCompat } from "./EvtCompat";
+import { Bindable } from "./defs";
 
-    public readonly evtAttach = new EvtBase<Handler<T, any>>()
+//Merge into overloads the methods using mutational callbacks alongside callbacks.
+//Might be working in future version of typescript but as for Feb 2020 EvtCompat should be used instead.
+export class Evt<T> extends EvtCompat<T> {
 
-    protected addHandler<U>(
-        attachParams: UserProvidedParams<T, U>,
-        implicitAttachParams: ImplicitParams
-    ): Handler<T, U> {
-
-        let handler = super.addHandler(attachParams, implicitAttachParams);
-
-        this.evtAttach.post(handler);
-
-        return handler;
-
-    }
-
-    /** Wait until an handler that match the event data have been attached
-     * return a promise that resolve with post count.
-     * The event is not posted synchronously when the candidate handler attach.
-     *  */
-    public async postOnceMatched(data: T): Promise<number> {
-
-        if (!this.getHandlers().find(handler => handler.matcher(data))) {
-
-            await this.evtAttach.waitFor(
-                handler => invokeMatcher(handler.matcher, data) !== null
-            );
-
-        }
-
-        return this.post(data);
-
-    }
-
-    private __createDelegate<U>(
+    protected __createDelegate<U>(
         matcher: (data: T) => [U] | null,
     ): Evt<U> {
 
         const evtDelegate = new Evt<U>();
 
-        this.attach_(
+        this.$attach(
             matcher,
             transformedData => evtDelegate.post(transformedData)
         );
@@ -56,25 +25,761 @@ export class Evt<T> extends EvtBase<T> {
     public createDelegate<Q extends T>(matcher: (data: T) => data is Q): Evt<Q>;
     public createDelegate(matcher: (data: T) => boolean): Evt<T>;
     public createDelegate(): Evt<T>;
-    public createDelegate<U>(matcher?: (data: T) => boolean | [U] | null): Evt<T | U> {
+    public createDelegate(...inputs: any[]): any {
+        return (super.createDelegate as any)(...inputs);
+    }
 
-        return this.__createDelegate<T | U>(
-            data => invokeMatcher<T, U>(
-                matcher ?? (() => true),
-                data
-            )
-        );
+    /** new annotation */
+    public attach<U>(
+        matcher: (data: T) => [U] | null,
+        boundTo: Bindable,
+        timeout: number,
+        callback: (transformedData: U) => any
+    ): Promise<U>;
 
+    public attach<Q extends T>(
+        matcher: (data: T) => data is Q,
+        boundTo: Bindable,
+        timeout: number,
+        callback: (data: Q) => any
+    ): Promise<Q>;
+    public attach(
+        matcher: (data: T) => boolean,
+        boundTo: Bindable,
+        timeout: number,
+        callback: (data: T) => any
+    ): Promise<T>;
+
+    /** new annotation */
+    public attach<U>(
+        matcher: (data: T) => [U] | null,
+        boundTo: Bindable,
+        callback: (transformedData: U) => any
+    ): Promise<U>;
+
+    public attach<Q extends T>(
+        matcher: (data: T) => data is Q,
+        boundTo: Bindable,
+        callback: (data: Q) => any
+    ): Promise<Q>;
+    public attach(
+        matcher: (data: T) => boolean,
+        boundTo: Bindable,
+        callback: (data: T) => any
+    ): Promise<T>;
+
+    /** New annotation */
+    public attach<U>(
+        matcher: (data: T) => [U] | null,
+        timeout: number,
+        callback: (transformedData: U) => any
+    ): Promise<U>;
+
+    public attach<Q extends T>(
+        matcher: (data: T) => data is Q,
+        timeout: number,
+        callback: (data: Q) => any
+    ): Promise<Q>;
+    public attach(
+        matcher: (data: T) => boolean,
+        timeout: number,
+        callback: (data: T) => any
+    ): Promise<T>;
+    public attach(
+        boundTo: Bindable,
+        timeout: number,
+        callback: (data: T) => any
+    ): Promise<T>;
+
+
+    /** New annotation */
+    public attach<U>(
+        matcher: (data: T) => [U] | null,
+        callback: (transformedData: U) => any
+    ): Promise<U>;
+
+
+    public attach<Q extends T>(
+        matcher: (data: T) => data is Q,
+        callback: (data: Q) => any
+    ): Promise<Q>;
+    public attach(
+        matcher: (data: T) => boolean,
+        callback: (data: T) => any
+    ): Promise<T>;
+    public attach(
+        boundTo: Bindable,
+        callback: (data: T) => any
+    ): Promise<T>;
+    public attach(
+        timeout: number,
+        callback: (data: T) => any
+    ): Promise<T>;
+    public attach(
+        callback: (data: T) => any
+    ): Promise<T>;
+    public attach(...inputs: any[]) {
+        return (super.attach as any)(...inputs);
+    }
+
+
+
+
+
+
+
+
+    /**
+     * 
+     * Enqueue a handler called only one time.
+     * 
+     * timeout - ms after witch the returned promise will reject if no event matched.
+     * 
+     * callback - Receive the matched events casted by the matcher.
+     * 
+     * Return - Promise that resolve on matched event or reject on timeout.
+     */
+    public attachOnce<U>(
+        matcher: (data: T) => [U] | null,
+        boundTo: Bindable,
+        timeout: number,
+        callback: (transformedData: U) => any
+    ): Promise<U>;
+
+
+    public attachOnce<Q extends T>(
+        matcher: (data: T) => data is Q,
+        boundTo: Bindable,
+        timeout: number,
+        callback: (data: Q) => any
+    ): Promise<Q>;
+    public attachOnce(
+        matcher: (data: T) => boolean,
+        boundTo: Bindable,
+        timeout: number,
+        callback: (data: T) => any
+    ): Promise<T>;
+
+    /**
+     * 
+     * Enqueue a handler called only one time.
+     * 
+     * boundTo - Call context of callback, used as id to detach.
+     * 
+     * callback - Receive the matched events casted by the matcher.
+     * 
+     * Return - Promise that resolve on matched event.
+     */
+    public attachOnce<U>(
+        matcher: (data: T) => [U] | null,
+        boundTo: Bindable,
+        callback: (transformedData: U) => any
+    ): Promise<U>;
+
+    public attachOnce<Q extends T>(
+        matcher: (data: T) => data is Q,
+        boundTo: Bindable,
+        callback: (data: Q) => any
+    ): Promise<Q>;
+    public attachOnce(
+        matcher: (data: T) => boolean,
+        boundTo: Bindable,
+        callback: (data: T) => any
+    ): Promise<T>;
+
+    /**
+     * 
+     * Enqueue a handler called only one time.
+     * 
+     * timeout - ms after witch the returned promise will reject if no event matched.
+     * 
+     * callback - Receive the matched events casted by the matcher.
+     * 
+     * Return - Promise that resolve on matched event or reject on timeout.
+     */
+    public attachOnce<U>(
+        matcher: (data: T) => [U] | null,
+        timeout: number,
+        callback: (transformedData: U) => any
+    ): Promise<U>;
+
+
+    public attachOnce<Q extends T>(
+        matcher: (data: T) => data is Q,
+        timeout: number,
+        callback: (data: Q) => any
+    ): Promise<Q>;
+    public attachOnce(
+        matcher: (data: T) => boolean,
+        timeout: number,
+        callback: (data: T) => any
+    ): Promise<T>;
+    public attachOnce(
+        boundTo: Bindable,
+        timeout: number,
+        callback: (data: T) => any
+    ): Promise<T>;
+
+    /**
+     * 
+     * Enqueue a handler called only one time.
+     * 
+     * callback - Receive the matched events casted by the matcher.
+     * 
+     * Return - Promise that resolve on matched event.
+     */
+    public attachOnce<U>(
+        matcher: (data: T) => [U] | null,
+        callback: (transformedData: U) => any
+    ): Promise<U>;
+
+    public attachOnce<Q extends T>(
+        matcher: (data: T) => data is Q,
+        callback: (data: Q) => any
+    ): Promise<Q>;
+    public attachOnce(
+        matcher: (data: T) => boolean,
+        callback: (data: T) => any
+    ): Promise<T>;
+    public attachOnce(
+        boundTo: Bindable,
+        callback: (data: T) => any
+    ): Promise<T>;
+    public attachOnce(
+        timeout: number,
+        callback: (data: T) => any
+    ): Promise<T>;
+    public attachOnce(
+        callback: (data: T) => any
+    ): Promise<T>;
+    public attachOnce(...inputs: any[]) {
+        return (super.attachOnce as any)(...inputs);
+    }
+
+
+    /**
+     * 
+     * Unshift a permanent handler that will extract matched events.
+     * 
+     * boundTo - Call context of callback, used as id to detach.
+     * 
+     * timeout - ms after witch the returned promise will reject if no event matched.
+     * 
+     * callback - Receive the matched events casted by the matcher.
+     * 
+     * Return - Promise that resolve on first matched event or reject on timeout.
+     */
+    public attachExtract<U>(
+        matcher: (data: T) => [U] | null,
+        boundTo: Bindable,
+        timeout: number,
+        callback: (transformedData: U) => any
+    ): Promise<U>;
+
+
+    public attachExtract<Q extends T>(
+        matcher: (data: T) => data is Q,
+        boundTo: Bindable,
+        timeout: number,
+        callback: (data: Q) => any
+    ): Promise<Q>;
+    public attachExtract(
+        matcher: (data: T) => boolean,
+        boundTo: Bindable,
+        timeout: number,
+        callback: (data: T) => any
+    ): Promise<T>;
+
+    /**
+     * 
+     * Unshift a permanent handler that will extract matched events.
+     * 
+     * boundTo - Call context of callback, used as id to detach.
+     * 
+     * callback - Receive the matched events casted by the matcher.
+     * 
+     * Return - Promise that resolve on first matched event.
+     */
+    public attachExtract<U>(
+        matcher: (data: T) => [U] | null,
+        boundTo: Bindable,
+        callback: (transformedData: U) => any
+    ): Promise<U>;
+
+    public attachExtract<Q extends T>(
+        matcher: (data: T) => data is Q,
+        boundTo: Bindable,
+        callback: (data: Q) => any
+    ): Promise<Q>;
+    public attachExtract(
+        matcher: (data: T) => boolean,
+        boundTo: Bindable,
+        callback: (data: T) => any
+    ): Promise<T>;
+
+    /**
+     * 
+     * Unshift a permanent handler that will extract matched events.
+     * 
+     * timeout - ms after witch the returned promise will reject if no event matched.
+     * 
+     * callback - Receive the matched events casted by the matcher.
+     * 
+     * Return - Promise that resolve on first matched event or reject on timeout.
+     */
+    public attachExtract<U>(
+        matcher: (data: T) => [U] | null,
+        timeout: number,
+        callback: (transformedData: U) => any
+    ): Promise<U>;
+
+
+    public attachExtract<Q extends T>(
+        matcher: (data: T) => data is Q,
+        timeout: number,
+        callback: (data: Q) => any
+    ): Promise<Q>;
+    public attachExtract(
+        matcher: (data: T) => boolean,
+        timeout: number,
+        callback: (data: T) => any
+    ): Promise<T>;
+
+    /**
+     * 
+     * Unshift a permanent handler that will extract matched events.
+     * 
+     * callback - Receive the matched events casted by the matcher.
+     * 
+     * Return - Promise that resolve on first matched event.
+     */
+    public attachExtract<U>(
+        matcher: (data: T) => [U] | null,
+        callback: (transformedData: U) => any
+    ): Promise<U>;
+
+
+    public attachExtract<Q extends T>(
+        matcher: (data: T) => data is Q,
+        callback: (data: Q) => any
+    ): Promise<Q>;
+    public attachExtract(
+        matcher: (data: T) => boolean,
+        callback: (data: T) => any
+    ): Promise<T>;
+    public attachExtract(...inputs: any[]) {
+        return (super.attachExtract as any)(...inputs);
+    }
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * 
+     * Unshift a permanent handler to the queue..
+     * 
+     * boundTo - Call context of callback, used as id to detach.
+     * 
+     * timeout - ms after witch the returned promise will reject if no event matched.
+     * 
+     * callback - Receive the matched events casted by the matcher.
+     * 
+     * Return - Promise that resolve on first matched event or reject on timeout.
+     */
+    public attachPrepend<U>(
+        matcher: (data: T) => [U] | null,
+        boundTo: Bindable,
+        timeout: number,
+        callback: (transformedData: U) => any
+    ): Promise<U>;
+
+
+    public attachPrepend<Q extends T>(
+        matcher: (data: T) => data is Q,
+        boundTo: Bindable,
+        timeout: number,
+        callback: (data: Q) => any
+    ): Promise<Q>;
+    public attachPrepend(
+        matcher: (data: T) => boolean,
+        boundTo: Bindable,
+        timeout: number,
+        callback: (data: T) => any
+    ): Promise<T>;
+
+
+    /**
+     * 
+     * Unshift a permanent handler to the queue..
+     * 
+     * boundTo - Call context of callback, used as id to detach.
+     * 
+     * callback - Receive the matched events casted by the matcher.
+     * 
+     * Return - Promise that resolve on first matched event.
+     */
+    public attachPrepend<U>(
+        matcher: (data: T) => [U] | null,
+        boundTo: Bindable,
+        callback: (transformedData: U) => any
+    ): Promise<U>;
+
+
+    public attachPrepend<Q extends T>(
+        matcher: (data: T) => data is Q,
+        boundTo: Bindable,
+        callback: (data: Q) => any
+    ): Promise<Q>;
+    public attachPrepend(
+        matcher: (data: T) => boolean,
+        boundTo: Bindable,
+        callback: (data: T) => any
+    ): Promise<T>;
+
+    /**
+     * 
+     * Unshift a permanent handler to the queue..
+     * 
+     * timeout - ms after witch the returned promise will reject if no event matched.
+     * 
+     * callback - Receive the matched events casted by the matcher.
+     * 
+     * Return - Promise that resolve on first matched event or reject on timeout.
+     */
+    public attachPrepend<U>(
+        matcher: (data: T) => [U] | null,
+        timeout: number,
+        callback: (transformedData: U) => any
+    ): Promise<U>;
+
+    public attachPrepend<Q extends T>(
+        matcher: (data: T) => data is Q,
+        timeout: number,
+        callback: (data: Q) => any
+    ): Promise<Q>;
+    public attachPrepend(
+        matcher: (data: T) => boolean,
+        timeout: number,
+        callback: (data: T) => any
+    ): Promise<T>;
+    public attachPrepend(
+        boundTo: Bindable,
+        timeout: number,
+        callback: (data: T) => any
+    ): Promise<T>;
+
+    /**
+     * 
+     * Unshift a permanent handler to the queue..
+     * 
+     * callback - Receive the matched events casted by the matcher.
+     * 
+     * Return - Promise that resolve on first matched event.
+     */
+    public attachPrepend<U>(
+        matcher: (data: T) => [U] | null,
+        callback: (transformedData: U) => any
+    ): Promise<U>;
+
+    public attachPrepend<Q extends T>(
+        matcher: (data: T) => data is Q,
+        callback: (data: Q) => any
+    ): Promise<Q>;
+    public attachPrepend(
+        matcher: (data: T) => boolean,
+        callback: (data: T) => any
+    ): Promise<T>;
+    public attachPrepend(
+        boundTo: Bindable,
+        callback: (data: T) => any
+    ): Promise<T>;
+    public attachPrepend(
+        timeout: number,
+        callback: (data: T) => any
+    ): Promise<T>;
+    public attachPrepend(
+        callback: (data: T) => any
+    ): Promise<T>;
+    public attachPrepend(...inputs: any[]) {
+        return (super.attachPrepend as any)(...inputs);
+    }
+
+
+
+
+
+
+
+    /**
+     * 
+     * Unshift a handler called only one time.
+     * 
+     * boundTo - Call context of callback, used as id to detach.
+     * 
+     * timeout - ms after witch the returned promise will reject if no event matched.
+     * 
+     * callback - Receive the matched events casted by the matcher.
+     * 
+     * Return - Promise that resolve on matched event or reject on timeout.
+     */
+    public attachOncePrepend<U>(
+        matcher: (data: T) => [U] | null,
+        boundTo: Bindable,
+        timeout: number,
+        callback: (transformedData: U) => any
+    ): Promise<U>;
+
+    public attachOncePrepend<Q extends T>(
+        matcher: (data: T) => data is Q,
+        boundTo: Bindable,
+        timeout: number,
+        callback: (data: Q) => any
+    ): Promise<Q>;
+    public attachOncePrepend(
+        matcher: (data: T) => boolean,
+        boundTo: Bindable,
+        timeout: number,
+        callback: (data: T) => any
+    ): Promise<T>;
+
+    /**
+     * 
+     * Unshift a handler called only one time.
+     * 
+     * boundTo - Call context of callback, used as id to detach.
+     * 
+     * callback - Receive the matched events casted by the matcher.
+     * 
+     * Return - Promise that resolve on matched event.
+     */
+    public attachOncePrepend<U>(
+        matcher: (data: T) => [U] | null,
+        boundTo: Bindable,
+        callback: (transformedData: U) => any
+    ): Promise<U>;
+
+
+    public attachOncePrepend<Q extends T>(
+        matcher: (data: T) => data is Q,
+        boundTo: Bindable,
+        callback: (data: Q) => any
+    ): Promise<Q>;
+    public attachOncePrepend(
+        matcher: (data: T) => boolean,
+        boundTo: Bindable,
+        callback: (data: T) => any
+    ): Promise<T>;
+
+    /**
+     * 
+     * Unshift a handler called only one time.
+     * 
+     * callback - Receive the matched events casted by the matcher.
+     * 
+     * Return - Promise that resolve on matched event.
+     */
+    public attachOncePrepend<U>(
+        matcher: (data: T) => [U] | null,
+        callback: (transformedData: U) => any
+    ): Promise<U>;
+
+
+    public attachOncePrepend<Q extends T>(
+        matcher: (data: T) => data is Q,
+        timeout: number,
+        callback: (data: Q) => any
+    ): Promise<Q>;
+    public attachOncePrepend(
+        matcher: (data: T) => boolean,
+        timeout: number,
+        callback: (data: T) => any
+    ): Promise<T>;
+    public attachOncePrepend(
+        boundTo: Bindable,
+        timeout: number,
+        callback: (data: T) => any
+    ): Promise<T>;
+
+    /**
+     * 
+     * Unshift a handler called only one time.
+     * 
+     * callback - Receive the matched events casted by the matcher.
+     * 
+     * Return - Promise that resolve on matched event.
+     */
+    public attachOncePrepend<U>(
+        matcher: (data: T) => [U] | null,
+        callback: (transformedData: U) => any
+    ): Promise<U>;
+
+
+
+    public attachOncePrepend<Q extends T>(
+        matcher: (data: T) => data is Q,
+        callback: (data: Q) => any
+    ): Promise<Q>;
+    public attachOncePrepend(
+        matcher: (data: T) => boolean,
+        callback: (data: T) => any
+    ): Promise<T>;
+    public attachOncePrepend(
+        boundTo: Bindable,
+        callback: (data: T) => any
+    ): Promise<T>;
+    public attachOncePrepend(
+        timeout: number,
+        callback: (data: T) => any
+    ): Promise<T>;
+    public attachOncePrepend(
+        callback: (data: T) => any
+    ): Promise<T>;
+    public attachOncePrepend(...inputs: any[]) {
+        return (super.attachOncePrepend as any)(...inputs);
+    }
+
+
+    /**
+     * 
+     * Unshift a handler called only one time that will extract the event.
+     * 
+     * boundTo - Call context of callback, used as id to detach.
+     * 
+     * timeout - ms after witch the returned promise will reject if no event matched.
+     * 
+     * callback - Receive the matched events casted by the matcher.
+     * 
+     * Return - Promise that resolve on matched event or reject on timeout.
+     */
+    public attachOnceExtract<U>(
+        matcher: (data: T) => [U] | null,
+        boundTo: Bindable,
+        timeout: number,
+        callback: (transformedData: U) => any
+    ): Promise<U>;
+
+
+    public attachOnceExtract<Q extends T>(
+        matcher: (data: T) => data is Q,
+        boundTo: Bindable,
+        timeout: number,
+        callback: (data: Q) => any
+    ): Promise<Q>;
+    public attachOnceExtract(
+        matcher: (data: T) => boolean,
+        boundTo: Bindable,
+        timeout: number,
+        callback: (data: T) => any
+    ): Promise<T>;
+
+    /**
+     * 
+     * Unshift a handler called only one time that will extract the event.
+     * 
+     * boundTo - Call context of callback, used as id to detach.
+     * 
+     * callback - Receive the matched events casted by the matcher.
+     * 
+     * Return - Promise that resolve on matched event.
+     */
+    public attachOnceExtract<U>(
+        matcher: (data: T) => [U] | null,
+        boundTo: Bindable,
+        callback: (transformedData: U) => any
+    ): Promise<U>;
+
+
+
+    public attachOnceExtract<Q extends T>(
+        matcher: (data: T) => data is Q,
+        boundTo: Bindable,
+        callback: (data: Q) => any
+    ): Promise<Q>;
+    public attachOnceExtract(
+        matcher: (data: T) => boolean,
+        boundTo: Bindable,
+        callback: (data: T) => any
+    ): Promise<T>;
+
+    /**
+     * 
+     * Unshift a handler called only one time that will extract the event.
+     * 
+     * timeout - ms after witch the returned promise will reject if no event matched.
+     * 
+     * callback - Receive the matched events casted by the matcher.
+     * 
+     * Return - Promise that resolve on matched event or reject on timeout.
+     */
+    public attachOnceExtract<U>(
+        matcher: (data: T) => [U] | null,
+        timeout: number,
+        callback: (transformedData: U) => any
+    ): Promise<U>;
+
+    public attachOnceExtract<Q extends T>(
+        matcher: (data: T) => data is Q,
+        timeout: number,
+        callback: (data: Q) => any
+    ): Promise<Q>;
+    public attachOnceExtract(
+        matcher: (data: T) => boolean,
+        timeout: number,
+        callback: (data: T) => any
+    ): Promise<T>;
+    public attachOnceExtract(
+        boundTo: Bindable,
+        timeout: number,
+        callback: (data: T) => any
+    ): Promise<T>;
+
+    /**
+     * 
+     * Unshift a handler called only one time that will extract the event.
+     * 
+     * callback - Receive the matched events casted by the matcher.
+     * 
+     * Return - Promise that resolve on matched event.
+     */
+    public attachOnceExtract<U>(
+        matcher: (data: T) => [U] | null,
+        callback: (transformedData: U) => any
+    ): Promise<U>;
+
+
+    public attachOnceExtract<Q extends T>(
+        matcher: (data: T) => data is Q,
+        callback: (data: Q) => any
+    ): Promise<Q>;
+    public attachOnceExtract(
+        matcher: (data: T) => boolean,
+        callback: (data: T) => any
+    ): Promise<T>;
+    public attachOnceExtract(
+        boundTo: Bindable,
+        callback: (data: T) => any
+    ): Promise<T>;
+    public attachOnceExtract(
+        timeout: number,
+        callback: (data: T) => any
+    ): Promise<T>;
+    public attachOnceExtract(
+        callback: (data: T) => any
+    ): Promise<T>;
+
+    public attachOnceExtract(...inputs: any[]) {
+        return (super.attachOnceExtract as any)(...inputs);
     }
 
 
 }
-
-/*
-export namespace Evt {
-    export type Unpack<T> = T extends Evt<infer U> ? U : never;
-}
-*/
 
 export class VoidEvt extends Evt<void> {
     public post(): number {
@@ -85,3 +790,8 @@ export class VoidEvt extends Evt<void> {
         return super.postOnceMatched(undefined);
     }
 }
+
+
+
+
+
