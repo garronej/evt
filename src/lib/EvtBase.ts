@@ -186,6 +186,15 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
 
 
 
+    /**
+     * 
+     * 
+     * 
+     * matcher - Transformative
+     * 
+     * timeout
+     * 
+     */
     public waitFor<U>(
         matcher: (data: T) => [U] | null,
         timeout?: number
@@ -193,14 +202,10 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
 
     /**
      * 
-     * 'await' a specific event. Can be used in async loop without missing events.
+     * {@link https://github.com GitHub2}.
      * 
-     * matcher - Match and cast the event to be returned.
-     * 
-     * timeout - Throw Error after X ms if no event matched. ( never if not set )
-     * 
-     * Return - The the matched event casted.
-     * 
+     * @param matcher Type guard
+     * @param [timeout] 
      */
     public waitFor<Q extends T>(
         matcher: (data: T) => data is Q,
@@ -208,15 +213,9 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     ): Promise<Q>;
 
     /**
-     * 
-     * 'await' a specific event. Can be used in async loop without missing events.
-     * 
-     * matcher - Match the event to be returned.
-     * 
-     * timeout - Throw Error after X ms if no event matched. ( never if not set )
-     * 
-     * Return - The the matched event.
-     * 
+     * Waits for
+     * @param matcher Filter
+     * @param [timeout] 
      */
     public waitFor(
         matcher: (data: T) => boolean,
@@ -573,7 +572,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
         timeout: number,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
     /**
      * 
@@ -588,7 +587,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public $attachOnce<U>(
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
     /**
      * 
@@ -603,7 +602,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public $attachOnce<U>(
         matcher: (data: T) => [U] | null,
         timeout: number,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
     /**
      * 
@@ -615,7 +614,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      */
     public $attachOnce<U>(
         matcher: (data: T) => [U] | null,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
     public $attachOnce(...inputs: any[]) {
         return (this.attachOnce as any)(...inputs);
@@ -644,7 +643,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
         timeout: number,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
 
     /**
@@ -665,7 +664,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         matcher: (data: T) => boolean,
         boundTo: Bindable,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
 
@@ -684,7 +683,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public attachOnce<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
 
     /**
@@ -702,7 +701,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public attachOnce(
         matcher: (data: T) => boolean,
         boundTo: Bindable,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
 
@@ -722,7 +721,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public attachOnce<Q extends T>(
         matcher: (data: T) => data is Q,
         timeout: number,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
 
     /**
@@ -740,7 +739,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public attachOnce(
         matcher: (data: T) => boolean,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -758,7 +757,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public attachOnce(
         boundTo: Bindable,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
 
@@ -775,7 +774,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      */
     public attachOnce<Q extends T>(
         matcher: (data: T) => data is Q,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
 
 
@@ -791,7 +790,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      */
     public attachOnce(
         matcher: (data: T) => boolean,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -806,7 +805,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      */
     public attachOnce(
         boundTo: Bindable,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -821,7 +820,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      */
     public attachOnce(
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -833,7 +832,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * Return - Promise that resolve on event.
      */
     public attachOnce(
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     public attachOnce(...inputs: any[]) {
@@ -857,7 +856,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
         timeout: number,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
 
@@ -874,7 +873,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public $attachExtract<U>(
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
 
@@ -891,7 +890,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public $attachExtract<U>(
         matcher: (data: T) => [U] | null,
         timeout: number,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
 
@@ -906,7 +905,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      */
     public $attachExtract<U>(
         matcher: (data: T) => [U] | null,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
     public $attachExtract(...inputs: any[]) {
@@ -938,7 +937,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
         timeout: number,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
 
     /**
@@ -959,7 +958,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         matcher: (data: T) => boolean,
         boundTo: Bindable,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -977,7 +976,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public attachExtract<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
 
     /**
@@ -995,7 +994,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public attachExtract(
         matcher: (data: T) => boolean,
         boundTo: Bindable,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -1013,7 +1012,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public attachExtract<Q extends T>(
         matcher: (data: T) => data is Q,
         timeout: number,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
 
     /**
@@ -1031,7 +1030,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public attachExtract(
         matcher: (data: T) => boolean,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
 
@@ -1047,7 +1046,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      */
     public attachExtract<Q extends T>(
         matcher: (data: T) => data is Q,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
 
     /**
@@ -1062,7 +1061,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      */
     public attachExtract(
         matcher: (data: T) => boolean,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
 
@@ -1096,7 +1095,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
         timeout: number,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
     /**
@@ -1112,7 +1111,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public $attachPrepend<U>(
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
     /**
@@ -1128,7 +1127,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public $attachPrepend<U>(
         matcher: (data: T) => [U] | null,
         timeout: number,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
     /**
@@ -1141,7 +1140,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      */
     public $attachPrepend<U>(
         matcher: (data: T) => [U] | null,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
     public $attachPrepend(...inputs: any[]) {
@@ -1174,7 +1173,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
         timeout: number,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
 
     /**
@@ -1195,7 +1194,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         matcher: (data: T) => boolean,
         boundTo: Bindable,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -1213,7 +1212,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public attachPrepend<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
 
     /**
@@ -1231,7 +1230,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public attachPrepend(
         matcher: (data: T) => boolean,
         boundTo: Bindable,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -1249,7 +1248,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public attachPrepend<Q extends T>(
         matcher: (data: T) => data is Q,
         timeout: number,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
 
     /**
@@ -1267,7 +1266,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public attachPrepend(
         matcher: (data: T) => boolean,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -1285,7 +1284,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public attachPrepend(
         boundTo: Bindable,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -1300,7 +1299,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      */
     public attachPrepend<Q extends T>(
         matcher: (data: T) => data is Q,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
 
     /**
@@ -1315,7 +1314,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      */
     public attachPrepend(
         matcher: (data: T) => boolean,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -1330,7 +1329,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      */
     public attachPrepend(
         boundTo: Bindable,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -1345,7 +1344,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      */
     public attachPrepend(
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -1357,7 +1356,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * Return - Promise that resolve on first event.
      */
     public attachPrepend(
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
 
@@ -1387,7 +1386,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
         timeout: number,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
     /**
@@ -1403,7 +1402,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public $attachOncePrepend<U>(
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
     /**
@@ -1419,7 +1418,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public $attachOncePrepend<U>(
         matcher: (data: T) => [U] | null,
         timeout: number,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
     /**
@@ -1432,7 +1431,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      */
     public $attachOncePrepend<U>(
         matcher: (data: T) => [U] | null,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
     public $attachOncePrepend(...inputs: any[]) {
         return (this.attachOncePrepend as any)(...inputs);
@@ -1464,7 +1463,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
         timeout: number,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
 
     /**
@@ -1485,7 +1484,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         matcher: (data: T) => boolean,
         boundTo: Bindable,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -1503,7 +1502,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public attachOncePrepend<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
 
     /**
@@ -1521,7 +1520,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public attachOncePrepend(
         matcher: (data: T) => boolean,
         boundTo: Bindable,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -1539,7 +1538,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public attachOncePrepend<Q extends T>(
         matcher: (data: T) => data is Q,
         timeout: number,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
 
     /**
@@ -1557,7 +1556,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public attachOncePrepend(
         matcher: (data: T) => boolean,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -1575,7 +1574,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public attachOncePrepend(
         boundTo: Bindable,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -1590,7 +1589,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      */
     public attachOncePrepend<Q extends T>(
         matcher: (data: T) => data is Q,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
 
     /**
@@ -1605,7 +1604,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      */
     public attachOncePrepend(
         matcher: (data: T) => boolean,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -1620,7 +1619,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      */
     public attachOncePrepend(
         boundTo: Bindable,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -1635,7 +1634,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      */
     public attachOncePrepend(
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -1647,7 +1646,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * Return - Promise that resolve on event.
      */
     public attachOncePrepend(
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
 
@@ -1672,7 +1671,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
         timeout: number,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
     /**
@@ -1688,7 +1687,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public $attachOnceExtract<U>(
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
     /**
@@ -1704,7 +1703,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public $attachOnceExtract<U>(
         matcher: (data: T) => [U] | null,
         timeout: number,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
     /**
@@ -1717,7 +1716,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      */
     public $attachOnceExtract<U>(
         matcher: (data: T) => [U] | null,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
     public $attachOnceExtract(...inputs: any[]) {
@@ -1748,7 +1747,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
         timeout: number,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
 
     /**
@@ -1769,7 +1768,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         matcher: (data: T) => boolean,
         boundTo: Bindable,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -1787,7 +1786,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public attachOnceExtract<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
 
     /**
@@ -1805,7 +1804,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public attachOnceExtract(
         matcher: (data: T) => boolean,
         boundTo: Bindable,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -1823,7 +1822,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public attachOnceExtract<Q extends T>(
         matcher: (data: T) => data is Q,
         timeout: number,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
 
     /**
@@ -1841,7 +1840,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public attachOnceExtract(
         matcher: (data: T) => boolean,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -1859,7 +1858,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     public attachOnceExtract(
         boundTo: Bindable,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -1874,7 +1873,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      */
     public attachOnceExtract<Q extends T>(
         matcher: (data: T) => data is Q,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
 
     /**
@@ -1889,7 +1888,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      */
     public attachOnceExtract(
         matcher: (data: T) => boolean,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -1904,7 +1903,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      */
     public attachOnceExtract(
         boundTo: Bindable,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -1919,7 +1918,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      */
     public attachOnceExtract(
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -1931,7 +1930,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * Return - Promise that resolve on event.
      */
     public attachOnceExtract(
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     public attachOnceExtract(...inputs: any[]) {

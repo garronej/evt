@@ -34,89 +34,89 @@ export class Evt<T> extends EvtCompat<T> {
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
         timeout: number,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
     public attach<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
         timeout: number,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
     public attach(
         matcher: (data: T) => boolean,
         boundTo: Bindable,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /** new annotation */
     public attach<U>(
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
     public attach<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
     public attach(
         matcher: (data: T) => boolean,
         boundTo: Bindable,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /** New annotation */
     public attach<U>(
         matcher: (data: T) => [U] | null,
         timeout: number,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
     public attach<Q extends T>(
         matcher: (data: T) => data is Q,
         timeout: number,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
     public attach(
         matcher: (data: T) => boolean,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
     public attach(
         boundTo: Bindable,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
 
     /** New annotation */
     public attach<U>(
         matcher: (data: T) => [U] | null,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
 
     public attach<Q extends T>(
         matcher: (data: T) => data is Q,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
     public attach(
         matcher: (data: T) => boolean,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
     public attach(
         boundTo: Bindable,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
     public attach(
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
     public attach(
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
     public attach(...inputs: any[]) {
         return (super.attach as any)(...inputs);
@@ -143,7 +143,7 @@ export class Evt<T> extends EvtCompat<T> {
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
         timeout: number,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
 
@@ -151,13 +151,13 @@ export class Evt<T> extends EvtCompat<T> {
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
         timeout: number,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
     public attachOnce(
         matcher: (data: T) => boolean,
         boundTo: Bindable,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -173,18 +173,18 @@ export class Evt<T> extends EvtCompat<T> {
     public attachOnce<U>(
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
     public attachOnce<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
     public attachOnce(
         matcher: (data: T) => boolean,
         boundTo: Bindable,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -200,24 +200,24 @@ export class Evt<T> extends EvtCompat<T> {
     public attachOnce<U>(
         matcher: (data: T) => [U] | null,
         timeout: number,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
 
     public attachOnce<Q extends T>(
         matcher: (data: T) => data is Q,
         timeout: number,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
     public attachOnce(
         matcher: (data: T) => boolean,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
     public attachOnce(
         boundTo: Bindable,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -230,27 +230,27 @@ export class Evt<T> extends EvtCompat<T> {
      */
     public attachOnce<U>(
         matcher: (data: T) => [U] | null,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
     public attachOnce<Q extends T>(
         matcher: (data: T) => data is Q,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
     public attachOnce(
         matcher: (data: T) => boolean,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
     public attachOnce(
         boundTo: Bindable,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
     public attachOnce(
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
     public attachOnce(
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
     public attachOnce(...inputs: any[]) {
         return (super.attachOnce as any)(...inputs);
@@ -273,7 +273,7 @@ export class Evt<T> extends EvtCompat<T> {
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
         timeout: number,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
 
@@ -281,13 +281,13 @@ export class Evt<T> extends EvtCompat<T> {
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
         timeout: number,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
     public attachExtract(
         matcher: (data: T) => boolean,
         boundTo: Bindable,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -303,18 +303,18 @@ export class Evt<T> extends EvtCompat<T> {
     public attachExtract<U>(
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
     public attachExtract<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
     public attachExtract(
         matcher: (data: T) => boolean,
         boundTo: Bindable,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -330,19 +330,19 @@ export class Evt<T> extends EvtCompat<T> {
     public attachExtract<U>(
         matcher: (data: T) => [U] | null,
         timeout: number,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
 
     public attachExtract<Q extends T>(
         matcher: (data: T) => data is Q,
         timeout: number,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
     public attachExtract(
         matcher: (data: T) => boolean,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -355,17 +355,17 @@ export class Evt<T> extends EvtCompat<T> {
      */
     public attachExtract<U>(
         matcher: (data: T) => [U] | null,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
 
     public attachExtract<Q extends T>(
         matcher: (data: T) => data is Q,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
     public attachExtract(
         matcher: (data: T) => boolean,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
     public attachExtract(...inputs: any[]) {
         return (super.attachExtract as any)(...inputs);
@@ -397,7 +397,7 @@ export class Evt<T> extends EvtCompat<T> {
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
         timeout: number,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
 
@@ -405,13 +405,13 @@ export class Evt<T> extends EvtCompat<T> {
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
         timeout: number,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
     public attachPrepend(
         matcher: (data: T) => boolean,
         boundTo: Bindable,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
 
@@ -428,19 +428,19 @@ export class Evt<T> extends EvtCompat<T> {
     public attachPrepend<U>(
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
 
     public attachPrepend<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
     public attachPrepend(
         matcher: (data: T) => boolean,
         boundTo: Bindable,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -456,23 +456,23 @@ export class Evt<T> extends EvtCompat<T> {
     public attachPrepend<U>(
         matcher: (data: T) => [U] | null,
         timeout: number,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
     public attachPrepend<Q extends T>(
         matcher: (data: T) => data is Q,
         timeout: number,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
     public attachPrepend(
         matcher: (data: T) => boolean,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
     public attachPrepend(
         boundTo: Bindable,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -485,27 +485,27 @@ export class Evt<T> extends EvtCompat<T> {
      */
     public attachPrepend<U>(
         matcher: (data: T) => [U] | null,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
     public attachPrepend<Q extends T>(
         matcher: (data: T) => data is Q,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
     public attachPrepend(
         matcher: (data: T) => boolean,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
     public attachPrepend(
         boundTo: Bindable,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
     public attachPrepend(
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
     public attachPrepend(
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
     public attachPrepend(...inputs: any[]) {
         return (super.attachPrepend as any)(...inputs);
@@ -533,20 +533,20 @@ export class Evt<T> extends EvtCompat<T> {
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
         timeout: number,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
     public attachOncePrepend<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
         timeout: number,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
     public attachOncePrepend(
         matcher: (data: T) => boolean,
         boundTo: Bindable,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -562,19 +562,19 @@ export class Evt<T> extends EvtCompat<T> {
     public attachOncePrepend<U>(
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
 
     public attachOncePrepend<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
     public attachOncePrepend(
         matcher: (data: T) => boolean,
         boundTo: Bindable,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -587,24 +587,24 @@ export class Evt<T> extends EvtCompat<T> {
      */
     public attachOncePrepend<U>(
         matcher: (data: T) => [U] | null,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
 
     public attachOncePrepend<Q extends T>(
         matcher: (data: T) => data is Q,
         timeout: number,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
     public attachOncePrepend(
         matcher: (data: T) => boolean,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
     public attachOncePrepend(
         boundTo: Bindable,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -617,29 +617,29 @@ export class Evt<T> extends EvtCompat<T> {
      */
     public attachOncePrepend<U>(
         matcher: (data: T) => [U] | null,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
 
 
     public attachOncePrepend<Q extends T>(
         matcher: (data: T) => data is Q,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
     public attachOncePrepend(
         matcher: (data: T) => boolean,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
     public attachOncePrepend(
         boundTo: Bindable,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
     public attachOncePrepend(
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
     public attachOncePrepend(
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
     public attachOncePrepend(...inputs: any[]) {
         return (super.attachOncePrepend as any)(...inputs);
@@ -662,7 +662,7 @@ export class Evt<T> extends EvtCompat<T> {
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
         timeout: number,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
 
@@ -670,13 +670,13 @@ export class Evt<T> extends EvtCompat<T> {
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
         timeout: number,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
     public attachOnceExtract(
         matcher: (data: T) => boolean,
         boundTo: Bindable,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -692,7 +692,7 @@ export class Evt<T> extends EvtCompat<T> {
     public attachOnceExtract<U>(
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
 
@@ -700,12 +700,12 @@ export class Evt<T> extends EvtCompat<T> {
     public attachOnceExtract<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
     public attachOnceExtract(
         matcher: (data: T) => boolean,
         boundTo: Bindable,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -721,23 +721,23 @@ export class Evt<T> extends EvtCompat<T> {
     public attachOnceExtract<U>(
         matcher: (data: T) => [U] | null,
         timeout: number,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
     public attachOnceExtract<Q extends T>(
         matcher: (data: T) => data is Q,
         timeout: number,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
     public attachOnceExtract(
         matcher: (data: T) => boolean,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
     public attachOnceExtract(
         boundTo: Bindable,
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     /**
@@ -750,28 +750,28 @@ export class Evt<T> extends EvtCompat<T> {
      */
     public attachOnceExtract<U>(
         matcher: (data: T) => [U] | null,
-        callback: (transformedData: U) => any
+        callback: (transformedData: U) => void
     ): Promise<U>;
 
 
     public attachOnceExtract<Q extends T>(
         matcher: (data: T) => data is Q,
-        callback: (data: Q) => any
+        callback: (data: Q) => void
     ): Promise<Q>;
     public attachOnceExtract(
         matcher: (data: T) => boolean,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
     public attachOnceExtract(
         boundTo: Bindable,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
     public attachOnceExtract(
         timeout: number,
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
     public attachOnceExtract(
-        callback: (data: T) => any
+        callback: (data: T) => void
     ): Promise<T>;
 
     public attachOnceExtract(...inputs: any[]) {

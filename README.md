@@ -24,10 +24,6 @@ type inference features to provide __type safety__ while keeping things __concis
 - Transpiled down to ES3 ✅  
 - Very light-weight ✅   
 
-
-
-
-
 # Motivation
 
 Addressing the common problems faced with EventEmitter:
@@ -50,26 +46,33 @@ Thanks to Stackblitz you can start experimenting right now in your browser.
 - [Try it in your browser right now](#try-it-in-your-browser-right-now)
 - [Table of content](#table-of-content)
 - [Dependency requirement](#dependency-requirement)
-- [Usage](#usage)
-  - [ts-evt Evt vs events EventEmitter](#ts-evt-evt-vs-events-eventemitter)
-  - [Waiting for the next event.](#waiting-for-the-next-event)
+- [``Evt<T>`` documentation](#evtt-documentation)
+  - [``evt.attach()`` and ``evt.post()``](#evtattach-and-evtpost)
+  - [``evt.WaitFor()``](#evtwaitfor)
     - [Without timeout](#without-timeout)
     - [With timeout](#with-timeout)
-  - [Filtering events with matcher function](#filtering-events-with-matcher-function)
-  - [Combining Matcher and waitFor or attachOnce.](#combining-matcher-and-waitfor-or-attachonce)
-  - [No type arguments](#no-type-arguments)
-  - [Handler priority](#handler-priority)
-  - [Extracting events](#extracting-events)
-  - [Detaching events](#detaching-events)
+  - [Matcher function](#matcher-function)
+    - [Matcher - Filter only](#matcher---filter-only)
+    - [Matcher - Type guard](#matcher---type-guard)
+    - [Matcher - Transformative](#matcher---transformative)
+    - [Matcher - Compatible methods](#matcher---compatible-methods)
+  - [``VoidEvt``](#voidevt)
+  - [``evt.attachPrepend()`` and  ``evt.attachOncePrepend()``](#evtattachprepend-and-evtattachonceprepend)
+  - [``evt.attachExtract()`` and ``evt.attachOnceExtract()``](#evtattachextract-and-evtattachonceextract)
+  - [``evt.detach()``](#evtdetach)
+    - [``evt.detach()`` all handlers.](#evtdetach-all-handlers)
+    - [``evt.handler(boundTo)`` - bound to a given context](#evthandlerboundto---bound-to-a-given-context)
+    - [``handler.detach()`` - handler using a certain callback.](#handlerdetach---handler-using-a-certain-callback)
+  - [``evt.getHandler()``](#evtgethandler)
   - [Combining Once, Prepend, matcher, timeout and boundTo](#combining-once-prepend-matcher-timeout-and-boundto)
-  - [Creating delegate](#creating-delegate)
-  - [postCount](#postcount)
-  - [evtAttach](#evtattach)
-  - [postOnceMatched](#postoncematched)
-  - [Unpacking the type argument.](#unpacking-the-type-argument)
-  - [Enable trace ( for debugging purpose )](#enable-trace--for-debugging-purpose-)
-- [The Observer class](#the-observer-class)
-- [Asynchronously handling events posted synchronously (Edge case):](#asynchronously-handling-events-posted-synchronously-edge-case)
+  - [``evt.createDelegate()``](#evtcreatedelegate)
+  - [``evt.postCount``](#evtpostcount)
+  - [``evt.evtAttach()``](#evtevtattach)
+  - [``evt.postOnceMatched()``](#evtpostoncematched)
+  - [``UnpackEvt<typeof evt>``.](#unpackevttypeof-evt)
+  - [``evt.enableTrace()``](#evtenabletrace)
+- [``Observer<T>`` documentation](#observert-documentation)
+- [``evt.waitFor()`` used in ``async`` procedure or loop](#evtwaitfor-used-in-async-procedure-or-loop)
 - [History of the project](#history-of-the-project)
 
 # Dependency requirement
@@ -81,10 +84,9 @@ Minimum version of typescript your project need to be using.
 
 Exposed interfaces use typescript keywords that where added in specified version.
 
-# Usage
+# ``Evt<T>`` documentation
 
-
-## ts-evt Evt vs events EventEmitter
+## ``evt.attach()`` and ``evt.post()``
 
 ````typescript
 import { Evt } from "ts-evt";
@@ -107,7 +109,7 @@ evtTime.post(1234);
 
 ````
 
-Exact equivalent with node's EventEmitter:
+Exact equivalent with  ``EventEmitter`` from the *"events"* node module.
 
 ````typescript
 import { EventEmitter } from "events";
@@ -124,9 +126,13 @@ eventEmitter.emit("time", 123);
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-compared-with-events?embed=1&file=index.ts)
 
-## Waiting for the next event.
+## ``evt.WaitFor()``
+
+Method that return a promise that will resolve when the next event is posted.
 
 ### Without timeout
+
+By default the promise returned by ``waitFor`` will never reject.
 
 ````typescript
 import { Evt } from "ts-evt";
@@ -149,8 +155,8 @@ setTimeout(()=> evtText.post("Hi!"), 1500);
 
 ### With timeout
 
-It is possible to set how long we wait for the next event before
-the promise returned by waitFor rejects.
+It is possible to set for what is the maximum amount of time we are willing
+to wait before the promise rejects.
 
 ```typescript
 
@@ -192,10 +198,17 @@ setTimeout(
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-waitfor-timeout?embed=1&file=index.ts)
 
-## Filtering events with matcher function
+## Matcher function
 
 Matcher functions are used to attach handlers that should only be called against events data
 satisfying certain conditions.
+
+Matcher function can be of tree type:  
+    - __Filter only__: ``(data: T)=> boolean``. Filter the events that should be passed to the callback.  
+    - __Type guard__: ``<Q extends T>(data: T)=> data is Q``. Filter and restrict the type of the event data to a subtype of T.  
+    - __Transformative__: ``<U>(data: T)=> [U]:null``. Filter and transform the event data before passing it to the matcher.   
+
+### Matcher - Filter only
 
 ```typescript
 import { Evt } from "ts-evt";
@@ -219,6 +232,8 @@ evtText.post("Hi!");
 ```
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-matcher-return-boolean?embed=1&file=index.ts)
+
+### Matcher - Type guard
 
 If the the matcher function is a type guard the type of the event data  will be narrowed down
 to the subtype the matcher function is matching.  
@@ -272,7 +287,61 @@ The type of the shape object is narrowed down to ``Circle``
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-matcher-type-guard?embed=1&file=index.ts)
 
-## Combining Matcher and waitFor or attachOnce.
+### Matcher - Transformative
+
+To filter and transform the data that should be passed to the callback.  
+
+The matcher should return the value that is to be passed to the callback wrapped into a singleton ``[]``.  
+When the matcher return ``null`` nothing is passed to the callback.  
+
+When you wish to use a transformative matcher you need to prefix the method name by ``$``.
+
+
+```typescript
+
+import { Evt } from "ts-evt";
+
+const evtShape = new Evt<Shape>();
+
+evtShape.$attach(
+    shape => shape.type === "CIRCLE" && shape.radius > 100 ? 
+        [ shape.radius ] : null,
+    radius => console.log(`radius: ${radius}`) //NOTE: radius is inferred of being of type number !
+);
+
+//Nothing will be printed to the console, it's a SQUARE
+evtShape.post({
+    "type": "SQUARE",
+    "sideLength": 3
+});
+
+//Nothing will be printed to the console, The circle is too small.
+evtShape.post({
+    "type": "CIRCLE",
+    "radius": 3
+});
+
+//"radius 200" Will be printed to the console.
+evtShape.post({
+    "type": "CIRCLE",
+    "radius": 200
+});
+```
+
+[__Run example__](https://stackblitz.com/edit/ts-evt-demo-transformative-matcher?embed=1&file=index.ts)
+
+### Matcher - Compatible methods
+
+Matcher functions can be used with:  
+    -``$attach``  
+    -``$attachOnce``  
+    -``waitFor`` ( ``$`` not needed )  
+    -``createDelegate`` ( ``$`` not needed )  
+    -``$attachExtract``  
+    -``$attachOnceExtract``  
+    -``$attachPrepend``  
+    -``$attachOncePrepend``
+
 
 ``waitFor`` and ``attachOnce`` combined with matcher address the main shortcoming of EventEmitter
 allowing us to asynchronously wait for the next shape that is a circle for example.
@@ -286,14 +355,12 @@ evtShape.waitFor(matchCircle)
     .then(circle => console.log(`radius: ${circle.radius}`))
     ;
 
-evtShape.attachOnce(
-    (shape): shape is Square => (
-        shape.type === "SQUARE" &&
-        shape.sideLength > 20
-    ),
-    //We can deconstruct the shape extracting sideLength as we know it will be a square
-    ({ sideLength })=> console.log(`length: ${sideLength}`)
+evtShape.$attachOnce(
+    shape => shape.type === "SQUARE" && shape.sideLength > 100 ? 
+        [ shape.sideLength ] : null,
+    sideLength => console.log(`length: ${sideLength}`)
 );
+    
 
 const circle: Circle = {
     "type": "CIRCLE",
@@ -328,10 +395,10 @@ evtShape.post({
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-matcher-and-waitfor?embed=1&file=index.ts)
 
-## No type arguments
+## ``VoidEvt``
 
-When you create an Evt with a void argument, TypeScript forces you to pass ``undefined`` to post(). 
-To address this, we added the VoidEvt class.
+When you create an Evt with a void argument, TypeScript forces you to pass ``undefined`` to ``post()``.  
+Instead use ``VoidEvt``
 
 ```typescript
 import { VoidEvt } from "ts-evt";
@@ -346,9 +413,9 @@ evtSocketConnect.post();
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-hello-world-vgzzgk?embed=1&file=index.ts)
 
-## Handler priority
+## ``evt.attachPrepend()`` and  ``evt.attachOncePrepend()``
 
-Similar to node's ``emitter.prependListener()`` 
+Similar to node's ``emitter.prependListener()`` and ``emitter.prependOnceListener()``
 
 ```typescript
 import { VoidEvt } from "ts-evt";
@@ -368,7 +435,7 @@ evtConnect.post();
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-prepend?embed=1&file=index.ts)
 
 
-## Extracting events
+## ``evt.attachExtract()`` and ``evt.attachOnceExtract()``
 
 To handle edge cases that haven't been anticipated without having to rethink the all model
 we provide a way to extract particular type of events.
@@ -401,9 +468,11 @@ evtCircle.attachPrepend(
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-extract?embed=1&file=index.ts)
 
-## Detaching events
+## ``evt.detach()``
 
 Multiple ways of detaching handlers are provided. 
+
+### ``evt.detach()`` all handlers.
 
 To detach all handlers at once:
 
@@ -412,6 +481,8 @@ const evtText = new Evt<string>();
 //detach with no argument will detach all handlers (attach, attachOnce, waitFor... )
 evtText.detach();
 ```
+
+### ``evt.handler(boundTo)`` - bound to a given context
 
 The preferred way of detaching an handler is by using "boundTo" context.
 
@@ -439,6 +510,8 @@ evtText.detach(boundTo);
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-detach-with-contex?embed=1&file=index.ts)
 
+### ``handler.detach()`` - handler using a certain callback.
+
 To detach a particular handler for which we have the reference of the callback function
 as we do in node's EventEmitter: 
 
@@ -459,7 +532,14 @@ evtText.getHandlers()
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-detach-classic?embed=1&file=index.ts)
 
-A more advanced example here detaching all handler that have a given matcher:
+## ``evt.getHandler()``
+
+List all handlers attached to the ``Evt``.   
+Returns an array of ``Handler<T>``.  
+An ``Handler[]`` is an object that contain all the information
+needed to identify an handler and a ``detach()`` method.
+
+Here a usecase detaching all handler that uses a given matcher:
 
 ```typescript
 import { Evt } from "ts-evt";
@@ -500,10 +580,10 @@ so that you can combine matcher, timeout or boundTo.
 ![Screenshot 2020-02-08 at 19 27 56](https://user-images.githubusercontent.com/6702424/74090245-6c973a00-4aa9-11ea-8e48-90d49a0ed20b.png)
 
 
-## Creating delegate
+## ``evt.createDelegate()``
 
-Using ``createDelegate(matcher)`` you can create a new instance of Evt on which will be  
-posted all the events matched by the matcher function.
+Create a new instance of Evt toward witch will be forwarded
+all the events matched by the matcher function.
 
 ```typescript
 import { Evt } from "ts-evt";
@@ -554,12 +634,11 @@ evtShape.post({
   "type": "SQUARE",
   "sideLength": 1
 });
-
 ```
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-delegate?embed=1&file=index.ts)
 
-## postCount
+## ``evt.postCount``
 
 The number of times ``post()`` have been called can be tracked by the ``postCount`` property.
 
@@ -582,9 +661,9 @@ console.log(evtText.postCount);
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-postcount?embed=1&file=index.ts)
 
-## evtAttach
+## ``evt.evtAttach()``
 
-``.evtAttach`` is an ``Evt<Handler<T>>``that let track in realtime the handler that are being attached
+``.evtAttach`` is an ``Evt<Handler<T>>``that track in realtime the handler that are being attached
 to the Evt.
 
 ```typescript
@@ -606,7 +685,7 @@ evtText.attach(callback);
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-evtattach?embed=1&file=index.ts)
 
-## postOnceMatched
+## ``evt.postOnceMatched()``
 
 When using ``postOnceMatched()`` in place of ``post()`` the event data will be stored and posted only once there will be a handler candidate for it.
 
@@ -624,7 +703,7 @@ console.log("before");
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-postoncematched?embed=1&file=index.ts)
 
-## Unpacking the type argument.
+## ``UnpackEvt<typeof evt>``.
 
 UnpackEvt is an helper type to infer the type argument of an Evt instance.  
 
@@ -665,14 +744,14 @@ Note that if you try unpacking the type of an evt instantiated ``ts-evt``
 by a module that use a different version of ``ts-evt`` that the one you 
 included in the your project dependency the inference will fail.
 
-Note also that we do not directly included the UnpackEvt in the default export
+Note also that we do not directly included the ``UnpackEvt<>`` in the default export
 of the module because doing so would restrict ``ts-evt`` to be used in projects  
 using typescript version before 2.8 ( version when the infer keyword was introduced ).
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-unpack-type-argument?embed=1&file=index.ts)
 
 
-## Enable trace ( for debugging purpose )
+## ``evt.enableTrace()``
 
 If you need help to track down a bug you can use ``enableTrace`` to log what's going on with an Evt.
 
@@ -730,9 +809,9 @@ This will print:
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-trace?embed=1&file=index.ts)
 
 
-# The Observer class
+# ``Observer<T>`` documentation
 
-``ObservableImpl`` is a class that leverage ``Evt`` to enable mutation tracking.
+``ObservableImpl<T>`` is a class that leverage ``Evt<T>`` mutation tracking.
 
 ```typescript
 
@@ -852,9 +931,10 @@ obsNames.onPotentialChange(["bob", "louis"]);
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-observable-change-condition?embed=1&file=index.ts)
 
-# Asynchronously handling events posted synchronously (Edge case):
+# ``evt.waitFor()`` used in ``async`` procedure or loop
 
-Consider this example.
+``.waitFor()`` is designed in a way that make it safe to use ``async`` procedure.
+Considere the following example: 
 
 ```typescript
 import { Evt } from "ts-evt";
@@ -863,25 +943,24 @@ const evtText = new Evt<string>();
 
 (async ()=>{
 
-    const text1 = await evtText.waitFor();
-    const text2 = await evtText.waitFor();
+    const firstLetter = await evtText.waitFor();
+    const secondLetter = await evtText.waitFor();
 
-    console.log(`${text1} ${text2}`);
+    console.log(`${firstLetter} ${secondLetter}`);
 
 })();
 
-evtText.post("FOO");
-evtText.post("BAR");
+evtText.post("A");
+evtText.post("B");
 
-//"FOO BAR" is printed to the console.
+//"A B" is printed to the console.
 ```
 
-If you think about it, in a more straightforward implementation
-text2 would not be grabbed as ``post("BAR")`` is executed
+If you think about it, in a more straightforward implementation,
+``secondLetter`` would not be grabbed as ``post("B")`` is executed
 after the second ``waitFor()``.
 However we work some voodoo behind the scene to achieve this behavior 
-so that you don't have to wonder if it is possible for two events to be 
-posted in the same tick in the same tick.
+so that you wont miss event that are posted in the same tick.
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-edge-case?embed=1&file=index.ts)
 
@@ -889,5 +968,6 @@ posted in the same tick in the same tick.
 
 This project was originally a fork aimed to add features to ``rogierschouten/ts-events``.  
 Along the way it has been re-implemented from scratch keeping only the 
-core API design. AsyncEvent and QueuedEvent have been scraped out 
+core API design.   
+AsyncEvent and QueuedEvent have been scraped out 
 focusing only on the SyncEvent class.

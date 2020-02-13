@@ -4,29 +4,28 @@ import { Bindable } from "./defs";
 export declare class EvtBase<T> extends EvtBaseProtected<T> {
     private defaultParams;
     private readParams;
+    /**
+     *
+     *
+     *
+     * matcher - Transformative
+     *
+     * timeout
+     *
+     */
     waitFor<U>(matcher: (data: T) => [U] | null, timeout?: number): Promise<U>;
     /**
      *
-     * 'await' a specific event. Can be used in async loop without missing events.
+     * {@link https://github.com GitHub2}.
      *
-     * matcher - Match and cast the event to be returned.
-     *
-     * timeout - Throw Error after X ms if no event matched. ( never if not set )
-     *
-     * Return - The the matched event casted.
-     *
+     * @param matcher Type guard
+     * @param [timeout]
      */
     waitFor<Q extends T>(matcher: (data: T) => data is Q, timeout?: number): Promise<Q>;
     /**
-     *
-     * 'await' a specific event. Can be used in async loop without missing events.
-     *
-     * matcher - Match the event to be returned.
-     *
-     * timeout - Throw Error after X ms if no event matched. ( never if not set )
-     *
-     * Return - The the matched event.
-     *
+     * Waits for
+     * @param matcher Filter
+     * @param [timeout]
      */
     waitFor(matcher: (data: T) => boolean, timeout?: number): Promise<T>;
     /**
@@ -245,7 +244,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event or reject on timeout.
      */
-    $attachOnce<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, timeout: number, callback: (transformedData: U) => any): Promise<U>;
+    $attachOnce<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
      *
      * Enqueue a handler called only one time.
@@ -256,7 +255,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event.
      */
-    $attachOnce<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, callback: (transformedData: U) => any): Promise<U>;
+    $attachOnce<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
     /**
      *
      * Enqueue a handler called only one time.
@@ -267,7 +266,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event or reject on timeout.
      */
-    $attachOnce<U>(matcher: (data: T) => [U] | null, timeout: number, callback: (transformedData: U) => any): Promise<U>;
+    $attachOnce<U>(matcher: (data: T) => [U] | null, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
      *
      * Enqueue a handler called only one time.
@@ -276,7 +275,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event.
      */
-    $attachOnce<U>(matcher: (data: T) => [U] | null, callback: (transformedData: U) => any): Promise<U>;
+    $attachOnce<U>(matcher: (data: T) => [U] | null, callback: (transformedData: U) => void): Promise<U>;
     /**
      *
      * Enqueue a handler called only one time.
@@ -291,7 +290,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event or reject on timeout.
      */
-    attachOnce<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => any): Promise<Q>;
+    attachOnce<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
      *
      * Enqueue a handler called only one time.
@@ -306,7 +305,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event or reject on timeout.
      */
-    attachOnce(matcher: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => any): Promise<T>;
+    attachOnce(matcher: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Enqueue a handler called only one time.
@@ -319,7 +318,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event.
      */
-    attachOnce<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => any): Promise<Q>;
+    attachOnce<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => void): Promise<Q>;
     /**
      *
      * Enqueue a handler called only one time.
@@ -332,7 +331,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event.
      */
-    attachOnce(matcher: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => any): Promise<T>;
+    attachOnce(matcher: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Enqueue a handler called only one time.
@@ -345,7 +344,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event or reject on timeout.
      */
-    attachOnce<Q extends T>(matcher: (data: T) => data is Q, timeout: number, callback: (data: Q) => any): Promise<Q>;
+    attachOnce<Q extends T>(matcher: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
      *
      * Enqueue a handler called only one time.
@@ -358,7 +357,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event or reject on timeout.
      */
-    attachOnce(matcher: (data: T) => boolean, timeout: number, callback: (data: T) => any): Promise<T>;
+    attachOnce(matcher: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Enqueue a handler called only one time.
@@ -371,7 +370,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on event or reject on timeout.
      */
-    attachOnce(boundTo: Bindable, timeout: number, callback: (data: T) => any): Promise<T>;
+    attachOnce(boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Enqueue a handler called only one time.
@@ -382,7 +381,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event.
      */
-    attachOnce<Q extends T>(matcher: (data: T) => data is Q, callback: (data: Q) => any): Promise<Q>;
+    attachOnce<Q extends T>(matcher: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
     /**
      *
      * Enqueue a handler called only one time.
@@ -393,7 +392,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event..
      */
-    attachOnce(matcher: (data: T) => boolean, callback: (data: T) => any): Promise<T>;
+    attachOnce(matcher: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Enqueue a handler called only one time.
@@ -404,7 +403,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on event.
      */
-    attachOnce(boundTo: Bindable, callback: (data: T) => any): Promise<T>;
+    attachOnce(boundTo: Bindable, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Enqueue a handler called only one time.
@@ -415,7 +414,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on event or reject on timeout.
      */
-    attachOnce(timeout: number, callback: (data: T) => any): Promise<T>;
+    attachOnce(timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Enqueue a handler called only one time.
@@ -424,7 +423,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on event.
      */
-    attachOnce(callback: (data: T) => any): Promise<T>;
+    attachOnce(callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a permanent handler that will extract matched events.
@@ -437,7 +436,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first matched event or reject on timeout.
      */
-    $attachExtract<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, timeout: number, callback: (transformedData: U) => any): Promise<U>;
+    $attachExtract<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
      *
      * Unshift a permanent handler that will extract matched events.
@@ -448,7 +447,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first matched event.
      */
-    $attachExtract<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, callback: (transformedData: U) => any): Promise<U>;
+    $attachExtract<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
     /**
      *
      * Unshift a permanent handler that will extract matched events.
@@ -459,7 +458,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first matched event or reject on timeout.
      */
-    $attachExtract<U>(matcher: (data: T) => [U] | null, timeout: number, callback: (transformedData: U) => any): Promise<U>;
+    $attachExtract<U>(matcher: (data: T) => [U] | null, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
      *
      * Unshift a permanent handler that will extract matched events.
@@ -468,7 +467,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first matched event.
      */
-    $attachExtract<U>(matcher: (data: T) => [U] | null, callback: (transformedData: U) => any): Promise<U>;
+    $attachExtract<U>(matcher: (data: T) => [U] | null, callback: (transformedData: U) => void): Promise<U>;
     /**
      *
      * Unshift a permanent handler that will extract matched events.
@@ -483,7 +482,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first matched event or reject on timeout.
      */
-    attachExtract<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => any): Promise<Q>;
+    attachExtract<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
      *
      * Unshift a permanent handler that will extract matched events.
@@ -498,7 +497,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first matched event or reject on timeout.
      */
-    attachExtract(matcher: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => any): Promise<T>;
+    attachExtract(matcher: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a permanent handler that will extract matched events.
@@ -511,7 +510,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first matched event.
      */
-    attachExtract<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => any): Promise<Q>;
+    attachExtract<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => void): Promise<Q>;
     /**
      *
      * Unshift a permanent handler that will extract matched events.
@@ -524,7 +523,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first matched event.
      */
-    attachExtract(matcher: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => any): Promise<T>;
+    attachExtract(matcher: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a permanent handler that will extract matched events.
@@ -537,7 +536,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first matched event or reject on timeout.
      */
-    attachExtract<Q extends T>(matcher: (data: T) => data is Q, timeout: number, callback: (data: Q) => any): Promise<Q>;
+    attachExtract<Q extends T>(matcher: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
      *
      * Unshift a permanent handler that will extract matched events.
@@ -550,7 +549,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first matched event or reject on timeout.
      */
-    attachExtract(matcher: (data: T) => boolean, timeout: number, callback: (data: T) => any): Promise<T>;
+    attachExtract(matcher: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a permanent handler that will extract matched events.
@@ -561,7 +560,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first matched event.
      */
-    attachExtract<Q extends T>(matcher: (data: T) => data is Q, callback: (data: Q) => any): Promise<Q>;
+    attachExtract<Q extends T>(matcher: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
     /**
      *
      * Unshift a permanent handler that will extract matched events.
@@ -572,7 +571,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first matched event..
      */
-    attachExtract(matcher: (data: T) => boolean, callback: (data: T) => any): Promise<T>;
+    attachExtract(matcher: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a permanent handler to the queue..
@@ -585,7 +584,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first matched event or reject on timeout.
      */
-    $attachPrepend<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, timeout: number, callback: (transformedData: U) => any): Promise<U>;
+    $attachPrepend<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
      *
      * Unshift a permanent handler to the queue..
@@ -596,7 +595,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first matched event.
      */
-    $attachPrepend<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, callback: (transformedData: U) => any): Promise<U>;
+    $attachPrepend<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
     /**
      *
      * Unshift a permanent handler to the queue..
@@ -607,7 +606,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first matched event or reject on timeout.
      */
-    $attachPrepend<U>(matcher: (data: T) => [U] | null, timeout: number, callback: (transformedData: U) => any): Promise<U>;
+    $attachPrepend<U>(matcher: (data: T) => [U] | null, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
      *
      * Unshift a permanent handler to the queue..
@@ -616,7 +615,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first matched event.
      */
-    $attachPrepend<U>(matcher: (data: T) => [U] | null, callback: (transformedData: U) => any): Promise<U>;
+    $attachPrepend<U>(matcher: (data: T) => [U] | null, callback: (transformedData: U) => void): Promise<U>;
     /**
      *
      * Unshift a permanent handler to the queue..
@@ -631,7 +630,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first matched event or reject on timeout.
      */
-    attachPrepend<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => any): Promise<Q>;
+    attachPrepend<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
      *
      * Unshift a permanent handler to the queue..
@@ -646,7 +645,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first matched event or reject on timeout.
      */
-    attachPrepend(matcher: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => any): Promise<T>;
+    attachPrepend(matcher: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a permanent handler to the queue..
@@ -659,7 +658,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first matched event.
      */
-    attachPrepend<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => any): Promise<Q>;
+    attachPrepend<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => void): Promise<Q>;
     /**
      *
      * Unshift a permanent handler to the queue..
@@ -672,7 +671,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first matched event.
      */
-    attachPrepend(matcher: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => any): Promise<T>;
+    attachPrepend(matcher: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a permanent handler to the queue..
@@ -685,7 +684,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first matched event or reject on timeout.
      */
-    attachPrepend<Q extends T>(matcher: (data: T) => data is Q, timeout: number, callback: (data: Q) => any): Promise<Q>;
+    attachPrepend<Q extends T>(matcher: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
      *
      * Unshift a permanent handler to the queue..
@@ -698,7 +697,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first matched event or reject on timeout.
      */
-    attachPrepend(matcher: (data: T) => boolean, timeout: number, callback: (data: T) => any): Promise<T>;
+    attachPrepend(matcher: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a permanent handler to the queue..
@@ -711,7 +710,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first event or reject on timeout.
      */
-    attachPrepend(boundTo: Bindable, timeout: number, callback: (data: T) => any): Promise<T>;
+    attachPrepend(boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a permanent handler to the queue..
@@ -722,7 +721,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first matched event.
      */
-    attachPrepend<Q extends T>(matcher: (data: T) => data is Q, callback: (data: Q) => any): Promise<Q>;
+    attachPrepend<Q extends T>(matcher: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
     /**
      *
      * Unshift a permanent handler to the queue..
@@ -733,7 +732,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first matched event..
      */
-    attachPrepend(matcher: (data: T) => boolean, callback: (data: T) => any): Promise<T>;
+    attachPrepend(matcher: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a permanent handler to the queue..
@@ -744,7 +743,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first event.
      */
-    attachPrepend(boundTo: Bindable, callback: (data: T) => any): Promise<T>;
+    attachPrepend(boundTo: Bindable, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a permanent handler to the queue..
@@ -755,7 +754,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first event or reject on timeout.
      */
-    attachPrepend(timeout: number, callback: (data: T) => any): Promise<T>;
+    attachPrepend(timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a permanent handler to the queue..
@@ -764,7 +763,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on first event.
      */
-    attachPrepend(callback: (data: T) => any): Promise<T>;
+    attachPrepend(callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a handler called only one time.
@@ -777,7 +776,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event or reject on timeout.
      */
-    $attachOncePrepend<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, timeout: number, callback: (transformedData: U) => any): Promise<U>;
+    $attachOncePrepend<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
      *
      * Unshift a handler called only one time.
@@ -788,7 +787,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event.
      */
-    $attachOncePrepend<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, callback: (transformedData: U) => any): Promise<U>;
+    $attachOncePrepend<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
     /**
      *
      * Unshift a handler called only one time.
@@ -799,7 +798,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event or reject on timeout.
      */
-    $attachOncePrepend<U>(matcher: (data: T) => [U] | null, timeout: number, callback: (transformedData: U) => any): Promise<U>;
+    $attachOncePrepend<U>(matcher: (data: T) => [U] | null, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
      *
      * Unshift a handler called only one time.
@@ -808,7 +807,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event.
      */
-    $attachOncePrepend<U>(matcher: (data: T) => [U] | null, callback: (transformedData: U) => any): Promise<U>;
+    $attachOncePrepend<U>(matcher: (data: T) => [U] | null, callback: (transformedData: U) => void): Promise<U>;
     /**
      *
      * Unshift a handler called only one time.
@@ -823,7 +822,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event or reject on timeout.
      */
-    attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => any): Promise<Q>;
+    attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
      *
      * Unshift a handler called only one time.
@@ -838,7 +837,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event or reject on timeout.
      */
-    attachOncePrepend(matcher: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => any): Promise<T>;
+    attachOncePrepend(matcher: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a handler called only one time.
@@ -851,7 +850,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event.
      */
-    attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => any): Promise<Q>;
+    attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => void): Promise<Q>;
     /**
      *
      * Unshift a handler called only one time.
@@ -864,7 +863,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event.
      */
-    attachOncePrepend(matcher: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => any): Promise<T>;
+    attachOncePrepend(matcher: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a handler called only one time.
@@ -877,7 +876,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event or reject on timeout.
      */
-    attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, timeout: number, callback: (data: Q) => any): Promise<Q>;
+    attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
      *
      * Unshift a handler called only one time.
@@ -890,7 +889,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event or reject on timeout.
      */
-    attachOncePrepend(matcher: (data: T) => boolean, timeout: number, callback: (data: T) => any): Promise<T>;
+    attachOncePrepend(matcher: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a handler called only one time.
@@ -903,7 +902,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on event or reject on timeout.
      */
-    attachOncePrepend(boundTo: Bindable, timeout: number, callback: (data: T) => any): Promise<T>;
+    attachOncePrepend(boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a handler called only one time.
@@ -914,7 +913,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event.
      */
-    attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, callback: (data: Q) => any): Promise<Q>;
+    attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
     /**
      *
      * Unshift a handler called only one time.
@@ -925,7 +924,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event..
      */
-    attachOncePrepend(matcher: (data: T) => boolean, callback: (data: T) => any): Promise<T>;
+    attachOncePrepend(matcher: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a handler called only one time.
@@ -936,7 +935,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on event.
      */
-    attachOncePrepend(boundTo: Bindable, callback: (data: T) => any): Promise<T>;
+    attachOncePrepend(boundTo: Bindable, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a handler called only one time.
@@ -947,7 +946,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on event or reject on timeout.
      */
-    attachOncePrepend(timeout: number, callback: (data: T) => any): Promise<T>;
+    attachOncePrepend(timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a handler called only one time.
@@ -956,7 +955,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on event.
      */
-    attachOncePrepend(callback: (data: T) => any): Promise<T>;
+    attachOncePrepend(callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a handler called only one time that will extract the event.
@@ -969,7 +968,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event or reject on timeout.
      */
-    $attachOnceExtract<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, timeout: number, callback: (transformedData: U) => any): Promise<U>;
+    $attachOnceExtract<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
      *
      * Unshift a handler called only one time that will extract the event.
@@ -980,7 +979,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event.
      */
-    $attachOnceExtract<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, callback: (transformedData: U) => any): Promise<U>;
+    $attachOnceExtract<U>(matcher: (data: T) => [U] | null, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
     /**
      *
      * Unshift a handler called only one time that will extract the event.
@@ -991,7 +990,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event or reject on timeout.
      */
-    $attachOnceExtract<U>(matcher: (data: T) => [U] | null, timeout: number, callback: (transformedData: U) => any): Promise<U>;
+    $attachOnceExtract<U>(matcher: (data: T) => [U] | null, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
      *
      * Unshift a handler called only one time that will extract the event.
@@ -1000,7 +999,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event.
      */
-    $attachOnceExtract<U>(matcher: (data: T) => [U] | null, callback: (transformedData: U) => any): Promise<U>;
+    $attachOnceExtract<U>(matcher: (data: T) => [U] | null, callback: (transformedData: U) => void): Promise<U>;
     /**
      *
      * Unshift a handler called only one time that will extract the event.
@@ -1015,7 +1014,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event or reject on timeout.
      */
-    attachOnceExtract<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => any): Promise<Q>;
+    attachOnceExtract<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
      *
      * Unshift a handler called only one time that will extract the event.
@@ -1030,7 +1029,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event or reject on timeout.
      */
-    attachOnceExtract(matcher: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => any): Promise<T>;
+    attachOnceExtract(matcher: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a handler called only one time that will extract the event.
@@ -1043,7 +1042,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event.
      */
-    attachOnceExtract<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => any): Promise<Q>;
+    attachOnceExtract<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => void): Promise<Q>;
     /**
      *
      * Unshift a handler called only one time that will extract the event.
@@ -1056,7 +1055,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event.
      */
-    attachOnceExtract(matcher: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => any): Promise<T>;
+    attachOnceExtract(matcher: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a handler called only one time that will extract the event.
@@ -1069,7 +1068,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event or reject on timeout.
      */
-    attachOnceExtract<Q extends T>(matcher: (data: T) => data is Q, timeout: number, callback: (data: Q) => any): Promise<Q>;
+    attachOnceExtract<Q extends T>(matcher: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
      *
      * Unshift a handler called only one time that will extract the event.
@@ -1082,7 +1081,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event or reject on timeout.
      */
-    attachOnceExtract(matcher: (data: T) => boolean, timeout: number, callback: (data: T) => any): Promise<T>;
+    attachOnceExtract(matcher: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a handler called only one time that will extract the event.
@@ -1095,7 +1094,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on event or reject on timeout.
      */
-    attachOnceExtract(boundTo: Bindable, timeout: number, callback: (data: T) => any): Promise<T>;
+    attachOnceExtract(boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a handler called only one time that will extract the event.
@@ -1106,7 +1105,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event.
      */
-    attachOnceExtract<Q extends T>(matcher: (data: T) => data is Q, callback: (data: Q) => any): Promise<Q>;
+    attachOnceExtract<Q extends T>(matcher: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
     /**
      *
      * Unshift a handler called only one time that will extract the event.
@@ -1117,7 +1116,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on matched event..
      */
-    attachOnceExtract(matcher: (data: T) => boolean, callback: (data: T) => any): Promise<T>;
+    attachOnceExtract(matcher: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a handler called only one time that will extract the event.
@@ -1128,7 +1127,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on event.
      */
-    attachOnceExtract(boundTo: Bindable, callback: (data: T) => any): Promise<T>;
+    attachOnceExtract(boundTo: Bindable, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a handler called only one time that will extract the event.
@@ -1139,7 +1138,7 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on event or reject on timeout.
      */
-    attachOnceExtract(timeout: number, callback: (data: T) => any): Promise<T>;
+    attachOnceExtract(timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      *
      * Unshift a handler called only one time that will extract the event.
@@ -1148,5 +1147,5 @@ export declare class EvtBase<T> extends EvtBaseProtected<T> {
      *
      * Return - Promise that resolve on event.
      */
-    attachOnceExtract(callback: (data: T) => any): Promise<T>;
+    attachOnceExtract(callback: (data: T) => void): Promise<T>;
 }
