@@ -133,6 +133,7 @@ var EvtBaseProtected = /** @class */ (function () {
             });
         });
     }
+    /** https://garronej.github.io/ts-evt/#evtenabletrace */
     EvtBaseProtected.prototype.enableTrace = function (id, formatter, log
     //NOTE: Not typeof console.log as we don't want to expose types from node
     ) {
@@ -153,6 +154,7 @@ var EvtBaseProtected = /** @class */ (function () {
             return console.log.apply(console, inputs);
         }));
     };
+    /** https://garronej.github.io/ts-evt/#evtenabletrace */
     EvtBaseProtected.prototype.disableTrace = function () {
         this.traceId = null;
     };
@@ -236,7 +238,11 @@ var EvtBaseProtected = /** @class */ (function () {
         }
         this.log(message + this.traceFormatter(data));
     };
-    /** Returns post count */
+    /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     *
+     * Returns post count
+     * */
     EvtBaseProtected.prototype.post = function (data) {
         this.trace(data);
         this.incrementPostCount();
@@ -328,6 +334,7 @@ var EvtBaseProtected = /** @class */ (function () {
             "prepend": true
         }).promise;
     };
+    /** https://garronej.github.io/ts-evt/#evtgethandler */
     EvtBaseProtected.prototype.getHandlers = function () {
         return __spreadArrays(this.handlers);
     };

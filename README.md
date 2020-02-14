@@ -38,7 +38,7 @@ Thanks to Stackblitz you can start experimenting right now in your browser.
 
 ![demo_ts-evt_fixed_4](https://user-images.githubusercontent.com/6702424/74102835-7a9b9800-4b47-11ea-854d-062fe1f42bba.gif)
 
-<a href="https://stackblitz.com/edit/ts-evt-demo-hello-world?embed=1&file=index.ts" target="_blank">__Run Hello World__</a>
+[__Run Hello World__](https://stackblitz.com/edit/ts-evt-demo-hello-world?embed=1&file=index.ts)
 
 
 # Table of content
@@ -48,7 +48,7 @@ Thanks to Stackblitz you can start experimenting right now in your browser.
 - [Table of content](#table-of-content)
 - [Dependency requirement](#dependency-requirement)
 - [``Evt<T>`` documentation](#evtt-documentation)
-  - [``evt.attach()`` and ``evt.post()``](#evtattach-and-evtpost)
+  - [``evt.attach()``, ``evt.attachOnce()`` and ``evt.post()``](#evtattach-evtattachonce-and-evtpost)
   - [``evt.WaitFor()``](#evtwaitfor)
     - [Without timeout](#without-timeout)
     - [With timeout](#with-timeout)
@@ -87,7 +87,7 @@ Exposed interfaces use typescript keywords that where added in specified version
 
 # ``Evt<T>`` documentation
 
-## ``evt.attach()`` and ``evt.post()``
+## ``evt.attach()``, ``evt.attachOnce()`` and ``evt.post()``
 
 ````typescript
 import { Evt } from "ts-evt";
@@ -97,6 +97,8 @@ const evtText = new Evt<string>();
 const evtTime = new Evt<number>();
 
 evtText.attach(text => console.log(text));
+
+//Attach one time only handler
 evtTime.attachOnce(time => console.log(time));
 
 evtText.post("hi!");
@@ -754,7 +756,8 @@ using typescript version before 2.8 ( version when the infer keyword was introdu
 
 ## ``evt.enableTrace()``
 
-If you need help to track down a bug you can use ``enableTrace`` to log what's going on with an Evt.
+If you need help to track down a bug you can use ``enableTrace`` to log what's going on with an Evt.  
+Use ``evt.disableTrace()`` to stop logging.
 
 ```typescript
 import { Evt } from "ts-evt";

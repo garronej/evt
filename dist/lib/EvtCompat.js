@@ -55,6 +55,9 @@ var EvtCompat = /** @class */ (function (_super) {
     __extends(EvtCompat, _super);
     function EvtCompat() {
         var _this_1 = _super !== null && _super.apply(this, arguments) || this;
+        /**
+         * https://garronej.github.io/ts-evt/#evtevtattach
+         */
         _this_1.evtAttach = new EvtBase_2.EvtBase();
         return _this_1;
     }
@@ -63,10 +66,7 @@ var EvtCompat = /** @class */ (function (_super) {
         this.evtAttach.post(handler);
         return handler;
     };
-    /** Wait until an handler that match the event data have been attached
-     * return a promise that resolve with post count.
-     * The event is not posted synchronously when the candidate handler attach.
-     *  */
+    /** https://garronej.github.io/ts-evt/#evtpostoncematched */
     EvtCompat.prototype.postOnceMatched = function (data) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
@@ -93,6 +93,7 @@ var EvtCompat = /** @class */ (function (_super) {
     return EvtCompat;
 }(EvtBase_2.EvtBase));
 exports.EvtCompat = EvtCompat;
+/** https://garronej.github.io/ts-evt/#voidevt */
 var VoidEvtCompat = /** @class */ (function (_super) {
     __extends(VoidEvtCompat, _super);
     function VoidEvtCompat() {

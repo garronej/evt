@@ -4,6 +4,9 @@ import { Handler, UserProvidedParams, ImplicitParams } from "./defs";
 
 export class EvtCompat<T> extends EvtBase<T> {
 
+    /**
+     * https://garronej.github.io/ts-evt/#evtevtattach
+     */
     public readonly evtAttach = new EvtBase<Handler<T, any>>()
 
     protected addHandler<U>(
@@ -19,10 +22,7 @@ export class EvtCompat<T> extends EvtBase<T> {
 
     }
 
-    /** Wait until an handler that match the event data have been attached
-     * return a promise that resolve with post count.
-     * The event is not posted synchronously when the candidate handler attach.
-     *  */
+    /** https://garronej.github.io/ts-evt/#evtpostoncematched */
     public async postOnceMatched(data: T): Promise<number> {
 
         if (!this.getHandlers().find(handler => handler.matcher(data))) {
@@ -52,9 +52,25 @@ export class EvtCompat<T> extends EvtBase<T> {
 
     }
 
+    /**
+     * https://garronej.github.io/ts-evt/#evtcreatedelegate
+     * 
+     * matcher - Transformative
+     */
     public createDelegate<U>(matcher: (data: T) => [U] | null): EvtCompat<U>;
+    /**
+     * https://garronej.github.io/ts-evt/#evtcreatedelegate
+     * 
+     * matcher - Type guard
+     */
     public createDelegate<Q extends T>(matcher: (data: T) => data is Q): EvtCompat<Q>;
+    /**
+     * https://garronej.github.io/ts-evt/#evtcreatedelegate
+     * 
+     * matcher - Filter only
+     */
     public createDelegate(matcher: (data: T) => boolean): EvtCompat<T>;
+    /** https://garronej.github.io/ts-evt/#evtcreatedelegate */
     public createDelegate(): EvtCompat<T>;
     public createDelegate<U>(matcher?: (data: T) => boolean | [U] | null): EvtCompat<T | U> {
 
@@ -70,7 +86,9 @@ export class EvtCompat<T> extends EvtBase<T> {
 
 }
 
+/** https://garronej.github.io/ts-evt/#voidevt */
 export class VoidEvtCompat extends EvtCompat<void> {
+
     public post(): number {
         return super.post(undefined);
     }

@@ -1,10 +1,6 @@
-
-
 import { Polyfill as Map, LightMap } from "minimal-polyfills/dist/lib/Map";
 import { Polyfill as WeakMap } from "minimal-polyfills/dist/lib/WeakMap";
-
 import "minimal-polyfills/dist/lib/Array.prototype.find";
-
 import * as runExclusive from "run-exclusive";
 import {
     UserProvidedParams,
@@ -62,6 +58,7 @@ export class EvtBaseProtected<T> {
 
     //NOTE: Not really readonly but we want to prevent user from setting the value
     //manually and we cant user accessor because we target es3.
+    /** https://garronej.github.io/ts-evt/#evtpostcount */
     public readonly postCount!: number;
 
     private incrementPostCount = (() => {
@@ -80,6 +77,7 @@ export class EvtBaseProtected<T> {
     private traceFormatter!: (data: T) => string;
     private log!: typeof console.log;
 
+    /** https://garronej.github.io/ts-evt/#evtenabletrace */
     public enableTrace(
         id: string,
         formatter?: (data: T) => string,
@@ -101,6 +99,7 @@ export class EvtBaseProtected<T> {
         this.log = log ?? ((...inputs) => console.log(...inputs));
 
     }
+    /** https://garronej.github.io/ts-evt/#evtenabletrace */
     public disableTrace() {
         this.traceId = null;
     }
@@ -285,7 +284,11 @@ export class EvtBaseProtected<T> {
     }
 
 
-    /** Returns post count */
+    /** 
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     * 
+     * Returns post count 
+     * */
     public post(data: T): number {
 
         this.trace(data);
@@ -563,6 +566,7 @@ export class EvtBaseProtected<T> {
 
     }
 
+    /** https://garronej.github.io/ts-evt/#evtgethandler */
     public getHandlers(): Handler<T, any>[] {
         return [...this.handlers];
     }

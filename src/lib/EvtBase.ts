@@ -187,13 +187,11 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
 
 
     /**
-     * 
-     * 
+     * https://garronej.github.io/ts-evt/#evtwaitfor
      * 
      * matcher - Transformative
      * 
-     * timeout
-     * 
+     * timeout?
      */
     public waitFor<U>(
         matcher: (data: T) => [U] | null,
@@ -201,11 +199,11 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     ): Promise<U>;
 
     /**
+     * https://garronej.github.io/ts-evt/#evtwaitfor
      * 
-     * {@link https://github.com GitHub2}.
+     * matcher - Type guard
      * 
-     * @param matcher Type guard
-     * @param [timeout] 
+     * timeout?
      */
     public waitFor<Q extends T>(
         matcher: (data: T) => data is Q,
@@ -213,9 +211,11 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     ): Promise<Q>;
 
     /**
-     * Waits for
-     * @param matcher Filter
-     * @param [timeout] 
+     * https://garronej.github.io/ts-evt/#evtwaitfor
+     * 
+     * matcher - Filter only
+     * 
+     * timeout?
      */
     public waitFor(
         matcher: (data: T) => boolean,
@@ -223,15 +223,9 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     ): Promise<T>;
 
     /**
+     * https://garronej.github.io/ts-evt/#evtwaitfor
      * 
-     * 'await' the next event. Can be used in async loop without missing events.
-     * 
-     * matcher - Match and cast the event to be returned.
-     * 
-     * timeout - Throw Error (promise is rejected) after X ms. ( never if not set )
-     * 
-     * Return - The matched event.
-     * 
+     * timeout?
      */
     public waitFor(
         timeout?: number
@@ -276,18 +270,15 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
 
 
     /**
+     * https://garronej.github.io/ts-evt/#matcher---transformative
      * 
-     * Enqueue a permanent handler.
+     * matcher - transformative
      * 
-     * matcher - 
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * timeout
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * callback
      */
     public $attach<U>(
         matcher: (data: T) => [U] | null,
@@ -296,14 +287,13 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
+     * https://garronej.github.io/ts-evt/#matcher---transformative
      * 
-     * Enqueue a permanent handler.
+     * matcher - transformative
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * boundTo
      * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event.
+     * callback
      */
     public $attach<U>(
         matcher: (data: T) => [U] | null,
@@ -311,14 +301,13 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
+     * https://garronej.github.io/ts-evt/#matcher---transformative
      * 
-     * Enqueue a permanent handler.
+     * matcher - transformative
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
+     * timeout
      * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * callback
      */
     public $attach<U>(
         matcher: (data: T) => [U] | null,
@@ -326,12 +315,11 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
+     * https://garronej.github.io/ts-evt/#matcher---transformative
      * 
-     * Enqueue a permanent handler.
+     * matcher - transformative
      * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event.
+     * callback
      */
     public $attach<U>(
         matcher: (data: T) => [U] | null,
@@ -345,19 +333,18 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
 
 
 
+
+
     /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
      * 
-     * Enqueue a permanent handler.
+     * matcher - Type guard
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * timeout
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * callback
      */
     public attach<Q extends T>(
         matcher: (data: T) => data is Q,
@@ -365,20 +352,16 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
      * 
-     * Enqueue a permanent handler.
+     * matcher - Filter only
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * timeout
      * 
-     * timeout - ms after with the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events.
-     * 
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * callback
      */
     public attach(
         matcher: (data: T) => boolean,
@@ -386,187 +369,145 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
      * 
-     * Enqueue a permanent handler.
+     * matcher - Type guard
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event.
+     * callback
      */
     public attach<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
         callback: (data: Q) => void
     ): Promise<Q>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
      * 
-     * Enqueue a permanent handler.
+     * matcher - Filter only
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
-     * 
-     * callback - Receive the matched events.
-     * 
-     * Return - Promise that resolve on first matched event.
+     * callback
      */
     public attach(
         matcher: (data: T) => boolean,
         boundTo: Bindable,
         callback: (data: T) => void
     ): Promise<T>;
-
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
      * 
-     * Enqueue a permanent handler.
+     * matcher - Type guard
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * timeout
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * callback
      */
     public attach<Q extends T>(
         matcher: (data: T) => data is Q,
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
      * 
-     * Enqueue a permanent handler.
+     * matcher - Filter only
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * timeout
      * 
-     * timeout - ms after with the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events.
-     * 
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * callback
      */
     public attach(
         matcher: (data: T) => boolean,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
      * 
-     * Enqueue a permanent handler.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * timeout
      * 
-     * timeout - ms after with the returned promise will reject if no event matched.
-     * 
-     * callback - Receive events.
-     * 
-     * Return - Promise that resolve on first event or reject on timeout.
+     * callback
      */
     public attach(
         boundTo: Bindable,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
      * 
-     * Enqueue a permanent handler.
+     * matcher - Type guard
      * 
-     * matcher - Filter events that should be passed to the callback.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event.
+     * callback
      */
     public attach<Q extends T>(
         matcher: (data: T) => data is Q,
         callback: (data: Q) => void
     ): Promise<Q>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
      * 
-     * Enqueue a permanent handler.
+     * matcher - Filter only
      * 
-     * matcher - Filter events that should be passed to the callback.
-     * 
-     * callback - Receive the matched events.
-     * 
-     * Return - Promise that resolve on first matched event..
+     * callback
      */
     public attach(
         matcher: (data: T) => boolean,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
      * 
-     * Enqueue a permanent handler.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
-     * 
-     * callback - Receive events.
-     * 
-     * Return - Promise that resolve on first event.
+     * callback
      */
     public attach(
         boundTo: Bindable,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
      * 
-     * Enqueue a permanent handler.
+     * timeout
      * 
-     * timeout - ms after with the returned promise will reject if no event matched.
-     * 
-     * callback - Receive events.
-     * 
-     * Return - Promise that resolve on first event or reject on timeout.
+     * callback
      */
     public attach(
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
      * 
-     * Enqueue a permanent handler.
-     * 
-     * callback - Receive events.
-     * 
-     * Return - Promise that resolve on first event.
+     * callback 
      */
     public attach(
         callback: (data: T) => void
     ): Promise<T>;
-
     public attach(...inputs: any[]) {
         return this.__attach(this.readParams(inputs));
     }
 
 
 
+
     /**
+     * https://garronej.github.io/ts-evt/#matcher---transformative
      * 
-     * Enqueue a handler called only one time.
+     * matcher - Transformative
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
+     * boundTo
      * 
-     * callback - Receive the matched events casted by the matcher.
+     * timeout
      * 
-     * Return - Promise that resolve on matched event or reject on timeout.
+     * callback
      */
     public $attachOnce<U>(
         matcher: (data: T) => [U] | null,
@@ -575,14 +516,13 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
+     * https://garronej.github.io/ts-evt/#matcher---transformative 
      * 
-     * Enqueue a handler called only one time.
+     * matcher - Transformative
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * boundTo
      * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event.
+     * callback
      */
     public $attachOnce<U>(
         matcher: (data: T) => [U] | null,
@@ -590,14 +530,13 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
+     * https://garronej.github.io/ts-evt/#matcher---transformative
      * 
-     * Enqueue a handler called only one time.
+     * matcher - Transformative
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
+     * timeout
      * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event or reject on timeout.
+     * callback
      */
     public $attachOnce<U>(
         matcher: (data: T) => [U] | null,
@@ -605,12 +544,11 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
+     * https://garronej.github.io/ts-evt/#matcher---transformative
      * 
-     * Enqueue a handler called only one time.
+     * matcher - Transformative
      * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event.
+     * callback
      */
     public $attachOnce<U>(
         matcher: (data: T) => [U] | null,
@@ -626,18 +564,15 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
 
 
     /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
      * 
-     * Enqueue a handler called only one time.
+     * matcher - Type guard
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * timeout
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event or reject on timeout.
+     * callback
      */
     public attachOnce<Q extends T>(
         matcher: (data: T) => data is Q,
@@ -645,20 +580,16 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
      * 
-     * Enqueue a handler called only one time.
+     * matcher - Filter only
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * timeout
      * 
-     * timeout - ms after with the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events.
-     * 
-     * Return - Promise that resolve on matched event or reject on timeout.
+     * callback
      */
     public attachOnce(
         matcher: (data: T) => boolean,
@@ -666,191 +597,146 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
      * 
-     * Enqueue a handler called only one time.
+     * matcher - Type guard
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event.
+     * callback
      */
     public attachOnce<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
         callback: (data: Q) => void
     ): Promise<Q>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
      * 
-     * Enqueue a handler called only one time.
+     * matcher - Filter only
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
-     * 
-     * callback - Receive the matched events.
-     * 
-     * Return - Promise that resolve on matched event.
+     * callback
      */
     public attachOnce(
         matcher: (data: T) => boolean,
         boundTo: Bindable,
         callback: (data: T) => void
     ): Promise<T>;
-
-
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
      * 
-     * Enqueue a handler called only one time.
+     * matcher - Type guard
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * timeout
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event or reject on timeout.
+     * callback
      */
     public attachOnce<Q extends T>(
         matcher: (data: T) => data is Q,
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
      * 
-     * Enqueue a handler called only one time.
+     * matcher - Filter only
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * timeout
      * 
-     * timeout - ms after with the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events.
-     * 
-     * Return - Promise that resolve on matched event or reject on timeout.
+     * callback
      */
     public attachOnce(
         matcher: (data: T) => boolean,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
      * 
-     * Enqueue a handler called only one time.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * timeout
      * 
-     * timeout - ms after with the returned promise will reject if no event matched.
-     * 
-     * callback - Receive events.
-     * 
-     * Return - Promise that resolve on event or reject on timeout.
+     * callback
      */
     public attachOnce(
         boundTo: Bindable,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
-
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
      * 
-     * Enqueue a handler called only one time.
+     * matcher - Type guard
      * 
-     * matcher - Filter events that should be passed to the callback.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event.
+     * callback
      */
     public attachOnce<Q extends T>(
         matcher: (data: T) => data is Q,
         callback: (data: Q) => void
     ): Promise<Q>;
-
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
      * 
-     * Enqueue a handler called only one time.
+     * matcher - Filter only
      * 
-     * matcher - Filter events that should be passed to the callback.
-     * 
-     * callback - Receive the matched events.
-     * 
-     * Return - Promise that resolve on matched event..
+     * callback
      */
     public attachOnce(
         matcher: (data: T) => boolean,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
      * 
-     * Enqueue a handler called only one time.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
-     * 
-     * callback - Receive events.
-     * 
-     * Return - Promise that resolve on event.
+     * callback
      */
     public attachOnce(
         boundTo: Bindable,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
      * 
-     * Enqueue a handler called only one time.
+     * timeout
      * 
-     * timeout - ms after with the returned promise will reject if no event matched.
-     * 
-     * callback - Receive events.
-     * 
-     * Return - Promise that resolve on event or reject on timeout.
+     * callback
      */
     public attachOnce(
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
      * 
-     * Enqueue a handler called only one time.
-     * 
-     * callback - Receive events.
-     * 
-     * Return - Promise that resolve on event.
+     * callback
      */
     public attachOnce(
         callback: (data: T) => void
     ): Promise<T>;
-
     public attachOnce(...inputs: any[]) {
         return this.__attachOnce(this.readParams(inputs));
     }
 
 
+
+
+
     /**
+     * https://garronej.github.io/ts-evt/#matcher---transformative
      * 
-     * Unshift a permanent handler that will extract matched events.
+     * matcher - Transformative
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * boundTo
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
+     * timeout
      * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * callback
      */
     public $attachExtract<U>(
         matcher: (data: T) => [U] | null,
@@ -858,56 +744,45 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
-
     /**
+     * https://garronej.github.io/ts-evt/#matcher---transformative
      * 
-     * Unshift a permanent handler that will extract matched events.
+     * matcher - Transformative
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * boundTo
      * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event.
+     * callback
      */
     public $attachExtract<U>(
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
-
     /**
+     * https://garronej.github.io/ts-evt/#matcher---transformative
      * 
-     * Unshift a permanent handler that will extract matched events.
+     * matcher - Transformative
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
+     * timeout
      * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * callback
      */
     public $attachExtract<U>(
         matcher: (data: T) => [U] | null,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
-
-
     /**
+     * https://garronej.github.io/ts-evt/#matcher---transformative
      * 
-     * Unshift a permanent handler that will extract matched events.
+     * matcher - Transformative
      * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event.
+     * callback
      */
     public $attachExtract<U>(
         matcher: (data: T) => [U] | null,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
     public $attachExtract(...inputs: any[]) {
         return (this.attachOnceExtract as any)(...inputs);
     }
@@ -920,18 +795,15 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
 
 
     /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * Unshift a permanent handler that will extract matched events.
+     * matcher - Type guard
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * timeout
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * callback
      */
     public attachExtract<Q extends T>(
         matcher: (data: T) => data is Q,
@@ -939,20 +811,16 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * Unshift a permanent handler that will extract matched events.
+     * matcher - Transformative
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * timeout
      * 
-     * timeout - ms after with the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events.
-     * 
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * callback
      */
     public attachExtract(
         matcher: (data: T) => boolean,
@@ -960,111 +828,84 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * Unshift a permanent handler that will extract matched events.
+     * matcher - Type guard
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event.
+     * callback
      */
     public attachExtract<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
         callback: (data: Q) => void
     ): Promise<Q>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * Unshift a permanent handler that will extract matched events.
+     * matcher - Filter only
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
-     * 
-     * callback - Receive the matched events.
-     * 
-     * Return - Promise that resolve on first matched event.
+     * callback
      */
     public attachExtract(
         matcher: (data: T) => boolean,
         boundTo: Bindable,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * Unshift a permanent handler that will extract matched events.
+     * matcher - Type guard
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * timeout
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * callback
      */
     public attachExtract<Q extends T>(
         matcher: (data: T) => data is Q,
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * Unshift a permanent handler that will extract matched events.
+     * matcher - Filter only
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * timeout
      * 
-     * timeout - ms after with the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events.
-     * 
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * callback
      */
     public attachExtract(
         matcher: (data: T) => boolean,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * Unshift a permanent handler that will extract matched events.
+     * matcher - Type guard
      * 
-     * matcher - Filter events that should be passed to the callback.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event.
+     * callback
      */
     public attachExtract<Q extends T>(
         matcher: (data: T) => data is Q,
         callback: (data: Q) => void
     ): Promise<Q>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * Unshift a permanent handler that will extract matched events.
+     * matcher - Filter only
      * 
-     * matcher - Filter events that should be passed to the callback.
-     * 
-     * callback - Receive the matched events.
-     * 
-     * Return - Promise that resolve on first matched event..
+     * callback
      */
     public attachExtract(
         matcher: (data: T) => boolean,
         callback: (data: T) => void
     ): Promise<T>;
-
-
     public attachExtract(...inputs: any[]) {
         return this.__attachExtract(this.readParams(inputs));
     }
@@ -1080,16 +921,15 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
 
 
     /**
+     * https://garronej.github.io/ts-evt/#matcher---transformative
      * 
-     * Unshift a permanent handler to the queue..
+     * matcher - Transformative
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * boundTo
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
+     * timeout
      * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * callback
      */
     public $attachPrepend<U>(
         matcher: (data: T) => [U] | null,
@@ -1097,52 +937,45 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
     /**
+     * https://garronej.github.io/ts-evt/#matcher---transformative
      * 
-     * Unshift a permanent handler to the queue..
+     * matcher - Transformative
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * boundTo
      * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event.
+     * callback
      */
     public $attachPrepend<U>(
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
     /**
+     * https://garronej.github.io/ts-evt/#matcher---transformative
      * 
-     * Unshift a permanent handler to the queue..
+     * matcher - Transformative
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
+     * timeout
      * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * callback
      */
     public $attachPrepend<U>(
         matcher: (data: T) => [U] | null,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
     /**
+     * https://garronej.github.io/ts-evt/#matcher---transformative
      * 
-     * Unshift a permanent handler to the queue..
+     * matcher - Transformative
      * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event.
+     * callback
      */
     public $attachPrepend<U>(
         matcher: (data: T) => [U] | null,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
     public $attachPrepend(...inputs: any[]) {
         return (this.attachPrepend as any)(...inputs);
     }
@@ -1156,18 +989,15 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
 
 
     /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      * 
-     * Unshift a permanent handler to the queue..
+     * matcher - Type guard
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * timeout
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * callback
      */
     public attachPrepend<Q extends T>(
         matcher: (data: T) => data is Q,
@@ -1177,18 +1007,15 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     ): Promise<Q>;
 
     /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      * 
-     * Unshift a permanent handler to the queue..
+     * matcher - Filter only
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * timeout
      * 
-     * timeout - ms after with the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events.
-     * 
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * callback
      */
     public attachPrepend(
         matcher: (data: T) => boolean,
@@ -1198,168 +1025,127 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     ): Promise<T>;
 
     /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      * 
-     * Unshift a permanent handler to the queue..
+     * matcher - Type guard
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event.
+     * callback
      */
     public attachPrepend<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
         callback: (data: Q) => void
     ): Promise<Q>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      * 
-     * Unshift a permanent handler to the queue..
+     * matcher - Filter only
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
-     * 
-     * callback - Receive the matched events.
-     * 
-     * Return - Promise that resolve on first matched event.
+     * callback
      */
     public attachPrepend(
         matcher: (data: T) => boolean,
         boundTo: Bindable,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      * 
-     * Unshift a permanent handler to the queue..
+     * matcher - Type guard
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * timeout
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * callback
      */
     public attachPrepend<Q extends T>(
         matcher: (data: T) => data is Q,
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      * 
-     * Unshift a permanent handler to the queue..
+     * matcher - Filter only
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * timeout
      * 
-     * timeout - ms after with the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events.
-     * 
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * callback
      */
     public attachPrepend(
         matcher: (data: T) => boolean,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      * 
-     * Unshift a permanent handler to the queue..
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * timeout
      * 
-     * timeout - ms after with the returned promise will reject if no event matched.
-     * 
-     * callback - Receive events.
-     * 
-     * Return - Promise that resolve on first event or reject on timeout.
+     * callback
      */
     public attachPrepend(
         boundTo: Bindable,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      * 
-     * Unshift a permanent handler to the queue..
+     * matcher - Type guard
      * 
-     * matcher - Filter events that should be passed to the callback.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event.
+     * callback
      */
     public attachPrepend<Q extends T>(
         matcher: (data: T) => data is Q,
         callback: (data: Q) => void
     ): Promise<Q>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      * 
-     * Unshift a permanent handler to the queue..
+     * matcher - Filter only
      * 
-     * matcher - Filter events that should be passed to the callback.
-     * 
-     * callback - Receive the matched events.
-     * 
-     * Return - Promise that resolve on first matched event..
+     * callback
      */
     public attachPrepend(
         matcher: (data: T) => boolean,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      * 
-     * Unshift a permanent handler to the queue..
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
-     * 
-     * callback - Receive events.
-     * 
-     * Return - Promise that resolve on first event.
+     * callback
      */
     public attachPrepend(
         boundTo: Bindable,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      * 
-     * Unshift a permanent handler to the queue..
+     * timeout
      * 
-     * timeout - ms after with the returned promise will reject if no event matched.
-     * 
-     * callback - Receive events.
-     * 
-     * Return - Promise that resolve on first event or reject on timeout.
+     * callback
      */
     public attachPrepend(
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      * 
-     * Unshift a permanent handler to the queue..
-     * 
-     * callback - Receive events.
-     * 
-     * Return - Promise that resolve on first event.
+     * callback
      */
     public attachPrepend(
         callback: (data: T) => void
     ): Promise<T>;
-
-
     public attachPrepend(...inputs: any[]) {
         return this.__attachPrepend(this.readParams(inputs));
     }
@@ -1371,16 +1157,15 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
 
 
     /**
+     * https://garronej.github.io/ts-evt/#matcher---transformative
      * 
-     * Unshift a handler called only one time.
+     * matcher - Transformative
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * boundTo
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
+     * timeout
      * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event or reject on timeout.
+     * callback
      */
     public $attachOncePrepend<U>(
         matcher: (data: T) => [U] | null,
@@ -1388,46 +1173,40 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
     /**
+     * https://garronej.github.io/ts-evt/#matcher---transformative
      * 
-     * Unshift a handler called only one time.
+     * matcher - Transformative
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * boundTo
      * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event.
+     * callback
      */
     public $attachOncePrepend<U>(
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
     /**
+     * https://garronej.github.io/ts-evt/#matcher---transformative
      * 
-     * Unshift a handler called only one time.
+     * matcher - Transformative
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
+     * timeout
      * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event or reject on timeout.
+     * callback
      */
     public $attachOncePrepend<U>(
         matcher: (data: T) => [U] | null,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
     /**
+     * https://garronej.github.io/ts-evt/#matcher---transformative
      * 
-     * Unshift a handler called only one time.
+     * matcher - Transformative
      * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event.
+     * callback
      */
     public $attachOncePrepend<U>(
         matcher: (data: T) => [U] | null,
@@ -1446,18 +1225,15 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
 
 
     /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      * 
-     * Unshift a handler called only one time.
+     * matcher - Type guard
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * timeout
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event or reject on timeout.
+     * callback
      */
     public attachOncePrepend<Q extends T>(
         matcher: (data: T) => data is Q,
@@ -1465,20 +1241,16 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      * 
-     * Unshift a handler called only one time.
+     * matcher - Filter only
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * timeout
      * 
-     * timeout - ms after with the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events.
-     * 
-     * Return - Promise that resolve on matched event or reject on timeout.
+     * callback
      */
     public attachOncePrepend(
         matcher: (data: T) => boolean,
@@ -1486,186 +1258,149 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      * 
-     * Unshift a handler called only one time.
+     * matcher - Type guard
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event.
+     * callback
      */
     public attachOncePrepend<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
         callback: (data: Q) => void
     ): Promise<Q>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      * 
-     * Unshift a handler called only one time.
+     * matcher - Filter only
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
-     * 
-     * callback - Receive the matched events.
-     * 
-     * Return - Promise that resolve on matched event.
+     * callback
      */
     public attachOncePrepend(
         matcher: (data: T) => boolean,
         boundTo: Bindable,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      * 
-     * Unshift a handler called only one time.
+     * matcher - Type guard
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * timeout
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event or reject on timeout.
+     * callback
      */
     public attachOncePrepend<Q extends T>(
         matcher: (data: T) => data is Q,
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      * 
-     * Unshift a handler called only one time.
+     * matcher - Filter only
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * timeout
      * 
-     * timeout - ms after with the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events.
-     * 
-     * Return - Promise that resolve on matched event or reject on timeout.
+     * callback
      */
     public attachOncePrepend(
         matcher: (data: T) => boolean,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      * 
-     * Unshift a handler called only one time.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * timeout
      * 
-     * timeout - ms after with the returned promise will reject if no event matched.
-     * 
-     * callback - Receive events.
-     * 
-     * Return - Promise that resolve on event or reject on timeout.
+     * callback
      */
     public attachOncePrepend(
         boundTo: Bindable,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      * 
-     * Unshift a handler called only one time.
+     * matcher - Type guard
      * 
-     * matcher - Filter events that should be passed to the callback.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event.
+     * callback
      */
     public attachOncePrepend<Q extends T>(
         matcher: (data: T) => data is Q,
         callback: (data: Q) => void
     ): Promise<Q>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      * 
-     * Unshift a handler called only one time.
+     * matcher - Filter only
      * 
-     * matcher - Filter events that should be passed to the callback.
-     * 
-     * callback - Receive the matched events.
-     * 
-     * Return - Promise that resolve on matched event..
+     * callback
      */
     public attachOncePrepend(
         matcher: (data: T) => boolean,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      * 
-     * Unshift a handler called only one time.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
-     * 
-     * callback - Receive events.
-     * 
-     * Return - Promise that resolve on event.
+     * callback
      */
     public attachOncePrepend(
         boundTo: Bindable,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      * 
-     * Unshift a handler called only one time.
+     * timeout
      * 
-     * timeout - ms after with the returned promise will reject if no event matched.
-     * 
-     * callback - Receive events.
-     * 
-     * Return - Promise that resolve on event or reject on timeout.
+     * callback
      */
     public attachOncePrepend(
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      * 
-     * Unshift a handler called only one time.
-     * 
-     * callback - Receive events.
-     * 
-     * Return - Promise that resolve on event.
+     * callback
      */
     public attachOncePrepend(
         callback: (data: T) => void
     ): Promise<T>;
-
-
     public attachOncePrepend(...inputs: any[]) {
         return this.__attachOncePrepend(this.readParams(inputs));
     }
 
 
+
+
+
+
+
+
     /**
+     * https://garronej.github.io/ts-evt/#matcher---transformative
      * 
-     * Unshift a handler called only one time that will extract the event.
+     * matcher - Transformative
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * boundTo
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
+     * timeout
      * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event or reject on timeout.
+     * callback
      */
     public $attachOnceExtract<U>(
         matcher: (data: T) => [U] | null,
@@ -1673,46 +1408,40 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
     /**
+     * https://garronej.github.io/ts-evt/#matcher---transformative
      * 
-     * Unshift a handler called only one time that will extract the event.
+     * matcher - Transformative
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * boundTo
      * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event.
+     * callback
      */
     public $attachOnceExtract<U>(
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
     /**
+     * https://garronej.github.io/ts-evt/#matcher---transformative
      * 
-     * Unshift a handler called only one time that will extract the event.
+     * matcher - Transformative
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
+     * timeout
      * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event or reject on timeout.
+     * callback
      */
     public $attachOnceExtract<U>(
         matcher: (data: T) => [U] | null,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
     /**
+     * https://garronej.github.io/ts-evt/#matcher---transformative
      * 
-     * Unshift a handler called only one time that will extract the event.
+     * matcher - Transformative
      * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event.
+     * callback
      */
     public $attachOnceExtract<U>(
         matcher: (data: T) => [U] | null,
@@ -1730,18 +1459,15 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
 
 
     /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * Unshift a handler called only one time that will extract the event.
+     * matcher - Type guard
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * timeout
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event or reject on timeout.
+     * callback
      */
     public attachOnceExtract<Q extends T>(
         matcher: (data: T) => data is Q,
@@ -1749,20 +1475,16 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * Unshift a handler called only one time that will extract the event.
+     * matcher - Filter only
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * timeout
      * 
-     * timeout - ms after with the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events.
-     * 
-     * Return - Promise that resolve on matched event or reject on timeout.
+     * callback
      */
     public attachOnceExtract(
         matcher: (data: T) => boolean,
@@ -1770,169 +1492,126 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * Unshift a handler called only one time that will extract the event.
+     * matcher - Type guard
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event.
+     * callback
      */
     public attachOnceExtract<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
         callback: (data: Q) => void
     ): Promise<Q>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * Unshift a handler called only one time that will extract the event.
+     * matcher - Filter only
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
-     * 
-     * callback - Receive the matched events.
-     * 
-     * Return - Promise that resolve on matched event.
+     * callback
      */
     public attachOnceExtract(
         matcher: (data: T) => boolean,
         boundTo: Bindable,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * Unshift a handler called only one time that will extract the event.
+     * matcher - Type guard
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * timeout
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event or reject on timeout.
+     * callback
      */
     public attachOnceExtract<Q extends T>(
         matcher: (data: T) => data is Q,
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * Unshift a handler called only one time that will extract the event.
+     * matcher - Filter only
      * 
-     * matcher - Filter events that should be passed to the callback.
+     * timeout
      * 
-     * timeout - ms after with the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events.
-     * 
-     * Return - Promise that resolve on matched event or reject on timeout.
+     * callback
      */
     public attachOnceExtract(
         matcher: (data: T) => boolean,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * Unshift a handler called only one time that will extract the event.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
-     * 
-     * timeout - ms after with the returned promise will reject if no event matched.
-     * 
-     * callback - Receive events.
-     * 
-     * Return - Promise that resolve on event or reject on timeout.
+     * timeout
      */
     public attachOnceExtract(
         boundTo: Bindable,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * Unshift a handler called only one time that will extract the event.
+     * matcher - Type guard
      * 
-     * matcher - Filter events that should be passed to the callback.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event.
+     * callback
      */
     public attachOnceExtract<Q extends T>(
         matcher: (data: T) => data is Q,
         callback: (data: Q) => void
     ): Promise<Q>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * Unshift a handler called only one time that will extract the event.
+     * matcher - Filter only
      * 
-     * matcher - Filter events that should be passed to the callback.
-     * 
-     * callback - Receive the matched events.
-     * 
-     * Return - Promise that resolve on matched event..
+     * callback
      */
     public attachOnceExtract(
         matcher: (data: T) => boolean,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * Unshift a handler called only one time that will extract the event.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
-     * 
-     * callback - Receive events.
-     * 
-     * Return - Promise that resolve on event.
+     * callback
      */
     public attachOnceExtract(
         boundTo: Bindable,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * Unshift a handler called only one time that will extract the event.
+     * timeout
      * 
-     * timeout - ms after with the returned promise will reject if no event matched.
-     * 
-     * callback - Receive events.
-     * 
-     * Return - Promise that resolve on event or reject on timeout.
+     * callback
      */
     public attachOnceExtract(
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * Unshift a handler called only one time that will extract the event.
-     * 
-     * callback - Receive events.
-     * 
-     * Return - Promise that resolve on event.
+     * callback
      */
     public attachOnceExtract(
         callback: (data: T) => void
     ): Promise<T>;
-
     public attachOnceExtract(...inputs: any[]) {
         return this.__attachOnceExtract(this.readParams(inputs));
     }

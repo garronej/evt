@@ -12,7 +12,9 @@ declare type Exclude<T, U> = T extends U ? never : T;
  */
 export declare type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
 declare type NonPostable<T> = Omit<Evt<T>, "post" | "postOnceMatched">;
-/** The interface that should be exposed to users that should
+/**
+ * https://garronej.github.io/ts-evt/#observert-documentation
+ * The interface that should be exposed to users that should
  * have read only access on the observable */
 export interface Observable<T> {
     readonly value: T;
@@ -21,6 +23,7 @@ export interface Observable<T> {
     /** when value changed post the new value */
     readonly evtChange: NonPostable<T>;
 }
+/** https://garronej.github.io/ts-evt/#observert-documentation */
 export declare class ObservableImpl<T> implements Observable<T> {
     private readonly areSame;
     private readonly evtChangeDiff_post;

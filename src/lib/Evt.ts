@@ -130,14 +130,13 @@ export class Evt<T> extends EvtCompat<T> {
 
 
     /**
+     * matcher - Transformative
      * 
-     * Enqueue a handler called only one time.
+     * boundTo
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
+     * timeout
      * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event or reject on timeout.
+     * callback
      */
     public attachOnce<U>(
         matcher: (data: T) => [U] | null,
@@ -145,8 +144,6 @@ export class Evt<T> extends EvtCompat<T> {
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
-
     public attachOnce<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
@@ -159,23 +156,18 @@ export class Evt<T> extends EvtCompat<T> {
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * matcher - Transformative
      * 
-     * Enqueue a handler called only one time.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event.
+     * callback
      */
     public attachOnce<U>(
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
     public attachOnce<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
@@ -186,24 +178,18 @@ export class Evt<T> extends EvtCompat<T> {
         boundTo: Bindable,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * matcher - Transformative
      * 
-     * Enqueue a handler called only one time.
+     * timeout
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event or reject on timeout.
+     * callback
      */
     public attachOnce<U>(
         matcher: (data: T) => [U] | null,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
-
     public attachOnce<Q extends T>(
         matcher: (data: T) => data is Q,
         timeout: number,
@@ -219,20 +205,15 @@ export class Evt<T> extends EvtCompat<T> {
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * matcher - Transformative
      * 
-     * Enqueue a handler called only one time.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event.
+     * callback
      */
     public attachOnce<U>(
         matcher: (data: T) => [U] | null,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
     public attachOnce<Q extends T>(
         matcher: (data: T) => data is Q,
         callback: (data: Q) => void
@@ -255,19 +236,14 @@ export class Evt<T> extends EvtCompat<T> {
     public attachOnce(...inputs: any[]) {
         return (super.attachOnce as any)(...inputs);
     }
-
-
     /**
+     * matcher - Transformative
      * 
-     * Unshift a permanent handler that will extract matched events.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * timeout
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * callback
      */
     public attachExtract<U>(
         matcher: (data: T) => [U] | null,
@@ -275,8 +251,6 @@ export class Evt<T> extends EvtCompat<T> {
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
-
     public attachExtract<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
@@ -289,23 +263,18 @@ export class Evt<T> extends EvtCompat<T> {
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * matcher - Transformative
      * 
-     * Unshift a permanent handler that will extract matched events.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event.
+     * callback
      */
     public attachExtract<U>(
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
     public attachExtract<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
@@ -316,24 +285,18 @@ export class Evt<T> extends EvtCompat<T> {
         boundTo: Bindable,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * matcher - Transformative
      * 
-     * Unshift a permanent handler that will extract matched events.
+     * timeout
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * callback
      */
     public attachExtract<U>(
         matcher: (data: T) => [U] | null,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
-
     public attachExtract<Q extends T>(
         matcher: (data: T) => data is Q,
         timeout: number,
@@ -344,21 +307,15 @@ export class Evt<T> extends EvtCompat<T> {
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * matcher - Transformative
      * 
-     * Unshift a permanent handler that will extract matched events.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event.
+     * callback
      */
     public attachExtract<U>(
         matcher: (data: T) => [U] | null,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
-
     public attachExtract<Q extends T>(
         matcher: (data: T) => data is Q,
         callback: (data: Q) => void
@@ -382,16 +339,13 @@ export class Evt<T> extends EvtCompat<T> {
 
 
     /**
+     * matcher - Transformative
      * 
-     * Unshift a permanent handler to the queue..
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * timeout
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * callback
      */
     public attachPrepend<U>(
         matcher: (data: T) => [U] | null,
@@ -399,8 +353,6 @@ export class Evt<T> extends EvtCompat<T> {
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
-
     public attachPrepend<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
@@ -413,25 +365,18 @@ export class Evt<T> extends EvtCompat<T> {
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
-
     /**
+     * matcher - Transformative
      * 
-     * Unshift a permanent handler to the queue..
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event.
+     * callback
      */
     public attachPrepend<U>(
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
-
     public attachPrepend<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
@@ -442,23 +387,18 @@ export class Evt<T> extends EvtCompat<T> {
         boundTo: Bindable,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * matcher - Transformative
      * 
-     * Unshift a permanent handler to the queue..
+     * timeout
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event or reject on timeout.
+     * callback
      */
     public attachPrepend<U>(
         matcher: (data: T) => [U] | null,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
     public attachPrepend<Q extends T>(
         matcher: (data: T) => data is Q,
         timeout: number,
@@ -474,20 +414,15 @@ export class Evt<T> extends EvtCompat<T> {
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * matcher - Transformative
      * 
-     * Unshift a permanent handler to the queue..
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on first matched event.
+     * callback
      */
     public attachPrepend<U>(
         matcher: (data: T) => [U] | null,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
     public attachPrepend<Q extends T>(
         matcher: (data: T) => data is Q,
         callback: (data: Q) => void
@@ -518,16 +453,13 @@ export class Evt<T> extends EvtCompat<T> {
 
 
     /**
+     * matcher - Transformative
      * 
-     * Unshift a handler called only one time.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * timeout
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event or reject on timeout.
+     * callback
      */
     public attachOncePrepend<U>(
         matcher: (data: T) => [U] | null,
@@ -535,7 +467,6 @@ export class Evt<T> extends EvtCompat<T> {
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
     public attachOncePrepend<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
@@ -548,24 +479,18 @@ export class Evt<T> extends EvtCompat<T> {
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * matcher - Transformative
      * 
-     * Unshift a handler called only one time.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event.
+     * callback
      */
     public attachOncePrepend<U>(
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
-
     public attachOncePrepend<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
@@ -576,21 +501,15 @@ export class Evt<T> extends EvtCompat<T> {
         boundTo: Bindable,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * matcher - Transformative
      * 
-     * Unshift a handler called only one time.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event.
+     * callback
      */
     public attachOncePrepend<U>(
         matcher: (data: T) => [U] | null,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
-
     public attachOncePrepend<Q extends T>(
         matcher: (data: T) => data is Q,
         timeout: number,
@@ -606,22 +525,15 @@ export class Evt<T> extends EvtCompat<T> {
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * matcher - Transformative
      * 
-     * Unshift a handler called only one time.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event.
+     * callback
      */
     public attachOncePrepend<U>(
         matcher: (data: T) => [U] | null,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
-
-
     public attachOncePrepend<Q extends T>(
         matcher: (data: T) => data is Q,
         callback: (data: Q) => void
@@ -646,17 +558,15 @@ export class Evt<T> extends EvtCompat<T> {
     }
 
 
+
     /**
+     * matcher - Transformative
      * 
-     * Unshift a handler called only one time that will extract the event.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
+     * timeout
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event or reject on timeout.
+     * callback
      */
     public attachOnceExtract<U>(
         matcher: (data: T) => [U] | null,
@@ -664,8 +574,6 @@ export class Evt<T> extends EvtCompat<T> {
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
-
     public attachOnceExtract<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
@@ -678,25 +586,18 @@ export class Evt<T> extends EvtCompat<T> {
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * matcher - Transformative
      * 
-     * Unshift a handler called only one time that will extract the event.
+     * boundTo
      * 
-     * boundTo - Call context of callback, used as id to detach.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event.
+     * callback
      */
     public attachOnceExtract<U>(
         matcher: (data: T) => [U] | null,
         boundTo: Bindable,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
-
-
     public attachOnceExtract<Q extends T>(
         matcher: (data: T) => data is Q,
         boundTo: Bindable,
@@ -707,23 +608,18 @@ export class Evt<T> extends EvtCompat<T> {
         boundTo: Bindable,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * matcher - Transformative
      * 
-     * Unshift a handler called only one time that will extract the event.
+     * timeout
      * 
-     * timeout - ms after witch the returned promise will reject if no event matched.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event or reject on timeout.
+     * callback
      */
     public attachOnceExtract<U>(
         matcher: (data: T) => [U] | null,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
     public attachOnceExtract<Q extends T>(
         matcher: (data: T) => data is Q,
         timeout: number,
@@ -739,21 +635,15 @@ export class Evt<T> extends EvtCompat<T> {
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
-
     /**
+     * matcher - Transformative
      * 
-     * Unshift a handler called only one time that will extract the event.
-     * 
-     * callback - Receive the matched events casted by the matcher.
-     * 
-     * Return - Promise that resolve on matched event.
+     * callback
      */
     public attachOnceExtract<U>(
         matcher: (data: T) => [U] | null,
         callback: (transformedData: U) => void
     ): Promise<U>;
-
-
     public attachOnceExtract<Q extends T>(
         matcher: (data: T) => data is Q,
         callback: (data: Q) => void
@@ -773,7 +663,6 @@ export class Evt<T> extends EvtCompat<T> {
     public attachOnceExtract(
         callback: (data: T) => void
     ): Promise<T>;
-
     public attachOnceExtract(...inputs: any[]) {
         return (super.attachOnceExtract as any)(...inputs);
     }
@@ -782,6 +671,7 @@ export class Evt<T> extends EvtCompat<T> {
 }
 
 export class VoidEvt extends Evt<void> {
+
     public post(): number {
         return super.post(undefined);
     }

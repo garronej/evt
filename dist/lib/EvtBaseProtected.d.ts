@@ -7,12 +7,15 @@ export declare const overwriteReadonlyProp: (obj: {
 }, propertyName: string, value: any) => void;
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 export declare class EvtBaseProtected<T> {
+    /** https://garronej.github.io/ts-evt/#evtpostcount */
     readonly postCount: number;
     private incrementPostCount;
     private traceId;
     private traceFormatter;
     private log;
+    /** https://garronej.github.io/ts-evt/#evtenabletrace */
     enableTrace(id: string, formatter?: (data: T) => string, log?: (message?: any, ...optionalParams: any[]) => void): void;
+    /** https://garronej.github.io/ts-evt/#evtenabletrace */
     disableTrace(): void;
     private readonly handlers;
     private readonly handlerTriggers;
@@ -21,7 +24,11 @@ export declare class EvtBaseProtected<T> {
     private readonly getChronologyMark;
     protected addHandler<U>(attachParams: UserProvidedParams<T, U>, implicitAttachParams: ImplicitParams): Handler<T, U>;
     private trace;
-    /** Returns post count */
+    /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     *
+     * Returns post count
+     * */
     post(data: T): number;
     /** Return isExtracted */
     private postSync;
@@ -33,6 +40,7 @@ export declare class EvtBaseProtected<T> {
     protected __attachOnce<U>(attachParams: UserProvidedParams<T, U>): Promise<U>;
     protected __attachOncePrepend<U>(attachParams: UserProvidedParams<T, U>): Promise<U>;
     protected __attachOnceExtract<U>(attachParams: UserProvidedParams<T, U>): Promise<U>;
+    /** https://garronej.github.io/ts-evt/#evtgethandler */
     getHandlers(): Handler<T, any>[];
     /** Detach every handler bound to a given object or all handlers, return the detached handlers */
     detach(boundTo?: Bindable): Handler<T, any>[];
