@@ -43,6 +43,10 @@ Thanks to Stackblitz you can start experimenting right now in your browser.
 
 # Table of content
 
+- [Motivation](#motivation)
+- [Try it in your browser right now](#try-it-in-your-browser-right-now)
+- [Table of content](#table-of-content)
+- [Dependency requirement](#dependency-requirement)
 - [``Evt<T>`` documentation](#evtt-documentation)
   - [``evt.attach()``, ``evt.attachOnce()`` and ``evt.post()``](#evtattach-evtattachonce-and-evtpost)
   - [``evt.WaitFor()``](#evtwaitfor)
@@ -816,7 +820,7 @@ This will print:
 
 # ``Observer<T>`` documentation
 
-``ObservableImpl<T>`` is a class that leverage ``Evt<T>`` mutation tracking.
+``ObservableImpl<T>`` is a class that leverage ``Evt<T>`` for mutation tracking.
 
 ```typescript
 
