@@ -490,21 +490,26 @@ import { Evt } from "ts-evt";
 
 const evtText = new Evt<string>();
 
+evtText.attachOnce(text=> console.log(`Hello ${text}`));
+
 //boundTo can be anything but a number undefined, null or
 //a callable function (you can't use a constructor).
 const boundTo = [];
 
 evtText.attach(
     boundTo,
-    _text => { }
+    _text => console.assert(false,"never")
 );
 
 evtText.attachOnce(
     boundTo,
-    _text => { }
+    _text => console.assert(false,"never")
 );
 
 evtText.detach(boundTo);
+
+//"Hello World" will be printed
+evtText.post("World");
 ```
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-detach-with-contex?embed=1&file=index.ts)
