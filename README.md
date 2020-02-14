@@ -43,10 +43,6 @@ Thanks to Stackblitz you can start experimenting right now in your browser.
 
 # Table of content
 
-- [Motivation](#motivation)
-- [Try it in your browser right now](#try-it-in-your-browser-right-now)
-- [Table of content](#table-of-content)
-- [Dependency requirement](#dependency-requirement)
 - [``Evt<T>`` documentation](#evtt-documentation)
   - [``evt.attach()``, ``evt.attachOnce()`` and ``evt.post()``](#evtattach-evtattachonce-and-evtpost)
   - [``evt.WaitFor()``](#evtwaitfor)
