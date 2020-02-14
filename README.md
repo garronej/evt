@@ -410,7 +410,7 @@ evtSocketConnect.post();
 //"SOCKET CONNECTED" have been printed to the console.
 ```
 
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-hello-world-vgzzgk?embed=1&file=index.ts)
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-voidevt?embed=1&file=index.ts)
 
 ## ``evt.attachPrepend()`` and  ``evt.attachOncePrepend()``
 
