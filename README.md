@@ -342,15 +342,17 @@ evtShape.post({
 ### Matcher - Compatible methods
 
 Matcher functions can be used with:  
-    -``$attach``  
-    -``$attachOnce``  
-    -``waitFor`` ( ``$`` not needed )  
-    -``createDelegate`` ( ``$`` not needed )  
-    -``$attachExtract``  
-    -``$attachOnceExtract``  
-    -``$attachPrepend``  
-    -``$attachOncePrepend``
+    -``attach()`` 
+    -``attachOnce()`` 
+    -``waitFor()``
+    -``createDelegate()``
+    -``attachExtract()``
+    -``attachOnceExtract``  
+    -``attachPrepend``  
+    -``attachOncePrepend``
 
+Except for ``waitFor()`` and ``createDelegate()`` prepend ``$`` to the method  
+name to use a transformative matcher.
 
 ``waitFor`` and ``attachOnce`` combined with matcher address the main shortcoming of EventEmitter
 allowing us to asynchronously wait for the next shape that is a circle for example.
