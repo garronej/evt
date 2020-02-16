@@ -1,9 +1,9 @@
 
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/6702424/74260343-acecf700-4cf9-11ea-8890-9dd81fb2d251.png">  
+    <img src="https://user-images.githubusercontent.com/6702424/74597663-160a9c80-5063-11ea-9542-4437de0b7c66.png">  
 </p>
 <p align="center">
-    <i> 💫 Type safe replacement for node's EventEmitter embracing function programing 💫 </i>
+    💧<i>Type safe replacement for node's EventEmitter embracing function programing</i>💧
     <br>
     <br>
     <img src="https://img.shields.io/bundlephobia/min/ts-evt">
