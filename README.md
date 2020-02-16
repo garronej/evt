@@ -215,7 +215,6 @@ import { Evt } from "ts-evt";
 const evtText= new Evt<string>();
 
 evtText.attach(
-    //A matcher function take an argument of generic type T ( here string ) and returns a boolean.
     text=> text.startsWith("H"), 
     text=> {
         console.assert( text.startsWith("H") );
