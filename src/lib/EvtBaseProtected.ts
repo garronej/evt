@@ -326,7 +326,7 @@ export class EvtBaseProtected<T> {
 
             const transformativeMatcherResult = invokeMatcher(matcher, data);
 
-            if (transformativeMatcherResult === null) {
+            if (!transformativeMatcherResult) {
                 continue;
             }
 
@@ -370,7 +370,7 @@ export class EvtBaseProtected<T> {
 
                 const transformativeMatcherResult = invokeMatcher(handler.matcher, data);
 
-                if (transformativeMatcherResult === null) {
+                if (!transformativeMatcherResult) {
                     continue;
                 }
 

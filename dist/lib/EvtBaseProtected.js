@@ -81,7 +81,7 @@ var EvtBaseProtected = /** @class */ (function () {
                     return "continue";
                 }
                 var transformativeMatcherResult = invokeMatcher(handler.matcher, data);
-                if (transformativeMatcherResult === null) {
+                if (!transformativeMatcherResult) {
                     return "continue";
                 }
                 var handlerTrigger = _this_1.handlerTriggers.get(handler);
@@ -263,7 +263,7 @@ var EvtBaseProtected = /** @class */ (function () {
                 continue;
             }
             var transformativeMatcherResult = invokeMatcher(matcher, data);
-            if (transformativeMatcherResult === null) {
+            if (!transformativeMatcherResult) {
                 continue;
             }
             var handlerTrigger = this.handlerTriggers.get(handler);
