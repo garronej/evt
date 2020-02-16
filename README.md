@@ -234,6 +234,11 @@ evtText.post("Bonjour");
 evtText.post("Hi!");
 ```
 
+NOTE: Make sure that your matcher function always return a ``boolean`` at runtime.  
+When in doubts use 'bang bang' ( ``!!returnedValue`` ). 
+If the value returned happen to be an array with one element your matcher will be
+considered as a transformative matcher and you will run into a runtime error.
+
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-matcher-return-boolean?embed=1&file=index.ts)
 
 ### Matcher - Type guard
@@ -288,17 +293,23 @@ evtShape.post({
 The type of the shape object is narrowed down to ``Circle``  
 ![Screenshot 2020-02-08 at 19 17 46](https://user-images.githubusercontent.com/6702424/74090059-baab3e00-4aa7-11ea-9c75-97f1fb99666d.png)
 
+NOTE: Make sure that your matcher function always return a ``boolean`` at runtime.  
+When in doubts use 'bang bang' ( ``!!returnedValue`` )
+If the value returned happen to be an array with one element your matcher will be  
+considered as a transformative matcher and you will run into a runtime error.
+
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-matcher-type-guard?embed=1&file=index.ts)
 
 ### Matcher - Transformative
 
 To filter and transform the data that should be passed to the callback.  
 
-The matcher should return the value that is to be passed to the callback wrapped into a singleton ``[]``.  
+The matcher should return the value that is to be passed to the callback wrapped into a singleton ``[val]``.  
 When the matcher return ``null`` nothing is passed to the callback.  
 
 When you wish to use a transformative matcher you need to prefix the method name by ``$``.
 
+NOTE: Make sure when you return a singleton that it is an array with one and only one element.
 
 ```typescript
 

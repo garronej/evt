@@ -18,13 +18,23 @@ export function invokeMatcher<T, U>(
 
     const matcherResult = matcher(data);
 
-    return typeof matcherResult === "boolean" ?
-        (
-            matcherResult ? [data] : null
-        )
-        :
+    //NOTE: We assume it was a transformative matcher only 
+    //if the returned value is a singleton tuple, otherwise we evaluate
+    //it as a boolean. 
+    return (
+        matcherResult !== null &&
+        typeof matcherResult === "object" &&
+        matcherResult.length === 1
+    ) ?
         matcherResult
+        :
+        (
+            !!matcherResult ?
+                [data] :
+                null
+        )
         ;
+
 
 }
 
@@ -326,7 +336,7 @@ export class EvtBaseProtected<T> {
 
             const transformativeMatcherResult = invokeMatcher(matcher, data);
 
-            if (!transformativeMatcherResult) {
+            if (transformativeMatcherResult === null) {
                 continue;
             }
 
@@ -370,7 +380,7 @@ export class EvtBaseProtected<T> {
 
                 const transformativeMatcherResult = invokeMatcher(handler.matcher, data);
 
-                if (!transformativeMatcherResult) {
+                if (transformativeMatcherResult === null) {
                     continue;
                 }
 

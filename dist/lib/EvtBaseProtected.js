@@ -26,10 +26,17 @@ var defs_1 = require("./defs");
 /** If the matcher is not transformative then the transformedData will be the input data */
 function invokeMatcher(matcher, data) {
     var matcherResult = matcher(data);
-    return typeof matcherResult === "boolean" ?
-        (matcherResult ? [data] : null)
+    //NOTE: We assume it was a transformative matcher only 
+    //if the returned value is a singleton tuple, otherwise we evaluate
+    //it as a boolean. 
+    return (matcherResult !== null &&
+        typeof matcherResult === "object" &&
+        matcherResult.length === 1) ?
+        matcherResult
         :
-            matcherResult;
+            (!!matcherResult ?
+                [data] :
+                null);
 }
 exports.invokeMatcher = invokeMatcher;
 exports.overwriteReadonlyProp = function (obj, propertyName, value) {
@@ -81,7 +88,7 @@ var EvtBaseProtected = /** @class */ (function () {
                     return "continue";
                 }
                 var transformativeMatcherResult = invokeMatcher(handler.matcher, data);
-                if (!transformativeMatcherResult) {
+                if (transformativeMatcherResult === null) {
                     return "continue";
                 }
                 var handlerTrigger = _this_1.handlerTriggers.get(handler);
@@ -263,7 +270,7 @@ var EvtBaseProtected = /** @class */ (function () {
                 continue;
             }
             var transformativeMatcherResult = invokeMatcher(matcher, data);
-            if (!transformativeMatcherResult) {
+            if (transformativeMatcherResult === null) {
                 continue;
             }
             var handlerTrigger = this.handlerTriggers.get(handler);
