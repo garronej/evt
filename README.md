@@ -3,7 +3,7 @@
     <img src="https://user-images.githubusercontent.com/6702424/74597663-160a9c80-5063-11ea-9542-4437de0b7c66.png">  
 </p>
 <p align="center">
-    💧<i>Type safe replacement for node's EventEmitter embracing functional programing</i>💧
+    💧<i>Type safe replacement for node's EventEmitter embracing functional programming</i>💧
     <br>
     <br>
     <img src="https://img.shields.io/bundlephobia/min/ts-evt">
