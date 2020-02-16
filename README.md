@@ -43,13 +43,9 @@ Thanks to Stackblitz you can start experimenting right now in your browser.
 
 # Table of content
 
-- [Motivation](#motivation)
-- [Try it in your browser right now](#try-it-in-your-browser-right-now)
-- [Table of content](#table-of-content)
-- [Dependency requirement](#dependency-requirement)
 - [``Evt<T>`` documentation](#evtt-documentation)
   - [``evt.attach()``, ``evt.attachOnce()`` and ``evt.post()``](#evtattach-evtattachonce-and-evtpost)
-  - [``evt.WaitFor()``](#evtwaitfor)
+  - [``evt.waitFor()``](#evtwaitfor)
     - [Without timeout](#without-timeout)
     - [With timeout](#with-timeout)
   - [Matcher function](#matcher-function)
@@ -129,7 +125,7 @@ eventEmitter.emit("time", 123);
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-compared-with-events?embed=1&file=index.ts)
 
-## ``evt.WaitFor()``
+## ``evt.waitFor()``
 
 Method that return a promise that will resolve when the next event is posted.
 
