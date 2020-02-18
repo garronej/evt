@@ -68,7 +68,7 @@ Thanks to Stackblitz you can start experimenting right now in your browser.
   - [``evt.postOnceMatched()``](#evtpostoncematched)
   - [``UnpackEvt<typeof evt>``.](#unpackevttypeof-evt)
   - [``evt.enableTrace()``](#evtenabletrace)
-- [``Observer<T>`` documentation](#observert-documentation)
+- [``Observable<T>`` documentation](#observablet-documentation)
 - [``evt.waitFor()`` used in ``async`` procedure or loop](#evtwaitfor-used-in-async-procedure-or-loop)
 - [History of the project](#history-of-the-project)
 
@@ -822,11 +822,10 @@ This will print:
 [myPrefix] (evtCircle n°2) 1 handler => CIRCLE(33)
 ```
 
-
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-trace?embed=1&file=index.ts)
 
 
-# ``Observer<T>`` documentation
+# ``Observable<T>`` documentation
 
 ``ObservableImpl<T>`` is a class that leverage ``Evt<T>`` for mutation tracking.
 
