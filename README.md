@@ -29,7 +29,7 @@ type inference features to provide __type safety__ while keeping things __concis
 Addressing the common problems faced with EventEmitter:
 - Hard to type.
 - Removing a particular listener is a pain, it require to keep the listener.
-- Can't easily add a one-time listener for the next event satisfying a given conditions.
+- Can't easily add a one-time listener for the next event satisfying a given condition.
 - Promise support was added as an afterthought.
 
 # Try it in your browser right now
