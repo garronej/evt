@@ -116,10 +116,11 @@ import { EventEmitter } from "events";
 const eventEmitter = new EventEmitter();
 
 eventEmitter.on("text", text => console.log(text));
-eventEmitter.on("time", time => console.log(time));
+eventEmitter.once("time", time => console.log(time));
 
 eventEmitter.emit("text", "hi!");
 eventEmitter.emit("time", 123);
+eventEmitter.emit("time", 1234);
 
 ````
 
