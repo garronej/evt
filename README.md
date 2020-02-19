@@ -975,7 +975,7 @@ evtText.post("B");
 
 If you think about it, in a more straightforward implementation,
 ``secondLetter`` would not be grabbed as ``post("B")`` is executed
-after the second ``waitFor()``.
+before the second ``waitFor()``.
 However we work some voodoo behind the scene to achieve this behavior 
 so that you wont miss event that are posted in the same tick.
 
