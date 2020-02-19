@@ -40,3 +40,4 @@ var EvtError;
     }(Error));
     EvtError.Detached = Detached;
 })(EvtError = exports.EvtError || (exports.EvtError = {}));
+//# sourceMappingURL=defs.js.map

@@ -9,7 +9,7 @@
                 "declaration": true,
                 "outDir": "./dist",
                 "strictNullChecks": true,
-                "sourceMap": false,
+                "sourceMap": true,
                 "newLine": "LF",
                 "noUnusedLocals": true,
                 "noUnusedParameters": false,
