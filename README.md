@@ -27,14 +27,14 @@ type inference features to provide __type safety__ while keeping things __concis
 # Motivation
 
 Addressing the common problems faced with EventEmitter:
-- Hard to type.
+- Hard to enforce type safety.
 - Removing a particular listener is a pain, it require to keep the listener.
 - Can't easily add a one-time listener for the next event satisfying a given condition.
 - Promise support was added as an afterthought.
 
 # Try it in your browser right now
 
-Thanks to Stackblitz you can start experimenting right now in your browser.
+Thanks to Stackblitz you can start experimenting in your browser right now.
 
 ![demo_ts-evt_fixed_4](https://user-images.githubusercontent.com/6702424/74102835-7a9b9800-4b47-11ea-854d-062fe1f42bba.gif)
 
@@ -155,8 +155,8 @@ setTimeout(()=> evtText.post("Hi!"), 1500);
 
 ### With timeout
 
-It is possible to set for what is the maximum amount of time we are willing
-to wait before the promise rejects.
+It is possible to set what is the maximum amount of time we are willing
+to wait for the event before the promise rejects.
 
 ```typescript
 
@@ -176,7 +176,7 @@ const evtText = new Evt<string>();
 
         console.assert(error instanceof EvtError.Timeout);
         //Error can be of two type:
-        //  -EvtError.Timeout if the timeout delay way reached.
+        //  -EvtError.Timeout if the timeout delay was reached.
         //  -EvtError.Detached if the handler was detached before 
         //  the promise returned by waitFor have resolved. 
 
@@ -206,7 +206,7 @@ satisfying certain conditions.
 Matcher function can be of tree type:  
     - __Filter only__: ``(data: T)=> boolean``. Filter the events that should be passed to the callback.  
     - __Type guard__: ``<Q extends T>(data: T)=> data is Q``. Filter and restrict the type of the event data to a subtype of T.  
-    - __Transformative__: ``<U>(data: T)=> [U]:null``. Filter and transform the event data before passing it to the matcher.   
+    - __Transformative__: ``<U>(data: T)=> [U]:null``. Filter and transform the event data before it is passed to the handler function..   
 
 ### Matcher - Filter only
 
