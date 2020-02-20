@@ -949,8 +949,12 @@ obsNames.onPotentialChange(["bob", "louis"]);
 
 # ``evt.waitFor()`` used in ``async`` procedure or loop
 
-``.waitFor()`` is designed in a way that makes it safe to use ``async`` procedures.
-Considere the following example: 
+``evt.waitFor()`` is <b>NOT</b> equivalent to ``new Promise(resolve=> evt.attachOnce(resolve))``
+
+``.waitFor()`` is designed in a way `that makes it safe to use ``async`` procedures.  
+
+Basically it means that the following example prints `A B` on the console instead
+of waiting forever for the secondLetter.
 
 ```typescript
 import { Evt } from "ts-evt";
@@ -972,13 +976,11 @@ evtText.post("B");
 //"A B" is printed to the console.
 ```
 
-If you think about it, in a more straightforward implementation,
-``secondLetter`` would not be grabbed as ``post("B")`` is executed
-before the second ``waitFor()``.
-However we work some voodoo behind the scenes to achieve this behavior 
-so that you won’t miss events that are posted in the same tick.
+Run this [__more practical example__](https://stackblitz.com/edit/ts-evt-demo-edge-case?embed=1&file=index.ts)
+to understand how this behavior prevent from some hard to figure out bugs.
 
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-edge-case?embed=1&file=index.ts)
+Enforcing this behavior does involve some voodoo. This is the explanation as to why the  
+source code of ``ts-evt`` appears very cryptic for an event bus implementation.
 
 # History of the project
 
