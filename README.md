@@ -593,7 +593,10 @@ Large number of methods combining Once, Prepend are exposed.
 For each of those methods a large number of overload are defined
 so that you can combine matchers, timeout or boundTo.
 
-![Screenshot 2020-02-08 at 19 27 56](https://user-images.githubusercontent.com/6702424/74090245-6c973a00-4aa9-11ea-8e48-90d49a0ed20b.png)
+![Screenshot 2020-02-08 at 19 27 56](https://user-images.githubusercontent.com/6702424/74090245-6c973a00-4aa9-11ea-8e48-90d49a0ed20b.png)  
+
+All the attach methods returns Promises that resolve when an event is matched for the first time and reject in the same way ``waitFor``
+does. This explains why it is possible to combine ``attach`` ``attachOnce``, ``attachPrepend`` ect... with the timeout parameter. 
 
 
 ## ``evt.createDelegate()``
