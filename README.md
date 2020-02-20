@@ -954,7 +954,7 @@ obsNames.onPotentialChange(["bob", "louis"]);
 
 ``evt.waitFor()`` is <b>NOT</b> equivalent to ``new Promise(resolve=> evt.attachOnce(resolve))``
 
-``.waitFor()`` is designed in a way `that makes it safe to use ``async`` procedures.  
+``.waitFor()`` is designed in a way that makes it safe to use ``async`` procedures.  
 
 Basically it means that the following example prints `A B` on the console instead
 of waiting forever for the secondLetter.
@@ -982,7 +982,7 @@ evtText.post("B");
 Run this [__more practical example__](https://stackblitz.com/edit/ts-evt-demo-edge-case?embed=1&file=index.ts)
 to understand how this behavior prevent from some hard to figure out bugs.
 
-Enforcing this behavior does involve some voodoo. This is the explanation as to why the  
+Enforcing this behavior does involve some voodoo. This is the explanation as to why the
 source code of ``ts-evt`` appears very cryptic for an event bus implementation.
 
 # History of the project
