@@ -3,7 +3,7 @@
     <img src="https://user-images.githubusercontent.com/6702424/74597663-160a9c80-5063-11ea-9542-4437de0b7c66.png">  
 </p>
 <p align="center">
-    💧<i>Type safe replacement for node's EventEmitter embracing functional programming</i>💧
+    💧<i>Type safe replacement for Node's EventEmitter embracing functional programming</i>💧
     <br>
     <br>
     <img src="https://img.shields.io/bundlephobia/min/ts-evt">
@@ -14,8 +14,8 @@
 
 ---
 
-``ts-evt`` is intended to be a replacement for node's ``events``.  
-It enable and encourage __functional programing__ and make heavy use of __typescript__'s 
+``ts-evt`` is intended to be a replacement for Node's ``events``.  
+It enable and encourage __functional programming__ and makes heavy use of __typescript__'s 
 type inference features to provide __type safety__ while keeping things __concise and elegant__ 🍸.
 
  <b>Browserify friendly:</b>
@@ -28,7 +28,7 @@ type inference features to provide __type safety__ while keeping things __concis
 
 Addressing the common problems faced with EventEmitter:
 - Hard to enforce type safety.
-- Removing a particular listener is a pain, it require to keep the listener.
+- Removing a particular listener is a pain, it requires to keep the listener.
 - Can't easily add a one-time listener for the next event satisfying a given condition.
 - Promise support was added as an afterthought.
 
@@ -39,7 +39,6 @@ Thanks to Stackblitz you can start experimenting in your browser right now.
 ![demo_ts-evt_fixed_4](https://user-images.githubusercontent.com/6702424/74102835-7a9b9800-4b47-11ea-854d-062fe1f42bba.gif)
 
 [__Run Hello World__](https://stackblitz.com/edit/ts-evt-demo-hello-world?embed=1&file=index.ts)
-
 
 # Table of content
 
@@ -74,12 +73,12 @@ Thanks to Stackblitz you can start experimenting in your browser right now.
 
 # Dependency requirement
 
-Minimum version of typescript your project need to be using.
+Minimum version of typescript your project needs to be using.
 
 - For importing ``Evt``:  typescript >= __2.2__ ( Feb 2017 )
 - For importing ``Observable``:  typescript >= __2.8__ ( Mar 2018 )
 
-Exposed interfaces use typescript keywords that where added in specified version.
+Exposed interfaces use typescript keywords that were added in specified version.
 
 # ``Evt<T>`` documentation
 
@@ -128,7 +127,7 @@ eventEmitter.emit("time", 1234);
 
 ## ``evt.waitFor()``
 
-Method that return a promise that will resolve when the next event is posted.
+Method that returns a promise that will resolve when the next event is posted.
 
 ### Without timeout
 
@@ -203,10 +202,10 @@ setTimeout(
 Matcher functions are used to attach handlers that should only be called against events data
 satisfying certain conditions.
 
-Matcher function can be of tree type:  
+Matcher function can be of three types:  
     - __Filter only__: ``(data: T)=> boolean``. Filter the events that should be passed to the callback.  
-    - __Type guard__: ``<Q extends T>(data: T)=> data is Q``. Filter and restrict the type of the event data to a subtype of T.  
-    - __Transformative__: ``<U>(data: T)=> [U]:null``. Filter and transform the event data before it is passed to the handler function..   
+    - __Type guard__: ``<Q extends T>(data: T)=> data is Q``. Filters and restrict the type of the event data to a subtype of T.  
+    - __Transformative__: ``<U>(data: T)=> [U]:null``. Filters and transform the event data before it is passed to the handler function.   
 
 ### Matcher - Filter only
 
@@ -230,16 +229,16 @@ evtText.post("Bonjour");
 evtText.post("Hi!");
 ```
 
-NOTE: Make sure that your matcher function always return a ``boolean`` at runtime.  
+NOTE: Make sure that your matcher function always returns a ``boolean`` at runtime.  
 When in doubts use 'bang bang' ( ``!!returnedValue`` ). 
-If the value returned happen to be an array with one element your matcher will be
+If the value returned happens to be an array with one element, your matcher will be
 considered as a transformative matcher and you will run into a runtime error.
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-matcher-return-boolean?embed=1&file=index.ts)
 
 ### Matcher - Type guard
 
-If the the matcher function is a type guard the type of the event data  will be narrowed down
+If the matcher function is a type guard, the type of the event data  will be narrowed down
 to the subtype the matcher function is matching.  
 Let us define a straight forward type hierarchy to illustrate this feature.
 
@@ -286,12 +285,12 @@ evtShape.post({
 });
 
 ```
-The type of the shape object is narrowed down to ``Circle``  
+The type of the Shape object is narrowed down to ``Circle``  
 ![Screenshot 2020-02-08 at 19 17 46](https://user-images.githubusercontent.com/6702424/74090059-baab3e00-4aa7-11ea-9c75-97f1fb99666d.png)
 
-NOTE: Make sure that your matcher function always return a ``boolean`` at runtime.  
+NOTE: Make sure that your matcher function always returns a ``boolean`` at runtime.  
 When in doubts use 'bang bang' ( ``!!returnedValue`` )
-If the value returned happen to be an array with one element your matcher will be  
+If the value returned happens to be an array with one element, your matcher will be  
 considered as a transformative matcher and you will run into a runtime error.
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-matcher-type-guard?embed=1&file=index.ts)
@@ -303,7 +302,7 @@ To filter and transform the data that should be passed to the callback.
 The matcher should return the value that is to be passed to the callback wrapped into a singleton ``[val]``.  
 When the matcher return ``null`` nothing is passed to the callback.  
 
-When you wish to use a transformative matcher you need to prefix the method name by ``$``.
+When you wish to use a transformative matcher, you need to prefix the method name by ``$``.
 
 NOTE: Make sure when you return a singleton that it is an array with one and only one element.
 
@@ -316,16 +315,16 @@ const evtShape = new Evt<Shape>();
 evtShape.$attach(
     shape => shape.type === "CIRCLE" && shape.radius > 100 ? 
         [ shape.radius ] : null,
-    radius => console.log(`radius: ${radius}`) //NOTE: radius is inferred of being of type number !
+    radius => console.log(`radius: ${radius}`) //NOTE: radius is inferred as being of type numbers !
 );
 
-//Nothing will be printed to the console, it's a SQUARE
+//Nothing will be printed on the console, it's a SQUARE
 evtShape.post({
     "type": "SQUARE",
     "sideLength": 3
 });
 
-//Nothing will be printed to the console, The circle is too small.
+//Nothing will be printed on the console, The circle is too small.
 evtShape.post({
     "type": "CIRCLE",
     "radius": 3
@@ -356,7 +355,7 @@ Except for ``waitFor()`` and ``createDelegate()`` prepend ``$`` to the method
 name to use a transformative matcher.
 
 ``waitFor`` and ``attachOnce`` combined with matcher address the main shortcoming of EventEmitter
-allowing us to asynchronously wait for the next shape that is a circle for example.
+allowing us to asynchronously wait for the next shape that is a circle, for example.
 
 ```typescript
 import { Evt } from "ts-evt";
@@ -382,7 +381,7 @@ const circle: Circle = {
 //"radius: 33" will be printed to the console.
 evtShape.post(circle);
 
-//Nothing will be printed to the console, the promise returned by waitFor has already resolved.
+//Nothing will be printed on the console, the promise returned by waitFor has already resolved.
 evtShape.post(circle);
 
 //Nothing will be printed, the side length is too short
@@ -397,7 +396,7 @@ evtShape.post({
 });
 //"length: 21" have been  printed to the console.
 
-//Noting will be printed, attachOnce's callback function have already been invoked.
+//Noting will be printed, attachOnce's callback function has already been invoked.
 evtShape.post({
     "type": "SQUARE",
     "sideLength": 44
@@ -427,7 +426,7 @@ evtSocketConnect.post();
 
 ## ``evt.attachPrepend()`` and  ``evt.attachOncePrepend()``
 
-Similar to node's ``emitter.prependListener()`` and ``emitter.prependOnceListener()``
+Similar to Node's ``emitter.prependListener()`` and ``emitter.prependOnceListener()``
 
 ```typescript
 import { VoidEvt } from "ts-evt";
@@ -449,8 +448,8 @@ evtConnect.post();
 
 ## ``evt.attachExtract()`` and ``evt.attachOnceExtract()``
 
-To handle edge cases that haven't been anticipated without having to rethink the all model
-we provide a way to extract particular type of events.
+To handle edge cases that haven't been anticipated without having to rethink the model as a whole
+we provide a way to extract particular types of events.
 
 ```typescript
 
@@ -465,7 +464,7 @@ evtCircle.attachExtract(
 
 evtCircle.attach(
     circle => {
-        //We can assume that the circle have a positive radius.
+        //We can assume that the circle has a positive radius.
         console.assert(circle.radius > 0);
     }
 );
@@ -553,10 +552,10 @@ evtText.getHandlers()
 
 List all handlers attached to the ``Evt``.   
 Returns an array of ``Handler<T>``.  
-An ``Handler[]`` is an object that contain all the information
-needed to identify an handler and a ``detach()`` method.
+A ``Handler[]`` is an object that contains all the information
+needed to identify a handler and a ``detach()`` method.
 
-Here a usecase detaching all handler that uses a given matcher:
+Here a use case detaching all handlers that uses a given matcher:
 
 ```typescript
 import { Evt } from "ts-evt";
@@ -592,14 +591,14 @@ Large number of methods combining Once, Prepend are exposed.
 ![Screenshot 2020-02-08 at 19 25 44](https://user-images.githubusercontent.com/6702424/74090178-d4995080-4aa8-11ea-815f-5ae66a761812.png)
 
 For each of those methods a large number of overload are defined
-so that you can combine matcher, timeout or boundTo.
+so that you can combine matchers, timeout or boundTo.
 
 ![Screenshot 2020-02-08 at 19 27 56](https://user-images.githubusercontent.com/6702424/74090245-6c973a00-4aa9-11ea-8e48-90d49a0ed20b.png)
 
 
 ## ``evt.createDelegate()``
 
-Create a new instance of Evt toward witch will be forwarded
+Create a new instance of Evt toward which will be forwarded
 all the events matched by the matcher function.
 
 ```typescript
@@ -657,7 +656,7 @@ evtShape.post({
 
 ## ``evt.postCount``
 
-The number of times ``post()`` have been called can be tracked by the ``postCount`` property.
+The number of times ``post()`` has been called can be tracked by the ``postCount`` property.
 
 ```typescript
 import { Evt } from "ts-evt";
@@ -722,7 +721,7 @@ console.log("before");
 
 ## ``UnpackEvt<typeof evt>``.
 
-UnpackEvt is an helper type to infer the type argument of an Evt instance.  
+UnpackEvt is a helper type to infer the type argument of an Evt instance.  
 
 ```typescript
 import * as console from "./consoleToPage";
@@ -770,7 +769,7 @@ using typescript version before 2.8 ( version when the infer keyword was introdu
 
 ## ``evt.enableTrace()``
 
-If you need help to track down a bug you can use ``enableTrace`` to log what's going on with an Evt.  
+If you need help to track down a bug, you can use ``enableTrace`` to log what's going on with an Evt.  
 Use ``evt.disableTrace()`` to stop logging.
 
 ```typescript
@@ -881,12 +880,12 @@ Impossible to unintentionally misuse:
 ![Screenshot 2020-02-10 at 08 50 14](https://user-images.githubusercontent.com/6702424/74130842-568d9480-4be3-11ea-851a-dc3cc0c83034.png)
 
 
-The TSC wont let the value to be set directly.
+The TSC won’t let the value to be set directly.
 
 ![Screenshot 2020-02-10 at 09 00 49](https://user-images.githubusercontent.com/6702424/74131123-f0554180-4be3-11ea-96e1-a235ec46e20f.png)
 
 
-It wont allow either the ``evtChange`` or ``evtChangeDiff`` to be posted manually, ``post()``  
+It won’t allow either the ``evtChange`` or ``evtChangeDiff`` to be posted manually, ``post()``  
 and ``postOnceMatched()`` are not exposed.
 
 ![Screenshot 2020-02-10 at 10 45 10](https://user-images.githubusercontent.com/6702424/74138812-8bedae80-4bf2-11ea-9ce3-0f31eb22df1a.png)
@@ -894,7 +893,7 @@ and ``postOnceMatched()`` are not exposed.
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-observer?embed=1&file=index.ts)
 
-It is also possible to define the criteria upon witch the value will be deemed
+It is also possible to define the criteria upon which the value will be deemed
 changed.
 
 ```typescript
@@ -926,7 +925,7 @@ obsNames.evtChangeDiff.attach(
     ({ previousValue: previousNames }) => {
 
         if (previousNames.length > obsNames.value.length) {
-            console.log("Less names");
+            console.log("Fewer names");
             return;
         }
 
@@ -935,14 +934,14 @@ obsNames.evtChangeDiff.attach(
             return;
         }
 
-        console.log("Same amount of names");
+        console.log("same number of names");
 
     });
 
 //Same set of names in a different order, nothing will be printed.
 obsNames.onPotentialChange(["bob", "louis", "alice"]);
 
-//"Less names" will be printed
+//"Fewer names" will be printed
 obsNames.onPotentialChange(["bob", "louis"]);
 ```
 
@@ -950,7 +949,7 @@ obsNames.onPotentialChange(["bob", "louis"]);
 
 # ``evt.waitFor()`` used in ``async`` procedure or loop
 
-``.waitFor()`` is designed in a way that make it safe to use ``async`` procedure.
+``.waitFor()`` is designed in a way that makes it safe to use ``async`` procedures.
 Considere the following example: 
 
 ```typescript
@@ -976,8 +975,8 @@ evtText.post("B");
 If you think about it, in a more straightforward implementation,
 ``secondLetter`` would not be grabbed as ``post("B")`` is executed
 before the second ``waitFor()``.
-However we work some voodoo behind the scene to achieve this behavior 
-so that you wont miss event that are posted in the same tick.
+However we work some voodoo behind the scenes to achieve this behavior 
+so that you won’t miss events that are posted in the same tick.
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-edge-case?embed=1&file=index.ts)
 
