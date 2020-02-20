@@ -342,14 +342,14 @@ evtShape.post({
 ### Matcher - Compatible methods
 
 Matcher functions can be used with:  
-    -``attach()`` 
-    -``attachOnce()`` 
-    -``waitFor()``
-    -``createDelegate()``
-    -``attachExtract()``
-    -``attachOnceExtract``  
+    -``attach()``  
+    -``attachOnce()``  
+    -``waitFor()`` 
+    -``createDelegate()`` 
+    -``attachExtract()``  
+    -``attachOnceExtract`` 
     -``attachPrepend``  
-    -``attachOncePrepend``
+    -``attachOncePrepend``  
 
 Except for ``waitFor()`` and ``createDelegate()`` prepend ``$`` to the method  
 name to use a transformative matcher.

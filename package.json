@@ -1,6 +1,6 @@
 {
   "name": "ts-evt",
-  "version": "5.0.19",
+  "version": "5.0.20",
   "description": "Type safe, feature rich, replacement for node's EventEmitter embracing functional programming",
   "repository": {
     "type": "git",
