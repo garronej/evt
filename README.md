@@ -65,6 +65,7 @@ Thanks to Stackblitz you can start experimenting in your browser right now.
   - [``evt.postCount``](#evtpostcount)
   - [``evt.evtAttach()``](#evtevtattach)
   - [``evt.postOnceMatched()``](#evtpostoncematched)
+  - [``NonPostable<Evt<T>>``](#nonpostableevtt)
   - [``UnpackEvt<typeof evt>``.](#unpackevttypeof-evt)
   - [``evt.enableTrace()``](#evtenabletrace)
 - [``Observable<T>`` documentation](#observablet-documentation)
@@ -722,15 +723,37 @@ console.log("before");
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-postoncematched?embed=1&file=index.ts)
 
+## ``NonPostable<Evt<T>>``  
+
+A non postable Evt is an Evt that does not expose the methods ``post()`` and ``postOnce()``.  
+It is useful for exposing Evt to parts of the code that are in charge 
+of reacting to the events but are not supposed to post.
+
+```typescript
+import { Evt } from "ts-evt";
+import { NonPostable } from "ts-evt/dist/lib/helperTypes";
+
+const evtText= new Evt<string>();
+
+//Api to expose.
+export const api:{ evtText: NonPostable<Evt<string>>; } = { evtText };
+
+//evtText exposed by the api cannot be posted.
+api.evtText.post //<=== TS error 
+api.evtText.postOnceMatched //<===== TS error
+
+//But we can post internally.
+evtText.post("good");
+```
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-non-postable?embed=1&file=index.ts)
+
 ## ``UnpackEvt<typeof evt>``.
 
 UnpackEvt is a helper type to infer the type argument of an Evt instance.  
 
 ```typescript
-import * as console from "./consoleToPage";
-
 import { Evt } from "ts-evt";
-import { UnpackEvt } from "ts-evt/dist/lib/UnpackEvt";
+import { UnpackEvt, NonPostable } from "ts-evt/dist/lib/helperTypes";
 
 const evtHuman = new Evt<{
     name: string;
@@ -738,32 +761,42 @@ const evtHuman = new Evt<{
     gender: "MALE" | "FEMALE"
 }>();
 
-type Human = UnpackEvt<typeof evtHuman>;
+{
 
-const human1: Human = {
-    "name": "bob",
-    "age": 89,
-    "gender": "MALE"
-};
+    type Human = UnpackEvt<typeof evtHuman>;
 
-evtHuman.post(human1);
+    const human: Human = {
+        "name": "bob",
+        "age": 89,
+        "gender": "MALE"
+    };
 
-//To avoid having to import the module if it isn't needed
-type UnpackEvt_<T> = import("ts-evt/dist/lib/UnpackEvt").UnpackEvt<T>;
+    evtHuman.post(human);
 
-const human2: UnpackEvt_<typeof evtHuman> = {
-      "name": "alice",
-    "age": 3,
-    "gender": "FEMALE"
-};
+}
 
-evtHuman.post(human2);
+//It is also possible to extract the type from a NonPostable
+{
+
+    const evtHumanExposed: NonPostable<typeof evtHuman> = evtHuman;
+
+    type Human = UnpackEvt<typeof evtHumanExposed>;
+
+    const human: Human = {
+        "name": "bob",
+        "age": 89,
+        "gender": "MALE"
+    };
+
+    evtHuman.post(human);
+
+}
 ```
-Note that if you try unpacking the type of an evt instantiated ``ts-evt``
+Note that if you try unpacking the type of an evt instantiated
 by a module that use a different version of ``ts-evt`` that the one you 
-included in the your project dependency the inference will fail.
+included in the your project the inference will fail.
 
-Note also that we do not directly included the ``UnpackEvt<>`` in the default export
+Note also that the ``UnpackEvt<>`` is not included in the default export
 of the module because doing so would restrict ``ts-evt`` to be used in projects  
 using typescript version before 2.8 ( version when the infer keyword was introduced ).
 

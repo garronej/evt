@@ -17,7 +17,6 @@ type Shape = Circle | Square;
 const matchCircle = (shape: Shape): shape is Circle =>
     shape.type === "CIRCLE";
 
-
 const id = <T>(x: T) => x;
 
 type Resolve<T> = (value: T) => void;
