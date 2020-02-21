@@ -58,7 +58,7 @@ Thanks to Stackblitz you can start experimenting in your browser right now.
   - [``evt.detach()``](#evtdetach)
     - [``evt.detach()`` all handlers.](#evtdetach-all-handlers)
     - [``evt.handler(boundTo)`` - bound to a given context](#evthandlerboundto---bound-to-a-given-context)
-    - [``handler.detach()`` - handler using a certain callback.](#handlerdetach---handler-using-a-certain-callback)
+    - [``handler.detach(callback)``](#handlerdetachcallback)
   - [``evt.getHandler()``](#evtgethandler)
   - [Combining Once, Prepend, matcher, timeout and boundTo](#combining-once-prepend-matcher-timeout-and-boundto)
   - [``evt.createDelegate()``](#evtcreatedelegate)
@@ -527,13 +527,11 @@ evtText.post("World");
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-detach-with-contex?embed=1&file=index.ts)
 
-### ``handler.detach()`` - handler using a certain callback.
+### ``handler.detach(callback)``
 
-To detach a particular handler for which we have the reference of the callback function
-as we do in node's EventEmitter: 
+To detach all the handlers using a given callback function as we do with EventEmitter: 
 
 ```typescript
-
 const evtText = new Evt<string>();
 
 const callback = (_text: string) => { };
@@ -541,10 +539,9 @@ const callback = (_text: string) => { };
 evtText.attach(callback);
 
 evtText.getHandlers()
-    .find(handler => handler.callback === callback)?
-    .detach()
-;
-
+    .filter(handler => handler.callback === callback)
+    .forEach(({detach})=> detach())
+    ;
 ```
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-detach-classic?embed=1&file=index.ts)
