@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 exports.__esModule = true;
-var setPrototypeOf = require("setprototypeof");
+var setPrototypeOfPolyfill_1 = require("../tools/setPrototypeOfPolyfill");
 var EvtError;
 (function (EvtError) {
     var Timeout = /** @class */ (function (_super) {
@@ -22,7 +22,7 @@ var EvtError;
             var _newTarget = this.constructor;
             var _this_1 = _super.call(this, "Evt timeout after " + timeout + "ms") || this;
             _this_1.timeout = timeout;
-            setPrototypeOf(_this_1, _newTarget.prototype);
+            setPrototypeOfPolyfill_1.setPrototypeOf(_this_1, _newTarget.prototype);
             return _this_1;
         }
         return Timeout;
@@ -33,7 +33,7 @@ var EvtError;
         function Detached() {
             var _newTarget = this.constructor;
             var _this_1 = _super.call(this, "Evt handler detached") || this;
-            setPrototypeOf(_this_1, _newTarget.prototype);
+            setPrototypeOfPolyfill_1.setPrototypeOf(_this_1, _newTarget.prototype);
             return _this_1;
         }
         return Detached;

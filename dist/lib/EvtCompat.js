@@ -88,7 +88,7 @@ var EvtCompat = /** @class */ (function (_super) {
         return evtDelegate;
     };
     EvtCompat.prototype.createDelegate = function (matcher) {
-        return this.__createDelegate(function (data) { return EvtBaseProtected_1.invokeMatcher((matcher !== null && matcher !== void 0 ? matcher : (function () { return true; })), data); });
+        return this.__createDelegate(function (data) { return EvtBaseProtected_1.invokeMatcher(matcher !== null && matcher !== void 0 ? matcher : (function () { return true; }), data); });
     };
     return EvtCompat;
 }(EvtBase_2.EvtBase));

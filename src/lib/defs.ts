@@ -1,4 +1,4 @@
-import setPrototypeOf = require("setprototypeof");
+import { setPrototypeOf } from "../tools/setPrototypeOfPolyfill";
 
 /** Anything but a number, a callable function (constructors are bindable), undefined  or null */
 export type Bindable = Bindable.Object_ | string;

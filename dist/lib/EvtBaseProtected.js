@@ -145,21 +145,21 @@ var EvtBaseProtected = /** @class */ (function () {
     //NOTE: Not typeof console.log as we don't want to expose types from node
     ) {
         this.traceId = id;
-        this.traceFormatter = (formatter !== null && formatter !== void 0 ? formatter : (function (data) {
+        this.traceFormatter = formatter !== null && formatter !== void 0 ? formatter : (function (data) {
             try {
                 return JSON.stringify(data, null, 2);
             }
             catch (_a) {
                 return "" + data;
             }
-        }));
-        this.log = (log !== null && log !== void 0 ? log : (function () {
+        });
+        this.log = log !== null && log !== void 0 ? log : (function () {
             var inputs = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 inputs[_i] = arguments[_i];
             }
             return console.log.apply(console, inputs);
-        }));
+        });
     };
     /** https://garronej.github.io/ts-evt/#evtenabletrace */
     EvtBaseProtected.prototype.disableTrace = function () {
@@ -194,7 +194,6 @@ var EvtBaseProtected = /** @class */ (function () {
                 return true;
             };
             _this_1.handlerTriggers.set(handler, function (dataOrTransformedData) {
-                var _a;
                 var callback = handler.callback, once = handler.once;
                 if (timer !== undefined) {
                     clearTimeout(timer);
@@ -203,7 +202,7 @@ var EvtBaseProtected = /** @class */ (function () {
                 if (once) {
                     handler.detach();
                 }
-                (_a = callback) === null || _a === void 0 ? void 0 : _a.call(handler.boundTo, dataOrTransformedData);
+                callback === null || callback === void 0 ? void 0 : callback.call(handler.boundTo, dataOrTransformedData);
                 resolve(dataOrTransformedData);
             });
         });

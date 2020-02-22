@@ -1,7 +1,7 @@
 {
   "name": "ts-evt",
-  "version": "6.0.1",
-  "description": "Type safe, feature rich, replacement for node's EventEmitter embracing functional programming",
+  "version": "6.1.0",
+  "description": "Type safe, feature rich, replacement for node's EventEmitter",
   "repository": {
     "type": "git",
     "url": "git://github.com/garronej/ts-evt"
@@ -16,8 +16,7 @@
   "license": "MIT",
   "dependencies": {
     "minimal-polyfills": "^1.0.3",
-    "run-exclusive": "^2.1.4",
-    "setprototypeof": "^1.1.1"
+    "run-exclusive": "^2.1.4"
   },
   "keywords": [
     "EventEmitter",
@@ -27,7 +26,8 @@
     "events",
     "ts-events",
     "async-await",
-    "promise"
+    "promise",
+    "rxjs"
   ],
   "homepage": "https://garronej.github.io/ts-evt/",
   "devDependencies": {
