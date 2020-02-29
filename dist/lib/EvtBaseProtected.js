@@ -10,12 +10,36 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
+};
+var __values = (this && this.__values) || function(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
 exports.__esModule = true;
 var Map_1 = require("minimal-polyfills/dist/lib/Map");
@@ -23,39 +47,32 @@ var WeakMap_1 = require("minimal-polyfills/dist/lib/WeakMap");
 require("minimal-polyfills/dist/lib/Array.prototype.find");
 var runExclusive = require("run-exclusive");
 var defs_1 = require("./defs");
+var overwriteReadonlyProp_1 = require("../tools/overwriteReadonlyProp");
 /** If the matcher is not transformative then the transformedData will be the input data */
 function invokeMatcher(matcher, data) {
     var matcherResult = matcher(data);
     //NOTE: We assume it was a transformative matcher only 
-    //if the returned value is a singleton tuple, otherwise we evaluate
-    //it as a boolean. 
-    return (matcherResult !== null &&
-        typeof matcherResult === "object" &&
-        matcherResult.length === 1) ?
-        matcherResult
-        :
-            (!!matcherResult ?
-                [data] :
-                null);
+    //if the returned value is a singleton or a couple, otherwise 
+    //we assume it was a filtering matcher that should have returned
+    //a boolean but returned something else.
+    return (matcherResult === null ? null :
+        matcherResult === "DETACH" ? "DETACH" :
+            typeof matcherResult === "object" &&
+                (matcherResult.length === 1 || matcherResult.length === 2) ? matcherResult :
+                !!matcherResult ? [data] : null);
 }
 exports.invokeMatcher = invokeMatcher;
-exports.overwriteReadonlyProp = function (obj, propertyName, value) {
-    try {
-        obj[propertyName] = value;
-        if (obj[propertyName] === value) {
-            return;
-        }
-    }
-    catch (_a) {
-    }
-    Object.defineProperty(obj, propertyName, __assign(__assign({}, Object.getOwnPropertyDescriptor(obj, propertyName)), { value: value }));
-};
+function matchNotMatched(transformativeMatcherResult) {
+    return (transformativeMatcherResult === null ||
+        transformativeMatcherResult === "DETACH");
+}
+exports.matchNotMatched = matchNotMatched;
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 var EvtBaseProtected = /** @class */ (function () {
     function EvtBaseProtected() {
         var _this_1 = this;
         this.incrementPostCount = (function () {
-            var setPostCount = function (value) { return exports.overwriteReadonlyProp(_this_1, "postCount", value); };
+            var setPostCount = function (value) { return overwriteReadonlyProp_1.overwriteReadonlyProp(_this_1, "postCount", value); };
             setPostCount(0);
             return function () { return setPostCount(_this_1.postCount + 1); };
         })();
@@ -79,6 +96,7 @@ var EvtBaseProtected = /** @class */ (function () {
             return function () { return currentChronologyMark++; };
         })();
         this.postAsync = runExclusive.buildMethodCb(function (data, postChronologyMark, releaseLock) {
+            var e_1, _a;
             var promises = [];
             var chronologyMarkStartResolveTick;
             //NOTE: Must be before handlerTrigger call.
@@ -88,7 +106,10 @@ var EvtBaseProtected = /** @class */ (function () {
                     return "continue";
                 }
                 var transformativeMatcherResult = invokeMatcher(handler.matcher, data);
-                if (transformativeMatcherResult === null) {
+                if (matchNotMatched(transformativeMatcherResult)) {
+                    if (transformativeMatcherResult === "DETACH") {
+                        handler.detach();
+                    }
                     return "continue";
                 }
                 var handlerTrigger = _this_1.handlerTriggers.get(handler);
@@ -111,30 +132,49 @@ var EvtBaseProtected = /** @class */ (function () {
                 }
                 promises.push(new Promise(function (resolve) { return handler.promise
                     .then(function () { return resolve(); })["catch"](function () { return resolve(); }); }));
-                handlerTrigger(transformativeMatcherResult[0]);
+                handlerTrigger(transformativeMatcherResult);
             };
-            for (var _i = 0, _a = __spreadArrays(_this_1.handlers); _i < _a.length; _i++) {
-                var handler = _a[_i];
-                _loop_1(handler);
+            try {
+                for (var _b = __values(__spread(_this_1.handlers)), _c = _b.next(); !_c.done; _c = _b.next()) {
+                    var handler = _c.value;
+                    _loop_1(handler);
+                }
+            }
+            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            finally {
+                try {
+                    if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
+                }
+                finally { if (e_1) throw e_1.error; }
             }
             if (promises.length === 0) {
                 releaseLock();
                 return;
             }
-            var handlersDump = __spreadArrays(_this_1.handlers);
+            var handlersDump = __spread(_this_1.handlers);
             Promise.all(promises).then(function () {
-                for (var _i = 0, _a = _this_1.handlers; _i < _a.length; _i++) {
-                    var handler = _a[_i];
-                    if (!handler.async) {
-                        continue;
+                var e_2, _a;
+                try {
+                    for (var _b = __values(_this_1.handlers), _c = _b.next(); !_c.done; _c = _b.next()) {
+                        var handler = _c.value;
+                        if (!handler.async) {
+                            continue;
+                        }
+                        if (handlersDump.indexOf(handler) >= 0) {
+                            continue;
+                        }
+                        _this_1.asyncHandlerChronologyExceptionRange.set(handler, {
+                            "lowerMark": postChronologyMark,
+                            "upperMark": chronologyMarkStartResolveTick
+                        });
                     }
-                    if (handlersDump.indexOf(handler) >= 0) {
-                        continue;
+                }
+                catch (e_2_1) { e_2 = { error: e_2_1 }; }
+                finally {
+                    try {
+                        if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
                     }
-                    _this_1.asyncHandlerChronologyExceptionRange.set(handler, {
-                        "lowerMark": postChronologyMark,
-                        "upperMark": chronologyMarkStartResolveTick
-                    });
+                    finally { if (e_2) throw e_2.error; }
                 }
                 releaseLock();
             });
@@ -158,16 +198,16 @@ var EvtBaseProtected = /** @class */ (function () {
             for (var _i = 0; _i < arguments.length; _i++) {
                 inputs[_i] = arguments[_i];
             }
-            return console.log.apply(console, inputs);
+            return console.log.apply(console, __spread(inputs));
         });
     };
     /** https://garronej.github.io/ts-evt/#evtenabletrace */
     EvtBaseProtected.prototype.disableTrace = function () {
         this.traceId = null;
     };
-    EvtBaseProtected.prototype.addHandler = function (attachParams, implicitAttachParams) {
+    EvtBaseProtected.prototype.addHandler = function (userProvidedParams, implicitAttachParams) {
         var _this_1 = this;
-        var handler = __assign(__assign(__assign({}, attachParams), implicitAttachParams), { "detach": null, "promise": null });
+        var handler = __assign(__assign(__assign({}, userProvidedParams), implicitAttachParams), { "detach": null, "promise": null });
         if (handler.async) {
             this.asyncHandlerChronologyMark.set(handler, this.getChronologyMark());
         }
@@ -193,17 +233,19 @@ var EvtBaseProtected = /** @class */ (function () {
                 }
                 return true;
             };
-            _this_1.handlerTriggers.set(handler, function (dataOrTransformedData) {
+            _this_1.handlerTriggers.set(handler, function (transformativeMatcherMatchedResult) {
                 var callback = handler.callback, once = handler.once;
                 if (timer !== undefined) {
                     clearTimeout(timer);
                     timer = undefined;
                 }
-                if (once) {
+                if (once || (transformativeMatcherMatchedResult.length === 2 &&
+                    transformativeMatcherMatchedResult[1] === "DETACH")) {
                     handler.detach();
                 }
-                callback === null || callback === void 0 ? void 0 : callback.call(handler.boundTo, dataOrTransformedData);
-                resolve(dataOrTransformedData);
+                var transformedData = transformativeMatcherMatchedResult[0];
+                callback === null || callback === void 0 ? void 0 : callback.call(handler.boundTo, transformedData);
+                resolve(transformedData);
             });
         });
         if (handler.prepend) {
@@ -262,25 +304,38 @@ var EvtBaseProtected = /** @class */ (function () {
     };
     /** Return isExtracted */
     EvtBaseProtected.prototype.postSync = function (data) {
-        for (var _i = 0, _a = __spreadArrays(this.handlers); _i < _a.length; _i++) {
-            var handler = _a[_i];
-            var async = handler.async, matcher = handler.matcher, extract = handler.extract;
-            if (async) {
-                continue;
+        var e_3, _a;
+        try {
+            for (var _b = __values(__spread(this.handlers)), _c = _b.next(); !_c.done; _c = _b.next()) {
+                var handler = _c.value;
+                var async = handler.async, matcher = handler.matcher, extract = handler.extract;
+                if (async) {
+                    continue;
+                }
+                var transformativeMatcherResult = invokeMatcher(matcher, data);
+                if (matchNotMatched(transformativeMatcherResult)) {
+                    if (transformativeMatcherResult === "DETACH") {
+                        handler.detach();
+                    }
+                    continue;
+                }
+                var handlerTrigger = this.handlerTriggers.get(handler);
+                //NOTE: Possible if detached while in the loop.
+                if (!handlerTrigger) {
+                    continue;
+                }
+                handlerTrigger(transformativeMatcherResult);
+                if (extract) {
+                    return true;
+                }
             }
-            var transformativeMatcherResult = invokeMatcher(matcher, data);
-            if (transformativeMatcherResult === null) {
-                continue;
+        }
+        catch (e_3_1) { e_3 = { error: e_3_1 }; }
+        finally {
+            try {
+                if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
             }
-            var handlerTrigger = this.handlerTriggers.get(handler);
-            //NOTE: Possible if detached while in the loop.
-            if (!handlerTrigger) {
-                continue;
-            }
-            handlerTrigger(transformativeMatcherResult[0]);
-            if (extract) {
-                return true;
-            }
+            finally { if (e_3) throw e_3.error; }
         }
         return false;
     };
@@ -340,19 +395,49 @@ var EvtBaseProtected = /** @class */ (function () {
             "prepend": true
         }).promise;
     };
-    /** https://garronej.github.io/ts-evt/#evtgethandler */
+    /**
+     * https://garronej.github.io/ts-evt/#evtishandleddata
+     *
+     * Test if posting a given event data will have an effect.
+     *
+     * Return true if:
+     * -There is at least one handler matching
+     * this event data ( at least one handler's callback function
+     * will be invoked if the data is posted. )
+     * -There is at least one handler that will be detached
+     * if the event data is posted.
+     *
+     */
+    EvtBaseProtected.prototype.isHandled = function (data) {
+        return !!this.getHandlers()
+            .find(function (_a) {
+            var matcher = _a.matcher;
+            return !!matcher(data);
+        });
+    };
+    /** https://garronej.github.io/ts-evt/#evtgethandlers */
     EvtBaseProtected.prototype.getHandlers = function () {
-        return __spreadArrays(this.handlers);
+        return __spread(this.handlers);
     };
     /** Detach every handler bound to a given object or all handlers, return the detached handlers */
     EvtBaseProtected.prototype.detach = function (boundTo) {
+        var e_4, _a;
         var detachedHandlers = [];
-        for (var _i = 0, _a = __spreadArrays(this.handlers); _i < _a.length; _i++) {
-            var handler = _a[_i];
-            if (boundTo === undefined || handler.boundTo === boundTo) {
-                handler.detach();
-                detachedHandlers.push(handler);
+        try {
+            for (var _b = __values(this.getHandlers()), _c = _b.next(); !_c.done; _c = _b.next()) {
+                var handler = _c.value;
+                if (boundTo === undefined || handler.boundTo === boundTo) {
+                    handler.detach();
+                    detachedHandlers.push(handler);
+                }
             }
+        }
+        catch (e_4_1) { e_4 = { error: e_4_1 }; }
+        finally {
+            try {
+                if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
+            }
+            finally { if (e_4) throw e_4.error; }
         }
         return detachedHandlers;
     };

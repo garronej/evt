@@ -1,7 +1,7 @@
 "use strict";
 exports.__esModule = true;
 var Evt_1 = require("./Evt");
-var EvtBaseProtected_1 = require("./EvtBaseProtected");
+var overwriteReadonlyProp_1 = require("../tools/overwriteReadonlyProp");
 ;
 /** https://garronej.github.io/ts-evt/#observert-documentation */
 var ObservableImpl = /** @class */ (function () {
@@ -20,7 +20,7 @@ var ObservableImpl = /** @class */ (function () {
         this.overwriteReadonlyValue(initialValue);
     }
     ObservableImpl.prototype.overwriteReadonlyValue = function (newValue) {
-        EvtBaseProtected_1.overwriteReadonlyProp(this, "value", newValue);
+        overwriteReadonlyProp_1.overwriteReadonlyProp(this, "value", newValue);
     };
     /** Return true if the value have been changed */
     ObservableImpl.prototype.onPotentialChange = function (newValue) {

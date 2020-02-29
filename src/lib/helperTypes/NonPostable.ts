@@ -8,5 +8,6 @@ type EvtBaseProtected<T> = import("../EvtBaseProtected").EvtBaseProtected<T>;
 type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
 
 /** https://garronej.github.io/ts-evt/#nonpostableevtt */
-export type NonPostable<T extends EvtBaseProtected<any>>= 
-    Omit<T, "post" | "postOnceMatched">;
+export type NonPostable<T extends EvtBaseProtected<any>> =
+    Omit<T, "post" | "postAsyncOnceHandled" | "postSyncOnceHandled">
+    ;

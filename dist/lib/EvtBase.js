@@ -23,217 +23,252 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
+};
 exports.__esModule = true;
 var EvtBaseProtected_1 = require("./EvtBaseProtected");
-var id = function (x) { return x; };
-/** NOTE: constructors are of type "function" but are not callable,
- * without the new keyword.
- * This function will return true if and only if the object passed is
- * a function and it is not a constructor.
- */
-function isCallable(o) {
-    if (typeof o !== "function") {
-        return false;
-    }
-    var prototype = o["prototype"];
-    if (!prototype)
-        return true;
-    var methods = Object.getOwnPropertyNames(prototype);
-    if (methods.length !== 1)
-        return false;
-    var name = o.name;
-    if (!name)
-        return true;
-    if (name[0].toUpperCase() === name[0])
-        return false;
-    return true;
+var isCallableFunction_1 = require("../tools/isCallableFunction");
+var typeSafety_1 = require("../tools/typeSafety");
+function parseOverloadParamsFactory(_a) {
+    var defaultBoundTo = _a.defaultBoundTo;
+    var defaultParams = {
+        "matcher": function matchAll() { return true; },
+        "boundTo": defaultBoundTo,
+        "timeout": undefined,
+        "callback": undefined
+    };
+    return function parseOverloadParams(inputs, methodName) {
+        switch (methodName) {
+            case "createDelegate":
+                {
+                    var n = inputs.length
+                        -
+                            (inputs.length !== 0 &&
+                                inputs[inputs.length - 1] === undefined ?
+                                1 : 0);
+                    switch (n) {
+                        case 0:
+                            return typeSafety_1.id(__assign({}, defaultParams));
+                        case 1:
+                            //[ matcher ]
+                            //[ boundTo ]
+                            var _a = __read(inputs, 1), p = _a[0];
+                            return isCallableFunction_1.isCallableFunction(p) ? typeSafety_1.id(__assign(__assign({}, defaultParams), { "matcher": p })) : typeSafety_1.id(__assign(__assign({}, defaultParams), { "boundTo": p }));
+                        case 2:
+                            //[ matcher, boundTo ]
+                            var _b = __read(inputs, 2), p1 = _b[0], p2 = _b[1];
+                            return typeSafety_1.id(__assign(__assign({}, defaultParams), { "matcher": p1, "boundTo": p2 }));
+                    }
+                }
+                break;
+            case "waitFor":
+                {
+                    var n = inputs.length;
+                    if (n === 2) {
+                        var _c = __read(inputs, 2), p1 = _c[0], p2 = _c[1];
+                        return typeSafety_1.id(__assign(__assign({}, defaultParams), { "matcher": p1, "timeout": p2 }));
+                    }
+                    else {
+                        var _d = __read(inputs, 1), p = _d[0];
+                        return typeSafety_1.id(isCallableFunction_1.isCallableFunction(p) ? (__assign(__assign({}, defaultParams), { "matcher": p })) : (__assign(__assign({}, defaultParams), { "timeout": p })));
+                    }
+                }
+                break;
+            case "attach-ish":
+                {
+                    //[ matcher, boundTo, timeout, callback ]
+                    //[ matcher, boundTo, callback ]
+                    //[ matcher, timeout, callback ]
+                    //[ boundTo, timeout, callback ]
+                    //[ matcher, callback ]
+                    //[ boundTo, callback ]
+                    //[ timeout, callback ]
+                    //[ callback ]
+                    var n = inputs.length;
+                    switch (n) {
+                        case 4: {
+                            //[ matcher, boundTo, timeout, callback ]
+                            var _e = __read(inputs, 4), p1 = _e[0], p2 = _e[1], p3 = _e[2], p4 = _e[3];
+                            return typeSafety_1.id(__assign(__assign({}, defaultParams), { "matcher": p1, "boundTo": p2, "timeout": p3, "callback": p4 }));
+                        }
+                        case 3: {
+                            //[ matcher, boundTo, callback ]
+                            //[ matcher, timeout, callback ]
+                            //[ boundTo, timeout, callback ]
+                            var _f = __read(inputs, 3), p1 = _f[0], p2 = _f[1], p3 = _f[2];
+                            if (typeof p2 === "number") {
+                                //[ matcher, timeout, callback ]
+                                //[ boundTo, timeout, callback ]
+                                var timeout = p2;
+                                var callback = p3;
+                                if (isCallableFunction_1.isCallableFunction(p1)) {
+                                    //[ matcher, timeout, callback ]
+                                    return typeSafety_1.id(__assign(__assign({}, defaultParams), { timeout: timeout,
+                                        callback: callback, "matcher": p1 }));
+                                }
+                                else {
+                                    //[ boundTo, timeout, callback ]
+                                    return typeSafety_1.id(__assign(__assign({}, defaultParams), { timeout: timeout,
+                                        callback: callback, "boundTo": p1 }));
+                                }
+                            }
+                            else {
+                                //[ matcher, boundTo, callback ]
+                                return typeSafety_1.id(__assign(__assign({}, defaultParams), { "matcher": p1, "boundTo": p2, "callback": p3 }));
+                            }
+                        }
+                        case 2: {
+                            //[ matcher, callback ]
+                            //[ boundTo, callback ]
+                            //[ timeout, callback ]
+                            var _g = __read(inputs, 2), p1 = _g[0], p2 = _g[1];
+                            if (typeof p1 === "number") {
+                                //[ timeout, callback ]
+                                return typeSafety_1.id(__assign(__assign({}, defaultParams), { "timeout": p1, "callback": p2 }));
+                            }
+                            else {
+                                //[ matcher, callback ]
+                                //[ boundTo, callback ]
+                                var callback = p2;
+                                if (isCallableFunction_1.isCallableFunction(p1)) {
+                                    return typeSafety_1.id(__assign(__assign({}, defaultParams), { callback: callback, "matcher": p1 }));
+                                }
+                                else {
+                                    return typeSafety_1.id(__assign(__assign({}, defaultParams), { callback: callback, "boundTo": p1 }));
+                                }
+                            }
+                        }
+                        case 1: {
+                            //[ callback ]
+                            var _h = __read(inputs, 1), p = _h[0];
+                            return typeSafety_1.id(__assign(__assign({}, defaultParams), { "callback": p }));
+                        }
+                        case 0: {
+                            return typeSafety_1.id(__assign({}, defaultParams));
+                        }
+                    }
+                }
+                break;
+        }
+    };
 }
+exports.parseOverloadParamsFactory = parseOverloadParamsFactory;
 /** Evt without evtAttach property, attachOnceMatched and createDelegate */
 var EvtBase = /** @class */ (function (_super) {
     __extends(EvtBase, _super);
     function EvtBase() {
         var _this_1 = _super !== null && _super.apply(this, arguments) || this;
-        _this_1.defaultParams = {
-            "matcher": function matchAll() { return true; },
-            "boundTo": _this_1,
-            "timeout": undefined,
-            "callback": undefined
-        };
+        _this_1.parseOverloadParams = parseOverloadParamsFactory({ "defaultBoundTo": _this_1 });
         return _this_1;
     }
-    EvtBase.prototype.readParams = function (inputs) {
-        //[ matcher, boundTo, timeout, callback ]
-        //[ matcher, boundTo, callback ]
-        //[ matcher, timeout, callback ]
-        //[ boundTo, timeout, callback ]
-        //[ matcher, callback ]
-        //[ boundTo, callback ]
-        //[ timeout, callback ]
-        //[ callback ]
-        var n = inputs.length;
-        switch (n) {
-            case 4: {
-                //[ matcher, boundTo, timeout, callback ]
-                var p1 = inputs[0], p2 = inputs[1], p3 = inputs[2], p4 = inputs[3];
-                return id(__assign(__assign({}, this.defaultParams), { "matcher": p1, "boundTo": p2, "timeout": p3, "callback": p4 }));
-            }
-            case 3: {
-                //[ matcher, boundTo, callback ]
-                //[ matcher, timeout, callback ]
-                //[ boundTo, timeout, callback ]
-                var p1 = inputs[0], p2 = inputs[1], p3 = inputs[2];
-                if (typeof p2 === "number") {
-                    //[ matcher, timeout, callback ]
-                    //[ boundTo, timeout, callback ]
-                    var timeout = p2;
-                    var callback = p3;
-                    if (isCallable(p1)) {
-                        //[ matcher, timeout, callback ]
-                        return id(__assign(__assign({}, this.defaultParams), { timeout: timeout,
-                            callback: callback, "matcher": p1 }));
-                    }
-                    else {
-                        //[ boundTo, timeout, callback ]
-                        return id(__assign(__assign({}, this.defaultParams), { timeout: timeout,
-                            callback: callback, "boundTo": p1 }));
-                    }
-                }
-                else {
-                    //[ matcher, boundTo, callback ]
-                    return id(__assign(__assign({}, this.defaultParams), { "matcher": p1, "boundTo": p2, "callback": p3 }));
-                }
-            }
-            case 2: {
-                //[ matcher, callback ]
-                //[ boundTo, callback ]
-                //[ timeout, callback ]
-                var p1 = inputs[0], p2 = inputs[1];
-                if (typeof p1 === "number") {
-                    //[ timeout, callback ]
-                    return id(__assign(__assign({}, this.defaultParams), { "timeout": p1, "callback": p2 }));
-                }
-                else {
-                    //[ matcher, callback ]
-                    //[ boundTo, callback ]
-                    var callback = p2;
-                    if (isCallable(p1)) {
-                        return id(__assign(__assign({}, this.defaultParams), { callback: callback, "matcher": p1 }));
-                    }
-                    else {
-                        return id(__assign(__assign({}, this.defaultParams), { callback: callback, "boundTo": p1 }));
-                    }
-                }
-            }
-            case 1: {
-                //[ callback ]
-                var p = inputs[0];
-                return id(__assign(__assign({}, this.defaultParams), { "callback": p }));
-            }
-            case 0: {
-                return id(__assign({}, this.defaultParams));
-            }
-        }
-    };
     EvtBase.prototype.waitFor = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
-        var params;
-        var n = inputs.length;
-        if (n === 2) {
-            var p1 = inputs[0], p2 = inputs[1];
-            params = id(__assign(__assign({}, this.defaultParams), { "matcher": p1, "timeout": p2 }));
-        }
-        else {
-            var p = inputs[0];
-            params = id(isCallable(p) ? (__assign(__assign({}, this.defaultParams), { "matcher": p })) : (__assign(__assign({}, this.defaultParams), { "timeout": p })));
-        }
-        return _super.prototype.__waitFor.call(this, params);
+        return _super.prototype.__waitFor.call(this, this.parseOverloadParams(inputs, "waitFor"));
     };
     EvtBase.prototype.$attach = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
-        return this.attach.apply(this, inputs);
+        return this.attach.apply(this, __spread(inputs));
     };
     EvtBase.prototype.attach = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
-        return this.__attach(this.readParams(inputs));
+        return this.__attach(this.parseOverloadParams(inputs, "attach-ish"));
     };
     EvtBase.prototype.$attachOnce = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
-        return this.attachOnce.apply(this, inputs);
+        return this.attachOnce.apply(this, __spread(inputs));
     };
     EvtBase.prototype.attachOnce = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
-        return this.__attachOnce(this.readParams(inputs));
+        return this.__attachOnce(this.parseOverloadParams(inputs, "attach-ish"));
     };
     EvtBase.prototype.$attachExtract = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
-        return this.attachOnceExtract.apply(this, inputs);
+        return this.attachOnceExtract.apply(this, __spread(inputs));
     };
     EvtBase.prototype.attachExtract = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
-        return this.__attachExtract(this.readParams(inputs));
+        return this.__attachExtract(this.parseOverloadParams(inputs, "attach-ish"));
     };
     EvtBase.prototype.$attachPrepend = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
-        return this.attachPrepend.apply(this, inputs);
+        return this.attachPrepend.apply(this, __spread(inputs));
     };
     EvtBase.prototype.attachPrepend = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
-        return this.__attachPrepend(this.readParams(inputs));
+        return this.__attachPrepend(this.parseOverloadParams(inputs, "attach-ish"));
     };
     EvtBase.prototype.$attachOncePrepend = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
-        return this.attachOncePrepend.apply(this, inputs);
+        return this.attachOncePrepend.apply(this, __spread(inputs));
     };
     EvtBase.prototype.attachOncePrepend = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
-        return this.__attachOncePrepend(this.readParams(inputs));
+        return this.__attachOncePrepend(this.parseOverloadParams(inputs, "attach-ish"));
     };
     EvtBase.prototype.$attachOnceExtract = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
-        return this.attachOnceExtract.apply(this, inputs);
+        return this.attachOnceExtract.apply(this, __spread(inputs));
     };
     EvtBase.prototype.attachOnceExtract = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
-        return this.__attachOnceExtract(this.readParams(inputs));
+        return this.__attachOnceExtract(this.parseOverloadParams(inputs, "attach-ish"));
     };
     return EvtBase;
 }(EvtBaseProtected_1.EvtBaseProtected));

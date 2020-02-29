@@ -8,63 +8,46 @@ import {
     Bindable,
     Handler,
     EvtError,
+    TransformativeMatcher
 } from "./defs";
+import { overwriteReadonlyProp } from "../tools/overwriteReadonlyProp";
 
 /** If the matcher is not transformative then the transformedData will be the input data */
 export function invokeMatcher<T, U>(
-    matcher: (data: T) => boolean | [U] | null,
+    matcher: TransformativeMatcher<T,U> | ((data: T)=> boolean),
     data: T
-): [T | U] | null {
+): ReturnType<TransformativeMatcher<T, T | U>> {
 
     const matcherResult = matcher(data);
 
     //NOTE: We assume it was a transformative matcher only 
-    //if the returned value is a singleton tuple, otherwise we evaluate
-    //it as a boolean. 
+    //if the returned value is a singleton or a couple, otherwise 
+    //we assume it was a filtering matcher that should have returned
+    //a boolean but returned something else.
     return (
-        matcherResult !== null &&
-        typeof matcherResult === "object" &&
-        matcherResult.length === 1
-    ) ?
-        matcherResult
-        :
-        (
-            !!matcherResult ?
-                [data] :
-                null
-        )
-        ;
-
+        matcherResult === null ? null :
+            matcherResult === "DETACH" ? "DETACH" :
+                typeof matcherResult === "object" &&
+                    (matcherResult.length === 1 || matcherResult.length === 2) ? matcherResult :
+                    !!matcherResult ? [data] : null
+    );
 
 }
 
-export const overwriteReadonlyProp = (obj: { [key: string]: any; }, propertyName: string, value: any): void => {
-
-    try {
-
-        obj[propertyName] = value;
-
-        if (obj[propertyName] === value) {
-            return;
-        }
-
-    } catch{
-    }
-
-    Object.defineProperty(
-        obj,
-        propertyName,
-        {
-            ...Object.getOwnPropertyDescriptor(obj, propertyName),
-            value
-        }
+export function matchNotMatched(
+    transformativeMatcherResult: ReturnType<TransformativeMatcher<any, any>>
+): transformativeMatcherResult is (null | "DETACH") {
+    return (
+        transformativeMatcherResult === null ||
+        transformativeMatcherResult === "DETACH"
     );
+}
 
-};
 
 
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 export class EvtBaseProtected<T> {
+
 
     //NOTE: Not really readonly but we want to prevent user from setting the value
     //manually and we cant user accessor because we target es3.
@@ -117,7 +100,10 @@ export class EvtBaseProtected<T> {
 
     private readonly handlers: Handler<T, any>[] = [];
 
-    private readonly handlerTriggers: LightMap<Handler<T, any>, (dataOrTransformedData: any) => void> = new Map();
+    private readonly handlerTriggers: LightMap<
+        Handler<T, any>,
+        (transformativeMatcherMatchedResult: readonly [any] | readonly [any, "DETACH" | null]) => void
+    > = new Map();
 
     //NOTE: An async handler ( attached with waitFor ) is only eligible to handle a post if the post
     //occurred after the handler was set. We don't want to waitFor event from the past.
@@ -149,12 +135,12 @@ export class EvtBaseProtected<T> {
 
 
     protected addHandler<U>(
-        attachParams: UserProvidedParams<T, U>,
+        userProvidedParams: UserProvidedParams<T, U>,
         implicitAttachParams: ImplicitParams
     ): Handler<T, U> {
 
         const handler: Handler<T, U> = {
-            ...attachParams,
+            ...userProvidedParams,
             ...implicitAttachParams,
             "detach": null as any,
             "promise": null as any
@@ -190,11 +176,15 @@ export class EvtBaseProtected<T> {
 
                 (handler.detach as (typeof handler)["detach"]) = () => {
 
+
+
                     const index = this.handlers.indexOf(handler);
 
                     if (index < 0) {
                         return false;
                     }
+
+
 
                     this.handlers.splice(index, 1);
 
@@ -214,7 +204,7 @@ export class EvtBaseProtected<T> {
 
                 this.handlerTriggers.set(
                     handler,
-                    (dataOrTransformedData: U) => {
+                    (transformativeMatcherMatchedResult: readonly [U] | readonly [U, "DETACH" | null]) => {
 
                         const { callback, once } = handler;
 
@@ -223,13 +213,23 @@ export class EvtBaseProtected<T> {
                             timer = undefined;
                         }
 
-                        if (once) {
+                        if (
+                            once || (
+                                transformativeMatcherMatchedResult.length === 2 &&
+                                transformativeMatcherMatchedResult[1] === "DETACH"
+                            )
+                        ) {
                             handler.detach();
                         }
 
-                        callback?.call(handler.boundTo, dataOrTransformedData);
+                        const transformedData = transformativeMatcherMatchedResult[0];
 
-                        resolve(dataOrTransformedData);
+                        callback?.call(
+                            handler.boundTo,
+                            transformedData
+                        );
+
+                        resolve(transformedData);
 
                     }
                 );
@@ -336,10 +336,15 @@ export class EvtBaseProtected<T> {
 
             const transformativeMatcherResult = invokeMatcher(matcher, data);
 
-            if (transformativeMatcherResult === null) {
-                continue;
-            }
 
+            if (matchNotMatched(transformativeMatcherResult)) {
+
+                if (transformativeMatcherResult === "DETACH") {
+                    handler.detach();
+                }
+                continue;
+
+            }
 
             const handlerTrigger = this.handlerTriggers.get(handler);
 
@@ -348,7 +353,7 @@ export class EvtBaseProtected<T> {
                 continue;
             }
 
-            handlerTrigger(transformativeMatcherResult[0]);
+            handlerTrigger(transformativeMatcherResult);
 
             if (extract) {
                 return true;
@@ -380,8 +385,13 @@ export class EvtBaseProtected<T> {
 
                 const transformativeMatcherResult = invokeMatcher(handler.matcher, data);
 
-                if (transformativeMatcherResult === null) {
+                if (matchNotMatched(transformativeMatcherResult)) {
+
+                    if (transformativeMatcherResult === "DETACH") {
+                        handler.detach();
+                    }
                     continue;
+
                 }
 
 
@@ -422,7 +432,7 @@ export class EvtBaseProtected<T> {
                     )
                 );
 
-                handlerTrigger(transformativeMatcherResult[0]);
+                handlerTrigger(transformativeMatcherResult);
 
             }
 
@@ -430,7 +440,6 @@ export class EvtBaseProtected<T> {
                 releaseLock();
                 return;
             }
-
 
             const handlersDump = [...this.handlers];
 
@@ -459,9 +468,6 @@ export class EvtBaseProtected<T> {
                 releaseLock();
 
             });
-
-
-
 
         }
     );
@@ -576,7 +582,26 @@ export class EvtBaseProtected<T> {
 
     }
 
-    /** https://garronej.github.io/ts-evt/#evtgethandler */
+    /**
+     * https://garronej.github.io/ts-evt/#evtishandleddata 
+     * 
+     * Test if posting a given event data will have an effect.
+     * 
+     * Return true if:
+     * -There is at least one handler matching
+     * this event data ( at least one handler's callback function
+     * will be invoked if the data is posted. )
+     * -There is at least one handler that will be detached
+     * if the event data is posted.
+     * 
+     */
+    public isHandled(data: T): boolean {
+        return !!this.getHandlers()
+            .find(({ matcher }) => !!matcher(data))
+            ;
+    }
+
+    /** https://garronej.github.io/ts-evt/#evtgethandlers */
     public getHandlers(): Handler<T, any>[] {
         return [...this.handlers];
     }
@@ -586,7 +611,7 @@ export class EvtBaseProtected<T> {
 
         let detachedHandlers: Handler<T, any>[] = [];
 
-        for (let handler of [...this.handlers]) {
+        for (let handler of this.getHandlers()) {
 
             if (boundTo === undefined || handler.boundTo === boundTo) {
                 handler.detach();

@@ -13,7 +13,7 @@ export declare namespace UserProvidedParams {
         timeout: number | undefined;
     }>;
     export type WithTransformativeMatcher<T, U> = Common & Readonly<{
-        matcher: (data: T) => [U] | null;
+        matcher: TransformativeMatcher<T, U>;
         callback: ((transformedData: U) => void) | undefined;
     }>;
     export type WithNonTransformativeMatcher<T> = Common & Readonly<{
@@ -49,4 +49,29 @@ export declare namespace EvtError {
     class Detached extends Error {
         constructor();
     }
+    class RacePromiseRejection extends Error {
+        readonly onRejectedArgument: any;
+        readonly i: number;
+        readonly racer: PromiseLike<any>;
+        constructor(onRejectedArgument: any, i: number, racer: PromiseLike<any>);
+    }
+}
+/**
+ * [U] => pass U to the handler's callback.
+ * [U,"DETACH"] => detach the handler then pass U to the handler's callback.
+ * null => do not pass the event data to the handler callback.
+ * "DETACH" => detach the handler and do not pass the event data to the handler's callback.
+ *
+ * When the returned value is truthy posting has an effect
+ */
+export declare type TransformativeMatcher<T, U> = (data: T) => (readonly [U] | readonly [U, "DETACH" | null] | null | "DETACH");
+export declare namespace TransformativeMatcher {
+    /**
+     * When using a transformative matcher with
+     * waitFor, attachOnce or attachOncePrepend
+     * the first matched event will cause the handler
+     * to be detached so we do not allow to return [ U, "DETACH" ]
+     * as it is redundant.
+     */
+    type Once<T, U> = (data: T) => (readonly [U] | null | "DETACH");
 }

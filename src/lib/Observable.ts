@@ -1,6 +1,6 @@
 
 import { Evt } from "./Evt";
-import { overwriteReadonlyProp } from "./EvtBaseProtected";
+import { overwriteReadonlyProp } from "../tools/overwriteReadonlyProp";
 import { NonPostable } from "./helperTypes/NonPostable";
 
 type ChangeDiff<T> = {

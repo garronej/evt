@@ -1,12 +1,11 @@
 import { EvtBase } from "./EvtBase";
 import { invokeMatcher } from "./EvtBaseProtected";
 import { Handler, UserProvidedParams, ImplicitParams } from "./defs";
+import { Bindable, TransformativeMatcher } from "./defs"
 
 export class EvtCompat<T> extends EvtBase<T> {
 
-    /**
-     * https://garronej.github.io/ts-evt/#evtevtattach
-     */
+    /** https://garronej.github.io/ts-evt/#evtevtattach */
     public readonly evtAttach = new EvtBase<Handler<T, any>>()
 
     protected addHandler<U>(
@@ -22,29 +21,65 @@ export class EvtCompat<T> extends EvtBase<T> {
 
     }
 
-    /** https://garronej.github.io/ts-evt/#evtpostoncematched */
-    public async postOnceMatched(data: T): Promise<number> {
+    public readonly evtDetach = new EvtBase<Handler<T, any>>()
 
-        if (!this.getHandlers().find(handler => handler.matcher(data))) {
+    /** Detach every handler bound to a given object or all handlers, return the detached handlers */
+    public detach(boundTo?: Bindable): Handler<T, any>[] {
 
-            await this.evtAttach.waitFor(
-                handler => invokeMatcher(handler.matcher, data) !== null
-            );
+        const handlers = super.detach(boundTo);
 
-        }
+        handlers.forEach(handler => this.evtDetach.post(handler));
 
-        return this.post(data);
+        return handlers;
 
     }
 
+
+    public async postAsyncOnceHandled(data: T) {
+        return this.__postOnceHandled({ data, "isSync": false });
+    }
+
+    public async postSyncOnceHandled(data: T) {
+        return this.__postOnceHandled({ data, "isSync": true });
+    }
+
+    private __postOnceHandled(
+        { data, isSync }: { data: T; isSync: boolean; }
+    ): number | Promise<number> {
+
+        if (this.isHandled(data)) {
+            return this.post(data);
+        }
+
+
+        let resolvePr: (postCount: number) => void;
+        const pr = new Promise<number>(resolve => resolvePr = resolve);
+
+        const resolvePrAndPost = (data: T) => resolvePr(this.post(data));
+
+        this.evtAttach.attachOnce(
+            ({ matcher }) => !!matcher(data),
+            () => isSync ?
+                resolvePrAndPost(data) :
+                Promise.resolve().then(() => resolvePrAndPost(data))
+        );
+
+        return pr;
+
+
+    }
+
+
     protected __createDelegate<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher<T, U>,
+        boundTo: Bindable
     ): EvtCompat<U> {
 
         const evtDelegate = new EvtCompat<U>();
 
         this.$attach(
             matcher,
+            boundTo,
             transformedData => evtDelegate.post(transformedData)
         );
 
@@ -52,39 +87,69 @@ export class EvtCompat<T> extends EvtBase<T> {
 
     }
 
+
     /**
      * https://garronej.github.io/ts-evt/#evtcreatedelegate
      * 
      * matcher - Transformative
+     * 
+     * boundTo?
      */
-    public createDelegate<U>(matcher: (data: T) => [U] | null): EvtCompat<U>;
+    public createDelegate<U>(
+        matcher: TransformativeMatcher<T, U>,
+        boundTo?: Bindable
+    ): EvtCompat<U>;
     /**
      * https://garronej.github.io/ts-evt/#evtcreatedelegate
      * 
      * matcher - Type guard
+     * 
+     * boundTo?
      */
-    public createDelegate<Q extends T>(matcher: (data: T) => data is Q): EvtCompat<Q>;
+    public createDelegate<Q extends T>(
+        matcher: (data: T) => data is Q,
+        boundTo?: Bindable
+    ): EvtCompat<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtcreatedelegate
      * 
      * matcher - Filter only
+     * 
+     * boundTo?
      */
-    public createDelegate(matcher: (data: T) => boolean): EvtCompat<T>;
-    /** https://garronej.github.io/ts-evt/#evtcreatedelegate */
-    public createDelegate(): EvtCompat<T>;
-    public createDelegate<U>(matcher?: (data: T) => boolean | [U] | null): EvtCompat<T | U> {
+    public createDelegate(
+        matcher: (data: T) => boolean,
+        boundTo?: Bindable
+    ): EvtCompat<T>;
+    /** 
+     * https://garronej.github.io/ts-evt/#evtcreatedelegate 
+     * 
+     * boundTo?
+     * */
+    public createDelegate(
+        boundTo?: Bindable
+    ): EvtCompat<T>;
+    public createDelegate<U>(
+        ...inputs: any[]
+    ): EvtCompat<T | U> {
+
+        const { matcher, boundTo } = this.parseOverloadParams<U>(
+            inputs,
+            "createDelegate"
+        );
 
         return this.__createDelegate<T | U>(
-            data => invokeMatcher<T, U>(
-                matcher ?? (() => true),
+            data => invokeMatcher<T, T | U>(
+                matcher,
                 data
-            )
+            ),
+            boundTo
         );
 
     }
 
-
 }
+
 
 /** https://garronej.github.io/ts-evt/#voidevt */
 export class VoidEvtCompat extends EvtCompat<void> {
@@ -93,7 +158,12 @@ export class VoidEvtCompat extends EvtCompat<void> {
         return super.post(undefined);
     }
 
-    public postOnceMatched(): Promise<number> {
-        return super.postOnceMatched(undefined);
+    public async postAsyncOnceHandled() {
+        return super.postAsyncOnceHandled(undefined);
     }
+
+    public async postSyncOnceHandled() {
+        return super.postSyncOnceHandled(undefined);
+    }
+
 }

@@ -6,7 +6,7 @@ process.once("unhandledRejection", error => {
 
 });
 
-console.assert = (condition: any, msg?: string): asserts condition => {
+console.assert = (condition: any, msg?: string) => {
     if (!condition) {
         throw new Error(msg);
     }
@@ -19,8 +19,8 @@ if (n) {
     require("./test" + n);
 
 } else {
-    
-    const n= 38;
+
+    const n = 48;
 
     console.log(`Running ${n} tests`);
 

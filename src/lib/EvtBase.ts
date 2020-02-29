@@ -1,190 +1,243 @@
 import { EvtBaseProtected } from "./EvtBaseProtected";
-import { Bindable, UserProvidedParams } from "./defs"
+import { Bindable, UserProvidedParams, TransformativeMatcher } from "./defs"
+import { isCallableFunction } from "../tools/isCallableFunction";
+import { id } from "../tools/typeSafety";
 
-const id = <T>(x: T) => x;
+export function parseOverloadParamsFactory<T>(
+    { defaultBoundTo }: { defaultBoundTo: Object; }
+) {
 
-/** NOTE: constructors are of type "function" but are not callable,
- * without the new keyword.
- * This function will return true if and only if the object passed is 
- * a function and it is not a constructor.
- */
-function isCallable(o: any): boolean {
-
-    if (typeof o !== "function") {
-        return false;
-    }
-
-    const prototype = o["prototype"];
-
-    if (!prototype) return true;
-
-    let methods = Object.getOwnPropertyNames(prototype);
-
-    if (methods.length !== 1) return false;
-
-    let name: string = o.name;
-
-    if (!name) return true;
-
-    if (name[0].toUpperCase() === name[0]) return false;
-
-    return true;
-
-}
-
-
-/** Evt without evtAttach property, attachOnceMatched and createDelegate */
-export class EvtBase<T> extends EvtBaseProtected<T> {
-
-    private defaultParams: UserProvidedParams<T, any> = {
+    const defaultParams: UserProvidedParams<T, any> = {
         "matcher": function matchAll() { return true; },
-        "boundTo": this,
+        "boundTo": defaultBoundTo,
         "timeout": undefined,
         "callback": undefined
     };
 
+    return function parseOverloadParams<U>(
+        inputs: readonly any[],
+        methodName: "waitFor" | "attach-ish" | "createDelegate"
+    ): UserProvidedParams<T, T | U> {
 
-    private readParams(inputs: any[]): UserProvidedParams<T, any> {
+        type Out = UserProvidedParams<T, T | U>;
 
-        type Out = ReturnType<(typeof EvtBase)["prototype"]["readParams"]>;
+        switch (methodName) {
+            case "createDelegate": {
 
-        //[ matcher, boundTo, timeout, callback ]
-        //[ matcher, boundTo, callback ]
-        //[ matcher, timeout, callback ]
-        //[ boundTo, timeout, callback ]
-        //[ matcher, callback ]
-        //[ boundTo, callback ]
-        //[ timeout, callback ]
-        //[ callback ]
+                const n =
+                    inputs.length
+                    -
+                    (
+                        inputs.length !== 0 &&
+                            inputs[inputs.length - 1] === undefined ?
+                            1 : 0
+                    ) as 0 | 1 | 2;
 
-        const n = inputs.length as 4 | 3 | 2 | 1 | 0;
+                switch (n) {
+                    case 0:
+                        return id<Out>({
+                            ...defaultParams
+                        });
+                    case 1:
+                        //[ matcher ]
+                        //[ boundTo ]
+                        const [p] = inputs;
+                        return isCallableFunction(p) ? id<Out>({
+                            ...defaultParams,
+                            "matcher": p
+                        }) : id<Out>({
+                            ...defaultParams,
+                            "boundTo": p
+                        });
+                    case 2:
+                        //[ matcher, boundTo ]
+                        const [p1, p2] = inputs;
+                        return id<Out>({
+                            ...defaultParams,
+                            "matcher": p1,
+                            "boundTo": p2
+                        });
+                }
 
-        switch (n) {
-            case 4: {
+            } break;
+
+            case "waitFor": {
+
+                const n = inputs.length;
+
+                if (n === 2) {
+
+                    const [p1, p2] = inputs;
+
+                    return id<Out>({
+                        ...defaultParams,
+                        "matcher": p1,
+                        "timeout": p2
+                    });
+
+                } else {
+
+                    const [p] = inputs;
+
+                    return id<Out>(
+                        isCallableFunction(p) ? ({
+                            ...defaultParams,
+                            "matcher": p
+                        }) : ({
+                            ...defaultParams,
+                            "timeout": p
+                        })
+                    );
+
+                }
+
+
+            } break;
+            case "attach-ish": {
 
                 //[ matcher, boundTo, timeout, callback ]
-                const [p1, p2, p3, p4] = inputs;
-
-                return id<Out>({
-                    ...this.defaultParams,
-                    "matcher": p1,
-                    "boundTo": p2,
-                    "timeout": p3,
-                    "callback": p4
-                });
-
-            }
-            case 3: {
-
-
                 //[ matcher, boundTo, callback ]
                 //[ matcher, timeout, callback ]
                 //[ boundTo, timeout, callback ]
-                const [p1, p2, p3] = inputs;
-                if (typeof p2 === "number") {
-                    //[ matcher, timeout, callback ]
-                    //[ boundTo, timeout, callback ]
-
-                    const timeout: Out["timeout"] = p2;
-                    const callback: Out["callback"] = p3;
-
-                    if (isCallable(p1)) {
-                        //[ matcher, timeout, callback ]
-
-                        return id<Out>({
-                            ...this.defaultParams,
-                            timeout,
-                            callback,
-                            "matcher": p1
-                        });
-
-                    } else {
-                        //[ boundTo, timeout, callback ]
-
-                        return id<Out>({
-                            ...this.defaultParams,
-                            timeout,
-                            callback,
-                            "boundTo": p1
-                        });
-
-                    }
-                } else {
-                    //[ matcher, boundTo, callback ]
-                    return id<Out>({
-                        ...this.defaultParams,
-                        "matcher": p1,
-                        "boundTo": p2,
-                        "callback": p3
-                    });
-
-                }
-
-
-
-            }
-            case 2: {
-
-
                 //[ matcher, callback ]
                 //[ boundTo, callback ]
                 //[ timeout, callback ]
-                const [p1, p2] = inputs;
-                if (typeof p1 === "number") {
-                    //[ timeout, callback ]
-                    return id<Out>({
-                        ...this.defaultParams,
-                        "timeout": p1,
-                        "callback": p2
-                    });
-                } else {
-                    //[ matcher, callback ]
-                    //[ boundTo, callback ]
-                    const callback: Out["callback"] = p2;
-                    if (isCallable(p1)) {
+                //[ callback ]
+
+                const n = inputs.length as 4 | 3 | 2 | 1 | 0;
+
+                switch (n) {
+                    case 4: {
+
+                        //[ matcher, boundTo, timeout, callback ]
+                        const [p1, p2, p3, p4] = inputs;
 
                         return id<Out>({
-                            ...this.defaultParams,
-                            callback,
-                            "matcher": p1
+                            ...defaultParams,
+                            "matcher": p1,
+                            "boundTo": p2,
+                            "timeout": p3,
+                            "callback": p4
                         });
-
-
-                    } else {
-
-                        return id<Out>({
-                            ...this.defaultParams,
-                            callback,
-                            "boundTo": p1
-                        });
-
 
                     }
+                    case 3: {
+
+                        //[ matcher, boundTo, callback ]
+                        //[ matcher, timeout, callback ]
+                        //[ boundTo, timeout, callback ]
+                        const [p1, p2, p3] = inputs;
+                        if (typeof p2 === "number") {
+                            //[ matcher, timeout, callback ]
+                            //[ boundTo, timeout, callback ]
+
+                            const timeout: Out["timeout"] = p2;
+                            const callback: Out["callback"] = p3;
+
+                            if (isCallableFunction(p1)) {
+                                //[ matcher, timeout, callback ]
+                                return id<Out>({
+                                    ...defaultParams,
+                                    timeout,
+                                    callback,
+                                    "matcher": p1
+                                });
+
+                            } else {
+                                //[ boundTo, timeout, callback ]
+
+                                return id<Out>({
+                                    ...defaultParams,
+                                    timeout,
+                                    callback,
+                                    "boundTo": p1
+                                });
+
+                            }
+                        } else {
+                            //[ matcher, boundTo, callback ]
+                            return id<Out>({
+                                ...defaultParams,
+                                "matcher": p1,
+                                "boundTo": p2,
+                                "callback": p3
+                            });
+
+                        }
+
+                    }
+                    case 2: {
+
+                        //[ matcher, callback ]
+                        //[ boundTo, callback ]
+                        //[ timeout, callback ]
+                        const [p1, p2] = inputs;
+                        if (typeof p1 === "number") {
+                            //[ timeout, callback ]
+                            return id<Out>({
+                                ...defaultParams,
+                                "timeout": p1,
+                                "callback": p2
+                            });
+                        } else {
+                            //[ matcher, callback ]
+                            //[ boundTo, callback ]
+                            const callback: Out["callback"] = p2;
+                            if (isCallableFunction(p1)) {
+
+                                return id<Out>({
+                                    ...defaultParams,
+                                    callback,
+                                    "matcher": p1
+                                });
+
+                            } else {
+
+                                return id<Out>({
+                                    ...defaultParams,
+                                    callback,
+                                    "boundTo": p1
+                                });
+
+                            }
+                        }
+
+                    }
+                    case 1: {
+
+                        //[ callback ]
+                        const [p] = inputs;
+
+                        return id<Out>({
+                            ...defaultParams,
+                            "callback": p
+                        });
+
+                    }
+                    case 0: {
+                        return id<Out>({ ...defaultParams });
+                    }
+
                 }
 
-            }
-            case 1: {
 
-                //[ callback ]
-                const [p] = inputs;
-
-                return id<Out>({
-                    ...this.defaultParams,
-                    "callback": p
-                });
+            } break;
 
 
-            }
-            case 0: {
-                return id<Out>({ ...this.defaultParams });
-            }
+
 
         }
 
+    };
 
-    }
 
 
+}
+
+/** Evt without evtAttach property, attachOnceMatched and createDelegate */
+export class EvtBase<T> extends EvtBaseProtected<T> {
+
+    protected parseOverloadParams = parseOverloadParamsFactory<T>({ "defaultBoundTo": this });
 
     /**
      * https://garronej.github.io/ts-evt/#evtwaitfor
@@ -194,7 +247,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * timeout?
      */
     public waitFor<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher.Once<T, U>,
         timeout?: number
     ): Promise<U>;
 
@@ -232,40 +285,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
     ): Promise<T>;
 
     public waitFor(...inputs: any[]) {
-
-
-        let params: UserProvidedParams<T, any>;
-
-        const n = inputs.length;
-
-        if (n === 2) {
-
-            const [p1, p2] = inputs;
-
-            params = id<typeof params>({
-                ...this.defaultParams,
-                "matcher": p1,
-                "timeout": p2
-            });
-
-        } else {
-
-            const [p] = inputs;
-
-            params = id<typeof params>(
-                isCallable(p) ? ({
-                    ...this.defaultParams,
-                    "matcher": p
-                }) : ({
-                    ...this.defaultParams,
-                    "timeout": p
-                })
-            );
-
-        }
-
-        return super.__waitFor(params);
-
+        return super.__waitFor(this.parseOverloadParams(inputs, "waitFor"));
     }
 
 
@@ -281,7 +301,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * callback
      */
     public $attach<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher<T, U>,
         boundTo: Bindable,
         timeout: number,
         callback: (transformedData: U) => void
@@ -296,7 +316,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * callback
      */
     public $attach<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher<T, U>,
         boundTo: Bindable,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -310,7 +330,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * callback
      */
     public $attach<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher<T, U>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -322,7 +342,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * callback
      */
     public $attach<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher<T, U>,
         callback: (transformedData: U) => void
     ): Promise<U>;
     public $attach(...inputs: any[]) {
@@ -336,7 +356,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
 
 
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
      * matcher - Type guard
      * 
@@ -353,7 +373,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
      * matcher - Filter only
      * 
@@ -370,7 +390,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: T) => void
     ): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
      * matcher - Type guard
      * 
@@ -384,7 +404,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
      * matcher - Filter only
      * 
@@ -398,7 +418,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: T) => void
     ): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
      * matcher - Type guard
      * 
@@ -412,7 +432,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
      * matcher - Filter only
      * 
@@ -426,7 +446,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: T) => void
     ): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
      * boundTo
      * 
@@ -440,7 +460,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: T) => void
     ): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
      * matcher - Type guard
      * 
@@ -451,7 +471,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
      * matcher - Filter only
      * 
@@ -462,7 +482,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: T) => void
     ): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
      * boundTo
      * 
@@ -473,7 +493,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: T) => void
     ): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
      * timeout
      * 
@@ -484,7 +504,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: T) => void
     ): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
      * callback 
      */
@@ -492,7 +512,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: T) => void
     ): Promise<T>;
     public attach(...inputs: any[]) {
-        return this.__attach(this.readParams(inputs));
+        return this.__attach(this.parseOverloadParams(inputs, "attach-ish"));
     }
 
 
@@ -510,7 +530,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * callback
      */
     public $attachOnce<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher.Once<T, U>,
         boundTo: Bindable,
         timeout: number,
         callback: (transformedData: U) => void
@@ -525,7 +545,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * callback
      */
     public $attachOnce<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher.Once<T, U>,
         boundTo: Bindable,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -539,7 +559,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * callback
      */
     public $attachOnce<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher.Once<T, U>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -551,7 +571,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * callback
      */
     public $attachOnce<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher.Once<T, U>,
         callback: (transformedData: U) => void
     ): Promise<U>;
     public $attachOnce(...inputs: any[]) {
@@ -564,7 +584,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
 
 
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
      * matcher - Type guard
      * 
@@ -581,7 +601,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
      * matcher - Filter only
      * 
@@ -598,7 +618,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: T) => void
     ): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
      * matcher - Type guard
      * 
@@ -612,7 +632,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
      * matcher - Filter only
      * 
@@ -626,7 +646,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: T) => void
     ): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
      * matcher - Type guard
      * 
@@ -640,7 +660,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
      * matcher - Filter only
      * 
@@ -654,7 +674,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: T) => void
     ): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
      * boundTo
      * 
@@ -668,7 +688,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: T) => void
     ): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
      * matcher - Type guard
      * 
@@ -679,7 +699,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
      * matcher - Filter only
      * 
@@ -690,7 +710,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: T) => void
     ): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
      * boundTo
      * 
@@ -701,7 +721,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: T) => void
     ): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
      * timeout
      * 
@@ -712,7 +732,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: T) => void
     ): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
      * callback
      */
@@ -720,7 +740,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: T) => void
     ): Promise<T>;
     public attachOnce(...inputs: any[]) {
-        return this.__attachOnce(this.readParams(inputs));
+        return this.__attachOnce(this.parseOverloadParams(inputs, "attach-ish"));
     }
 
 
@@ -739,7 +759,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * callback
      */
     public $attachExtract<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher<T, U>,
         boundTo: Bindable,
         timeout: number,
         callback: (transformedData: U) => void
@@ -754,7 +774,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * callback
      */
     public $attachExtract<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher<T, U>,
         boundTo: Bindable,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -768,7 +788,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * callback
      */
     public $attachExtract<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher<T, U>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -780,7 +800,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * callback
      */
     public $attachExtract<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher<T, U>,
         callback: (transformedData: U) => void
     ): Promise<U>;
     public $attachExtract(...inputs: any[]) {
@@ -907,7 +927,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: T) => void
     ): Promise<T>;
     public attachExtract(...inputs: any[]) {
-        return this.__attachExtract(this.readParams(inputs));
+        return this.__attachExtract(this.parseOverloadParams(inputs, "attach-ish"));
     }
 
 
@@ -932,7 +952,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * callback
      */
     public $attachPrepend<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher<T, U>,
         boundTo: Bindable,
         timeout: number,
         callback: (transformedData: U) => void
@@ -947,7 +967,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * callback
      */
     public $attachPrepend<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher<T, U>,
         boundTo: Bindable,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -961,7 +981,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * callback
      */
     public $attachPrepend<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher<T, U>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -973,7 +993,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * callback
      */
     public $attachPrepend<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher<T, U>,
         callback: (transformedData: U) => void
     ): Promise<U>;
     public $attachPrepend(...inputs: any[]) {
@@ -1147,7 +1167,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: T) => void
     ): Promise<T>;
     public attachPrepend(...inputs: any[]) {
-        return this.__attachPrepend(this.readParams(inputs));
+        return this.__attachPrepend(this.parseOverloadParams(inputs, "attach-ish"));
     }
 
 
@@ -1168,7 +1188,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * callback
      */
     public $attachOncePrepend<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher.Once<T, U>,
         boundTo: Bindable,
         timeout: number,
         callback: (transformedData: U) => void
@@ -1183,7 +1203,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * callback
      */
     public $attachOncePrepend<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher.Once<T, U>,
         boundTo: Bindable,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -1197,7 +1217,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * callback
      */
     public $attachOncePrepend<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher.Once<T, U>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -1209,7 +1229,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * callback
      */
     public $attachOncePrepend<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher.Once<T, U>,
         callback: (transformedData: U) => void
     ): Promise<U>;
     public $attachOncePrepend(...inputs: any[]) {
@@ -1381,7 +1401,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: T) => void
     ): Promise<T>;
     public attachOncePrepend(...inputs: any[]) {
-        return this.__attachOncePrepend(this.readParams(inputs));
+        return this.__attachOncePrepend(this.parseOverloadParams(inputs, "attach-ish"));
     }
 
 
@@ -1403,7 +1423,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * callback
      */
     public $attachOnceExtract<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher.Once<T, U>,
         boundTo: Bindable,
         timeout: number,
         callback: (transformedData: U) => void
@@ -1418,7 +1438,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * callback
      */
     public $attachOnceExtract<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher.Once<T, U>,
         boundTo: Bindable,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -1432,7 +1452,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * callback
      */
     public $attachOnceExtract<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher.Once<T, U>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -1444,7 +1464,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
      * callback
      */
     public $attachOnceExtract<U>(
-        matcher: (data: T) => [U] | null,
+        matcher: TransformativeMatcher.Once<T, U>,
         callback: (transformedData: U) => void
     ): Promise<U>;
 
@@ -1613,7 +1633,7 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
         callback: (data: T) => void
     ): Promise<T>;
     public attachOnceExtract(...inputs: any[]) {
-        return this.__attachOnceExtract(this.readParams(inputs));
+        return this.__attachOnceExtract(this.parseOverloadParams(inputs, "attach-ish"));
     }
 
 

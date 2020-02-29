@@ -4,11 +4,33 @@ import { setPrototypeOf } from "../tools/setPrototypeOfPolyfill";
 export type Bindable = Bindable.Object_ | string;
 
 export namespace Bindable {
-
     /** Way of defining Object so it does not match number and string */
     export type Object_ = { [k: string]: any; };
+}
+
+/*
+export type HandlerGroup = {
+    readonly _handlerGroupBrand: true;
+    detach(): Handler<any,any>[];
+};
+
+export class HandlerGroupImpl implements HandlerGroup{
+
+    public readonly _handlerGroupBrand = true;
+    
+    private __detach: () => Handler<any, any>[] = () => [];
+
+    public detach(){
+        return this.__detach();
+    }
+
+    public overwriteDetach(detach: ()=> Handler<any,any>[]): void {
+        this.__detach = detach;
+    }
 
 }
+*/
+
 
 export type UserProvidedParams<T, U> =
     UserProvidedParams.WithNonTransformativeMatcher<T> |
@@ -23,7 +45,7 @@ export namespace UserProvidedParams {
     }>;
 
     export type WithTransformativeMatcher<T, U> = Common & Readonly<{
-        matcher: (data: T) => [U] | null;
+        matcher: TransformativeMatcher<T,U>;
         callback: ((transformedData: U) => void) | undefined;
     }>;
 
@@ -75,6 +97,48 @@ export namespace EvtError {
             setPrototypeOf(this, new.target.prototype);
         }
     }
+
+    export class RacePromiseRejection extends Error {
+        constructor(
+            public readonly onRejectedArgument: any,
+            public readonly i: number,
+            public readonly racer: PromiseLike<any>
+        ) {
+            super(`Evt race error: Promise at index ${i} rejected`);
+            setPrototypeOf(this, new.target.prototype);
+        }
+    }
+
+}
+
+/**
+ * [U] => pass U to the handler's callback.
+ * [U,"DETACH"] => detach the handler then pass U to the handler's callback.
+ * null => do not pass the event data to the handler callback.
+ * "DETACH" => detach the handler and do not pass the event data to the handler's callback.
+ * 
+ * When the returned value is truthy posting has an effect
+ */
+export type TransformativeMatcher<T, U> = (data: T) => (
+    readonly [U] | readonly [U, "DETACH" | null]
+    |
+    null | "DETACH"
+);
+
+export namespace TransformativeMatcher {
+
+    /**
+     * When using a transformative matcher with
+     * waitFor, attachOnce or attachOncePrepend 
+     * the first matched event will cause the handler
+     * to be detached so we do not allow to return [ U, "DETACH" ]
+     * as it is redundant.
+     */
+    export type Once<T, U> = (data: T) => (
+        readonly [U]
+        |
+        null | "DETACH"
+    );
 
 }
 

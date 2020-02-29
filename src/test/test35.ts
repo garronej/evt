@@ -1,7 +1,6 @@
 
 import { Evt } from "../lib";
-
-const id = <T>(x: T) => x;
+import { id } from "../tools/typeSafety";
 
 type Circle = {
     type: "CIRCLE";

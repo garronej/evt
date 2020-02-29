@@ -5,7 +5,7 @@ let evt = new Evt<number | string>();
 
 evt.enableTrace("myEvent", n => n.toString(), str => console.assert(str === "(myEvent) 1 handler => 666" ));
 
-evt.postOnceMatched(666);
+evt.postAsyncOnceHandled(666);
 
 evt.attachOnce(
     evtData => typeof evtData === "string",

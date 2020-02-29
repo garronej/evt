@@ -55,10 +55,9 @@ var EvtCompat = /** @class */ (function (_super) {
     __extends(EvtCompat, _super);
     function EvtCompat() {
         var _this_1 = _super !== null && _super.apply(this, arguments) || this;
-        /**
-         * https://garronej.github.io/ts-evt/#evtevtattach
-         */
+        /** https://garronej.github.io/ts-evt/#evtevtattach */
         _this_1.evtAttach = new EvtBase_2.EvtBase();
+        _this_1.evtDetach = new EvtBase_2.EvtBase();
         return _this_1;
     }
     EvtCompat.prototype.addHandler = function (attachParams, implicitAttachParams) {
@@ -66,29 +65,56 @@ var EvtCompat = /** @class */ (function (_super) {
         this.evtAttach.post(handler);
         return handler;
     };
-    /** https://garronej.github.io/ts-evt/#evtpostoncematched */
-    EvtCompat.prototype.postOnceMatched = function (data) {
+    /** Detach every handler bound to a given object or all handlers, return the detached handlers */
+    EvtCompat.prototype.detach = function (boundTo) {
+        var _this_1 = this;
+        var handlers = _super.prototype.detach.call(this, boundTo);
+        handlers.forEach(function (handler) { return _this_1.evtDetach.post(handler); });
+        return handlers;
+    };
+    EvtCompat.prototype.postAsyncOnceHandled = function (data) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!!this.getHandlers().find(function (handler) { return handler.matcher(data); })) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.evtAttach.waitFor(function (handler) { return EvtBaseProtected_1.invokeMatcher(handler.matcher, data) !== null; })];
-                    case 1:
-                        _a.sent();
-                        _a.label = 2;
-                    case 2: return [2 /*return*/, this.post(data)];
-                }
+                return [2 /*return*/, this.__postOnceHandled({ data: data, "isSync": false })];
             });
         });
     };
-    EvtCompat.prototype.__createDelegate = function (matcher) {
+    EvtCompat.prototype.postSyncOnceHandled = function (data) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, this.__postOnceHandled({ data: data, "isSync": true })];
+            });
+        });
+    };
+    EvtCompat.prototype.__postOnceHandled = function (_a) {
+        var _this_1 = this;
+        var data = _a.data, isSync = _a.isSync;
+        if (this.isHandled(data)) {
+            return this.post(data);
+        }
+        var resolvePr;
+        var pr = new Promise(function (resolve) { return resolvePr = resolve; });
+        var resolvePrAndPost = function (data) { return resolvePr(_this_1.post(data)); };
+        this.evtAttach.attachOnce(function (_a) {
+            var matcher = _a.matcher;
+            return !!matcher(data);
+        }, function () { return isSync ?
+            resolvePrAndPost(data) :
+            Promise.resolve().then(function () { return resolvePrAndPost(data); }); });
+        return pr;
+    };
+    EvtCompat.prototype.__createDelegate = function (matcher, boundTo) {
         var evtDelegate = new EvtCompat();
-        this.$attach(matcher, function (transformedData) { return evtDelegate.post(transformedData); });
+        this.$attach(matcher, boundTo, function (transformedData) { return evtDelegate.post(transformedData); });
         return evtDelegate;
     };
-    EvtCompat.prototype.createDelegate = function (matcher) {
-        return this.__createDelegate(function (data) { return EvtBaseProtected_1.invokeMatcher(matcher !== null && matcher !== void 0 ? matcher : (function () { return true; }), data); });
+    EvtCompat.prototype.createDelegate = function () {
+        var inputs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            inputs[_i] = arguments[_i];
+        }
+        var _a = this.parseOverloadParams(inputs, "createDelegate"), matcher = _a.matcher, boundTo = _a.boundTo;
+        return this.__createDelegate(function (data) { return EvtBaseProtected_1.invokeMatcher(matcher, data); }, boundTo);
     };
     return EvtCompat;
 }(EvtBase_2.EvtBase));
@@ -102,8 +128,19 @@ var VoidEvtCompat = /** @class */ (function (_super) {
     VoidEvtCompat.prototype.post = function () {
         return _super.prototype.post.call(this, undefined);
     };
-    VoidEvtCompat.prototype.postOnceMatched = function () {
-        return _super.prototype.postOnceMatched.call(this, undefined);
+    VoidEvtCompat.prototype.postAsyncOnceHandled = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, _super.prototype.postAsyncOnceHandled.call(this, undefined)];
+            });
+        });
+    };
+    VoidEvtCompat.prototype.postSyncOnceHandled = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, _super.prototype.postSyncOnceHandled.call(this, undefined)];
+            });
+        });
     };
     return VoidEvtCompat;
 }(EvtCompat));

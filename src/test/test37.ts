@@ -1,7 +1,9 @@
 import { Evt } from "../lib";
 import { Evt as EvtNext } from "../lib/Evt";
+import { id } from "../tools/typeSafety";
+import { getPromiseAssertionApi } from "../tools/testing";
+const { mustResolve, mustStayPending } = getPromiseAssertionApi();
 
-const id = <T>(x: T) => x;
 
 type Circle = {
     type: "CIRCLE";
@@ -18,25 +20,7 @@ type Shape = Circle | Square;
 const matchCircle = (shape: Shape): shape is Circle =>
     shape.type === "CIRCLE";
 
-function mustResolve<T>(p: Promise<T>, expectedResolvedValue: T) {
 
-    const timer = setTimeout(() => console.assert(false, "did not resolve"), 0);
-
-    p.then(resolvedValue => {
-        console.assert(resolvedValue === expectedResolvedValue);
-        clearTimeout(timer);
-    });
-
-}
-
-const mustNotComplete = (p: Promise<any>) => {
-    p
-        .then(
-            () => console.assert(false, "should have rejected"),
-            () => { console.log(false, "should not have rejected"); }
-        );
-
-};
 
 
 
@@ -91,10 +75,11 @@ const test = (
             "radius": 3
         };
 
-        mustResolve(prCircle, smallCircle);
-        mustResolve(prRadius, smallCircle.radius);
-        mustNotComplete(prBigCircle);
-        mustNotComplete(prBigShape);
+        mustResolve({ "promise": prCircle, "expectedData": smallCircle });
+        mustResolve({ "promise": prRadius, "expectedData": smallCircle.radius });
+        
+        mustStayPending(prBigCircle);
+        mustStayPending(prBigShape);
 
         evtShape.post(smallCircle);
 
@@ -109,10 +94,10 @@ const test = (
             "radius": 10000
         };
 
-        mustResolve(prCircle, bigCircle);
-        mustResolve(prRadius, bigCircle.radius);
-        mustResolve(prBigCircle, bigCircle);
-        mustResolve(prBigShape, bigCircle);
+        mustResolve({ "promise": prCircle, "expectedData": bigCircle});
+        mustResolve({ "promise": prRadius, "expectedData": bigCircle.radius });
+        mustResolve({ "promise": prBigCircle, "expectedData": bigCircle });
+        mustResolve({ "promise": prBigShape, "expectedData": bigCircle });
 
         evtShape.post(bigCircle);
 
@@ -127,10 +112,10 @@ const test = (
             "sideLength": 1
         };
 
-        mustNotComplete(prCircle);
-        mustNotComplete(prRadius);
-        mustNotComplete(prBigCircle);
-        mustNotComplete(prBigShape);
+        mustStayPending(prCircle);
+        mustStayPending(prRadius);
+        mustStayPending(prBigCircle);
+        mustStayPending(prBigShape);
 
         evtShape.post(smallSquare);
 
@@ -144,10 +129,10 @@ const test = (
             "sideLength": 1000000
         };
 
-        mustNotComplete(prCircle);
-        mustNotComplete(prRadius);
-        mustNotComplete(prBigCircle);
-        mustResolve(prBigShape, bigSquare);
+        mustStayPending(prCircle);
+        mustStayPending(prRadius);
+        mustStayPending(prBigCircle);
+        mustResolve({ "promise": prBigShape, "expectedData": bigSquare});
 
         evtShape.post(bigSquare);
 

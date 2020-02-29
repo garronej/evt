@@ -1,4 +1,2 @@
 
-import { race } from "./race";
-
-export { race };
+export * from "./race";

@@ -1,10 +1,8 @@
 import "minimal-polyfills/dist/lib/Array.prototype.find";
-import { UserProvidedParams, ImplicitParams, Bindable, Handler } from "./defs";
+import { UserProvidedParams, ImplicitParams, Bindable, Handler, TransformativeMatcher } from "./defs";
 /** If the matcher is not transformative then the transformedData will be the input data */
-export declare function invokeMatcher<T, U>(matcher: (data: T) => boolean | [U] | null, data: T): [T | U] | null;
-export declare const overwriteReadonlyProp: (obj: {
-    [key: string]: any;
-}, propertyName: string, value: any) => void;
+export declare function invokeMatcher<T, U>(matcher: TransformativeMatcher<T, U> | ((data: T) => boolean), data: T): ReturnType<TransformativeMatcher<T, T | U>>;
+export declare function matchNotMatched(transformativeMatcherResult: ReturnType<TransformativeMatcher<any, any>>): transformativeMatcherResult is (null | "DETACH");
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 export declare class EvtBaseProtected<T> {
     /** https://garronej.github.io/ts-evt/#evtpostcount */
@@ -22,7 +20,7 @@ export declare class EvtBaseProtected<T> {
     private readonly asyncHandlerChronologyMark;
     private readonly asyncHandlerChronologyExceptionRange;
     private readonly getChronologyMark;
-    protected addHandler<U>(attachParams: UserProvidedParams<T, U>, implicitAttachParams: ImplicitParams): Handler<T, U>;
+    protected addHandler<U>(userProvidedParams: UserProvidedParams<T, U>, implicitAttachParams: ImplicitParams): Handler<T, U>;
     private trace;
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
@@ -40,7 +38,21 @@ export declare class EvtBaseProtected<T> {
     protected __attachOnce<U>(attachParams: UserProvidedParams<T, U>): Promise<U>;
     protected __attachOncePrepend<U>(attachParams: UserProvidedParams<T, U>): Promise<U>;
     protected __attachOnceExtract<U>(attachParams: UserProvidedParams<T, U>): Promise<U>;
-    /** https://garronej.github.io/ts-evt/#evtgethandler */
+    /**
+     * https://garronej.github.io/ts-evt/#evtishandleddata
+     *
+     * Test if posting a given event data will have an effect.
+     *
+     * Return true if:
+     * -There is at least one handler matching
+     * this event data ( at least one handler's callback function
+     * will be invoked if the data is posted. )
+     * -There is at least one handler that will be detached
+     * if the event data is posted.
+     *
+     */
+    isHandled(data: T): boolean;
+    /** https://garronej.github.io/ts-evt/#evtgethandlers */
     getHandlers(): Handler<T, any>[];
     /** Detach every handler bound to a given object or all handlers, return the detached handlers */
     detach(boundTo?: Bindable): Handler<T, any>[];

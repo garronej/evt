@@ -1,14 +1,21 @@
-import { Evt } from "../index";
+import { Evt, VoidEvt } from "../index";
 import { assert, typeGuard } from "../../tools/typeSafety";
 import { Bindable } from "../../lib/defs";
-import { UnpackEvt } from "../helperTypes";
+import { UnpackEvt, NonPostable } from "../helperTypes";
+import { id } from "../../tools/typeSafety";
+import { Deferred } from "../../tools/Deferred";
+import { invokeMatcher } from "../EvtBaseProtected";
+import { parseOverloadParamsFactory } from "../EvtBase";
+import { EvtError } from "../defs";
 
-export type OnceEvt<T> = Pick<Evt<T>, "waitFor" | "attachOnce" | "$attachOnce" | "detach" | "evtAttach" | "postCount">;
+export type OneShotEvt<T> = Pick<Evt<T>, "waitFor" | "attachOnce" | "$attachOnce" | "detach" | "evtAttach" | "postCount">;
 
-export type Racer<T> = OnceEvt<T> | PromiseLike<T> | T;
-export type UnpackRacer<T extends Racer<any>> = T extends OnceEvt<infer U> ? U : T extends PromiseLike<infer V> ? V : T;
 
-export type RaceResultGeneric<Data, Index extends number, Racers extends readonly any[]> = Readonly<{
+
+export type Racer<T> = OneShotEvt<T> | PromiseLike<T> | T;
+export type UnpackRacer<T extends Racer<any>> = T extends OneShotEvt<infer U> ? U : T extends PromiseLike<infer V> ? V : T;
+
+export type RaceResultGeneric<Data, Index extends number, Racers extends readonly Racer<any>[]> = Readonly<{
     data: Data;
     i: Index;
     racer: Racers[Index];
@@ -27,9 +34,9 @@ type RaceRecResult<RacerUnion, T> = {
     i: null | number;
 };
 
-const matchOnceEvt = <T>(o: any): o is OnceEvt<T> => {
+const matchOnceEvt = <T>(o: any): o is OneShotEvt<T> => {
 
-    assert(typeGuard.dry<OnceEvt<T>>(o));
+    assert(typeGuard.dry<OneShotEvt<T>>(o));
 
     return (
         o instanceof Object &&
@@ -40,85 +47,64 @@ const matchOnceEvt = <T>(o: any): o is OnceEvt<T> => {
 
 };
 
-const raceRec = (() => {
+const matchPromiseLike = <T>(o: any): o is PromiseLike<T> => {
 
-    type RaceCoupleResult<UnionOfTAndU> = {
-        data: UnionOfTAndU;
-        i: 0 | 1;
+    assert(typeGuard.dry<PromiseLike<T>>(o));
+
+    return (
+        o instanceof Object &&
+        o.then instanceof Function
+    );
+
+}
+
+
+/** If promise racer rejection unhandled */
+const raceUnsafe = (() => {
+
+    type RaceContext = Bindable & {
+        evtRaceFinished: NonPostable<VoidEvt>;
     };
 
+    const raceUnsafeRec = (() => {
 
-    const raceCouple = (() => {
+        type RaceCoupleResult<UnionOfTAndU> = {
+            data: UnionOfTAndU;
+            i: 0 | 1;
+        };
 
-        const matchPromiseLike = <T>(o: any): o is PromiseLike<T> => {
+        const raceCouple = (() => {
 
-            assert(typeGuard.dry<PromiseLike<T>>(o));
 
-            return (
-                o instanceof Object &&
-                o.then instanceof Function
-            );
-
-        }
-
-        const matchDirectValue = <T>(o: OnceEvt<T> | PromiseLike<T> | T): o is T => {
-            return !matchOnceEvt(o) && !matchPromiseLike(o);
-        }
-
-        const raceCoupleSym = <T, U>(
-            evt: Evt<RaceCoupleResult<T | U>>,
-            boundTo: Bindable,
-            racer: Racer<T>,
-            i: 0 | 1
-        ): void => {
-
-            let evtWeak: (typeof evt) | undefined = evt;
-
-            const post = (raceCoupleResult: UnpackEvt<typeof evt>) => {
-                evt.evtAttach.detach(boundTo);
-                evt.post(raceCoupleResult);
-                evtWeak = undefined;
+            const matchDirectValue = <T>(o: OneShotEvt<T> | PromiseLike<T> | T): o is T => {
+                return !matchOnceEvt(o) && !matchPromiseLike(o);
             };
 
-            if (matchDirectValue<T>(racer)) {
+            const raceCoupleSym = <T, U>(
+                evt: Evt<RaceCoupleResult<T | U>>,
+                raceContext: RaceContext,
+                racer: Racer<T>,
+                i: 0 | 1
+            ): void => {
 
-                const raceCoupleResult: UnpackEvt<typeof evt> = {
-                    "data": racer,
-                    i
+                let evtWeak: (typeof evt) | undefined = evt;
+
+                raceContext.evtRaceFinished.attachOnce(() => evtWeak = undefined);
+
+                const post = (raceCoupleResult: UnpackEvt<typeof evt>) => {
+                    evt.evtAttach.detach(raceContext);
+                    evt.post(raceCoupleResult);
                 };
 
-                evt.evtAttach.attach(
-                    boundTo,
-                    ({ matcher }) => {
-                        if (!matcher(raceCoupleResult)) {
-                            return;
-                        }
-                        post(raceCoupleResult);
-                    }
-                );
+                if (matchDirectValue<T>(racer)) {
 
-            }
-
-            if (matchPromiseLike<T>(racer)) {
-
-                racer.then(data => {
-
-                    if (evtWeak === undefined) {
-                        return;
-                    }
-
-                    const raceCoupleResult: UnpackEvt<typeof evtWeak> = {
-                        data,
+                    const raceCoupleResult: UnpackEvt<typeof evt> = {
+                        "data": racer,
                         i
                     };
 
-                    if (evtWeak.isMatched(raceCoupleResult)) {
-                        post(raceCoupleResult);
-                        return;
-                    }
-
-                    evtWeak.evtAttach.attach(
-                        boundTo,
+                    evt.evtAttach.attach(
+                        raceContext,
                         ({ matcher }) => {
                             if (!matcher(raceCoupleResult)) {
                                 return;
@@ -127,195 +113,434 @@ const raceRec = (() => {
                         }
                     );
 
-                });
+                }
+
+                if (matchPromiseLike<T>(racer)) {
+
+                    racer.then(data => {
+
+                        if (evtWeak === undefined) {
+                            return;
+                        }
+
+                        const raceCoupleResult: UnpackEvt<typeof evtWeak> = {
+                            data,
+                            i
+                        };
+
+                        if (evtWeak.isHandled(raceCoupleResult)) {
+                            post(raceCoupleResult);
+                            return;
+                        }
+
+                        evtWeak.evtAttach.attach(
+                            raceContext,
+                            ({ matcher }) => {
+                                if (!matcher(raceCoupleResult)) {
+                                    return;
+                                }
+                                post(raceCoupleResult);
+                            }
+                        );
+
+                    });
+
+
+                }
+
+
+                if (matchOnceEvt<T>(racer)) {
+
+                    const toRaceCoupleResult = (data: T): UnpackEvt<typeof evt> => ({
+                        data,
+                        i
+                    });
+
+                    evt.evtAttach.attach(
+                        raceContext,
+                        ({ matcher }) =>
+                            racer.attachOnce(
+                                data => !!matcher(toRaceCoupleResult(data)),
+                                raceContext,
+                                data => post(toRaceCoupleResult(data))
+                            )
+
+                    );
+
+                }
+
+            };
+
+            return function raceCouple<T, U>(
+                raceContext: RaceContext,
+                p1: Racer<T>,
+                p2: Racer<U>
+            ): OneShotEvt<RaceCoupleResult<T | U>> {
+
+                const evt = new Evt<RaceCoupleResult<T | U>>();
+
+                raceCoupleSym(evt, raceContext, p1, 0);
+                raceCoupleSym(evt, raceContext, p2, 1);
+
+                return evt;
 
             }
 
-            if (matchOnceEvt<T>(racer)) {
+        })();
 
-                const toRaceCoupleResult = (data: T): UnpackEvt<typeof evt> => ({
-                    data,
-                    i
+
+        return function raceUnsafeRec<RacerUnion, T>(
+            raceContext: RaceContext,
+            racersRest: readonly RacerUnion[],
+            racerLast: Racer<T>,
+        ): OneShotEvt<RaceRecResult<RacerUnion, T>> {
+
+            const evt = new Evt<RaceRecResult<RacerUnion, T>>();
+            const post = (raceRecResult: UnpackEvt<typeof evt>) => {
+                evt.evtAttach.detach(raceContext);
+                evt.post(raceRecResult);
+            };
+
+            if (racersRest.length === 0) {
+
+                const toRaceRecResult = (
+                    raceCoupleResult: RaceCoupleResult<T | never>
+                ): RaceRecResult<RacerUnion, T> => ({
+                    ...raceCoupleResult,
+                    "i": null
+                });
+
+                const evtRaceCoupleResult = raceCouple<T, never>(raceContext, racerLast, prNever);
+
+                evt.evtAttach.attach(
+                    raceContext,
+                    ({ matcher }) =>
+                        evtRaceCoupleResult.attachOnce(
+                            raceCoupleResult => !!matcher(toRaceRecResult(raceCoupleResult)),
+                            raceCoupleResult => post(toRaceRecResult(raceCoupleResult))
+
+                        )
+                );
+
+                return evt;
+
+            }
+
+
+            const newRest = racersRest.slice(0, racersRest.length - 1);
+            const newRacerLast = racersRest[racersRest.length - 1];
+
+            const evtData = new Evt<T | UnpackRacer<RacerUnion>>();
+
+            let raceCoupleResult_i: 0 | 1;
+
+            {
+
+                const evtRaceCoupleResult = raceCouple<UnpackRacer<RacerUnion>, T>(
+                    raceContext,
+                    newRacerLast as Racer<UnpackRacer<RacerUnion>>,
+                    racerLast,
+                );
+
+                const toData = (
+                    raceCoupleResult: RaceCoupleResult<T | UnpackRacer<RacerUnion>>
+                ): T | UnpackRacer<RacerUnion> => {
+                    raceCoupleResult_i = raceCoupleResult.i;
+                    return raceCoupleResult.data;
+                }
+
+                evtData.evtAttach.attach(
+                    raceContext,
+                    ({ matcher }) =>
+                        evtRaceCoupleResult.attachOnce(
+                            raceCoupleResult => !!matcher(toData(raceCoupleResult)),
+                            raceCoupleResult => {
+                                evtData.evtAttach.detach(raceContext);
+                                evtData.post(toData(raceCoupleResult));
+                            }
+                        )
+                );
+
+
+            }
+
+            {
+
+                const evtRaceRecResult = raceUnsafeRec<RacerUnion, T | UnpackRacer<RacerUnion>>(
+                    raceContext,
+                    newRest,
+                    evtData,
+                );
+
+                const transformRaceRecResult = (
+                    raceRecResult: RaceRecResult<RacerUnion, T | UnpackRacer<RacerUnion>>
+                ): RaceRecResult<RacerUnion, T> => ({
+                    "data": raceRecResult.data,
+                    "i": raceRecResult.i === null ?
+                        raceCoupleResult_i === 0 ?
+                            racersRest.length - 1
+                            :
+                            null
+                        :
+                        raceRecResult.i
                 });
 
                 evt.evtAttach.attach(
-                    boundTo,
+                    raceContext,
                     ({ matcher }) =>
-                        racer.attachOnce(
-                            data => !!matcher(toRaceCoupleResult(data)),
-                            boundTo,
-                            data => post(toRaceCoupleResult(data))
+                        evtRaceRecResult.attachOnce(
+                            raceRecResult => !!matcher(transformRaceRecResult(raceRecResult)),
+                            raceRecResult => post(transformRaceRecResult(raceRecResult))
                         )
-
                 );
 
             }
 
-        };
-
-        return function raceCouple<T, U>(
-            boundTo: Bindable,
-            p1: Racer<T>,
-            p2: Racer<U>
-        ): OnceEvt<RaceCoupleResult<T | U>> {
-
-            const evt = new Evt<RaceCoupleResult<T | U>>();
-
-            raceCoupleSym(evt, boundTo, p1, 0);
-            raceCoupleSym(evt, boundTo, p2, 1);
 
             return evt;
 
-        }
+        };
+
 
     })();
 
 
-    function raceRec<RacerUnion, T>(
-        boundTo: Bindable,
-        racersRest: readonly RacerUnion[],
-        racerLast: Racer<T>,
-    ): OnceEvt<RaceRecResult<RacerUnion, T>> {
 
-        const evt = new Evt<RaceRecResult<RacerUnion, T>>();
-        const post = (raceRecResult: UnpackEvt<typeof evt>) => {
-            evt.evtAttach.detach(boundTo);
-            evt.post(raceRecResult);
+
+    return function raceUnsafe<RacerUnion>(
+        racers: readonly RacerUnion[]
+    ): OneShotEvt<RaceResult<RacerUnion>> {
+
+        const evt = new Evt<RaceResult<RacerUnion>>();
+
+        const evtRaceFinished = new VoidEvt();
+
+        const raceContext: RaceContext = { evtRaceFinished };
+
+        const evtRaceRecResult = raceUnsafeRec<RacerUnion, UnpackRacer<RacerUnion>>(
+            raceContext,
+            racers,
+            prNever
+        );
+
+        const toRaceResult = (
+            raceRecResult: RaceRecResult<RacerUnion, UnpackRacer<RacerUnion>>
+        ): RaceResult<RacerUnion> => {
+
+            assert(!typeGuard.dry<null>(raceRecResult.i, false));
+
+            return {
+                ...raceRecResult,
+                "i": raceRecResult.i,
+                "racer": racers[raceRecResult.i]
+            };
+
         };
 
-        if (racersRest.length === 0) {
-
-            const toRaceRecResult = (
-                raceCoupleResult: RaceCoupleResult<T | never>
-            ): RaceRecResult<RacerUnion, T> => ({
-                ...raceCoupleResult,
-                "i": null
-            });
-
-            const evtRaceCoupleResult = raceCouple<T, never>(boundTo, racerLast, prNever);
-
-            evt.evtAttach.attach(
-                boundTo,
-                ({ matcher }) =>
-                    evtRaceCoupleResult.attachOnce(
-                        raceCoupleResult => !!matcher(toRaceRecResult(raceCoupleResult)),
-                        raceCoupleResult => post(toRaceRecResult(raceCoupleResult))
-
-                    )
-            );
-
-            return evt;
-
-        }
+        const detachAllEvtRacers = () => {
+            evtRaceFinished.post();
+            racers
+                .forEach(racer => {
+                    if (!matchOnceEvt<UnpackRacer<RacerUnion>>(racer)) {
+                        return;
+                    }
+                    racer.detach(raceContext);
+                })
+        };
 
 
-        const newRest = racersRest.slice(0, racersRest.length - 1);
-        const newRacerLast = racersRest[racersRest.length - 1];
 
-        const evtData = new Evt<T | UnpackRacer<RacerUnion>>();
+        evt.evtAttach.attach(
+            raceContext,
+            ({ matcher, promise }) => {
 
-        let raceCoupleResult_i: 0 | 1;
+                promise.catch(() => {
 
-        {
+                    if (evt.getHandlers().length !== 0) {
+                        return;
+                    }
 
-            const evtRaceCoupleResult = raceCouple<UnpackRacer<RacerUnion>, T>(
-                boundTo,
-                newRacerLast as Racer<UnpackRacer<RacerUnion>>,
-                racerLast,
-            );
+                    detachAllEvtRacers();
 
-            const toData = (
-                raceCoupleResult: RaceCoupleResult<T | UnpackRacer<RacerUnion>>
-            ): T | UnpackRacer<RacerUnion> => {
-                raceCoupleResult_i = raceCoupleResult.i;
-                return raceCoupleResult.data;
+                });
+
+                evtRaceRecResult.attachOnce(
+                    raceRecResult => !!matcher(toRaceResult(raceRecResult)),
+                    raceContext,
+                    raceRecResult => {
+                        evt.evtAttach.detach(raceContext);
+                        detachAllEvtRacers();
+                        evt.post(toRaceResult(raceRecResult));
+                    }
+                );
             }
-
-            evtData.evtAttach.attach(
-                boundTo,
-                ({ matcher }) =>
-                    evtRaceCoupleResult.attachOnce(
-                        raceCoupleResult => !!matcher(toData(raceCoupleResult)),
-                        raceCoupleResult => {
-                            evtData.evtAttach.detach(boundTo);
-                            evtData.post(toData(raceCoupleResult));
-                        }
-                    )
-            );
-
-
-        }
-
-        {
-
-            const evtRaceRecResult = raceRec<RacerUnion, T | UnpackRacer<RacerUnion>>(
-                boundTo,
-                newRest,
-                evtData,
-            );
-
-            const transformRaceRecResult = (
-                raceRecResult: RaceRecResult<RacerUnion, T | UnpackRacer<RacerUnion>>
-            ): RaceRecResult<RacerUnion, T> => ({
-                "data": raceRecResult.data,
-                "i": raceRecResult.i === null ?
-                    raceCoupleResult_i === 0 ?
-                        racersRest.length - 1
-                        :
-                        null
-                    :
-                    raceRecResult.i
-            });
-
-            evt.evtAttach.attach(
-                boundTo,
-                ({ matcher }) =>
-                    evtRaceRecResult.attachOnce(
-                        raceRecResult => !!matcher(transformRaceRecResult(raceRecResult)),
-                        raceRecResult => post(transformRaceRecResult(raceRecResult))
-                    )
-            );
-
-        }
-
+        );
 
         return evt;
 
     };
 
-    return raceRec;
 
 })();
 
+export type PrResultWrap<T> =
+    PrResultWrap.Fulfilled<T> |
+    PrResultWrap.Rejected<T>
+    ;
+
+export namespace PrResultWrap {
+
+    type Common<T> = {
+        promise: PromiseLike<T>;
+    };
+
+    export type Fulfilled<T> = Common<T> & {
+        isFulfilled: true;
+        data: T;
+    };
+
+    export type Rejected<T> = Common<T> & {
+        isFulfilled: false;
+        data: never;
+        error: any;
+    };
+
+}
+
+
+function wrapRejection<T>(promise: PromiseLike<T>): PromiseLike<PrResultWrap<T>> {
+
+    return promise.then(
+        data => id<PrResultWrap.Fulfilled<T>>({
+            promise,
+            "isFulfilled": true,
+            data
+        }),
+        error => id<PrResultWrap.Rejected<T>>({
+            promise,
+            "isFulfilled": false,
+            "data": null as unknown as never,
+            error
+        })
+    );
+
+
+}
+
+function generateProxyFunctionFactory(oneShotEvt: OneShotEvt<RaceResult<Racer<any>>>) {
+
+    const parseOverloadParams =
+        parseOverloadParamsFactory<any>({ "defaultBoundTo": oneShotEvt })
+        ;
+
+    return function generateProxyFunction(methodName: "waitFor" | "attachOnce") {
+
+        const methodBackup: (...inputs: any[]) => Promise<any> =
+            id<(...inputs: any[]) => Promise<any>>(oneShotEvt[methodName]).bind(oneShotEvt)
+            ;
+
+        Object.defineProperty(
+            oneShotEvt,
+            methodName,
+            {
+                "value": (...inputs: any[]) => {
+
+                    const { matcher } = parseOverloadParams(
+                        inputs,
+                        methodName === "waitFor" ?
+                            "waitFor" : "attach-ish"
+                    );
+
+                    let i = inputs.indexOf(matcher);
+
+                    if (i < 0) {
+                        inputs = [undefined, ...inputs];
+                        i = 0;
+                    }
+
+                    const dOut = new Deferred<any>();
+
+                    inputs[i] = function matcherOverride(raceResult: RaceResult<Racer<any>>) {
+
+                        if (!matchPromiseLike<any>(raceResult.racer)) {
+                            return matcher(raceResult);
+                        }
+
+
+                        const prResultWrap: PrResultWrap<any> = raceResult.data;
+
+                        if (!prResultWrap.isFulfilled) {
+
+                            dOut.reject(
+                                new EvtError.RacePromiseRejection(
+                                    prResultWrap.error,
+                                    raceResult.i,
+                                    raceResult.racer
+                                )
+                            );
+
+                            return "DETACH";
+
+                        }
+
+                        return invokeMatcher(
+                            matcher,
+                            {
+                                "i": raceResult.i,
+                                "data": prResultWrap.data,
+                                "racer": prResultWrap.promise,
+                            }
+                        );
+
+                    };
+
+                    methodBackup(...inputs)
+                        .then(
+                            data => dOut.resolve(data),
+                            error => dOut.reject(error)
+                        )
+                        ;
+
+                    return dOut.pr;
+
+                }
+            }
+        );
+
+
+
+
+    }
+};
 
 export function race<T, U>(
     racers: readonly [
-        Racer<T>, 
+        Racer<T>,
         Racer<U>
     ]
-): OnceEvt<
+): OneShotEvt<
     RaceResultGeneric<T, 0, typeof racers> |
     RaceResultGeneric<U, 1, typeof racers>
 >;
 export function race<T, U, V>(
     racers: readonly [
-        Racer<T>, 
-        Racer<U>, 
+        Racer<T>,
+        Racer<U>,
         Racer<V>
     ]
-): OnceEvt<
+): OneShotEvt<
     RaceResultGeneric<T, 0, typeof racers> |
     RaceResultGeneric<U, 1, typeof racers> |
     RaceResultGeneric<V, 2, typeof racers>
 >;
 export function race<T1, T2, T3, T4>(
     racers: readonly [
-        Racer<T1>, 
-        Racer<T2>, 
-        Racer<T3>, 
+        Racer<T1>,
+        Racer<T2>,
+        Racer<T3>,
         Racer<T4>
     ]
-): OnceEvt<
+): OneShotEvt<
     RaceResultGeneric<T1, 0, typeof racers> |
     RaceResultGeneric<T2, 1, typeof racers> |
     RaceResultGeneric<T3, 2, typeof racers> |
@@ -323,13 +548,13 @@ export function race<T1, T2, T3, T4>(
 >;
 export function race<T1, T2, T3, T4, T5>(
     racers: readonly [
-        Racer<T1>, 
-        Racer<T2>, 
-        Racer<T3>, 
-        Racer<T4>, 
+        Racer<T1>,
+        Racer<T2>,
+        Racer<T3>,
+        Racer<T4>,
         Racer<T5>
     ]
-): OnceEvt<
+): OneShotEvt<
     RaceResultGeneric<T1, 0, typeof racers> |
     RaceResultGeneric<T2, 1, typeof racers> |
     RaceResultGeneric<T3, 2, typeof racers> |
@@ -338,14 +563,14 @@ export function race<T1, T2, T3, T4, T5>(
 >;
 export function race<T1, T2, T3, T4, T5, T6>(
     racers: readonly [
-        Racer<T1>, 
-        Racer<T2>, 
-        Racer<T3>, 
-        Racer<T4>, 
-        Racer<T5>, 
+        Racer<T1>,
+        Racer<T2>,
+        Racer<T3>,
+        Racer<T4>,
+        Racer<T5>,
         Racer<T6>
     ]
-): OnceEvt<
+): OneShotEvt<
     RaceResultGeneric<T1, 0, typeof racers> |
     RaceResultGeneric<T2, 1, typeof racers> |
     RaceResultGeneric<T3, 2, typeof racers> |
@@ -355,15 +580,15 @@ export function race<T1, T2, T3, T4, T5, T6>(
 >;
 export function race<T1, T2, T3, T4, T5, T6, T7>(
     racers: readonly [
-        Racer<T1>, 
-        Racer<T2>, 
-        Racer<T3>, 
-        Racer<T4>, 
-        Racer<T5>, 
-        Racer<T6>, 
+        Racer<T1>,
+        Racer<T2>,
+        Racer<T3>,
+        Racer<T4>,
+        Racer<T5>,
+        Racer<T6>,
         Racer<T7>
     ]
-): OnceEvt<
+): OneShotEvt<
     RaceResultGeneric<T1, 0, typeof racers> |
     RaceResultGeneric<T2, 1, typeof racers> |
     RaceResultGeneric<T3, 2, typeof racers> |
@@ -374,95 +599,95 @@ export function race<T1, T2, T3, T4, T5, T6, T7>(
 >;
 export function race<T1, T2, T3, T4, T5, T6, T7, T8>(
     racers: readonly [
-        Racer<T1>, 
-        Racer<T2>, 
-        Racer<T3>, 
-        Racer<T4>, 
-        Racer<T5>, 
-        Racer<T6>, 
-        Racer<T7>, 
+        Racer<T1>,
+        Racer<T2>,
+        Racer<T3>,
+        Racer<T4>,
+        Racer<T5>,
+        Racer<T6>,
+        Racer<T7>,
         Racer<T8>
     ]
-): OnceEvt<
+): OneShotEvt<
     RaceResultGeneric<T1, 0, typeof racers> |
     RaceResultGeneric<T2, 1, typeof racers> |
     RaceResultGeneric<T3, 2, typeof racers> |
     RaceResultGeneric<T4, 3, typeof racers> |
     RaceResultGeneric<T5, 4, typeof racers> |
     RaceResultGeneric<T6, 5, typeof racers> |
-    RaceResultGeneric<T7, 6, typeof racers> | 
+    RaceResultGeneric<T7, 6, typeof racers> |
     RaceResultGeneric<T8, 7, typeof racers>
 >;
 export function race<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
     racers: readonly [
-        Racer<T1>, 
-        Racer<T2>, 
-        Racer<T3>, 
-        Racer<T4>, 
-        Racer<T5>, 
-        Racer<T6>, 
-        Racer<T7>, 
-        Racer<T8>, 
+        Racer<T1>,
+        Racer<T2>,
+        Racer<T3>,
+        Racer<T4>,
+        Racer<T5>,
+        Racer<T6>,
+        Racer<T7>,
+        Racer<T8>,
         Racer<T9>
     ]
-): OnceEvt<
+): OneShotEvt<
     RaceResultGeneric<T1, 0, typeof racers> |
     RaceResultGeneric<T2, 1, typeof racers> |
     RaceResultGeneric<T3, 2, typeof racers> |
     RaceResultGeneric<T4, 3, typeof racers> |
     RaceResultGeneric<T5, 4, typeof racers> |
     RaceResultGeneric<T6, 5, typeof racers> |
-    RaceResultGeneric<T7, 6, typeof racers> | 
+    RaceResultGeneric<T7, 6, typeof racers> |
     RaceResultGeneric<T8, 7, typeof racers> |
     RaceResultGeneric<T9, 8, typeof racers>
 >;
 export function race<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(
     racers: readonly [
-        Racer<T1>, 
-        Racer<T2>, 
-        Racer<T3>, 
-        Racer<T4>, 
-        Racer<T5>, 
-        Racer<T6>, 
-        Racer<T7>, 
-        Racer<T8>, 
-        Racer<T9>, 
+        Racer<T1>,
+        Racer<T2>,
+        Racer<T3>,
+        Racer<T4>,
+        Racer<T5>,
+        Racer<T6>,
+        Racer<T7>,
+        Racer<T8>,
+        Racer<T9>,
         Racer<T10>
     ]
-): OnceEvt<
+): OneShotEvt<
     RaceResultGeneric<T1, 0, typeof racers> |
     RaceResultGeneric<T2, 1, typeof racers> |
     RaceResultGeneric<T3, 2, typeof racers> |
     RaceResultGeneric<T4, 3, typeof racers> |
     RaceResultGeneric<T5, 4, typeof racers> |
     RaceResultGeneric<T6, 5, typeof racers> |
-    RaceResultGeneric<T7, 6, typeof racers> | 
+    RaceResultGeneric<T7, 6, typeof racers> |
     RaceResultGeneric<T8, 7, typeof racers> |
     RaceResultGeneric<T9, 8, typeof racers> |
     RaceResultGeneric<T10, 9, typeof racers>
 >;
 export function race<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(
     racers: readonly [
-        Racer<T1>, 
-        Racer<T2>, 
-        Racer<T3>, 
-        Racer<T4>, 
-        Racer<T5>, 
-        Racer<T6>, 
-        Racer<T7>, 
-        Racer<T8>, 
-        Racer<T9>, 
+        Racer<T1>,
+        Racer<T2>,
+        Racer<T3>,
+        Racer<T4>,
+        Racer<T5>,
+        Racer<T6>,
+        Racer<T7>,
+        Racer<T8>,
+        Racer<T9>,
         Racer<T10>,
         Racer<T11>
     ]
-): OnceEvt<
+): OneShotEvt<
     RaceResultGeneric<T1, 0, typeof racers> |
     RaceResultGeneric<T2, 1, typeof racers> |
     RaceResultGeneric<T3, 2, typeof racers> |
     RaceResultGeneric<T4, 3, typeof racers> |
     RaceResultGeneric<T5, 4, typeof racers> |
     RaceResultGeneric<T6, 5, typeof racers> |
-    RaceResultGeneric<T7, 6, typeof racers> | 
+    RaceResultGeneric<T7, 6, typeof racers> |
     RaceResultGeneric<T8, 7, typeof racers> |
     RaceResultGeneric<T9, 8, typeof racers> |
     RaceResultGeneric<T10, 9, typeof racers> |
@@ -470,27 +695,27 @@ export function race<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(
 >;
 export function race<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
     racers: readonly [
-        Racer<T1>, 
-        Racer<T2>, 
-        Racer<T3>, 
-        Racer<T4>, 
-        Racer<T5>, 
-        Racer<T6>, 
-        Racer<T7>, 
-        Racer<T8>, 
-        Racer<T9>, 
+        Racer<T1>,
+        Racer<T2>,
+        Racer<T3>,
+        Racer<T4>,
+        Racer<T5>,
+        Racer<T6>,
+        Racer<T7>,
+        Racer<T8>,
+        Racer<T9>,
         Racer<T10>,
         Racer<T11>,
         Racer<T12>
     ]
-): OnceEvt<
+): OneShotEvt<
     RaceResultGeneric<T1, 0, typeof racers> |
     RaceResultGeneric<T2, 1, typeof racers> |
     RaceResultGeneric<T3, 2, typeof racers> |
     RaceResultGeneric<T4, 3, typeof racers> |
     RaceResultGeneric<T5, 4, typeof racers> |
     RaceResultGeneric<T6, 5, typeof racers> |
-    RaceResultGeneric<T7, 6, typeof racers> | 
+    RaceResultGeneric<T7, 6, typeof racers> |
     RaceResultGeneric<T8, 7, typeof racers> |
     RaceResultGeneric<T9, 8, typeof racers> |
     RaceResultGeneric<T10, 9, typeof racers> |
@@ -499,74 +724,35 @@ export function race<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
 >;
 export function race<RacerUnion>(
     racers: readonly RacerUnion[]
-): OnceEvt<RaceResult<RacerUnion>>;
+): OneShotEvt<RaceResult<RacerUnion>>;
 export function race<RacerUnion>(
     racers: readonly RacerUnion[]
-): OnceEvt<any> {
+): OneShotEvt<any> {
 
-    const evt = new Evt<RaceResult<RacerUnion>>();
-
-    const boundTo: Bindable = {};
-
-    const evtRaceRecResult = raceRec<RacerUnion, UnpackRacer<RacerUnion>>(
-        boundTo,
-        racers,
-        prNever
+    const oneShotEvt = raceUnsafe(
+        racers.map(
+            racer => matchPromiseLike<UnpackRacer<RacerUnion>>(racer) ?
+                wrapRejection<UnpackRacer<RacerUnion>>(racer)
+                :
+                racer
+        )
     );
 
-    const toRaceResult = (
-        raceRecResult: RaceRecResult<RacerUnion, UnpackRacer<RacerUnion>>
-    ): RaceResult<RacerUnion> => {
+    {
 
-        assert(!typeGuard.dry<null>(raceRecResult.i, false));
+        const generateProxyFunction = generateProxyFunctionFactory(oneShotEvt);
 
-        return {
-            ...raceRecResult,
-            "i": raceRecResult.i,
-            "racer": racers[raceRecResult.i]
-        };
+        (["waitFor", "attachOnce"] as const)
+            .forEach(generateProxyFunction)
+            ;
 
-    };
+    }
 
-    const detachAllEvtRacers = () =>
-        racers
-            .forEach(racer => {
-                if (!matchOnceEvt<UnpackRacer<RacerUnion>>(racer)) {
-                    return;
-                }
-                racer.detach(boundTo);
-            })
-        ;
+    return id<OneShotEvt<RaceResult<Racer<any>>>>(oneShotEvt);
 
-
-    evt.evtAttach.attach(
-        boundTo,
-        ({ matcher, promise }) => {
-
-            promise.catch(() => {
-
-                if (evt.getHandlers().length !== 0) {
-                    return;
-                }
-
-                detachAllEvtRacers();
-
-            });
-
-            evtRaceRecResult.attachOnce(
-                raceRecResult => !!matcher(toRaceResult(raceRecResult)),
-                boundTo,
-                raceRecResult => {
-                    evt.evtAttach.detach(boundTo);
-                    detachAllEvtRacers();
-                    evt.post(toRaceResult(raceRecResult));
-                }
-            );
-        }
-    );
-
-    return evt;
 
 };
+
+
 
 
