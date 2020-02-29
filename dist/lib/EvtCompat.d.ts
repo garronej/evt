@@ -6,8 +6,7 @@ export declare class EvtCompat<T> extends EvtBase<T> {
     readonly evtAttach: EvtBase<Handler<T, any>>;
     protected addHandler<U>(attachParams: UserProvidedParams<T, U>, implicitAttachParams: ImplicitParams): Handler<T, U>;
     readonly evtDetach: EvtBase<Handler<T, any>>;
-    /** Detach every handler bound to a given object or all handlers, return the detached handlers */
-    detach(boundTo?: Bindable): Handler<T, any>[];
+    protected onHandlerDetached(handler: Handler<T, any>): void;
     postAsyncOnceHandled(data: T): Promise<number>;
     postSyncOnceHandled(data: T): Promise<number>;
     private __postOnceHandled;

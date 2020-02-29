@@ -1,5 +1,7 @@
+import { assert, typeGuard } from "../tools/typeSafety";
 import { Polyfill as Map, LightMap } from "minimal-polyfills/dist/lib/Map";
 import { Polyfill as WeakMap } from "minimal-polyfills/dist/lib/WeakMap";
+import { Polyfill as Set } from "minimal-polyfills/dist/lib/Set";
 import "minimal-polyfills/dist/lib/Array.prototype.find";
 import * as runExclusive from "run-exclusive";
 import {
@@ -8,7 +10,8 @@ import {
     Bindable,
     Handler,
     EvtError,
-    TransformativeMatcher
+    TransformativeMatcher,
+    HandlerGroup
 } from "./defs";
 import { overwriteReadonlyProp } from "../tools/overwriteReadonlyProp";
 
@@ -43,11 +46,53 @@ export function matchNotMatched(
     );
 }
 
+class HandlerGroupImpl implements HandlerGroup{
+
+    public readonly isHandlerGroupImpl = true;
+
+    public detach(){
+
+        const detachedHandlers: Handler<any,any>[]= [];
+
+        for( const handler of this.handlers.values() ){
+
+            const wasStillAttached = handler.detach();
+            if( !wasStillAttached ){
+                continue;
+            }
+            detachedHandlers.push(handler);
+        }
+
+        return detachedHandlers;
+
+    }
+
+    private handlers = new Set<Handler<any,any>>();
+
+    public addHandler( handler: Handler<any,any> ){
+        this.handlers.add(handler);
+    }
+
+    public removeHandler( handler: Handler<any,any> ){
+        this.handlers.delete(handler);
+    }
+
+    static match(boundTo: Bindable): boundTo is HandlerGroupImpl {
+        assert(typeGuard.dry<HandlerGroupImpl>(boundTo));
+        return !!boundTo.isHandlerGroupImpl;
+    }
+
+}
+
+
 
 
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 export class EvtBaseProtected<T> {
 
+    public static createHandlerGroup(): HandlerGroup {
+        return new HandlerGroupImpl();
+    }
 
     //NOTE: Not really readonly but we want to prevent user from setting the value
     //manually and we cant user accessor because we target es3.
@@ -139,6 +184,8 @@ export class EvtBaseProtected<T> {
         implicitAttachParams: ImplicitParams
     ): Handler<T, U> {
 
+
+
         const handler: Handler<T, U> = {
             ...userProvidedParams,
             ...implicitAttachParams,
@@ -176,15 +223,16 @@ export class EvtBaseProtected<T> {
 
                 (handler.detach as (typeof handler)["detach"]) = () => {
 
-
-
                     const index = this.handlers.indexOf(handler);
 
                     if (index < 0) {
                         return false;
                     }
 
-
+                    if( HandlerGroupImpl.match(handler.boundTo)){
+                        handler.boundTo.removeHandler(handler);
+                    }
+                    
 
                     this.handlers.splice(index, 1);
 
@@ -197,6 +245,8 @@ export class EvtBaseProtected<T> {
                         reject(new EvtError.Detached());
 
                     }
+
+                    this.onHandlerDetached(handler);
 
                     return true;
 
@@ -257,6 +307,10 @@ export class EvtBaseProtected<T> {
 
             this.handlers.push(handler);
 
+        }
+
+        if( HandlerGroupImpl.match(handler.boundTo) ){
+            handler.boundTo.addHandler(handler);
         }
 
         return handler;
@@ -606,6 +660,10 @@ export class EvtBaseProtected<T> {
         return [...this.handlers];
     }
 
+    protected onHandlerDetached( handler: Handler<T, any>): void {
+        //NOTE: Overwritten by EvtCompat for post detach.
+    }
+
     /** Detach every handler bound to a given object or all handlers, return the detached handlers */
     public detach(boundTo?: Bindable): Handler<T, any>[] {
 
@@ -614,8 +672,14 @@ export class EvtBaseProtected<T> {
         for (let handler of this.getHandlers()) {
 
             if (boundTo === undefined || handler.boundTo === boundTo) {
-                handler.detach();
+                const wasStillAttached = handler.detach();
+
+                if (!wasStillAttached) {
+                    continue;
+                }
+
                 detachedHandlers.push(handler);
+
             }
 
         }

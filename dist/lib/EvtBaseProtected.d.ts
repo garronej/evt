@@ -1,10 +1,11 @@
 import "minimal-polyfills/dist/lib/Array.prototype.find";
-import { UserProvidedParams, ImplicitParams, Bindable, Handler, TransformativeMatcher } from "./defs";
+import { UserProvidedParams, ImplicitParams, Bindable, Handler, TransformativeMatcher, HandlerGroup } from "./defs";
 /** If the matcher is not transformative then the transformedData will be the input data */
 export declare function invokeMatcher<T, U>(matcher: TransformativeMatcher<T, U> | ((data: T) => boolean), data: T): ReturnType<TransformativeMatcher<T, T | U>>;
 export declare function matchNotMatched(transformativeMatcherResult: ReturnType<TransformativeMatcher<any, any>>): transformativeMatcherResult is (null | "DETACH");
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 export declare class EvtBaseProtected<T> {
+    static createHandlerGroup(): HandlerGroup;
     /** https://garronej.github.io/ts-evt/#evtpostcount */
     readonly postCount: number;
     private incrementPostCount;
@@ -54,6 +55,7 @@ export declare class EvtBaseProtected<T> {
     isHandled(data: T): boolean;
     /** https://garronej.github.io/ts-evt/#evtgethandlers */
     getHandlers(): Handler<T, any>[];
+    protected onHandlerDetached(handler: Handler<T, any>): void;
     /** Detach every handler bound to a given object or all handlers, return the detached handlers */
     detach(boundTo?: Bindable): Handler<T, any>[];
 }

@@ -10,6 +10,17 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __values = (this && this.__values) || function(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+};
 var __read = (this && this.__read) || function (o, n) {
     var m = typeof Symbol === "function" && o[Symbol.iterator];
     if (!m) return o;
@@ -30,20 +41,11 @@ var __spread = (this && this.__spread) || function () {
     for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
     return ar;
 };
-var __values = (this && this.__values) || function(o) {
-    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
-    if (m) return m.call(o);
-    if (o && typeof o.length === "number") return {
-        next: function () {
-            if (o && i >= o.length) o = void 0;
-            return { value: o && o[i++], done: !o };
-        }
-    };
-    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
-};
 exports.__esModule = true;
+var typeSafety_1 = require("../tools/typeSafety");
 var Map_1 = require("minimal-polyfills/dist/lib/Map");
 var WeakMap_1 = require("minimal-polyfills/dist/lib/WeakMap");
+var Set_1 = require("minimal-polyfills/dist/lib/Set");
 require("minimal-polyfills/dist/lib/Array.prototype.find");
 var runExclusive = require("run-exclusive");
 var defs_1 = require("./defs");
@@ -67,6 +69,45 @@ function matchNotMatched(transformativeMatcherResult) {
         transformativeMatcherResult === "DETACH");
 }
 exports.matchNotMatched = matchNotMatched;
+var HandlerGroupImpl = /** @class */ (function () {
+    function HandlerGroupImpl() {
+        this.isHandlerGroupImpl = true;
+        this.handlers = new Set_1.Polyfill();
+    }
+    HandlerGroupImpl.prototype.detach = function () {
+        var e_1, _a;
+        var detachedHandlers = [];
+        try {
+            for (var _b = __values(this.handlers.values()), _c = _b.next(); !_c.done; _c = _b.next()) {
+                var handler = _c.value;
+                var wasStillAttached = handler.detach();
+                if (!wasStillAttached) {
+                    continue;
+                }
+                detachedHandlers.push(handler);
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        return detachedHandlers;
+    };
+    HandlerGroupImpl.prototype.addHandler = function (handler) {
+        this.handlers.add(handler);
+    };
+    HandlerGroupImpl.prototype.removeHandler = function (handler) {
+        this.handlers["delete"](handler);
+    };
+    HandlerGroupImpl.match = function (boundTo) {
+        typeSafety_1.assert(typeSafety_1.typeGuard.dry(boundTo));
+        return !!boundTo.isHandlerGroupImpl;
+    };
+    return HandlerGroupImpl;
+}());
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 var EvtBaseProtected = /** @class */ (function () {
     function EvtBaseProtected() {
@@ -96,7 +137,7 @@ var EvtBaseProtected = /** @class */ (function () {
             return function () { return currentChronologyMark++; };
         })();
         this.postAsync = runExclusive.buildMethodCb(function (data, postChronologyMark, releaseLock) {
-            var e_1, _a;
+            var e_2, _a;
             var promises = [];
             var chronologyMarkStartResolveTick;
             //NOTE: Must be before handlerTrigger call.
@@ -140,12 +181,12 @@ var EvtBaseProtected = /** @class */ (function () {
                     _loop_1(handler);
                 }
             }
-            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            catch (e_2_1) { e_2 = { error: e_2_1 }; }
             finally {
                 try {
                     if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
                 }
-                finally { if (e_1) throw e_1.error; }
+                finally { if (e_2) throw e_2.error; }
             }
             if (promises.length === 0) {
                 releaseLock();
@@ -153,7 +194,7 @@ var EvtBaseProtected = /** @class */ (function () {
             }
             var handlersDump = __spread(_this_1.handlers);
             Promise.all(promises).then(function () {
-                var e_2, _a;
+                var e_3, _a;
                 try {
                     for (var _b = __values(_this_1.handlers), _c = _b.next(); !_c.done; _c = _b.next()) {
                         var handler = _c.value;
@@ -169,17 +210,20 @@ var EvtBaseProtected = /** @class */ (function () {
                         });
                     }
                 }
-                catch (e_2_1) { e_2 = { error: e_2_1 }; }
+                catch (e_3_1) { e_3 = { error: e_3_1 }; }
                 finally {
                     try {
                         if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
                     }
-                    finally { if (e_2) throw e_2.error; }
+                    finally { if (e_3) throw e_3.error; }
                 }
                 releaseLock();
             });
         });
     }
+    EvtBaseProtected.createHandlerGroup = function () {
+        return new HandlerGroupImpl();
+    };
     /** https://garronej.github.io/ts-evt/#evtenabletrace */
     EvtBaseProtected.prototype.enableTrace = function (id, formatter, log
     //NOTE: Not typeof console.log as we don't want to expose types from node
@@ -225,12 +269,16 @@ var EvtBaseProtected = /** @class */ (function () {
                 if (index < 0) {
                     return false;
                 }
+                if (HandlerGroupImpl.match(handler.boundTo)) {
+                    handler.boundTo.removeHandler(handler);
+                }
                 _this_1.handlers.splice(index, 1);
                 _this_1.handlerTriggers["delete"](handler);
                 if (timer !== undefined) {
                     clearTimeout(timer);
                     reject(new defs_1.EvtError.Detached());
                 }
+                _this_1.onHandlerDetached(handler);
                 return true;
             };
             _this_1.handlerTriggers.set(handler, function (transformativeMatcherMatchedResult) {
@@ -260,6 +308,9 @@ var EvtBaseProtected = /** @class */ (function () {
         }
         else {
             this.handlers.push(handler);
+        }
+        if (HandlerGroupImpl.match(handler.boundTo)) {
+            handler.boundTo.addHandler(handler);
         }
         return handler;
     };
@@ -304,7 +355,7 @@ var EvtBaseProtected = /** @class */ (function () {
     };
     /** Return isExtracted */
     EvtBaseProtected.prototype.postSync = function (data) {
-        var e_3, _a;
+        var e_4, _a;
         try {
             for (var _b = __values(__spread(this.handlers)), _c = _b.next(); !_c.done; _c = _b.next()) {
                 var handler = _c.value;
@@ -330,12 +381,12 @@ var EvtBaseProtected = /** @class */ (function () {
                 }
             }
         }
-        catch (e_3_1) { e_3 = { error: e_3_1 }; }
+        catch (e_4_1) { e_4 = { error: e_4_1 }; }
         finally {
             try {
                 if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
             }
-            finally { if (e_3) throw e_3.error; }
+            finally { if (e_4) throw e_4.error; }
         }
         return false;
     };
@@ -419,25 +470,31 @@ var EvtBaseProtected = /** @class */ (function () {
     EvtBaseProtected.prototype.getHandlers = function () {
         return __spread(this.handlers);
     };
+    EvtBaseProtected.prototype.onHandlerDetached = function (handler) {
+        //NOTE: Overwritten by EvtCompat for post detach.
+    };
     /** Detach every handler bound to a given object or all handlers, return the detached handlers */
     EvtBaseProtected.prototype.detach = function (boundTo) {
-        var e_4, _a;
+        var e_5, _a;
         var detachedHandlers = [];
         try {
             for (var _b = __values(this.getHandlers()), _c = _b.next(); !_c.done; _c = _b.next()) {
                 var handler = _c.value;
                 if (boundTo === undefined || handler.boundTo === boundTo) {
-                    handler.detach();
+                    var wasStillAttached = handler.detach();
+                    if (!wasStillAttached) {
+                        continue;
+                    }
                     detachedHandlers.push(handler);
                 }
             }
         }
-        catch (e_4_1) { e_4 = { error: e_4_1 }; }
+        catch (e_5_1) { e_5 = { error: e_5_1 }; }
         finally {
             try {
                 if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
             }
-            finally { if (e_4) throw e_4.error; }
+            finally { if (e_5) throw e_5.error; }
         }
         return detachedHandlers;
     };

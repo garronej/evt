@@ -65,12 +65,9 @@ var EvtCompat = /** @class */ (function (_super) {
         this.evtAttach.post(handler);
         return handler;
     };
-    /** Detach every handler bound to a given object or all handlers, return the detached handlers */
-    EvtCompat.prototype.detach = function (boundTo) {
-        var _this_1 = this;
-        var handlers = _super.prototype.detach.call(this, boundTo);
-        handlers.forEach(function (handler) { return _this_1.evtDetach.post(handler); });
-        return handlers;
+    EvtCompat.prototype.onHandlerDetached = function (handler) {
+        _super.prototype.onHandlerDetached.call(this, handler);
+        this.evtDetach.post(handler);
     };
     EvtCompat.prototype.postAsyncOnceHandled = function (data) {
         return __awaiter(this, void 0, void 0, function () {

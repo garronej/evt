@@ -8,28 +8,10 @@ export namespace Bindable {
     export type Object_ = { [k: string]: any; };
 }
 
-/*
 export type HandlerGroup = {
-    readonly _handlerGroupBrand: true;
     detach(): Handler<any,any>[];
 };
 
-export class HandlerGroupImpl implements HandlerGroup{
-
-    public readonly _handlerGroupBrand = true;
-    
-    private __detach: () => Handler<any, any>[] = () => [];
-
-    public detach(){
-        return this.__detach();
-    }
-
-    public overwriteDetach(detach: ()=> Handler<any,any>[]): void {
-        this.__detach = detach;
-    }
-
-}
-*/
 
 
 export type UserProvidedParams<T, U> =

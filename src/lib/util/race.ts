@@ -8,9 +8,7 @@ import { invokeMatcher } from "../EvtBaseProtected";
 import { parseOverloadParamsFactory } from "../EvtBase";
 import { EvtError } from "../defs";
 
-export type OneShotEvt<T> = Pick<Evt<T>, "waitFor" | "attachOnce" | "$attachOnce" | "detach" | "evtAttach" | "postCount">;
-
-
+export type OneShotEvt<T> = Pick<Evt<T>, "waitFor" | "attachOnce" | "$attachOnce" | "detach" | "evtAttach" | "evtDetach" | "postCount">;
 
 export type Racer<T> = OneShotEvt<T> | PromiseLike<T> | T;
 export type UnpackRacer<T extends Racer<any>> = T extends OneShotEvt<infer U> ? U : T extends PromiseLike<infer V> ? V : T;

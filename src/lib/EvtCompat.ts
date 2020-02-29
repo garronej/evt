@@ -23,17 +23,10 @@ export class EvtCompat<T> extends EvtBase<T> {
 
     public readonly evtDetach = new EvtBase<Handler<T, any>>()
 
-    /** Detach every handler bound to a given object or all handlers, return the detached handlers */
-    public detach(boundTo?: Bindable): Handler<T, any>[] {
-
-        const handlers = super.detach(boundTo);
-
-        handlers.forEach(handler => this.evtDetach.post(handler));
-
-        return handlers;
-
+    protected onHandlerDetached(handler: Handler<T, any>){
+        super.onHandlerDetached(handler);
+        this.evtDetach.post(handler);
     }
-
 
     public async postAsyncOnceHandled(data: T) {
         return this.__postOnceHandled({ data, "isSync": false });
@@ -149,7 +142,6 @@ export class EvtCompat<T> extends EvtBase<T> {
     }
 
 }
-
 
 /** https://garronej.github.io/ts-evt/#voidevt */
 export class VoidEvtCompat extends EvtCompat<void> {
