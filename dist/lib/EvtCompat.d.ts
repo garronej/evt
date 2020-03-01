@@ -1,7 +1,14 @@
 import { EvtBase } from "./EvtBase";
+import { OneShot } from "./helperTypes";
+import { HandlerGroupBaseProtected } from "./EvtBaseProtected";
 import { Handler, UserProvidedParams, ImplicitParams } from "./defs";
 import { Bindable, TransformativeMatcher } from "./defs";
+declare class HandlerGroup extends HandlerGroupBaseProtected {
+    readonly evtDetached: OneShot<EvtCompat<Handler<any, any>[]>>;
+    constructor();
+}
 export declare class EvtCompat<T> extends EvtBase<T> {
+    static createHandlerGroup(): HandlerGroup;
     /** https://garronej.github.io/ts-evt/#evtevtattach */
     readonly evtAttach: EvtBase<Handler<T, any>>;
     protected addHandler<U>(attachParams: UserProvidedParams<T, U>, implicitAttachParams: ImplicitParams): Handler<T, U>;
@@ -48,3 +55,4 @@ export declare class VoidEvtCompat extends EvtCompat<void> {
     postAsyncOnceHandled(): Promise<number>;
     postSyncOnceHandled(): Promise<number>;
 }
+export {};

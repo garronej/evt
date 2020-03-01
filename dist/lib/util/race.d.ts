@@ -1,5 +1,6 @@
 import { Evt } from "../index";
-export declare type OneShotEvt<T> = Pick<Evt<T>, "waitFor" | "attachOnce" | "$attachOnce" | "detach" | "evtAttach" | "evtDetach" | "postCount">;
+import { OneShot } from "../helperTypes";
+export declare type OneShotEvt<T> = OneShot<Evt<T>>;
 export declare type Racer<T> = OneShotEvt<T> | PromiseLike<T> | T;
 export declare type UnpackRacer<T extends Racer<any>> = T extends OneShotEvt<infer U> ? U : T extends PromiseLike<infer V> ? V : T;
 export declare type RaceResultGeneric<Data, Index extends number, Racers extends readonly Racer<any>[]> = Readonly<{

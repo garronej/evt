@@ -10,13 +10,12 @@ import {
     Bindable,
     Handler,
     EvtError,
-    TransformativeMatcher,
-    HandlerGroup
+    TransformativeMatcher
 } from "./defs";
 import { overwriteReadonlyProp } from "../tools/overwriteReadonlyProp";
 
 
-class HandlerGroupImpl implements HandlerGroup {
+export class HandlerGroupBaseProtected {
 
     public readonly isHandlerGroupImpl = true;
 
@@ -33,9 +32,13 @@ class HandlerGroupImpl implements HandlerGroup {
             detachedHandlers.push(handler);
         }
 
+        this.onDetach?.(detachedHandlers);
+
         return detachedHandlers;
 
     }
+
+    protected onDetach: ((detachedHandlers: Handler<any, any>[]) => void) | undefined;
 
     private handlers = new Set<Handler<any, any>>();
 
@@ -47,8 +50,8 @@ class HandlerGroupImpl implements HandlerGroup {
         this.handlers.delete(handler);
     }
 
-    static match(boundTo: Bindable): boundTo is HandlerGroupImpl {
-        assert(typeGuard.dry<HandlerGroupImpl>(boundTo));
+    static match(boundTo: Bindable): boundTo is HandlerGroupBaseProtected {
+        assert(typeGuard.dry<HandlerGroupBaseProtected>(boundTo));
         return !!boundTo.isHandlerGroupImpl;
     }
 
@@ -95,8 +98,8 @@ function matchNotMatched(
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 export class EvtBaseProtected<T> {
 
-    public static createHandlerGroup(): HandlerGroup {
-        return new HandlerGroupImpl();
+    public static createHandlerGroup(): HandlerGroupBaseProtected {
+        return new HandlerGroupBaseProtected();
     }
 
     //NOTE: Not really readonly but we want to prevent user from setting the value
@@ -247,7 +250,7 @@ export class EvtBaseProtected<T> {
                         return false;
                     }
 
-                    if (HandlerGroupImpl.match(handler.boundTo)) {
+                    if (HandlerGroupBaseProtected.match(handler.boundTo)) {
                         handler.boundTo.removeHandler(handler);
                     }
 
@@ -337,7 +340,7 @@ export class EvtBaseProtected<T> {
 
         }
 
-        if (HandlerGroupImpl.match(handler.boundTo)) {
+        if (HandlerGroupBaseProtected.match(handler.boundTo)) {
             handler.boundTo.addHandler(handler);
         }
 
@@ -417,7 +420,7 @@ export class EvtBaseProtected<T> {
                 typeof matcher === "function" ?
                     undefined :
                     this.stateOfStatefulTransformativeMatchers.get(
-                            matcher
+                        matcher
                     )
             ]
         );

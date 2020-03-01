@@ -15,12 +15,6 @@ export namespace Bindable {
     export type Object_ = { [k: string]: any; };
 }
 
-export type HandlerGroup = {
-    detach(): Handler<any,any>[];
-};
-
-
-
 export type UserProvidedParams<T, U> =
     UserProvidedParams.WithNonTransformativeMatcher<T> |
     UserProvidedParams.WithTransformativeMatcher<T, U>

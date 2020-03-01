@@ -1,8 +1,28 @@
 import { EvtBase } from "./EvtBase";
+import { OneShot, UnpackEvt } from "./helperTypes";
+import { HandlerGroupBaseProtected } from "./EvtBaseProtected";
 import { Handler, UserProvidedParams, ImplicitParams } from "./defs";
 import { Bindable, TransformativeMatcher } from "./defs"
 
+class HandlerGroup extends HandlerGroupBaseProtected {
+
+    public readonly evtDetached: OneShot<EvtCompat<Handler<any, any>[]>>;
+
+    constructor() {
+        super();
+        const evtDetached = new EvtCompat<UnpackEvt<typeof HandlerGroup.prototype.evtDetached>>();
+        this.onDetach = handlers => evtDetached.post(handlers);
+        this.evtDetached = evtDetached;
+    }
+
+}
+
+
 export class EvtCompat<T> extends EvtBase<T> {
+
+    public static createHandlerGroup(): HandlerGroup {
+        return new HandlerGroup();
+    }
 
     /** https://garronej.github.io/ts-evt/#evtevtattach */
     public readonly evtAttach = new EvtBase<Handler<T, any>>()
@@ -22,7 +42,7 @@ export class EvtCompat<T> extends EvtBase<T> {
 
     public readonly evtDetach = new EvtBase<Handler<T, any>>()
 
-    protected onHandlerDetached(handler: Handler<T, any>){
+    protected onHandlerDetached(handler: Handler<T, any>) {
         super.onHandlerDetached(handler);
         this.evtDetach.post(handler);
     }

@@ -13,9 +13,6 @@ export declare namespace Bindable {
         [k: string]: any;
     };
 }
-export declare type HandlerGroup = {
-    detach(): Handler<any, any>[];
-};
 export declare type UserProvidedParams<T, U> = UserProvidedParams.WithNonTransformativeMatcher<T> | UserProvidedParams.WithTransformativeMatcher<T, U>;
 export declare namespace UserProvidedParams {
     type Common = Readonly<{

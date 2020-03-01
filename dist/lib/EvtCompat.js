@@ -50,6 +50,18 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var EvtBase_2 = require("./EvtBase");
+var EvtBaseProtected_1 = require("./EvtBaseProtected");
+var HandlerGroup = /** @class */ (function (_super) {
+    __extends(HandlerGroup, _super);
+    function HandlerGroup() {
+        var _this_1 = _super.call(this) || this;
+        var evtDetached = new EvtCompat();
+        _this_1.onDetach = function (handlers) { return evtDetached.post(handlers); };
+        _this_1.evtDetached = evtDetached;
+        return _this_1;
+    }
+    return HandlerGroup;
+}(EvtBaseProtected_1.HandlerGroupBaseProtected));
 var EvtCompat = /** @class */ (function (_super) {
     __extends(EvtCompat, _super);
     function EvtCompat() {
@@ -59,6 +71,9 @@ var EvtCompat = /** @class */ (function (_super) {
         _this_1.evtDetach = new EvtBase_2.EvtBase();
         return _this_1;
     }
+    EvtCompat.createHandlerGroup = function () {
+        return new HandlerGroup();
+    };
     EvtCompat.prototype.addHandler = function (attachParams, implicitAttachParams) {
         var handler = _super.prototype.addHandler.call(this, attachParams, implicitAttachParams);
         this.evtAttach.post(handler);

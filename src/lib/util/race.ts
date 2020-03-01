@@ -1,14 +1,15 @@
 import { Evt, VoidEvt } from "../index";
 import { assert, typeGuard } from "../../tools/typeSafety";
 import { Bindable } from "../../lib/defs";
-import { UnpackEvt, NonPostable } from "../helperTypes";
+import { UnpackEvt, NonPostable, OneShot } from "../helperTypes";
 import { id } from "../../tools/typeSafety";
 import { Deferred } from "../../tools/Deferred";
 import { invokeMatcher } from "../EvtBaseProtected";
 import { parseOverloadParamsFactory } from "../EvtBase";
 import { EvtError } from "../defs";
 
-export type OneShotEvt<T> = Pick<Evt<T>, "waitFor" | "attachOnce" | "$attachOnce" | "detach" | "evtAttach" | "evtDetach" | "postCount">;
+//export type OneShotEvt<T> = Pick<Evt<T>, "waitFor" | "attachOnce" | "$attachOnce" | "detach" | "evtAttach" | "evtDetach" | "postCount">;
+export type OneShotEvt<T> = OneShot<Evt<T>>;
 
 export type Racer<T> = OneShotEvt<T> | PromiseLike<T> | T;
 export type UnpackRacer<T extends Racer<any>> = T extends OneShotEvt<infer U> ? U : T extends PromiseLike<infer V> ? V : T;

@@ -50,17 +50,18 @@ require("minimal-polyfills/dist/lib/Array.prototype.find");
 var runExclusive = require("run-exclusive");
 var defs_1 = require("./defs");
 var overwriteReadonlyProp_1 = require("../tools/overwriteReadonlyProp");
-var HandlerGroupImpl = /** @class */ (function () {
-    function HandlerGroupImpl() {
+var HandlerGroupBaseProtected = /** @class */ (function () {
+    function HandlerGroupBaseProtected() {
         this.isHandlerGroupImpl = true;
         this.handlers = new Set_1.Polyfill();
     }
-    HandlerGroupImpl.prototype.detach = function () {
+    HandlerGroupBaseProtected.prototype.detach = function () {
         var e_1, _a;
+        var _b;
         var detachedHandlers = [];
         try {
-            for (var _b = __values(this.handlers.values()), _c = _b.next(); !_c.done; _c = _b.next()) {
-                var handler = _c.value;
+            for (var _c = __values(this.handlers.values()), _d = _c.next(); !_d.done; _d = _c.next()) {
+                var handler = _d.value;
                 var wasStillAttached = handler.detach();
                 if (!wasStillAttached) {
                     continue;
@@ -71,24 +72,26 @@ var HandlerGroupImpl = /** @class */ (function () {
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
+                if (_d && !_d.done && (_a = _c["return"])) _a.call(_c);
             }
             finally { if (e_1) throw e_1.error; }
         }
+        (_b = this.onDetach) === null || _b === void 0 ? void 0 : _b.call(this, detachedHandlers);
         return detachedHandlers;
     };
-    HandlerGroupImpl.prototype.addHandler = function (handler) {
+    HandlerGroupBaseProtected.prototype.addHandler = function (handler) {
         this.handlers.add(handler);
     };
-    HandlerGroupImpl.prototype.removeHandler = function (handler) {
+    HandlerGroupBaseProtected.prototype.removeHandler = function (handler) {
         this.handlers["delete"](handler);
     };
-    HandlerGroupImpl.match = function (boundTo) {
+    HandlerGroupBaseProtected.match = function (boundTo) {
         typeSafety_1.assert(typeSafety_1.typeGuard.dry(boundTo));
         return !!boundTo.isHandlerGroupImpl;
     };
-    return HandlerGroupImpl;
+    return HandlerGroupBaseProtected;
 }());
+exports.HandlerGroupBaseProtected = HandlerGroupBaseProtected;
 /** If the matcher is not transformative then the transformedData will be the input data */
 function invokeMatcher(matcher, data, _a) {
     var _b = __read(_a, 1), previousValue = _b[0];
@@ -224,7 +227,7 @@ var EvtBaseProtected = /** @class */ (function () {
         });
     }
     EvtBaseProtected.createHandlerGroup = function () {
-        return new HandlerGroupImpl();
+        return new HandlerGroupBaseProtected();
     };
     /** https://garronej.github.io/ts-evt/#evtenabletrace */
     EvtBaseProtected.prototype.enableTrace = function (id, formatter, log
@@ -274,7 +277,7 @@ var EvtBaseProtected = /** @class */ (function () {
                 if (index < 0) {
                     return false;
                 }
-                if (HandlerGroupImpl.match(handler.boundTo)) {
+                if (HandlerGroupBaseProtected.match(handler.boundTo)) {
                     handler.boundTo.removeHandler(handler);
                 }
                 _this_1.handlers.splice(index, 1);
@@ -317,7 +320,7 @@ var EvtBaseProtected = /** @class */ (function () {
         else {
             this.handlers.push(handler);
         }
-        if (HandlerGroupImpl.match(handler.boundTo)) {
+        if (HandlerGroupBaseProtected.match(handler.boundTo)) {
             handler.boundTo.addHandler(handler);
         }
         return handler;
