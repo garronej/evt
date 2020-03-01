@@ -50,25 +50,6 @@ require("minimal-polyfills/dist/lib/Array.prototype.find");
 var runExclusive = require("run-exclusive");
 var defs_1 = require("./defs");
 var overwriteReadonlyProp_1 = require("../tools/overwriteReadonlyProp");
-/** If the matcher is not transformative then the transformedData will be the input data */
-function invokeMatcher(matcher, data) {
-    var matcherResult = matcher(data);
-    //NOTE: We assume it was a transformative matcher only 
-    //if the returned value is a singleton or a couple, otherwise 
-    //we assume it was a filtering matcher that should have returned
-    //a boolean but returned something else.
-    return (matcherResult === null ? null :
-        matcherResult === "DETACH" ? "DETACH" :
-            typeof matcherResult === "object" &&
-                (matcherResult.length === 1 || matcherResult.length === 2) ? matcherResult :
-                !!matcherResult ? [data] : null);
-}
-exports.invokeMatcher = invokeMatcher;
-function matchNotMatched(transformativeMatcherResult) {
-    return (transformativeMatcherResult === null ||
-        transformativeMatcherResult === "DETACH");
-}
-exports.matchNotMatched = matchNotMatched;
 var HandlerGroupImpl = /** @class */ (function () {
     function HandlerGroupImpl() {
         this.isHandlerGroupImpl = true;
@@ -108,6 +89,25 @@ var HandlerGroupImpl = /** @class */ (function () {
     };
     return HandlerGroupImpl;
 }());
+/** If the matcher is not transformative then the transformedData will be the input data */
+function invokeMatcher(matcher, data, _a) {
+    var _b = __read(_a, 1), previousValue = _b[0];
+    var matcherResult = (typeof matcher === "function" ? matcher : matcher[0])(data, previousValue);
+    //NOTE: We assume it was a transformative matcher only 
+    //if the returned value is a singleton or a couple, otherwise 
+    //we assume it was a filtering matcher that should have returned
+    //a boolean but returned something else.
+    return (matcherResult === null ? null :
+        matcherResult === "DETACH" ? "DETACH" :
+            typeof matcherResult === "object" &&
+                (matcherResult.length === 1 || matcherResult.length === 2) ? matcherResult :
+                !!matcherResult ? [data] : null);
+}
+exports.invokeMatcher = invokeMatcher;
+function matchNotMatched(transformativeMatcherResult) {
+    return (transformativeMatcherResult === null ||
+        transformativeMatcherResult === "DETACH");
+}
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 var EvtBaseProtected = /** @class */ (function () {
     function EvtBaseProtected() {
@@ -136,6 +136,7 @@ var EvtBaseProtected = /** @class */ (function () {
             var currentChronologyMark = 0;
             return function () { return currentChronologyMark++; };
         })();
+        this.stateOfStatefulTransformativeMatchers = new WeakMap_1.Polyfill();
         this.postAsync = runExclusive.buildMethodCb(function (data, postChronologyMark, releaseLock) {
             var e_2, _a;
             var promises = [];
@@ -146,7 +147,8 @@ var EvtBaseProtected = /** @class */ (function () {
                 if (!handler.async) {
                     return "continue";
                 }
-                var transformativeMatcherResult = invokeMatcher(handler.matcher, data);
+                //const transformativeMatcherResult = invokeMatcher(handler.matcher, data);
+                var transformativeMatcherResult = _this_1.invokeMatcher(handler.matcher, data);
                 if (matchNotMatched(transformativeMatcherResult)) {
                     if (transformativeMatcherResult === "DETACH") {
                         handler.detach();
@@ -251,6 +253,9 @@ var EvtBaseProtected = /** @class */ (function () {
     };
     EvtBaseProtected.prototype.addHandler = function (userProvidedParams, implicitAttachParams) {
         var _this_1 = this;
+        if (typeof userProvidedParams.matcher !== "function") {
+            this.stateOfStatefulTransformativeMatchers.set(userProvidedParams.matcher, userProvidedParams.matcher[1]);
+        }
         var handler = __assign(__assign(__assign({}, userProvidedParams), implicitAttachParams), { "detach": null, "promise": null });
         if (handler.async) {
             this.asyncHandlerChronologyMark.set(handler, this.getChronologyMark());
@@ -292,6 +297,9 @@ var EvtBaseProtected = /** @class */ (function () {
                     handler.detach();
                 }
                 var transformedData = transformativeMatcherMatchedResult[0];
+                if (typeof userProvidedParams.matcher !== "function") {
+                    _this_1.stateOfStatefulTransformativeMatchers.set(userProvidedParams.matcher, transformedData);
+                }
                 callback === null || callback === void 0 ? void 0 : callback.call(handler.boundTo, transformedData);
                 resolve(transformedData);
             });
@@ -315,13 +323,14 @@ var EvtBaseProtected = /** @class */ (function () {
         return handler;
     };
     EvtBaseProtected.prototype.trace = function (data) {
+        var _this_1 = this;
         if (this.traceId === null) {
             return;
         }
         var message = "(" + this.traceId + ") ";
         var isExtracted = !!this.handlers.find(function (_a) {
             var extract = _a.extract, matcher = _a.matcher;
-            return extract && matcher(data);
+            return extract && !!_this_1.invokeMatcher(matcher, data);
         });
         if (isExtracted) {
             message += "extracted ";
@@ -330,7 +339,7 @@ var EvtBaseProtected = /** @class */ (function () {
             var handlerCount = this.handlers
                 .filter(function (_a) {
                 var extract = _a.extract, matcher = _a.matcher;
-                return !extract && matcher(data);
+                return !extract && !!_this_1.invokeMatcher(matcher, data);
             })
                 .length;
             message += handlerCount + " handler" + ((handlerCount > 1) ? "s" : "") + " => ";
@@ -353,6 +362,14 @@ var EvtBaseProtected = /** @class */ (function () {
         }
         return this.postCount;
     };
+    /** If the matcher is not transformative then the transformedData will be the input data */
+    EvtBaseProtected.prototype.invokeMatcher = function (matcher, data) {
+        return invokeMatcher(matcher, data, [
+            typeof matcher === "function" ?
+                undefined :
+                this.stateOfStatefulTransformativeMatchers.get(matcher)
+        ]);
+    };
     /** Return isExtracted */
     EvtBaseProtected.prototype.postSync = function (data) {
         var e_4, _a;
@@ -363,7 +380,7 @@ var EvtBaseProtected = /** @class */ (function () {
                 if (async) {
                     continue;
                 }
-                var transformativeMatcherResult = invokeMatcher(matcher, data);
+                var transformativeMatcherResult = this.invokeMatcher(matcher, data);
                 if (matchNotMatched(transformativeMatcherResult)) {
                     if (transformativeMatcherResult === "DETACH") {
                         handler.detach();
@@ -460,10 +477,11 @@ var EvtBaseProtected = /** @class */ (function () {
      *
      */
     EvtBaseProtected.prototype.isHandled = function (data) {
+        var _this_1 = this;
         return !!this.getHandlers()
             .find(function (_a) {
             var matcher = _a.matcher;
-            return !!matcher(data);
+            return !!_this_1.invokeMatcher(matcher, data);
         });
     };
     /** https://garronej.github.io/ts-evt/#evtgethandlers */

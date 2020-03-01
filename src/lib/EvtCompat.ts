@@ -1,5 +1,4 @@
 import { EvtBase } from "./EvtBase";
-import { invokeMatcher } from "./EvtBaseProtected";
 import { Handler, UserProvidedParams, ImplicitParams } from "./defs";
 import { Bindable, TransformativeMatcher } from "./defs"
 
@@ -51,7 +50,7 @@ export class EvtCompat<T> extends EvtBase<T> {
         const resolvePrAndPost = (data: T) => resolvePr(this.post(data));
 
         this.evtAttach.attachOnce(
-            ({ matcher }) => !!matcher(data),
+            ({ matcher }) => !!this.invokeMatcher(matcher, data),
             () => isSync ?
                 resolvePrAndPost(data) :
                 Promise.resolve().then(() => resolvePrAndPost(data))
@@ -132,10 +131,10 @@ export class EvtCompat<T> extends EvtBase<T> {
         );
 
         return this.__createDelegate<T | U>(
-            data => invokeMatcher<T, T | U>(
+            typeof matcher === "function" ?
+                (data => this.invokeMatcher<T | U>(matcher, data))
+                :
                 matcher,
-                data
-            ),
             boundTo
         );
 

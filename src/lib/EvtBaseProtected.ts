@@ -15,13 +15,56 @@ import {
 } from "./defs";
 import { overwriteReadonlyProp } from "../tools/overwriteReadonlyProp";
 
+
+class HandlerGroupImpl implements HandlerGroup {
+
+    public readonly isHandlerGroupImpl = true;
+
+    public detach() {
+
+        const detachedHandlers: Handler<any, any>[] = [];
+
+        for (const handler of this.handlers.values()) {
+
+            const wasStillAttached = handler.detach();
+            if (!wasStillAttached) {
+                continue;
+            }
+            detachedHandlers.push(handler);
+        }
+
+        return detachedHandlers;
+
+    }
+
+    private handlers = new Set<Handler<any, any>>();
+
+    public addHandler(handler: Handler<any, any>) {
+        this.handlers.add(handler);
+    }
+
+    public removeHandler(handler: Handler<any, any>) {
+        this.handlers.delete(handler);
+    }
+
+    static match(boundTo: Bindable): boundTo is HandlerGroupImpl {
+        assert(typeGuard.dry<HandlerGroupImpl>(boundTo));
+        return !!boundTo.isHandlerGroupImpl;
+    }
+
+}
+
 /** If the matcher is not transformative then the transformedData will be the input data */
 export function invokeMatcher<T, U>(
-    matcher: TransformativeMatcher<T,U> | ((data: T)=> boolean),
-    data: T
-): ReturnType<TransformativeMatcher<T, T | U>> {
+    matcher: TransformativeMatcher<T, U> | ((data: T) => boolean),
+    data: T,
+    [previousValue]: [U | undefined]
+): TransformativeMatcher.Returns<T | U> {
 
-    const matcherResult = matcher(data);
+    const matcherResult = (typeof matcher === "function" ? matcher : matcher[0])(
+        data,
+        previousValue!
+    );
 
     //NOTE: We assume it was a transformative matcher only 
     //if the returned value is a singleton or a couple, otherwise 
@@ -37,51 +80,13 @@ export function invokeMatcher<T, U>(
 
 }
 
-export function matchNotMatched(
-    transformativeMatcherResult: ReturnType<TransformativeMatcher<any, any>>
+function matchNotMatched(
+    transformativeMatcherResult: TransformativeMatcher.Returns<any>
 ): transformativeMatcherResult is (null | "DETACH") {
     return (
         transformativeMatcherResult === null ||
         transformativeMatcherResult === "DETACH"
     );
-}
-
-class HandlerGroupImpl implements HandlerGroup{
-
-    public readonly isHandlerGroupImpl = true;
-
-    public detach(){
-
-        const detachedHandlers: Handler<any,any>[]= [];
-
-        for( const handler of this.handlers.values() ){
-
-            const wasStillAttached = handler.detach();
-            if( !wasStillAttached ){
-                continue;
-            }
-            detachedHandlers.push(handler);
-        }
-
-        return detachedHandlers;
-
-    }
-
-    private handlers = new Set<Handler<any,any>>();
-
-    public addHandler( handler: Handler<any,any> ){
-        this.handlers.add(handler);
-    }
-
-    public removeHandler( handler: Handler<any,any> ){
-        this.handlers.delete(handler);
-    }
-
-    static match(boundTo: Bindable): boundTo is HandlerGroupImpl {
-        assert(typeGuard.dry<HandlerGroupImpl>(boundTo));
-        return !!boundTo.isHandlerGroupImpl;
-    }
-
 }
 
 
@@ -179,12 +184,25 @@ export class EvtBaseProtected<T> {
     })();
 
 
+    private readonly stateOfStatefulTransformativeMatchers = new WeakMap<
+        TransformativeMatcher.Stateful<T, any>,
+        any
+    >();
+
+
     protected addHandler<U>(
         userProvidedParams: UserProvidedParams<T, U>,
         implicitAttachParams: ImplicitParams
     ): Handler<T, U> {
 
+        if (typeof userProvidedParams.matcher !== "function") {
 
+            this.stateOfStatefulTransformativeMatchers.set(
+                userProvidedParams.matcher,
+                userProvidedParams.matcher[1]
+            );
+
+        }
 
         const handler: Handler<T, U> = {
             ...userProvidedParams,
@@ -229,10 +247,10 @@ export class EvtBaseProtected<T> {
                         return false;
                     }
 
-                    if( HandlerGroupImpl.match(handler.boundTo)){
+                    if (HandlerGroupImpl.match(handler.boundTo)) {
                         handler.boundTo.removeHandler(handler);
                     }
-                    
+
 
                     this.handlers.splice(index, 1);
 
@@ -274,6 +292,16 @@ export class EvtBaseProtected<T> {
 
                         const transformedData = transformativeMatcherMatchedResult[0];
 
+                        if (typeof userProvidedParams.matcher !== "function") {
+
+                            this.stateOfStatefulTransformativeMatchers.set(
+                                userProvidedParams.matcher,
+                                transformedData
+                            );
+
+                        }
+
+
                         callback?.call(
                             handler.boundTo,
                             transformedData
@@ -309,7 +337,7 @@ export class EvtBaseProtected<T> {
 
         }
 
-        if( HandlerGroupImpl.match(handler.boundTo) ){
+        if (HandlerGroupImpl.match(handler.boundTo)) {
             handler.boundTo.addHandler(handler);
         }
 
@@ -326,7 +354,7 @@ export class EvtBaseProtected<T> {
         let message = `(${this.traceId}) `;
 
         let isExtracted = !!this.handlers.find(
-            ({ extract, matcher }) => extract && matcher(data)
+            ({ extract, matcher }) => extract && !!this.invokeMatcher(matcher, data)
         );
 
         if (isExtracted) {
@@ -336,7 +364,7 @@ export class EvtBaseProtected<T> {
         } else {
 
             let handlerCount = this.handlers
-                .filter(({ extract, matcher }) => !extract && matcher(data))
+                .filter(({ extract, matcher }) => !extract && !!this.invokeMatcher(matcher, data))
                 .length;
 
             message += `${handlerCount} handler${(handlerCount > 1) ? "s" : ""} => `;
@@ -376,9 +404,31 @@ export class EvtBaseProtected<T> {
     }
 
 
+    /** If the matcher is not transformative then the transformedData will be the input data */
+    protected invokeMatcher<U>(
+        matcher: TransformativeMatcher<T, U> | ((data: T) => boolean),
+        data: T
+    ): TransformativeMatcher.Returns<T | U> {
+
+        return invokeMatcher<T, U>(
+            matcher,
+            data,
+            [
+                typeof matcher === "function" ?
+                    undefined :
+                    this.stateOfStatefulTransformativeMatchers.get(
+                            matcher
+                    )
+            ]
+        );
+
+    }
+
+
+
+
     /** Return isExtracted */
     private postSync(data: T): boolean {
-
 
         for (const handler of [...this.handlers]) {
 
@@ -387,9 +437,7 @@ export class EvtBaseProtected<T> {
             if (async) {
                 continue;
             }
-
-            const transformativeMatcherResult = invokeMatcher(matcher, data);
-
+            const transformativeMatcherResult = this.invokeMatcher(matcher, data);
 
             if (matchNotMatched(transformativeMatcherResult)) {
 
@@ -437,7 +485,9 @@ export class EvtBaseProtected<T> {
                     continue;
                 }
 
-                const transformativeMatcherResult = invokeMatcher(handler.matcher, data);
+                //const transformativeMatcherResult = invokeMatcher(handler.matcher, data);
+
+                const transformativeMatcherResult = this.invokeMatcher(handler.matcher, data);
 
                 if (matchNotMatched(transformativeMatcherResult)) {
 
@@ -651,7 +701,7 @@ export class EvtBaseProtected<T> {
      */
     public isHandled(data: T): boolean {
         return !!this.getHandlers()
-            .find(({ matcher }) => !!matcher(data))
+            .find(({ matcher }) => !!this.invokeMatcher(matcher, data))
             ;
     }
 
@@ -660,7 +710,7 @@ export class EvtBaseProtected<T> {
         return [...this.handlers];
     }
 
-    protected onHandlerDetached( handler: Handler<T, any>): void {
+    protected onHandlerDetached(handler: Handler<T, any>): void {
         //NOTE: Overwritten by EvtCompat for post detach.
     }
 

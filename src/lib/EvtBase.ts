@@ -7,6 +7,14 @@ export function parseOverloadParamsFactory<T>(
     { defaultBoundTo }: { defaultBoundTo: Object; }
 ) {
 
+    const canBeMatcher = (p: any): boolean => {
+        return isCallableFunction(p) || (
+            typeof p === "object" &&
+            p.length === 2 &&
+            isCallableFunction(p[0])
+        );
+    };
+
     const defaultParams: UserProvidedParams<T, any> = {
         "matcher": function matchAll() { return true; },
         "boundTo": defaultBoundTo,
@@ -42,7 +50,7 @@ export function parseOverloadParamsFactory<T>(
                         //[ matcher ]
                         //[ boundTo ]
                         const [p] = inputs;
-                        return isCallableFunction(p) ? id<Out>({
+                        return canBeMatcher(p) ? id<Out>({
                             ...defaultParams,
                             "matcher": p
                         }) : id<Out>({
@@ -80,7 +88,7 @@ export function parseOverloadParamsFactory<T>(
                     const [p] = inputs;
 
                     return id<Out>(
-                        isCallableFunction(p) ? ({
+                        canBeMatcher(p) ? ({
                             ...defaultParams,
                             "matcher": p
                         }) : ({
@@ -134,7 +142,7 @@ export function parseOverloadParamsFactory<T>(
                             const timeout: Out["timeout"] = p2;
                             const callback: Out["callback"] = p3;
 
-                            if (isCallableFunction(p1)) {
+                            if (canBeMatcher(p1)) {
                                 //[ matcher, timeout, callback ]
                                 return id<Out>({
                                     ...defaultParams,
@@ -183,7 +191,7 @@ export function parseOverloadParamsFactory<T>(
                             //[ matcher, callback ]
                             //[ boundTo, callback ]
                             const callback: Out["callback"] = p2;
-                            if (isCallableFunction(p1)) {
+                            if (canBeMatcher(p1)) {
 
                                 return id<Out>({
                                     ...defaultParams,
@@ -1638,3 +1646,6 @@ export class EvtBase<T> extends EvtBaseProtected<T> {
 
 
 }
+
+
+

@@ -72,6 +72,7 @@ var raceUnsafe = (function () {
                     };
                     evt.evtAttach.attach(raceContext, function (_a) {
                         var matcher = _a.matcher;
+                        typeSafety_1.assert(typeof matcher === "function");
                         if (!matcher(raceCoupleResult_1)) {
                             return;
                         }
@@ -93,6 +94,7 @@ var raceUnsafe = (function () {
                         }
                         evtWeak.evtAttach.attach(raceContext, function (_a) {
                             var matcher = _a.matcher;
+                            typeSafety_1.assert(typeof matcher === "function");
                             if (!matcher(raceCoupleResult)) {
                                 return;
                             }
@@ -107,7 +109,10 @@ var raceUnsafe = (function () {
                     }); };
                     evt.evtAttach.attach(raceContext, function (_a) {
                         var matcher = _a.matcher;
-                        return racer.attachOnce(function (data) { return !!matcher(toRaceCoupleResult_1(data)); }, raceContext, function (data) { return post(toRaceCoupleResult_1(data)); });
+                        return racer.attachOnce(function (data) {
+                            typeSafety_1.assert(typeof matcher === "function");
+                            return !!matcher(toRaceCoupleResult_1(data));
+                        }, raceContext, function (data) { return post(toRaceCoupleResult_1(data)); });
                     });
                 }
             };
@@ -129,7 +134,10 @@ var raceUnsafe = (function () {
                 var evtRaceCoupleResult_1 = raceCouple(raceContext, racerLast, prNever);
                 evt.evtAttach.attach(raceContext, function (_a) {
                     var matcher = _a.matcher;
-                    return evtRaceCoupleResult_1.attachOnce(function (raceCoupleResult) { return !!matcher(toRaceRecResult_1(raceCoupleResult)); }, function (raceCoupleResult) { return post(toRaceRecResult_1(raceCoupleResult)); });
+                    return evtRaceCoupleResult_1.attachOnce(function (raceCoupleResult) {
+                        typeSafety_1.assert(typeof matcher === "function");
+                        return !!matcher(toRaceRecResult_1(raceCoupleResult));
+                    }, function (raceCoupleResult) { return post(toRaceRecResult_1(raceCoupleResult)); });
                 });
                 return evt;
             }
@@ -145,7 +153,10 @@ var raceUnsafe = (function () {
                 };
                 evtData.evtAttach.attach(raceContext, function (_a) {
                     var matcher = _a.matcher;
-                    return evtRaceCoupleResult_2.attachOnce(function (raceCoupleResult) { return !!matcher(toData_1(raceCoupleResult)); }, function (raceCoupleResult) {
+                    return evtRaceCoupleResult_2.attachOnce(function (raceCoupleResult) {
+                        typeSafety_1.assert(typeof matcher === "function");
+                        return !!matcher(toData_1(raceCoupleResult));
+                    }, function (raceCoupleResult) {
                         evtData.evtAttach.detach(raceContext);
                         evtData.post(toData_1(raceCoupleResult));
                     });
@@ -165,7 +176,10 @@ var raceUnsafe = (function () {
                 }); };
                 evt.evtAttach.attach(raceContext, function (_a) {
                     var matcher = _a.matcher;
-                    return evtRaceRecResult_1.attachOnce(function (raceRecResult) { return !!matcher(transformRaceRecResult_1(raceRecResult)); }, function (raceRecResult) { return post(transformRaceRecResult_1(raceRecResult)); });
+                    return evtRaceRecResult_1.attachOnce(function (raceRecResult) {
+                        typeSafety_1.assert(typeof matcher === "function");
+                        return !!matcher(transformRaceRecResult_1(raceRecResult));
+                    }, function (raceRecResult) { return post(transformRaceRecResult_1(raceRecResult)); });
                 });
             }
             return evt;
@@ -198,7 +212,10 @@ var raceUnsafe = (function () {
                 }
                 detachAllEvtRacers();
             });
-            evtRaceRecResult.attachOnce(function (raceRecResult) { return !!matcher(toRaceResult(raceRecResult)); }, raceContext, function (raceRecResult) {
+            evtRaceRecResult.attachOnce(function (raceRecResult) {
+                typeSafety_1.assert(typeof matcher === "function");
+                return !!matcher(toRaceResult(raceRecResult));
+            }, raceContext, function (raceRecResult) {
                 evt.evtAttach.detach(raceContext);
                 detachAllEvtRacers();
                 evt.post(toRaceResult(raceRecResult));
@@ -239,6 +256,7 @@ function generateProxyFunctionFactory(oneShotEvt) {
                 var dOut = new Deferred_1.Deferred();
                 inputs[i] = function matcherOverride(raceResult) {
                     if (!matchPromiseLike(raceResult.racer)) {
+                        typeSafety_1.assert(typeof matcher === "function");
                         return matcher(raceResult);
                     }
                     var prResultWrap = raceResult.data;
@@ -250,7 +268,7 @@ function generateProxyFunctionFactory(oneShotEvt) {
                         "i": raceResult.i,
                         "data": prResultWrap.data,
                         "racer": prResultWrap.promise
-                    });
+                    }, [undefined]);
                 };
                 methodBackup.apply(void 0, __spread(inputs)).then(function (data) { return dOut.resolve(data); }, function (error) { return dOut.reject(error); });
                 return dOut.pr;

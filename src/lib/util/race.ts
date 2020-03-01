@@ -104,6 +104,9 @@ const raceUnsafe = (() => {
                     evt.evtAttach.attach(
                         raceContext,
                         ({ matcher }) => {
+
+                            assert(typeof matcher === "function");
+
                             if (!matcher(raceCoupleResult)) {
                                 return;
                             }
@@ -134,6 +137,9 @@ const raceUnsafe = (() => {
                         evtWeak.evtAttach.attach(
                             raceContext,
                             ({ matcher }) => {
+
+                                assert(typeof matcher === "function");
+
                                 if (!matcher(raceCoupleResult)) {
                                     return;
                                 }
@@ -158,7 +164,10 @@ const raceUnsafe = (() => {
                         raceContext,
                         ({ matcher }) =>
                             racer.attachOnce(
-                                data => !!matcher(toRaceCoupleResult(data)),
+                                data => {
+                                    assert(typeof matcher === "function");
+                                    return !!matcher(toRaceCoupleResult(data));
+                                },
                                 raceContext,
                                 data => post(toRaceCoupleResult(data))
                             )
@@ -214,7 +223,10 @@ const raceUnsafe = (() => {
                     raceContext,
                     ({ matcher }) =>
                         evtRaceCoupleResult.attachOnce(
-                            raceCoupleResult => !!matcher(toRaceRecResult(raceCoupleResult)),
+                            raceCoupleResult => {
+                                assert(typeof matcher === "function");
+                                return !!matcher(toRaceRecResult(raceCoupleResult));
+                            },
                             raceCoupleResult => post(toRaceRecResult(raceCoupleResult))
 
                         )
@@ -251,7 +263,10 @@ const raceUnsafe = (() => {
                     raceContext,
                     ({ matcher }) =>
                         evtRaceCoupleResult.attachOnce(
-                            raceCoupleResult => !!matcher(toData(raceCoupleResult)),
+                            raceCoupleResult => {
+                                assert(typeof matcher === "function");
+                                return !!matcher(toData(raceCoupleResult));
+                            },
                             raceCoupleResult => {
                                 evtData.evtAttach.detach(raceContext);
                                 evtData.post(toData(raceCoupleResult));
@@ -287,7 +302,10 @@ const raceUnsafe = (() => {
                     raceContext,
                     ({ matcher }) =>
                         evtRaceRecResult.attachOnce(
-                            raceRecResult => !!matcher(transformRaceRecResult(raceRecResult)),
+                            raceRecResult => {
+                                assert(typeof matcher === "function");
+                                return !!matcher(transformRaceRecResult(raceRecResult));
+                            },
                             raceRecResult => post(transformRaceRecResult(raceRecResult))
                         )
                 );
@@ -363,7 +381,10 @@ const raceUnsafe = (() => {
                 });
 
                 evtRaceRecResult.attachOnce(
-                    raceRecResult => !!matcher(toRaceResult(raceRecResult)),
+                    raceRecResult => {
+                        assert(typeof matcher === "function");
+                        return !!matcher(toRaceResult(raceRecResult));
+                    },
                     raceContext,
                     raceRecResult => {
                         evt.evtAttach.detach(raceContext);
@@ -461,6 +482,7 @@ function generateProxyFunctionFactory(oneShotEvt: OneShotEvt<RaceResult<Racer<an
                     inputs[i] = function matcherOverride(raceResult: RaceResult<Racer<any>>) {
 
                         if (!matchPromiseLike<any>(raceResult.racer)) {
+                            assert(typeof matcher === "function");
                             return matcher(raceResult);
                         }
 
@@ -487,7 +509,8 @@ function generateProxyFunctionFactory(oneShotEvt: OneShotEvt<RaceResult<Racer<an
                                 "i": raceResult.i,
                                 "data": prResultWrap.data,
                                 "racer": prResultWrap.promise,
-                            }
+                            },
+                            [ undefined ]
                         );
 
                     };

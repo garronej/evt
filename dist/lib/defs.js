@@ -54,4 +54,21 @@ var EvtError;
     }(Error));
     EvtError.RacePromiseRejection = RacePromiseRejection;
 })(EvtError = exports.EvtError || (exports.EvtError = {}));
+var TransformativeMatcher;
+(function (TransformativeMatcher) {
+    var Stateless;
+    (function (Stateless) {
+        function match(matcher) {
+            return typeof matcher === "function";
+        }
+        Stateless.match = match;
+    })(Stateless = TransformativeMatcher.Stateless || (TransformativeMatcher.Stateless = {}));
+    var Stateful;
+    (function (Stateful) {
+        function match(matcher) {
+            return !Stateless.match(matcher);
+        }
+        Stateful.match = match;
+    })(Stateful = TransformativeMatcher.Stateful || (TransformativeMatcher.Stateful = {}));
+})(TransformativeMatcher = exports.TransformativeMatcher || (exports.TransformativeMatcher = {}));
 //# sourceMappingURL=defs.js.map

@@ -49,6 +49,11 @@ var isCallableFunction_1 = require("../tools/isCallableFunction");
 var typeSafety_1 = require("../tools/typeSafety");
 function parseOverloadParamsFactory(_a) {
     var defaultBoundTo = _a.defaultBoundTo;
+    var canBeMatcher = function (p) {
+        return isCallableFunction_1.isCallableFunction(p) || (typeof p === "object" &&
+            p.length === 2 &&
+            isCallableFunction_1.isCallableFunction(p[0]));
+    };
     var defaultParams = {
         "matcher": function matchAll() { return true; },
         "boundTo": defaultBoundTo,
@@ -71,7 +76,7 @@ function parseOverloadParamsFactory(_a) {
                             //[ matcher ]
                             //[ boundTo ]
                             var _a = __read(inputs, 1), p = _a[0];
-                            return isCallableFunction_1.isCallableFunction(p) ? typeSafety_1.id(__assign(__assign({}, defaultParams), { "matcher": p })) : typeSafety_1.id(__assign(__assign({}, defaultParams), { "boundTo": p }));
+                            return canBeMatcher(p) ? typeSafety_1.id(__assign(__assign({}, defaultParams), { "matcher": p })) : typeSafety_1.id(__assign(__assign({}, defaultParams), { "boundTo": p }));
                         case 2:
                             //[ matcher, boundTo ]
                             var _b = __read(inputs, 2), p1 = _b[0], p2 = _b[1];
@@ -88,7 +93,7 @@ function parseOverloadParamsFactory(_a) {
                     }
                     else {
                         var _d = __read(inputs, 1), p = _d[0];
-                        return typeSafety_1.id(isCallableFunction_1.isCallableFunction(p) ? (__assign(__assign({}, defaultParams), { "matcher": p })) : (__assign(__assign({}, defaultParams), { "timeout": p })));
+                        return typeSafety_1.id(canBeMatcher(p) ? (__assign(__assign({}, defaultParams), { "matcher": p })) : (__assign(__assign({}, defaultParams), { "timeout": p })));
                     }
                 }
                 break;
@@ -119,7 +124,7 @@ function parseOverloadParamsFactory(_a) {
                                 //[ boundTo, timeout, callback ]
                                 var timeout = p2;
                                 var callback = p3;
-                                if (isCallableFunction_1.isCallableFunction(p1)) {
+                                if (canBeMatcher(p1)) {
                                     //[ matcher, timeout, callback ]
                                     return typeSafety_1.id(__assign(__assign({}, defaultParams), { timeout: timeout,
                                         callback: callback, "matcher": p1 }));
@@ -148,7 +153,7 @@ function parseOverloadParamsFactory(_a) {
                                 //[ matcher, callback ]
                                 //[ boundTo, callback ]
                                 var callback = p2;
-                                if (isCallableFunction_1.isCallableFunction(p1)) {
+                                if (canBeMatcher(p1)) {
                                     return typeSafety_1.id(__assign(__assign({}, defaultParams), { callback: callback, "matcher": p1 }));
                                 }
                                 else {

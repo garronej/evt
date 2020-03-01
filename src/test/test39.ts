@@ -1,7 +1,7 @@
 
 import { Evt } from "../lib";
 import { NonPostable } from "../lib/helperTypes";
-import { id } from "../tools/typeSafety";
+import { id, assert } from "../tools/typeSafety";
 
 type Person = {
     name: string;
@@ -159,7 +159,10 @@ const updateModelFactory = (
         "handlerHandlingEventCount": personChange =>
             evtPersonChange
                 .getHandlers()
-                .filter(({ matcher }) => !!matcher(personChange))
+                .filter(({ matcher }) => { 
+                    assert(typeof matcher === "function");
+                    return !!matcher(personChange); 
+                })
                 .length
     });
 

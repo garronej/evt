@@ -1,8 +1,7 @@
 import "minimal-polyfills/dist/lib/Array.prototype.find";
 import { UserProvidedParams, ImplicitParams, Bindable, Handler, TransformativeMatcher, HandlerGroup } from "./defs";
 /** If the matcher is not transformative then the transformedData will be the input data */
-export declare function invokeMatcher<T, U>(matcher: TransformativeMatcher<T, U> | ((data: T) => boolean), data: T): ReturnType<TransformativeMatcher<T, T | U>>;
-export declare function matchNotMatched(transformativeMatcherResult: ReturnType<TransformativeMatcher<any, any>>): transformativeMatcherResult is (null | "DETACH");
+export declare function invokeMatcher<T, U>(matcher: TransformativeMatcher<T, U> | ((data: T) => boolean), data: T, [previousValue]: [U | undefined]): TransformativeMatcher.Returns<T | U>;
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 export declare class EvtBaseProtected<T> {
     static createHandlerGroup(): HandlerGroup;
@@ -21,6 +20,7 @@ export declare class EvtBaseProtected<T> {
     private readonly asyncHandlerChronologyMark;
     private readonly asyncHandlerChronologyExceptionRange;
     private readonly getChronologyMark;
+    private readonly stateOfStatefulTransformativeMatchers;
     protected addHandler<U>(userProvidedParams: UserProvidedParams<T, U>, implicitAttachParams: ImplicitParams): Handler<T, U>;
     private trace;
     /**
@@ -29,6 +29,8 @@ export declare class EvtBaseProtected<T> {
      * Returns post count
      * */
     post(data: T): number;
+    /** If the matcher is not transformative then the transformedData will be the input data */
+    protected invokeMatcher<U>(matcher: TransformativeMatcher<T, U> | ((data: T) => boolean), data: T): TransformativeMatcher.Returns<T | U>;
     /** Return isExtracted */
     private postSync;
     private readonly postAsync;

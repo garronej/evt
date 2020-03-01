@@ -50,7 +50,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var EvtBase_2 = require("./EvtBase");
-var EvtBaseProtected_1 = require("./EvtBaseProtected");
 var EvtCompat = /** @class */ (function (_super) {
     __extends(EvtCompat, _super);
     function EvtCompat() {
@@ -94,7 +93,7 @@ var EvtCompat = /** @class */ (function (_super) {
         var resolvePrAndPost = function (data) { return resolvePr(_this_1.post(data)); };
         this.evtAttach.attachOnce(function (_a) {
             var matcher = _a.matcher;
-            return !!matcher(data);
+            return !!_this_1.invokeMatcher(matcher, data);
         }, function () { return isSync ?
             resolvePrAndPost(data) :
             Promise.resolve().then(function () { return resolvePrAndPost(data); }); });
@@ -106,12 +105,16 @@ var EvtCompat = /** @class */ (function (_super) {
         return evtDelegate;
     };
     EvtCompat.prototype.createDelegate = function () {
+        var _this_1 = this;
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
         var _a = this.parseOverloadParams(inputs, "createDelegate"), matcher = _a.matcher, boundTo = _a.boundTo;
-        return this.__createDelegate(function (data) { return EvtBaseProtected_1.invokeMatcher(matcher, data); }, boundTo);
+        return this.__createDelegate(typeof matcher === "function" ?
+            (function (data) { return _this_1.invokeMatcher(matcher, data); })
+            :
+                matcher, boundTo);
     };
     return EvtCompat;
 }(EvtBase_2.EvtBase));

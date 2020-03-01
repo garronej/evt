@@ -1,6 +1,13 @@
 import { setPrototypeOf } from "../tools/setPrototypeOfPolyfill";
 
-/** Anything but a number, a callable function (constructors are bindable), undefined  or null */
+/**
+ * A bindable can be anything BUT:
+ * -A callable function. ( Constructor are not callable so they are Bindable )
+ * -null
+ * -undefined
+ * -A number
+ * -An array with two elements, the first being a callable function
+ */
 export type Bindable = Bindable.Object_ | string;
 
 export namespace Bindable {
@@ -93,19 +100,48 @@ export namespace EvtError {
 
 }
 
-/**
- * [U] => pass U to the handler's callback.
- * [U,"DETACH"] => detach the handler then pass U to the handler's callback.
- * null => do not pass the event data to the handler callback.
- * "DETACH" => detach the handler and do not pass the event data to the handler's callback.
- * 
- * When the returned value is truthy posting has an effect
- */
-export type TransformativeMatcher<T, U> = (data: T) => (
-    readonly [U] | readonly [U, "DETACH" | null]
-    |
-    null | "DETACH"
-);
+export type TransformativeMatcher<T, U> =
+    TransformativeMatcher.Stateless<T, U> |
+    TransformativeMatcher.Stateful<T, U>
+    ;
+
+export namespace TransformativeMatcher {
+
+    /**
+     * [U] => pass U to the handler's callback.
+     * [U,"DETACH"] => detach the handler then pass U to the handler's callback.
+     * null => do not pass the event data to the handler callback.
+     * "DETACH" => detach the handler and do not pass the event data to the handler's callback.
+     */
+    export type Returns<U> =
+        readonly [U] | readonly [U, "DETACH" | null]
+        |
+        null | "DETACH"
+        ;
+
+    export type Stateless<T, U> = (data: T) => Returns<U>;
+
+    export namespace Stateless{
+
+        export function match<T,U>(matcher: TransformativeMatcher<T,U>): matcher is Stateless<T,U> {
+            return typeof matcher === "function"
+        }
+
+    }
+
+    export type Stateful<T, U> = [(data: T, prev: U) => Returns<U>, U];
+
+    export namespace Stateful {
+
+        export function match<T,U>(matcher: TransformativeMatcher<T,U>): matcher is Stateful<T,U> {
+            return !Stateless.match(matcher);
+        }
+
+
+    }
+
+}
+
 
 export namespace TransformativeMatcher {
 
@@ -113,8 +149,8 @@ export namespace TransformativeMatcher {
      * When using a transformative matcher with
      * waitFor, attachOnce or attachOncePrepend 
      * the first matched event will cause the handler
-     * to be detached so we do not allow to return [ U, "DETACH" ]
-     * as it is redundant.
+     * to be detached so there is no purpose of 
+     * detaching via the matcher or using a stateful matcher
      */
     export type Once<T, U> = (data: T) => (
         readonly [U]
