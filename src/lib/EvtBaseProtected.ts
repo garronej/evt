@@ -61,13 +61,22 @@ export class HandlerGroupBaseProtected {
 export function invokeMatcher<T, U>(
     matcher: TransformativeMatcher<T, U> | ((data: T) => boolean),
     data: T,
-    [previousValue]: [U | undefined]
+    cbInvokedIfMatched?: true,
+    prev?: U //If stateful prev must be provided
 ): TransformativeMatcher.Returns<T | U> {
 
+    /*
     const matcherResult = (typeof matcher === "function" ? matcher : matcher[0])(
         data,
-        previousValue!
+        prev,
+        isInternalInvocation
     );
+    */
+
+    const matcherResult = typeof matcher === "function" ?
+        matcher(data, undefined, cbInvokedIfMatched) :
+        matcher[0](data, prev!, cbInvokedIfMatched)
+        ;
 
     //NOTE: We assume it was a transformative matcher only 
     //if the returned value is a singleton or a couple, otherwise 
@@ -83,14 +92,6 @@ export function invokeMatcher<T, U>(
 
 }
 
-function matchNotMatched(
-    transformativeMatcherResult: TransformativeMatcher.Returns<any>
-): transformativeMatcherResult is (null | "DETACH") {
-    return (
-        transformativeMatcherResult === null ||
-        transformativeMatcherResult === "DETACH"
-    );
-}
 
 
 
@@ -98,9 +99,7 @@ function matchNotMatched(
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 export class EvtBaseProtected<T> {
 
-    public static createHandlerGroup(): HandlerGroupBaseProtected {
-        return new HandlerGroupBaseProtected();
-    }
+    public static createHandlerGroup() { return new HandlerGroupBaseProtected(); }
 
     //NOTE: Not really readonly but we want to prevent user from setting the value
     //manually and we cant user accessor because we target es3.
@@ -187,7 +186,7 @@ export class EvtBaseProtected<T> {
     })();
 
 
-    private readonly stateOfStatefulTransformativeMatchers = new WeakMap<
+    private readonly previousDadaOfStatefulTransformativeMatchers = new WeakMap<
         TransformativeMatcher.Stateful<T, any>,
         any
     >();
@@ -200,7 +199,7 @@ export class EvtBaseProtected<T> {
 
         if (typeof userProvidedParams.matcher !== "function") {
 
-            this.stateOfStatefulTransformativeMatchers.set(
+            this.previousDadaOfStatefulTransformativeMatchers.set(
                 userProvidedParams.matcher,
                 userProvidedParams.matcher[1]
             );
@@ -275,7 +274,7 @@ export class EvtBaseProtected<T> {
 
                 this.handlerTriggers.set(
                     handler,
-                    (transformativeMatcherMatchedResult: readonly [U] | readonly [U, "DETACH" | null]) => {
+                    (transformativeMatcherMatchedResult: TransformativeMatcher.Returns.Matched<U>) => {
 
                         const { callback, once } = handler;
 
@@ -284,26 +283,52 @@ export class EvtBaseProtected<T> {
                             timer = undefined;
                         }
 
+                        const [transformedData] = transformativeMatcherMatchedResult;
+
                         if (
-                            once || (
+                            once ||
+                            (
                                 transformativeMatcherMatchedResult.length === 2 &&
                                 transformativeMatcherMatchedResult[1] === "DETACH"
                             )
                         ) {
+
                             handler.detach();
-                        }
 
-                        const transformedData = transformativeMatcherMatchedResult[0];
+                        } else if (typeof handler.matcher !== "function") {
 
-                        if (typeof userProvidedParams.matcher !== "function") {
-
-                            this.stateOfStatefulTransformativeMatchers.set(
-                                userProvidedParams.matcher,
+                            this.previousDadaOfStatefulTransformativeMatchers.set(
+                                handler.matcher,
                                 transformedData
                             );
 
                         }
 
+                        /*
+                        if (
+                            once ||
+                            (
+                                transformativeMatcherMatchedResult.length === 2 &&
+                                transformativeMatcherMatchedResult[1] === "DETACH"
+                            )
+                        ) {
+
+                            handler.detach();
+
+                        }
+
+
+                        const [transformedData] = transformativeMatcherMatchedResult;
+
+                        if (typeof userProvidedParams.matcher !== "function") {
+
+                            this.previousDadaOfStatefulTransformativeMatchers.set(
+                                userProvidedParams.matcher,
+                                transformedData
+                            );
+
+                        }
+                        */
 
                         callback?.call(
                             handler.boundTo,
@@ -410,20 +435,32 @@ export class EvtBaseProtected<T> {
     /** If the matcher is not transformative then the transformedData will be the input data */
     protected invokeMatcher<U>(
         matcher: TransformativeMatcher<T, U> | ((data: T) => boolean),
-        data: T
+        data: T,
+        cbInvokedIfMatched?: true
     ): TransformativeMatcher.Returns<T | U> {
+
+        /*
+        return invokeMatcher<T, U>(
+            matcher,
+            data,
+            typeof matcher === "function" ?
+                undefined :
+                {
+                    "prev": this.previousDadaOfStatefulTransformativeMatchers.get(matcher)!,
+                    "isInternalInvocation": true
+                }
+        );
+        */
 
         return invokeMatcher<T, U>(
             matcher,
             data,
-            [
-                typeof matcher === "function" ?
-                    undefined :
-                    this.stateOfStatefulTransformativeMatchers.get(
-                        matcher
-                    )
-            ]
+            cbInvokedIfMatched,
+            typeof matcher === "function" ?
+                undefined :
+                this.previousDadaOfStatefulTransformativeMatchers.get(matcher)!
         );
+
 
     }
 
@@ -440,16 +477,15 @@ export class EvtBaseProtected<T> {
             if (async) {
                 continue;
             }
-            const transformativeMatcherResult = this.invokeMatcher(matcher, data);
+            const transformativeMatcherResult = this.invokeMatcher(matcher, data, true);
 
-            if (matchNotMatched(transformativeMatcherResult)) {
-
-                if (transformativeMatcherResult === "DETACH") {
+            if (TransformativeMatcher.Returns.NotMatched.match(transformativeMatcherResult)) {
+                if (TransformativeMatcher.Returns.Detach.match(transformativeMatcherResult)) {
                     handler.detach();
                 }
                 continue;
-
             }
+
 
             const handlerTrigger = this.handlerTriggers.get(handler);
 
@@ -488,17 +524,13 @@ export class EvtBaseProtected<T> {
                     continue;
                 }
 
-                //const transformativeMatcherResult = invokeMatcher(handler.matcher, data);
-
                 const transformativeMatcherResult = this.invokeMatcher(handler.matcher, data);
 
-                if (matchNotMatched(transformativeMatcherResult)) {
-
-                    if (transformativeMatcherResult === "DETACH") {
+                if (TransformativeMatcher.Returns.NotMatched.match(transformativeMatcherResult)) {
+                    if (TransformativeMatcher.Returns.Detach.match(transformativeMatcherResult)) {
                         handler.detach();
                     }
                     continue;
-
                 }
 
 

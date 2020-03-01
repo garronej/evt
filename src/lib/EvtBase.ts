@@ -2,6 +2,7 @@ import { EvtBaseProtected } from "./EvtBaseProtected";
 import { Bindable, UserProvidedParams, TransformativeMatcher } from "./defs"
 import { isCallableFunction } from "../tools/isCallableFunction";
 import { id } from "../tools/typeSafety";
+import { composeMany } from "./util/composeMatcher";
 
 export function parseOverloadParamsFactory<T>(
     { defaultBoundTo }: { defaultBoundTo: Object; }
@@ -15,21 +16,54 @@ export function parseOverloadParamsFactory<T>(
         );
     };
 
-    const defaultParams: UserProvidedParams<T, any> = {
+    const defaultParams = id<UserProvidedParams<T, any>>({
         "matcher": function matchAll() { return true; },
         "boundTo": defaultBoundTo,
         "timeout": undefined,
         "callback": undefined
-    };
+    })
 
-    return function parseOverloadParams<U>(
+    return function parseOverloadParams(
         inputs: readonly any[],
-        methodName: "waitFor" | "attach-ish" | "createDelegate"
-    ): UserProvidedParams<T, T | U> {
+        methodName: "waitFor" | "attach-ish" | "createDelegate" | "pipe"
+    ): UserProvidedParams<T, any> {
 
-        type Out = UserProvidedParams<T, T | U>;
+        type Out = UserProvidedParams<T, any>;
 
         switch (methodName) {
+            case "pipe": {
+
+                //[ boundTo, ...TransformativeMatcher[] ]
+                //[ ...TransformativeMatcher[] ]
+
+                const getMatcherWrap = (args: readonly any[]) => (args.length === 0 ? {} : { "matcher": composeMany<T>(args as any) })
+
+                if (canBeMatcher(inputs[0])) {
+
+                    //[ ...TransformativeMatcher[] ]
+
+                    return id<Out>({
+                        ...defaultParams,
+                        ...getMatcherWrap(inputs)
+                    });
+
+
+                } else {
+
+                    //[ boundTo, ...TransformativeMatcher[] ]
+
+                    const [boundTo, ...rest] = inputs;
+
+                    return id<Out>({
+                        ...defaultParams,
+                        "boundTo": boundTo,
+                        ...getMatcherWrap(rest)
+                    });
+
+                }
+
+
+            } break;
             case "createDelegate": {
 
                 const n =

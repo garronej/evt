@@ -56,19 +56,23 @@ var EvtError;
 })(EvtError = exports.EvtError || (exports.EvtError = {}));
 var TransformativeMatcher;
 (function (TransformativeMatcher) {
-    var Stateless;
-    (function (Stateless) {
-        function match(matcher) {
-            return typeof matcher === "function";
-        }
-        Stateless.match = match;
-    })(Stateless = TransformativeMatcher.Stateless || (TransformativeMatcher.Stateless = {}));
-    var Stateful;
-    (function (Stateful) {
-        function match(matcher) {
-            return !Stateless.match(matcher);
-        }
-        Stateful.match = match;
-    })(Stateful = TransformativeMatcher.Stateful || (TransformativeMatcher.Stateful = {}));
+    var Returns;
+    (function (Returns) {
+        var Detach;
+        (function (Detach) {
+            function match(transformativeMatcherResult) {
+                return transformativeMatcherResult === "DETACH";
+            }
+            Detach.match = match;
+        })(Detach = Returns.Detach || (Returns.Detach = {}));
+        var NotMatched;
+        (function (NotMatched) {
+            function match(transformativeMatcherResult) {
+                return (transformativeMatcherResult === null ||
+                    Detach.match(transformativeMatcherResult));
+            }
+            NotMatched.match = match;
+        })(NotMatched = Returns.NotMatched || (Returns.NotMatched = {}));
+    })(Returns = TransformativeMatcher.Returns || (TransformativeMatcher.Returns = {}));
 })(TransformativeMatcher = exports.TransformativeMatcher || (exports.TransformativeMatcher = {}));
 //# sourceMappingURL=defs.js.map

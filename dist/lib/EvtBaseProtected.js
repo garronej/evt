@@ -93,9 +93,18 @@ var HandlerGroupBaseProtected = /** @class */ (function () {
 }());
 exports.HandlerGroupBaseProtected = HandlerGroupBaseProtected;
 /** If the matcher is not transformative then the transformedData will be the input data */
-function invokeMatcher(matcher, data, _a) {
-    var _b = __read(_a, 1), previousValue = _b[0];
-    var matcherResult = (typeof matcher === "function" ? matcher : matcher[0])(data, previousValue);
+function invokeMatcher(matcher, data, cbInvokedIfMatched, prev //If stateful prev must be provided
+) {
+    /*
+    const matcherResult = (typeof matcher === "function" ? matcher : matcher[0])(
+        data,
+        prev,
+        isInternalInvocation
+    );
+    */
+    var matcherResult = typeof matcher === "function" ?
+        matcher(data, undefined, cbInvokedIfMatched) :
+        matcher[0](data, prev, cbInvokedIfMatched);
     //NOTE: We assume it was a transformative matcher only 
     //if the returned value is a singleton or a couple, otherwise 
     //we assume it was a filtering matcher that should have returned
@@ -107,10 +116,6 @@ function invokeMatcher(matcher, data, _a) {
                 !!matcherResult ? [data] : null);
 }
 exports.invokeMatcher = invokeMatcher;
-function matchNotMatched(transformativeMatcherResult) {
-    return (transformativeMatcherResult === null ||
-        transformativeMatcherResult === "DETACH");
-}
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 var EvtBaseProtected = /** @class */ (function () {
     function EvtBaseProtected() {
@@ -139,7 +144,7 @@ var EvtBaseProtected = /** @class */ (function () {
             var currentChronologyMark = 0;
             return function () { return currentChronologyMark++; };
         })();
-        this.stateOfStatefulTransformativeMatchers = new WeakMap_1.Polyfill();
+        this.previousDadaOfStatefulTransformativeMatchers = new WeakMap_1.Polyfill();
         this.postAsync = runExclusive.buildMethodCb(function (data, postChronologyMark, releaseLock) {
             var e_2, _a;
             var promises = [];
@@ -150,10 +155,9 @@ var EvtBaseProtected = /** @class */ (function () {
                 if (!handler.async) {
                     return "continue";
                 }
-                //const transformativeMatcherResult = invokeMatcher(handler.matcher, data);
                 var transformativeMatcherResult = _this_1.invokeMatcher(handler.matcher, data);
-                if (matchNotMatched(transformativeMatcherResult)) {
-                    if (transformativeMatcherResult === "DETACH") {
+                if (defs_1.TransformativeMatcher.Returns.NotMatched.match(transformativeMatcherResult)) {
+                    if (defs_1.TransformativeMatcher.Returns.Detach.match(transformativeMatcherResult)) {
                         handler.detach();
                     }
                     return "continue";
@@ -226,9 +230,7 @@ var EvtBaseProtected = /** @class */ (function () {
             });
         });
     }
-    EvtBaseProtected.createHandlerGroup = function () {
-        return new HandlerGroupBaseProtected();
-    };
+    EvtBaseProtected.createHandlerGroup = function () { return new HandlerGroupBaseProtected(); };
     /** https://garronej.github.io/ts-evt/#evtenabletrace */
     EvtBaseProtected.prototype.enableTrace = function (id, formatter, log
     //NOTE: Not typeof console.log as we don't want to expose types from node
@@ -257,7 +259,7 @@ var EvtBaseProtected = /** @class */ (function () {
     EvtBaseProtected.prototype.addHandler = function (userProvidedParams, implicitAttachParams) {
         var _this_1 = this;
         if (typeof userProvidedParams.matcher !== "function") {
-            this.stateOfStatefulTransformativeMatchers.set(userProvidedParams.matcher, userProvidedParams.matcher[1]);
+            this.previousDadaOfStatefulTransformativeMatchers.set(userProvidedParams.matcher, userProvidedParams.matcher[1]);
         }
         var handler = __assign(__assign(__assign({}, userProvidedParams), implicitAttachParams), { "detach": null, "promise": null });
         if (handler.async) {
@@ -295,14 +297,40 @@ var EvtBaseProtected = /** @class */ (function () {
                     clearTimeout(timer);
                     timer = undefined;
                 }
-                if (once || (transformativeMatcherMatchedResult.length === 2 &&
-                    transformativeMatcherMatchedResult[1] === "DETACH")) {
+                var _a = __read(transformativeMatcherMatchedResult, 1), transformedData = _a[0];
+                if (once ||
+                    (transformativeMatcherMatchedResult.length === 2 &&
+                        transformativeMatcherMatchedResult[1] === "DETACH")) {
                     handler.detach();
                 }
-                var transformedData = transformativeMatcherMatchedResult[0];
-                if (typeof userProvidedParams.matcher !== "function") {
-                    _this_1.stateOfStatefulTransformativeMatchers.set(userProvidedParams.matcher, transformedData);
+                else if (typeof handler.matcher !== "function") {
+                    _this_1.previousDadaOfStatefulTransformativeMatchers.set(handler.matcher, transformedData);
                 }
+                /*
+                if (
+                    once ||
+                    (
+                        transformativeMatcherMatchedResult.length === 2 &&
+                        transformativeMatcherMatchedResult[1] === "DETACH"
+                    )
+                ) {
+
+                    handler.detach();
+
+                }
+
+
+                const [transformedData] = transformativeMatcherMatchedResult;
+
+                if (typeof userProvidedParams.matcher !== "function") {
+
+                    this.previousDadaOfStatefulTransformativeMatchers.set(
+                        userProvidedParams.matcher,
+                        transformedData
+                    );
+
+                }
+                */
                 callback === null || callback === void 0 ? void 0 : callback.call(handler.boundTo, transformedData);
                 resolve(transformedData);
             });
@@ -366,12 +394,22 @@ var EvtBaseProtected = /** @class */ (function () {
         return this.postCount;
     };
     /** If the matcher is not transformative then the transformedData will be the input data */
-    EvtBaseProtected.prototype.invokeMatcher = function (matcher, data) {
-        return invokeMatcher(matcher, data, [
+    EvtBaseProtected.prototype.invokeMatcher = function (matcher, data, cbInvokedIfMatched) {
+        /*
+        return invokeMatcher<T, U>(
+            matcher,
+            data,
             typeof matcher === "function" ?
                 undefined :
-                this.stateOfStatefulTransformativeMatchers.get(matcher)
-        ]);
+                {
+                    "prev": this.previousDadaOfStatefulTransformativeMatchers.get(matcher)!,
+                    "isInternalInvocation": true
+                }
+        );
+        */
+        return invokeMatcher(matcher, data, cbInvokedIfMatched, typeof matcher === "function" ?
+            undefined :
+            this.previousDadaOfStatefulTransformativeMatchers.get(matcher));
     };
     /** Return isExtracted */
     EvtBaseProtected.prototype.postSync = function (data) {
@@ -383,9 +421,9 @@ var EvtBaseProtected = /** @class */ (function () {
                 if (async) {
                     continue;
                 }
-                var transformativeMatcherResult = this.invokeMatcher(matcher, data);
-                if (matchNotMatched(transformativeMatcherResult)) {
-                    if (transformativeMatcherResult === "DETACH") {
+                var transformativeMatcherResult = this.invokeMatcher(matcher, data, true);
+                if (defs_1.TransformativeMatcher.Returns.NotMatched.match(transformativeMatcherResult)) {
+                    if (defs_1.TransformativeMatcher.Returns.Detach.match(transformativeMatcherResult)) {
                         handler.detach();
                     }
                     continue;

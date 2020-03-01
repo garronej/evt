@@ -2,10 +2,10 @@ import { EvtBaseProtected } from "./EvtBaseProtected";
 import { Bindable, UserProvidedParams, TransformativeMatcher } from "./defs";
 export declare function parseOverloadParamsFactory<T>({ defaultBoundTo }: {
     defaultBoundTo: Object;
-}): <U>(inputs: readonly any[], methodName: "waitFor" | "attach-ish" | "createDelegate") => UserProvidedParams<T, T | U>;
+}): (inputs: readonly any[], methodName: "waitFor" | "attach-ish" | "createDelegate" | "pipe") => UserProvidedParams<T, any>;
 /** Evt without evtAttach property, attachOnceMatched and createDelegate */
 export declare class EvtBase<T> extends EvtBaseProtected<T> {
-    protected parseOverloadParams: <U>(inputs: readonly any[], methodName: "waitFor" | "attach-ish" | "createDelegate") => UserProvidedParams<T, T | U>;
+    protected parseOverloadParams: (inputs: readonly any[], methodName: "waitFor" | "attach-ish" | "createDelegate" | "pipe") => UserProvidedParams<T, any>;
     /**
      * https://garronej.github.io/ts-evt/#evtwaitfor
      *

@@ -48,6 +48,22 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
 exports.__esModule = true;
 var EvtBase_2 = require("./EvtBase");
 var EvtBaseProtected_1 = require("./EvtBaseProtected");
@@ -62,6 +78,7 @@ var HandlerGroup = /** @class */ (function (_super) {
     }
     return HandlerGroup;
 }(EvtBaseProtected_1.HandlerGroupBaseProtected));
+exports.HandlerGroup = HandlerGroup;
 var EvtCompat = /** @class */ (function (_super) {
     __extends(EvtCompat, _super);
     function EvtCompat() {
@@ -71,9 +88,7 @@ var EvtCompat = /** @class */ (function (_super) {
         _this_1.evtDetach = new EvtBase_2.EvtBase();
         return _this_1;
     }
-    EvtCompat.createHandlerGroup = function () {
-        return new HandlerGroup();
-    };
+    EvtCompat.createHandlerGroup = function () { return new HandlerGroup(); };
     EvtCompat.prototype.addHandler = function (attachParams, implicitAttachParams) {
         var handler = _super.prototype.addHandler.call(this, attachParams, implicitAttachParams);
         this.evtAttach.post(handler);
@@ -127,13 +142,67 @@ var EvtCompat = /** @class */ (function (_super) {
         }
         var _a = this.parseOverloadParams(inputs, "createDelegate"), matcher = _a.matcher, boundTo = _a.boundTo;
         return this.__createDelegate(typeof matcher === "function" ?
-            (function (data) { return _this_1.invokeMatcher(matcher, data); })
+            (function () {
+                var _a = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    _a[_i] = arguments[_i];
+                }
+                var _b = __read(_a, 3), data = _b[0], cbInvokedIfMatched = _b[2];
+                return _this_1.invokeMatcher(matcher, data, cbInvokedIfMatched);
+            })
+            :
+                matcher, boundTo);
+    };
+    EvtCompat.prototype.pipe = function () {
+        var _this_1 = this;
+        var inputs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            inputs[_i] = arguments[_i];
+        }
+        var _a = this.parseOverloadParams(inputs, "pipe"), matcher = _a.matcher, boundTo = _a.boundTo;
+        return this.__createDelegate(typeof matcher === "function" ?
+            (function () {
+                var _a = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    _a[_i] = arguments[_i];
+                }
+                var _b = __read(_a, 3), data = _b[0], cbInvokedIfMatched = _b[2];
+                return _this_1.invokeMatcher(matcher, data, cbInvokedIfMatched);
+            })
             :
                 matcher, boundTo);
     };
     return EvtCompat;
 }(EvtBase_2.EvtBase));
 exports.EvtCompat = EvtCompat;
+/*
+const tm1: TransformativeMatcher.Stateful<string, number> = [(str, prev1) => [prev1 + str.length], 0];
+const tm2: TransformativeMatcher.Stateful<number, string[]> = [(n, prev2) => [[...prev2, `${n}`]], []];
+
+const tmu: TransformativeMatcher<string, string[]> = (() => {
+
+
+    let prev1: number = 0;
+
+    return id<TransformativeMatcher<string, string[]>>(
+        [(str, prev2, isInternalInvocation) => {
+
+            const n = prev1 + str.length;
+
+            const data= [...prev2, `${n}`];
+
+            if( !!isInternalInvocation && !TransformativeMatcher.Returns.NotMatched.match([data]) ){
+                prev1 = n;
+            }
+
+            return [data];
+
+        }, []]
+    );
+
+
+})();
+*/
 /** https://garronej.github.io/ts-evt/#voidevt */
 var VoidEvtCompat = /** @class */ (function (_super) {
     __extends(VoidEvtCompat, _super);

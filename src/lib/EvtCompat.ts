@@ -4,7 +4,7 @@ import { HandlerGroupBaseProtected } from "./EvtBaseProtected";
 import { Handler, UserProvidedParams, ImplicitParams } from "./defs";
 import { Bindable, TransformativeMatcher } from "./defs"
 
-class HandlerGroup extends HandlerGroupBaseProtected {
+export class HandlerGroup extends HandlerGroupBaseProtected {
 
     public readonly evtDetached: OneShot<EvtCompat<Handler<any, any>[]>>;
 
@@ -20,9 +20,7 @@ class HandlerGroup extends HandlerGroupBaseProtected {
 
 export class EvtCompat<T> extends EvtBase<T> {
 
-    public static createHandlerGroup(): HandlerGroup {
-        return new HandlerGroup();
-    }
+    public static createHandlerGroup() { return new HandlerGroup(); }
 
     /** https://garronej.github.io/ts-evt/#evtevtattach */
     public readonly evtAttach = new EvtBase<Handler<T, any>>()
@@ -145,14 +143,14 @@ export class EvtCompat<T> extends EvtBase<T> {
         ...inputs: any[]
     ): EvtCompat<T | U> {
 
-        const { matcher, boundTo } = this.parseOverloadParams<U>(
+        const { matcher, boundTo } = this.parseOverloadParams(
             inputs,
             "createDelegate"
         );
 
         return this.__createDelegate<T | U>(
             typeof matcher === "function" ?
-                (data => this.invokeMatcher<T | U>(matcher, data))
+                ((...[data,,cbInvokedIfMatched]) => this.invokeMatcher<T | U>(matcher, data, cbInvokedIfMatched))
                 :
                 matcher,
             boundTo
@@ -160,7 +158,88 @@ export class EvtCompat<T> extends EvtBase<T> {
 
     }
 
+    pipe(): EvtCompat<T>;
+    pipe<A>(op1: TransformativeMatcher<T, A>): EvtCompat<A>;
+    pipe<A, B>(op1: TransformativeMatcher<T, A>, op2: TransformativeMatcher<A, B>): EvtCompat<B>;
+    pipe<A, B, C>(op1: TransformativeMatcher<T, A>, op2: TransformativeMatcher<A, B>, op3: TransformativeMatcher<B, C>): EvtCompat<C>;
+    pipe<A, B, C, D>(op1: TransformativeMatcher<T, A>, op2: TransformativeMatcher<A, B>, op3: TransformativeMatcher<B, C>, op4: TransformativeMatcher<C, D>): EvtCompat<D>;
+    pipe<A, B, C, D, E>(op1: TransformativeMatcher<T, A>, op2: TransformativeMatcher<A, B>, op3: TransformativeMatcher<B, C>, op4: TransformativeMatcher<C, D>, op5: TransformativeMatcher<D, E>): EvtCompat<E>;
+    pipe<A, B, C, D, E, F>(op1: TransformativeMatcher<T, A>, op2: TransformativeMatcher<A, B>, op3: TransformativeMatcher<B, C>, op4: TransformativeMatcher<C, D>, op5: TransformativeMatcher<D, E>, op6: TransformativeMatcher<E, F>): EvtCompat<F>;
+    pipe<A, B, C, D, E, F, G>(op1: TransformativeMatcher<T, A>, op2: TransformativeMatcher<A, B>, op3: TransformativeMatcher<B, C>, op4: TransformativeMatcher<C, D>, op5: TransformativeMatcher<D, E>, op6: TransformativeMatcher<E, F>, op7: TransformativeMatcher<F, G>): EvtCompat<G>;
+    pipe<A, B, C, D, E, F, G, H>(op1: TransformativeMatcher<T, A>, op2: TransformativeMatcher<A, B>, op3: TransformativeMatcher<B, C>, op4: TransformativeMatcher<C, D>, op5: TransformativeMatcher<D, E>, op6: TransformativeMatcher<E, F>, op7: TransformativeMatcher<F, G>, op8: TransformativeMatcher<G, H>): EvtCompat<H>;
+    pipe<A, B, C, D, E, F, G, H, I>(op1: TransformativeMatcher<T, A>, op2: TransformativeMatcher<A, B>, op3: TransformativeMatcher<B, C>, op4: TransformativeMatcher<C, D>, op5: TransformativeMatcher<D, E>, op6: TransformativeMatcher<E, F>, op7: TransformativeMatcher<F, G>, op8: TransformativeMatcher<G, H>, op9: TransformativeMatcher<H, I>): EvtCompat<I>;
+    pipe<A, B, C, D, E, F, G, H, I>(op1: TransformativeMatcher<T, A>, op2: TransformativeMatcher<A, B>, op3: TransformativeMatcher<B, C>, op4: TransformativeMatcher<C, D>, op5: TransformativeMatcher<D, E>, op6: TransformativeMatcher<E, F>, op7: TransformativeMatcher<F, G>, op8: TransformativeMatcher<G, H>, op9: TransformativeMatcher<H, I>, ...operations: TransformativeMatcher<any, any>[]): EvtCompat<{}>;
+    pipe(boundTo: Bindable): EvtCompat<T>;
+    pipe<A>(boundTo: Bindable, op1: TransformativeMatcher<T, A>): EvtCompat<A>;
+    pipe<A, B>(boundTo: Bindable, op1: TransformativeMatcher<T, A>, op2: TransformativeMatcher<A, B>): EvtCompat<B>;
+    pipe<A, B, C>(boundTo: Bindable, op1: TransformativeMatcher<T, A>, op2: TransformativeMatcher<A, B>, op3: TransformativeMatcher<B, C>): EvtCompat<C>;
+    pipe<A, B, C, D>(boundTo: Bindable, op1: TransformativeMatcher<T, A>, op2: TransformativeMatcher<A, B>, op3: TransformativeMatcher<B, C>, op4: TransformativeMatcher<C, D>): EvtCompat<D>;
+    pipe<A, B, C, D, E>(boundTo: Bindable, op1: TransformativeMatcher<T, A>, op2: TransformativeMatcher<A, B>, op3: TransformativeMatcher<B, C>, op4: TransformativeMatcher<C, D>, op5: TransformativeMatcher<D, E>): EvtCompat<E>;
+    pipe<A, B, C, D, E, F>(boundTo: Bindable, op1: TransformativeMatcher<T, A>, op2: TransformativeMatcher<A, B>, op3: TransformativeMatcher<B, C>, op4: TransformativeMatcher<C, D>, op5: TransformativeMatcher<D, E>, op6: TransformativeMatcher<E, F>): EvtCompat<F>;
+    pipe<A, B, C, D, E, F, G>(boundTo: Bindable, op1: TransformativeMatcher<T, A>, op2: TransformativeMatcher<A, B>, op3: TransformativeMatcher<B, C>, op4: TransformativeMatcher<C, D>, op5: TransformativeMatcher<D, E>, op6: TransformativeMatcher<E, F>, op7: TransformativeMatcher<F, G>): EvtCompat<G>;
+    pipe<A, B, C, D, E, F, G, H>(boundTo: Bindable, op1: TransformativeMatcher<T, A>, op2: TransformativeMatcher<A, B>, op3: TransformativeMatcher<B, C>, op4: TransformativeMatcher<C, D>, op5: TransformativeMatcher<D, E>, op6: TransformativeMatcher<E, F>, op7: TransformativeMatcher<F, G>, op8: TransformativeMatcher<G, H>): EvtCompat<H>;
+    pipe<A, B, C, D, E, F, G, H, I>(boundTo: Bindable, op1: TransformativeMatcher<T, A>, op2: TransformativeMatcher<A, B>, op3: TransformativeMatcher<B, C>, op4: TransformativeMatcher<C, D>, op5: TransformativeMatcher<D, E>, op6: TransformativeMatcher<E, F>, op7: TransformativeMatcher<F, G>, op8: TransformativeMatcher<G, H>, op9: TransformativeMatcher<H, I>): EvtCompat<I>;
+    pipe<A, B, C, D, E, F, G, H, I>(boundTo: Bindable, op1: TransformativeMatcher<T, A>, op2: TransformativeMatcher<A, B>, op3: TransformativeMatcher<B, C>, op4: TransformativeMatcher<C, D>, op5: TransformativeMatcher<D, E>, op6: TransformativeMatcher<E, F>, op7: TransformativeMatcher<F, G>, op8: TransformativeMatcher<G, H>, op9: TransformativeMatcher<H, I>, ...operations: TransformativeMatcher<any, any>[]): EvtCompat<{}>;
+    pipe(...inputs: any[]): EvtCompat<any> {
+
+        const { matcher, boundTo } = this.parseOverloadParams(
+            inputs,
+            "pipe"
+        );
+
+        return this.__createDelegate(
+            typeof matcher === "function" ?
+                ((...[data, , cbInvokedIfMatched]) => this.invokeMatcher(matcher, data, cbInvokedIfMatched))
+                :
+                matcher,
+            boundTo
+        );
+
+
+
+
+    }
+
+
 }
+
+/*
+const tm1: TransformativeMatcher.Stateful<string, number> = [(str, prev1) => [prev1 + str.length], 0];
+const tm2: TransformativeMatcher.Stateful<number, string[]> = [(n, prev2) => [[...prev2, `${n}`]], []];
+
+const tmu: TransformativeMatcher<string, string[]> = (() => {
+
+
+    let prev1: number = 0;
+
+    return id<TransformativeMatcher<string, string[]>>(
+        [(str, prev2, isInternalInvocation) => {
+
+            const n = prev1 + str.length;
+
+            const data= [...prev2, `${n}`];
+
+            if( !!isInternalInvocation && !TransformativeMatcher.Returns.NotMatched.match([data]) ){
+                prev1 = n;
+            }
+
+            return [data];
+
+        }, []]
+    );
+
+
+})();
+*/
+
+
+
+
+
+
+
+
+
 
 /** https://garronej.github.io/ts-evt/#voidevt */
 export class VoidEvtCompat extends EvtCompat<void> {

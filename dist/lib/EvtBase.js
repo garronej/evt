@@ -47,6 +47,7 @@ exports.__esModule = true;
 var EvtBaseProtected_1 = require("./EvtBaseProtected");
 var isCallableFunction_1 = require("../tools/isCallableFunction");
 var typeSafety_1 = require("../tools/typeSafety");
+var composeMatcher_1 = require("./util/composeMatcher");
 function parseOverloadParamsFactory(_a) {
     var defaultBoundTo = _a.defaultBoundTo;
     var canBeMatcher = function (p) {
@@ -54,14 +55,30 @@ function parseOverloadParamsFactory(_a) {
             p.length === 2 &&
             isCallableFunction_1.isCallableFunction(p[0]));
     };
-    var defaultParams = {
+    var defaultParams = typeSafety_1.id({
         "matcher": function matchAll() { return true; },
         "boundTo": defaultBoundTo,
         "timeout": undefined,
         "callback": undefined
-    };
+    });
     return function parseOverloadParams(inputs, methodName) {
         switch (methodName) {
+            case "pipe":
+                {
+                    //[ boundTo, ...TransformativeMatcher[] ]
+                    //[ ...TransformativeMatcher[] ]
+                    var getMatcherWrap = function (args) { return (args.length === 0 ? {} : { "matcher": composeMatcher_1.composeMany(args) }); };
+                    if (canBeMatcher(inputs[0])) {
+                        //[ ...TransformativeMatcher[] ]
+                        return typeSafety_1.id(__assign(__assign({}, defaultParams), getMatcherWrap(inputs)));
+                    }
+                    else {
+                        //[ boundTo, ...TransformativeMatcher[] ]
+                        var _a = __read(inputs), boundTo = _a[0], rest = _a.slice(1);
+                        return typeSafety_1.id(__assign(__assign(__assign({}, defaultParams), { "boundTo": boundTo }), getMatcherWrap(rest)));
+                    }
+                }
+                break;
             case "createDelegate":
                 {
                     var n = inputs.length
@@ -75,11 +92,11 @@ function parseOverloadParamsFactory(_a) {
                         case 1:
                             //[ matcher ]
                             //[ boundTo ]
-                            var _a = __read(inputs, 1), p = _a[0];
+                            var _b = __read(inputs, 1), p = _b[0];
                             return canBeMatcher(p) ? typeSafety_1.id(__assign(__assign({}, defaultParams), { "matcher": p })) : typeSafety_1.id(__assign(__assign({}, defaultParams), { "boundTo": p }));
                         case 2:
                             //[ matcher, boundTo ]
-                            var _b = __read(inputs, 2), p1 = _b[0], p2 = _b[1];
+                            var _c = __read(inputs, 2), p1 = _c[0], p2 = _c[1];
                             return typeSafety_1.id(__assign(__assign({}, defaultParams), { "matcher": p1, "boundTo": p2 }));
                     }
                 }
@@ -88,11 +105,11 @@ function parseOverloadParamsFactory(_a) {
                 {
                     var n = inputs.length;
                     if (n === 2) {
-                        var _c = __read(inputs, 2), p1 = _c[0], p2 = _c[1];
+                        var _d = __read(inputs, 2), p1 = _d[0], p2 = _d[1];
                         return typeSafety_1.id(__assign(__assign({}, defaultParams), { "matcher": p1, "timeout": p2 }));
                     }
                     else {
-                        var _d = __read(inputs, 1), p = _d[0];
+                        var _e = __read(inputs, 1), p = _e[0];
                         return typeSafety_1.id(canBeMatcher(p) ? (__assign(__assign({}, defaultParams), { "matcher": p })) : (__assign(__assign({}, defaultParams), { "timeout": p })));
                     }
                 }
@@ -111,14 +128,14 @@ function parseOverloadParamsFactory(_a) {
                     switch (n) {
                         case 4: {
                             //[ matcher, boundTo, timeout, callback ]
-                            var _e = __read(inputs, 4), p1 = _e[0], p2 = _e[1], p3 = _e[2], p4 = _e[3];
+                            var _f = __read(inputs, 4), p1 = _f[0], p2 = _f[1], p3 = _f[2], p4 = _f[3];
                             return typeSafety_1.id(__assign(__assign({}, defaultParams), { "matcher": p1, "boundTo": p2, "timeout": p3, "callback": p4 }));
                         }
                         case 3: {
                             //[ matcher, boundTo, callback ]
                             //[ matcher, timeout, callback ]
                             //[ boundTo, timeout, callback ]
-                            var _f = __read(inputs, 3), p1 = _f[0], p2 = _f[1], p3 = _f[2];
+                            var _g = __read(inputs, 3), p1 = _g[0], p2 = _g[1], p3 = _g[2];
                             if (typeof p2 === "number") {
                                 //[ matcher, timeout, callback ]
                                 //[ boundTo, timeout, callback ]
@@ -144,7 +161,7 @@ function parseOverloadParamsFactory(_a) {
                             //[ matcher, callback ]
                             //[ boundTo, callback ]
                             //[ timeout, callback ]
-                            var _g = __read(inputs, 2), p1 = _g[0], p2 = _g[1];
+                            var _h = __read(inputs, 2), p1 = _h[0], p2 = _h[1];
                             if (typeof p1 === "number") {
                                 //[ timeout, callback ]
                                 return typeSafety_1.id(__assign(__assign({}, defaultParams), { "timeout": p1, "callback": p2 }));
@@ -163,7 +180,7 @@ function parseOverloadParamsFactory(_a) {
                         }
                         case 1: {
                             //[ callback ]
-                            var _h = __read(inputs, 1), p = _h[0];
+                            var _j = __read(inputs, 1), p = _j[0];
                             return typeSafety_1.id(__assign(__assign({}, defaultParams), { "callback": p }));
                         }
                         case 0: {

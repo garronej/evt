@@ -511,7 +511,7 @@ function generateProxyFunctionFactory(oneShotEvt: OneShotEvt<RaceResult<Racer<an
                                 "data": prResultWrap.data,
                                 "racer": prResultWrap.promise,
                             },
-                            [ undefined ]
+                            undefined
                         );
 
                     };

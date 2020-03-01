@@ -94,51 +94,16 @@ export namespace EvtError {
 
 }
 
+
 export type TransformativeMatcher<T, U> =
     TransformativeMatcher.Stateless<T, U> |
     TransformativeMatcher.Stateful<T, U>
     ;
 
-export namespace TransformativeMatcher {
-
-    /**
-     * [U] => pass U to the handler's callback.
-     * [U,"DETACH"] => detach the handler then pass U to the handler's callback.
-     * null => do not pass the event data to the handler callback.
-     * "DETACH" => detach the handler and do not pass the event data to the handler's callback.
-     */
-    export type Returns<U> =
-        readonly [U] | readonly [U, "DETACH" | null]
-        |
-        null | "DETACH"
-        ;
-
-    export type Stateless<T, U> = (data: T) => Returns<U>;
-
-    export namespace Stateless{
-
-        export function match<T,U>(matcher: TransformativeMatcher<T,U>): matcher is Stateless<T,U> {
-            return typeof matcher === "function"
-        }
-
-    }
-
-    export type Stateful<T, U> = [(data: T, prev: U) => Returns<U>, U];
-
-    export namespace Stateful {
-
-        export function match<T,U>(matcher: TransformativeMatcher<T,U>): matcher is Stateful<T,U> {
-            return !Stateless.match(matcher);
-        }
-
-
-    }
-
-}
-
 
 export namespace TransformativeMatcher {
 
+    //TODO: move out
     /**
      * When using a transformative matcher with
      * waitFor, attachOnce or attachOncePrepend 
@@ -147,10 +112,70 @@ export namespace TransformativeMatcher {
      * detaching via the matcher or using a stateful matcher
      */
     export type Once<T, U> = (data: T) => (
-        readonly [U]
+        Returns.Matched.NoDetachArg<U>
         |
-        null | "DETACH"
+        Returns.NotMatched
     );
 
+
+
+
+    /**
+     * [U] or [U,null] => pass U to the handler's callback.
+     * [U,"DETACH"] => detach the handler then pass U to the handler's callback.
+     * null => do not pass the event data to the handler callback.
+     * "DETACH" => detach the handler and do not pass the event data to the handler's callback.
+     */
+    export type Returns<U> =
+        Returns.Matched<U> | Returns.NotMatched
+        ;
+
+    export namespace Returns {
+
+        //export type Detach = "DETACH" | { DETACH: import("./EvtCompat").HandlerGroup };
+        export type Detach = "DETACH";
+
+        export namespace Detach {
+
+            export function match(transformativeMatcherResult: Returns<any>): transformativeMatcherResult is Detach {
+                return transformativeMatcherResult === "DETACH";
+            }
+
+        }
+
+        export type Matched<U> = Matched.NoDetachArg<U> | Matched.WithDetachArg<U>;
+
+        export namespace Matched {
+
+            export type NoDetachArg<U> = readonly [U];
+            export type WithDetachArg<U> = readonly [ U, Detach | null ];
+
+        }
+
+        export type NotMatched=  Detach | null;
+
+        export namespace NotMatched {
+
+            export function match(
+                transformativeMatcherResult: Returns<any>
+            ): transformativeMatcherResult is NotMatched {
+                return (
+                    transformativeMatcherResult === null ||
+                    Detach.match(transformativeMatcherResult)
+                );
+            }
+
+        }
+
+
+
+    }
+
+    //export type Stateless<T, U> = (data: T) => Returns<U>;
+    export type Stateless<T, U> = (data: T, prev?: undefined, cbInvokedIfMatched?: true) => Returns<U>;
+
+    export type Stateful<T, U> = [(data: T, prev: U, cbInvokedIfMatched?: true) => Returns<U>, U];
+
 }
+
 

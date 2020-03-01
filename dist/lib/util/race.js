@@ -268,7 +268,7 @@ function generateProxyFunctionFactory(oneShotEvt) {
                         "i": raceResult.i,
                         "data": prResultWrap.data,
                         "racer": prResultWrap.promise
-                    }, [undefined]);
+                    }, undefined);
                 };
                 methodBackup.apply(void 0, __spread(inputs)).then(function (data) { return dOut.resolve(data); }, function (error) { return dOut.reject(error); });
                 return dOut.pr;

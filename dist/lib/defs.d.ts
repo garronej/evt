@@ -66,28 +66,35 @@ export declare namespace EvtError {
 export declare type TransformativeMatcher<T, U> = TransformativeMatcher.Stateless<T, U> | TransformativeMatcher.Stateful<T, U>;
 export declare namespace TransformativeMatcher {
     /**
-     * [U] => pass U to the handler's callback.
-     * [U,"DETACH"] => detach the handler then pass U to the handler's callback.
-     * null => do not pass the event data to the handler callback.
-     * "DETACH" => detach the handler and do not pass the event data to the handler's callback.
-     */
-    type Returns<U> = readonly [U] | readonly [U, "DETACH" | null] | null | "DETACH";
-    type Stateless<T, U> = (data: T) => Returns<U>;
-    namespace Stateless {
-        function match<T, U>(matcher: TransformativeMatcher<T, U>): matcher is Stateless<T, U>;
-    }
-    type Stateful<T, U> = [(data: T, prev: U) => Returns<U>, U];
-    namespace Stateful {
-        function match<T, U>(matcher: TransformativeMatcher<T, U>): matcher is Stateful<T, U>;
-    }
-}
-export declare namespace TransformativeMatcher {
-    /**
      * When using a transformative matcher with
      * waitFor, attachOnce or attachOncePrepend
      * the first matched event will cause the handler
      * to be detached so there is no purpose of
      * detaching via the matcher or using a stateful matcher
      */
-    type Once<T, U> = (data: T) => (readonly [U] | null | "DETACH");
+    type Once<T, U> = (data: T) => (Returns.Matched.NoDetachArg<U> | Returns.NotMatched);
+    /**
+     * [U] or [U,null] => pass U to the handler's callback.
+     * [U,"DETACH"] => detach the handler then pass U to the handler's callback.
+     * null => do not pass the event data to the handler callback.
+     * "DETACH" => detach the handler and do not pass the event data to the handler's callback.
+     */
+    type Returns<U> = Returns.Matched<U> | Returns.NotMatched;
+    namespace Returns {
+        type Detach = "DETACH";
+        namespace Detach {
+            function match(transformativeMatcherResult: Returns<any>): transformativeMatcherResult is Detach;
+        }
+        type Matched<U> = Matched.NoDetachArg<U> | Matched.WithDetachArg<U>;
+        namespace Matched {
+            type NoDetachArg<U> = readonly [U];
+            type WithDetachArg<U> = readonly [U, Detach | null];
+        }
+        type NotMatched = Detach | null;
+        namespace NotMatched {
+            function match(transformativeMatcherResult: Returns<any>): transformativeMatcherResult is NotMatched;
+        }
+    }
+    type Stateless<T, U> = (data: T, prev?: undefined, cbInvokedIfMatched?: true) => Returns<U>;
+    type Stateful<T, U> = [(data: T, prev: U, cbInvokedIfMatched?: true) => Returns<U>, U];
 }

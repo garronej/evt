@@ -10,7 +10,7 @@ export declare class HandlerGroupBaseProtected {
     static match(boundTo: Bindable): boundTo is HandlerGroupBaseProtected;
 }
 /** If the matcher is not transformative then the transformedData will be the input data */
-export declare function invokeMatcher<T, U>(matcher: TransformativeMatcher<T, U> | ((data: T) => boolean), data: T, [previousValue]: [U | undefined]): TransformativeMatcher.Returns<T | U>;
+export declare function invokeMatcher<T, U>(matcher: TransformativeMatcher<T, U> | ((data: T) => boolean), data: T, cbInvokedIfMatched?: true, prev?: U): TransformativeMatcher.Returns<T | U>;
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 export declare class EvtBaseProtected<T> {
     static createHandlerGroup(): HandlerGroupBaseProtected;
@@ -29,7 +29,7 @@ export declare class EvtBaseProtected<T> {
     private readonly asyncHandlerChronologyMark;
     private readonly asyncHandlerChronologyExceptionRange;
     private readonly getChronologyMark;
-    private readonly stateOfStatefulTransformativeMatchers;
+    private readonly previousDadaOfStatefulTransformativeMatchers;
     protected addHandler<U>(userProvidedParams: UserProvidedParams<T, U>, implicitAttachParams: ImplicitParams): Handler<T, U>;
     private trace;
     /**
@@ -39,7 +39,7 @@ export declare class EvtBaseProtected<T> {
      * */
     post(data: T): number;
     /** If the matcher is not transformative then the transformedData will be the input data */
-    protected invokeMatcher<U>(matcher: TransformativeMatcher<T, U> | ((data: T) => boolean), data: T): TransformativeMatcher.Returns<T | U>;
+    protected invokeMatcher<U>(matcher: TransformativeMatcher<T, U> | ((data: T) => boolean), data: T, cbInvokedIfMatched?: true): TransformativeMatcher.Returns<T | U>;
     /** Return isExtracted */
     private postSync;
     private readonly postAsync;
