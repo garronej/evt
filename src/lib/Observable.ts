@@ -1,18 +1,19 @@
 
 import { Evt } from "./Evt";
 import { overwriteReadonlyProp } from "../tools/overwriteReadonlyProp";
-import { NonPostable } from "./helperTypes/NonPostable";
+import { NonPostable } from "./types/helper/NonPostable";
 
 type ChangeDiff<T> = {
     newValue: T;
     previousValue: T;
 };
 
+
 /** 
  * https://garronej.github.io/ts-evt/#observert-documentation 
  * The interface that should be exposed to users that should 
  * have read only access on the observable */
-export interface Observable<T> {
+export interface IObservable<T> {
     readonly value: T;
     /** when value changed post the new value and the value it previously replaced */
     readonly evtChangeDiff: NonPostable<Evt<ChangeDiff<T>>>;
@@ -21,12 +22,12 @@ export interface Observable<T> {
 };
 
 /** https://garronej.github.io/ts-evt/#observert-documentation */
-export class ObservableImpl<T> implements Observable<T> {
+export class Observable<T> implements IObservable<T> {
 
     private readonly evtChangeDiff_post: (data: ChangeDiff<T>) => void;
 
-    public readonly evtChangeDiff: Observable<T>["evtChangeDiff"];
-    public readonly evtChange: Observable<T>["evtChange"];
+    public readonly evtChangeDiff: IObservable<T>["evtChangeDiff"];
+    public readonly evtChange: IObservable<T>["evtChange"];
 
     //NOTE: Not really readonly but we want to prevent user from setting the value
     //manually and we cant user accessor because we target es3.
@@ -44,7 +45,7 @@ export class ObservableImpl<T> implements Observable<T> {
 
             this.evtChangeDiff_post = changeDiff => evtChangeDiff.post(changeDiff);
 
-            this.evtChange = evtChangeDiff.createDelegate(
+            this.evtChange = evtChangeDiff.pipe(
                 ({ newValue }) => [newValue]
             );
 

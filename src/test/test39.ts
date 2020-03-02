@@ -1,6 +1,5 @@
 
-import { Evt } from "../lib";
-import { NonPostable } from "../lib/helperTypes";
+import { Evt, NonPostable } from "../lib";
 import { id, assert } from "../tools/typeSafety";
 
 type Person = {
@@ -36,7 +35,7 @@ const startUi = (() => {
                 [personChange.person] : null,
             person => createPersonLogger({
                 person,
-                "evtFieldChange": evtPersonChange.createDelegate(
+                "evtFieldChange": evtPersonChange.pipe(
                     personChange => personChange.person === person ?
                         (() => {
                             switch (personChange.eventType) {

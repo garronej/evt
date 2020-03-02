@@ -39,8 +39,8 @@ var __generator: any = (this && this.__generator) || function (thisArg: any, bod
 };
 var _this = this;
 exports.__esModule = true;
-var EvtBase_1 = require("../lib/EvtBase");
-var evtText = new EvtBase_1.EvtBase();
+var EvtOverloaded_1 = require("../lib/EvtOverloaded");
+var evtText = new EvtOverloaded_1.EvtOverloaded();
 (function () { return __awaiter(_this, void 0, void 0, function () {
     var t1: any, t2: any;
     return __generator(this, function (_a: any) {

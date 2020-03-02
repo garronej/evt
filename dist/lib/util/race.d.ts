@@ -1,5 +1,5 @@
 import { Evt } from "../index";
-import { OneShot } from "../helperTypes";
+import { OneShot } from "../types/helper";
 export declare type OneShotEvt<T> = OneShot<Evt<T>>;
 export declare type Racer<T> = OneShotEvt<T> | PromiseLike<T> | T;
 export declare type UnpackRacer<T extends Racer<any>> = T extends OneShotEvt<infer U> ? U : T extends PromiseLike<infer V> ? V : T;

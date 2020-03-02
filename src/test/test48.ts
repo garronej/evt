@@ -1,6 +1,6 @@
 
 import { Evt, EvtError } from "../lib";
-import * as utilEvt from "../lib/util";
+import { race } from "../lib/util/race";
 import { assert } from "../tools/typeSafety";
 import { getPromiseAssertionApi } from "../tools/testing";
 
@@ -10,7 +10,7 @@ const evtAge = new Evt<number>();
 const evtText = new Evt<string>();
 
 mustReject({
-    "promise": utilEvt.race([
+    "promise": race([
         evtAge,
         evtText
     ]).$attachOnce(

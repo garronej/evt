@@ -1,2 +1,3 @@
-export { EvtCompat as Evt, VoidEvtCompat as VoidEvt } from "./EvtCompat";
-export { Handler, Bindable, EvtError } from "./defs";
+export * from "./Evt";
+export * from "./types";
+export * from "./Observable";

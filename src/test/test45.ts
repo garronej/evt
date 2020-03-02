@@ -1,7 +1,7 @@
 
 
 import { EvtError } from "../lib/index";
-import * as utilEvt from "../lib/util";
+import { race } from "../lib/util/race";
 import { assert } from "../tools/typeSafety";
 import { getPromiseAssertionApi } from "../tools/testing";
 
@@ -13,7 +13,7 @@ const error = new Error("my error");
 const prMessage: Promise<string> = new Promise((...[, reject]) => reject(error));
 
 mustReject({
-    "promise": utilEvt.race([
+    "promise": race([
         prMessage,
         new Promise<string>(resolve => setTimeout(() => resolve("OK"), 100))
     ]).attachOnce(

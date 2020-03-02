@@ -1,5 +1,5 @@
 import { Evt } from "./Evt";
-import { NonPostable } from "./helperTypes/NonPostable";
+import { NonPostable } from "./types/helper/NonPostable";
 declare type ChangeDiff<T> = {
     newValue: T;
     previousValue: T;
@@ -8,7 +8,7 @@ declare type ChangeDiff<T> = {
  * https://garronej.github.io/ts-evt/#observert-documentation
  * The interface that should be exposed to users that should
  * have read only access on the observable */
-export interface Observable<T> {
+export interface IObservable<T> {
     readonly value: T;
     /** when value changed post the new value and the value it previously replaced */
     readonly evtChangeDiff: NonPostable<Evt<ChangeDiff<T>>>;
@@ -16,11 +16,11 @@ export interface Observable<T> {
     readonly evtChange: NonPostable<Evt<T>>;
 }
 /** https://garronej.github.io/ts-evt/#observert-documentation */
-export declare class ObservableImpl<T> implements Observable<T> {
+export declare class Observable<T> implements IObservable<T> {
     private readonly areSame;
     private readonly evtChangeDiff_post;
-    readonly evtChangeDiff: Observable<T>["evtChangeDiff"];
-    readonly evtChange: Observable<T>["evtChange"];
+    readonly evtChangeDiff: IObservable<T>["evtChangeDiff"];
+    readonly evtChange: IObservable<T>["evtChange"];
     readonly value: T;
     constructor(initialValue: T, areSame?: (currentValue: T, newValue: T) => boolean);
     private overwriteReadonlyValue;

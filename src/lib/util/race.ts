@@ -1,12 +1,11 @@
 import { Evt, VoidEvt } from "../index";
 import { assert, typeGuard } from "../../tools/typeSafety";
-import { Bindable } from "../../lib/defs";
-import { UnpackEvt, NonPostable, OneShot } from "../helperTypes";
+import { Bindable, EvtError } from "../types";
+import { UnpackEvt, NonPostable, OneShot } from "../types/helper";
 import { id } from "../../tools/typeSafety";
 import { Deferred } from "../../tools/Deferred";
-import { invokeMatcher } from "../EvtBaseProtected";
-import { parseOverloadParamsFactory } from "../EvtBase";
-import { EvtError } from "../defs";
+import { invokeMatcher } from "./invokeMatcher";
+import { parseOverloadParamsFactory } from "../EvtOverloaded";
 
 //export type OneShotEvt<T> = Pick<Evt<T>, "waitFor" | "attachOnce" | "$attachOnce" | "detach" | "evtAttach" | "evtDetach" | "postCount">;
 export type OneShotEvt<T> = OneShot<Evt<T>>;

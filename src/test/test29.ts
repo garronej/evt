@@ -1,5 +1,5 @@
 
-import { EvtBase as Evt } from "../lib/EvtBase";
+import { EvtOverloaded as Evt } from "../lib/EvtOverloaded";
 
 
 let evt = new Evt<string>();

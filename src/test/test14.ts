@@ -1,8 +1,3 @@
-/*
-import {
-    EvtBase as Evt
-} from "../lib/EvtBase";
-*/
 
 import { Evt } from "../lib";
 

@@ -1,317 +1,34 @@
-import { EvtCompat } from "./EvtCompat";
-import { Bindable, TransformativeMatcher } from "./defs";
-export declare class Evt<T> extends EvtCompat<T> {
-    protected __createDelegate<U>(matcher: TransformativeMatcher<T, U>, boundTo: Bindable): Evt<U>;
-    createDelegate<U>(matcher: TransformativeMatcher<T, U>, boundTo?: Bindable): Evt<U>;
-    createDelegate<Q extends T>(matcher: (data: T) => data is Q, boundTo?: Bindable): Evt<Q>;
-    createDelegate(matcher: (data: T) => boolean, boundTo?: Bindable): Evt<T>;
-    createDelegate(boundTo?: Bindable): Evt<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Transformative
-     *
-     * boundTo
-     *
-     * timeout
-     *
-     * callback
-     */
-    attach<U>(matcher: TransformativeMatcher<T, U>, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
-    attach<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => void): Promise<Q>;
-    attach(matcher: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Transformative
-     *
-     * boundTo
-     *
-     * callback
-     */
-    attach<U>(matcher: TransformativeMatcher<T, U>, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
-    attach<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => void): Promise<Q>;
-    attach(matcher: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Transformative
-     *
-     * timeout
-     *
-     * callback
-     */
-    attach<U>(matcher: TransformativeMatcher<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
-    attach<Q extends T>(matcher: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
-    attach(matcher: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
-    attach(boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Transformative
-     *
-     * callback
-     */
-    attach<U>(matcher: (data: T) => [U] | null, callback: (transformedData: U) => void): Promise<U>;
-    attach<Q extends T>(matcher: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
-    attach(matcher: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
-    attach(boundTo: Bindable, callback: (data: T) => void): Promise<T>;
-    attach(timeout: number, callback: (data: T) => void): Promise<T>;
-    attach(callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Transformative
-     *
-     * boundTo
-     *
-     * timeout
-     *
-     * callback
-     */
-    attachOnce<U>(matcher: TransformativeMatcher.Once<T, U>, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
-    attachOnce<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => void): Promise<Q>;
-    attachOnce(matcher: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Transformative
-     *
-     * boundTo
-     *
-     * callback
-     */
-    attachOnce<U>(matcher: TransformativeMatcher.Once<T, U>, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
-    attachOnce<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => void): Promise<Q>;
-    attachOnce(matcher: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Transformative
-     *
-     * timeout
-     *
-     * callback
-     */
-    attachOnce<U>(matcher: TransformativeMatcher.Once<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
-    attachOnce<Q extends T>(matcher: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
-    attachOnce(matcher: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
-    attachOnce(boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Transformative
-     *
-     * callback
-     */
-    attachOnce<U>(matcher: TransformativeMatcher.Once<T, U>, callback: (transformedData: U) => void): Promise<U>;
-    attachOnce<Q extends T>(matcher: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
-    attachOnce(matcher: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
-    attachOnce(boundTo: Bindable, callback: (data: T) => void): Promise<T>;
-    attachOnce(timeout: number, callback: (data: T) => void): Promise<T>;
-    attachOnce(callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Transformative
-     *
-     * boundTo
-     *
-     * timeout
-     *
-     * callback
-     */
-    attachExtract<U>(matcher: TransformativeMatcher<T, U>, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
-    attachExtract<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => void): Promise<Q>;
-    attachExtract(matcher: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Transformative
-     *
-     * boundTo
-     *
-     * callback
-     */
-    attachExtract<U>(matcher: TransformativeMatcher<T, U>, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
-    attachExtract<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => void): Promise<Q>;
-    attachExtract(matcher: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Transformative
-     *
-     * timeout
-     *
-     * callback
-     */
-    attachExtract<U>(matcher: TransformativeMatcher<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
-    attachExtract<Q extends T>(matcher: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
-    attachExtract(matcher: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Transformative
-     *
-     * callback
-     */
-    attachExtract<U>(matcher: TransformativeMatcher<T, U>, callback: (transformedData: U) => void): Promise<U>;
-    attachExtract<Q extends T>(matcher: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
-    attachExtract(matcher: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Transformative
-     *
-     * boundTo
-     *
-     * timeout
-     *
-     * callback
-     */
-    attachPrepend<U>(matcher: TransformativeMatcher<T, U>, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
-    attachPrepend<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => void): Promise<Q>;
-    attachPrepend(matcher: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Transformative
-     *
-     * boundTo
-     *
-     * callback
-     */
-    attachPrepend<U>(matcher: TransformativeMatcher<T, U>, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
-    attachPrepend<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => void): Promise<Q>;
-    attachPrepend(matcher: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Transformative
-     *
-     * timeout
-     *
-     * callback
-     */
-    attachPrepend<U>(matcher: TransformativeMatcher<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
-    attachPrepend<Q extends T>(matcher: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
-    attachPrepend(matcher: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
-    attachPrepend(boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Transformative
-     *
-     * callback
-     */
-    attachPrepend<U>(matcher: TransformativeMatcher<T, U>, callback: (transformedData: U) => void): Promise<U>;
-    attachPrepend<Q extends T>(matcher: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
-    attachPrepend(matcher: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
-    attachPrepend(boundTo: Bindable, callback: (data: T) => void): Promise<T>;
-    attachPrepend(timeout: number, callback: (data: T) => void): Promise<T>;
-    attachPrepend(callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Transformative
-     *
-     * boundTo
-     *
-     * timeout
-     *
-     * callback
-     */
-    attachOncePrepend<U>(matcher: TransformativeMatcher.Once<T, U>, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
-    attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => void): Promise<Q>;
-    attachOncePrepend(matcher: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Transformative
-     *
-     * boundTo
-     *
-     * callback
-     */
-    attachOncePrepend<U>(matcher: TransformativeMatcher.Once<T, U>, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
-    attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => void): Promise<Q>;
-    attachOncePrepend(matcher: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Transformative
-     *
-     * callback
-     */
-    attachOncePrepend<U>(matcher: TransformativeMatcher.Once<T, U>, callback: (transformedData: U) => void): Promise<U>;
-    attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
-    attachOncePrepend(matcher: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
-    attachOncePrepend(boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Transformative
-     *
-     * callback
-     */
-    attachOncePrepend<U>(matcher: TransformativeMatcher.Once<T, U>, callback: (transformedData: U) => void): Promise<U>;
-    attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
-    attachOncePrepend(matcher: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
-    attachOncePrepend(boundTo: Bindable, callback: (data: T) => void): Promise<T>;
-    attachOncePrepend(timeout: number, callback: (data: T) => void): Promise<T>;
-    attachOncePrepend(callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Transformative
-     *
-     * boundTo
-     *
-     * timeout
-     *
-     * callback
-     */
-    attachOnceExtract<U>(matcher: TransformativeMatcher.Once<T, U>, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
-    attachOnceExtract<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => void): Promise<Q>;
-    attachOnceExtract(matcher: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Transformative
-     *
-     * boundTo
-     *
-     * callback
-     */
-    attachOnceExtract<U>(matcher: TransformativeMatcher.Once<T, U>, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
-    attachOnceExtract<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => void): Promise<Q>;
-    attachOnceExtract(matcher: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Transformative
-     *
-     * timeout
-     *
-     * callback
-     */
-    attachOnceExtract<U>(matcher: TransformativeMatcher.Once<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
-    attachOnceExtract<Q extends T>(matcher: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
-    attachOnceExtract(matcher: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
-    attachOnceExtract(boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Transformative
-     *
-     * callback
-     */
-    attachOnceExtract<U>(matcher: TransformativeMatcher.Once<T, U>, callback: (transformedData: U) => void): Promise<U>;
-    attachOnceExtract<Q extends T>(matcher: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
-    attachOnceExtract(matcher: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
-    attachOnceExtract(boundTo: Bindable, callback: (data: T) => void): Promise<T>;
-    attachOnceExtract(timeout: number, callback: (data: T) => void): Promise<T>;
-    attachOnceExtract(callback: (data: T) => void): Promise<T>;
+import { EvtOverloaded } from "./EvtOverloaded";
+import { Handler, $Matcher } from "./types";
+import { HandlerGroup } from "./HandlerGroup";
+export declare class Evt<T> extends EvtOverloaded<T> {
+    static createHandlerGroup(): HandlerGroup;
+    /** https://garronej.github.io/ts-evt/#evtevtattach */
+    readonly evtAttach: EvtOverloaded<Handler<T, any>>;
+    protected onHandlerAdded(handler: Handler<T, any>): void;
+    readonly evtDetach: EvtOverloaded<Handler<T, any>>;
+    protected onHandlerDetached(handler: Handler<T, any>): void;
+    postAsyncOnceHandled(data: T): Promise<number>;
+    postSyncOnceHandled(data: T): Promise<number>;
+    private __postOnceHandled;
+    pipe(): Evt<T>;
+    pipe<A>($matcher: $Matcher<T, A>): Evt<A>;
+    pipe<A, B>($matcher: $Matcher<T, A>, $matcher2: $Matcher<A, B>): Evt<B>;
+    pipe<A, B, C>($matcher1: $Matcher<T, A>, $matcher2: $Matcher<A, B>, $matcher3: $Matcher<B, C>): Evt<C>;
+    pipe<A, B, C, D>($matcher1: $Matcher<T, A>, $matcher2: $Matcher<A, B>, $matcher3: $Matcher<B, C>, $matcher4: $Matcher<C, D>): Evt<D>;
+    pipe<A, B, C, D, E>($matcher1: $Matcher<T, A>, $matcher2: $Matcher<A, B>, $matcher3: $Matcher<B, C>, $matcher4: $Matcher<C, D>, $matcher5: $Matcher<D, E>): Evt<E>;
+    pipe<A, B, C, D, E, F>($matcher1: $Matcher<T, A>, $matcher2: $Matcher<A, B>, $matcher3: $Matcher<B, C>, $matcher4: $Matcher<C, D>, $matcher5: $Matcher<D, E>, $matcher6: $Matcher<E, F>): Evt<F>;
+    pipe<A, B, C, D, E, F, G>($matcher1: $Matcher<T, A>, $matcher2: $Matcher<A, B>, $matcher3: $Matcher<B, C>, $matcher4: $Matcher<C, D>, $matcher5: $Matcher<D, E>, $matcher6: $Matcher<E, F>, $matcher7: $Matcher<F, G>): Evt<G>;
+    pipe<A, B, C, D, E, F, G, H>($matcher1: $Matcher<T, A>, $matcher2: $Matcher<A, B>, $matcher3: $Matcher<B, C>, $matcher4: $Matcher<C, D>, $matcher5: $Matcher<D, E>, $matcher6: $Matcher<E, F>, $matcher7: $Matcher<F, G>, $matcher8: $Matcher<G, H>): Evt<H>;
+    pipe<A, B, C, D, E, F, G, H, I>($matcher1: $Matcher<T, A>, $matcher2: $Matcher<A, B>, $matcher3: $Matcher<B, C>, $matcher4: $Matcher<C, D>, $matcher5: $Matcher<D, E>, $matcher6: $Matcher<E, F>, $matcher7: $Matcher<F, G>, $matcher8: $Matcher<G, H>, $matcher9: $Matcher<H, I>): Evt<I>;
+    pipe<A, B, C, D, E, F, G, H, I>($matcher1: $Matcher<T, A>, $matcher2: $Matcher<A, B>, $matcher3: $Matcher<B, C>, $matcher4: $Matcher<C, D>, $matcher5: $Matcher<D, E>, $matcher6: $Matcher<E, F>, $matcher7: $Matcher<F, G>, $matcher8: $Matcher<G, H>, $matcher9: $Matcher<H, I>, ...$matchererations: $Matcher<any, any>[]): Evt<{}>;
+    pipe(boundTo: HandlerGroup): Evt<T>;
+    pipe<Q extends T>(matcher: (data: T) => data is Q): Evt<Q>;
+    pipe(matcher: (data: T) => boolean): Evt<T>;
 }
+/** https://garronej.github.io/ts-evt/#voidevt */
 export declare class VoidEvt extends Evt<void> {
+    post(): number;
+    postAsyncOnceHandled(): Promise<number>;
+    postSyncOnceHandled(): Promise<number>;
 }

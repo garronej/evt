@@ -19,23 +19,23 @@ const matchCircle = (shape: Shape): shape is Circle =>
 
 const evtShape = new Evt<Shape>();
 
-const evtCircle = evtShape.createDelegate(matchCircle);
+const evtCircle = evtShape.pipe(matchCircle);
 id<Evt<Circle>>(evtCircle);
 
-const evtRadius = evtShape.createDelegate(
+const evtRadius = evtShape.pipe(
     shape => shape.type === "CIRCLE" ? [shape.radius] : null
 );
 id<Evt<number>>(evtRadius);
 
-const evtShapeClone = evtShape.createDelegate();
+const evtShapeClone = evtShape.pipe();
 id<Evt<Shape>>(evtShapeClone);
 
-const evtBigCircle = evtShape.createDelegate(
+const evtBigCircle = evtShape.pipe(
     shape => shape.type === "CIRCLE" && shape.radius > 100 ? [shape] : null
 );
 id<Evt<Circle>>(evtBigCircle);
 
-const evtBigShape = evtShape.createDelegate(shape => {
+const evtBigShape = evtShape.pipe(shape => {
     switch (shape.type) {
         case "SQUARE": return shape.sideLength > 100;
         case "CIRCLE": return shape.radius > 100;

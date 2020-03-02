@@ -1,8 +1,9 @@
 "use strict";
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
 exports.__esModule = true;
-var EvtCompat_1 = require("./EvtCompat");
-exports.Evt = EvtCompat_1.EvtCompat;
-exports.VoidEvt = EvtCompat_1.VoidEvtCompat;
-var defs_1 = require("./defs");
-exports.EvtError = defs_1.EvtError;
+__export(require("./Evt"));
+__export(require("./types"));
+__export(require("./Observable"));
 //# sourceMappingURL=index.js.map

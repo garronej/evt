@@ -1,33 +1,14 @@
 
-import { Evt } from "../lib";
-//import { TransformativeMatcher } from "../lib/defs"
 //import { id } from "../tools/typeSafety"
-import { scan, throttleTime } from "../lib/util/composeMatcher";
+import { Evt } from "../lib";
+import { scan, throttleTime } from "../lib/util";
 
 
-//const hg: IHandlerGroup = Evt.createHandlerGroup();
 const hg = Evt.createHandlerGroup();
 
 const evtText = new Evt<string>();
 
-
 /*
-evtText
-    .createDelegate(str => [str.toUpperCase()], hg)
-    .createDelegate(str => [str.split("-")])
-    .createDelegate(arr => [arr.filter(str => str.startsWith("A"))])
-    .createDelegate(arr => [arr.join("-"), { "DETACH": hg }])
-    .attachOnce(str => console.log(str))
-    ;
-
-
-evtText.post("abc-bce-add");
-
-hg.detach();
-
-console.log(evtText.getHandlers());
-*/
-
 
 
 
@@ -42,41 +23,25 @@ evtText
     .attach(str => console.log("1 " + str))
 
 
+*/
 
+//TODO: Detach from matcher
 evtText
     .pipe(hg)
     .pipe(str => [str.toUpperCase()])
-    .pipe(str => str.startsWith("H") ? [str] : null)
+    .pipe(str => str.startsWith("H"))
     .pipe(scan((charCount, str) => charCount + str.length, 0))
-    .pipe(([str, charCount, index]) => [`${str} ${charCount}`, charCount > 30 || index === 10 ? "DETACH" : null])
+    .pipe( count=> count < 33 ? [ `${count}` ] : "DETACH" )
     .attach(str => console.log("2 " + str))
     ;
 
 
-
-
-evtText
-    .createDelegate(hg)
-    .createDelegate(str => [str.toUpperCase()])
-    .createDelegate(str => str.startsWith("H") ? [str] : null)
-    .createDelegate(scan((charCount, str) => charCount + str.length, 0))
-    .createDelegate(([str, charCount, index]) => [`${str} ${charCount}`, charCount > 30 || index === 10 ? "DETACH" : null])
-    .attach(str => console.log("3 " + str))
-    ;
-
-
 evtText.post("hello world");
 evtText.post("hello world");
 evtText.post("hello world");
 evtText.post("hello world");
-
 
 const evtStr = new Evt<string>();
-
-evtStr
-    .createDelegate(throttleTime(1000))
-    .attach(str => console.log("1", { str }))
-    ;
 
 evtStr
     .pipe(throttleTime(1000))

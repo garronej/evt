@@ -22,7 +22,7 @@ type inference features to provide __type safety__ while keeping things __concis
 
 - No polyfills needed ✅  
 - Transpiled down to ES3 ✅  
-- Very light-weight ✅   
+- Light-weight ✅   
 
 # Motivation
 
@@ -32,19 +32,27 @@ There is a lot of things that can't easily be done with ``EventEmitter``:
 - Adding a one-time listener for the next event that meet a condition.
 - Waiting (via a Promise) for one thing or another to happen. <i>Example: waiting at most one second for the next message, stop waiting if the socket disconnect.</i>
 
-# ``RxJS``, heard of it ? 
+``RxJS`` have it's issues as well:
+- When chaining operators the types are often lost along the way as
+  Typescript struggle to keep track of the mutation / filtering being applied
+  to the event flow. In consequence we are often forced to arbitrate between readability, type safety and performance, achieving both tree being impossible.
+- Combining the right abstractions/operators to achieve the expected behavior can be challenging, even for seemingly straights forward control flows.
 
-The edge that ``ts-evt`` has over ``RxJS`` is that is is build especially to make the most 
-of what TypeScript is capable of.  
-Beside, unlike ``RxJS``, ``ts-evt`` does not try to sell you a ton of abstractions; It is first and foremost a reviewed and improved version of ``EventEmitter``.  
-It has only one job and it does it really well.
+``ts-evt`` introduce the concept of (transformative) ``$Matcher``, a singe function to filter, transform, encapsulate state and unsubscribe.
+Those functions are easy to write, easy to reason about, inline 
+and most importantly enable TypeScript to infer what is happening.  
+As with ``RxJS`` operators ``$Matcher``s can be composed and chained but most of the time it wont be necessary.
 
-[__See for yourself__](https://stackblitz.com/edit/ts-evt-vs-rxjs?embed=1&file=index.ts)
-how ``ts-evt`` beats ``RxJS`` on very common usecase.
 
 <p align="center">
+<b><a href="https://stackblitz.com/edit/ts-evt-vs-rxjs?embed=1&file=index.ts">See for yourself</a></b>
+</br>
+</br>
     <img src="https://user-images.githubusercontent.com/6702424/75049459-82a1f300-54ca-11ea-9b09-66ae107ceb8f.gif">  
 </p>
+
+
+
 
 # Try it in your browser right now
 
@@ -63,7 +71,6 @@ how ``ts-evt`` beats ``RxJS`` on very common usecase.
 # Table of content
 
 - [Motivation](#motivation)
-- [``RxJS``, heard of it ?](#rxjs-heard-of-it-)
 - [Try it in your browser right now](#try-it-in-your-browser-right-now)
 - [Table of content](#table-of-content)
 - [Dependency requirement](#dependency-requirement)
@@ -101,12 +108,11 @@ how ``ts-evt`` beats ``RxJS`` on very common usecase.
 
 # Dependency requirement
 
-Minimum version of typescript your project needs to be using.
+Minimum version of typescript your project needs to be using is:
 
-- For importing ``Evt``:  typescript >= __2.2__ ( Feb 2017 )
-- For importing ``Observable``:  typescript >= __2.8__ ( Mar 2018 )
+typescript >= __2.8__ ( Mar 2018 )
 
-Exposed interfaces use typescript keywords that were added in specified version.
+Exposed api use typescript keywords that were added in this version.
 
 # ``Evt<T>`` documentation
 
@@ -1008,13 +1014,17 @@ This will print:
 
 # ``Observable<T>`` documentation
 
-``ObservableImpl<T>`` is a class that leverage ``Evt<T>`` for mutation tracking.
+``Observable`` in ``RxJS`` and ``ts-evt`` are **not** a different implementation
+ of the same abstraction.
+
+ In ``ts-evt`` an ``Observable<T>`` represent a variable that can be observed,j
+ meaning that if the value change an event is posted.
 
 ```typescript
 
-import { Observable, ObservableImpl } from "ts-evt/dist/lib/Observable";
+import { Observable, IObservable } from "ts-evth";
 
-const obsText= new ObservableImpl<string>("foo");
+const obsText= new Observable<string>("foo");
 
 console.assert(obsText.value === "foo");
 
@@ -1052,7 +1062,7 @@ console.assert(obsText.value === "bar");
 //Observable is missing the onPotentialChange method.
 //the Observable interface is used to expose an observable that should not be
 //modified by the user.
-const exposedObsText: Observable<string> = obsText;
+const exposedObsText: IObservable<string> = obsText;
 
 ```
 
@@ -1080,9 +1090,9 @@ changed.
 TODO: Demo with representSameData. 
 
 ```typescript
-import { ObservableImpl } from "ts-evt/dist/lib/Observable";
+import { Observable } from "ts-evt/dist/lib/Observable";
 
-const obsNames = new ObservableImpl<string[]>(
+const obsNames = new Observable<string[]>(
     [
         "alice",
         "bob",

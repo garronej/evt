@@ -1,7 +1,7 @@
 
-import { EvtBase } from "../lib/EvtBase";
+import { EvtOverloaded } from "../lib/EvtOverloaded";
 
-const evtText = new EvtBase<string>();
+const evtText = new EvtOverloaded<string>();
 
 (async () => {
 

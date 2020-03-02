@@ -33,11 +33,11 @@ var __spread = (this && this.__spread) || function () {
 exports.__esModule = true;
 var index_1 = require("../index");
 var typeSafety_1 = require("../../tools/typeSafety");
+var types_1 = require("../types");
 var typeSafety_2 = require("../../tools/typeSafety");
 var Deferred_1 = require("../../tools/Deferred");
-var EvtBaseProtected_1 = require("../EvtBaseProtected");
-var EvtBase_2 = require("../EvtBase");
-var defs_1 = require("../defs");
+var invokeMatcher_1 = require("./invokeMatcher");
+var EvtOverloaded_2 = require("../EvtOverloaded");
 var prNever = new Promise(function () { });
 var matchOnceEvt = function (o) {
     typeSafety_1.assert(typeSafety_1.typeGuard.dry(o));
@@ -237,7 +237,7 @@ function wrapRejection(promise) {
     }); });
 }
 function generateProxyFunctionFactory(oneShotEvt) {
-    var parseOverloadParams = EvtBase_2.parseOverloadParamsFactory({ "defaultBoundTo": oneShotEvt });
+    var parseOverloadParams = EvtOverloaded_2.parseOverloadParamsFactory({ "defaultBoundTo": oneShotEvt });
     return function generateProxyFunction(methodName) {
         var methodBackup = typeSafety_2.id(oneShotEvt[methodName]).bind(oneShotEvt);
         Object.defineProperty(oneShotEvt, methodName, {
@@ -261,10 +261,10 @@ function generateProxyFunctionFactory(oneShotEvt) {
                     }
                     var prResultWrap = raceResult.data;
                     if (!prResultWrap.isFulfilled) {
-                        dOut.reject(new defs_1.EvtError.RacePromiseRejection(prResultWrap.error, raceResult.i, raceResult.racer));
+                        dOut.reject(new types_1.EvtError.RacePromiseRejection(prResultWrap.error, raceResult.i, raceResult.racer));
                         return "DETACH";
                     }
-                    return EvtBaseProtected_1.invokeMatcher(matcher, {
+                    return invokeMatcher_1.invokeMatcher(matcher, {
                         "i": raceResult.i,
                         "data": prResultWrap.data,
                         "racer": prResultWrap.promise

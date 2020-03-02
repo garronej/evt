@@ -1,6 +1,6 @@
 
 
-import * as utilEvt from "../lib/util";
+import {race } from "../lib/util/race";
 import { assert } from "../tools/typeSafety";
 import { getPromiseAssertionApi } from "../tools/testing";
 
@@ -13,7 +13,7 @@ const prMessage: Promise<string> = new Promise((...[, reject]) => setTimeout(()=
 const prOk= new Promise<string>(resolve => setTimeout(() => resolve("OK"), 100))
 
 mustResolve({
-    "promise": utilEvt.race([
+    "promise": race([
         prMessage,
         prOk
     ]).attachOnce(

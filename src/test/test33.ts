@@ -1,5 +1,6 @@
 
 import { Evt } from "../lib";
+import { assert } from "../tools/typeSafety";
 
 type Circle = {
     type: "CIRCLE";
@@ -29,18 +30,18 @@ const matchCircle = (shape: Shape): shape is Circle => shape.type === "CIRCLE";
         "sideLength": 12
     };
 
-    const evtCircle = evtShape.createDelegate(matchCircle);
+    const evtCircle = evtShape.pipe(matchCircle);
 
     evtCircle.attachOnce(
         10,
-        circle_ => console.assert(circle_ === circle)
+        circle_ => assert(circle_ === circle)
     );
 
     evtShape.post(circle);
 
     evtCircle.waitFor(10)
         .then(
-            ()=> console.assert(false),
+            ()=> assert(false),
             ()=> {}
         )
         ;
@@ -64,7 +65,7 @@ const matchCircle = (shape: Shape): shape is Circle => shape.type === "CIRCLE";
     };
 
 
-    const evtLargeShape = evtShape.createDelegate(
+    const evtLargeShape = evtShape.pipe(
         shape => {
             switch (shape.type) {
                 case "CIRCLE": return shape.radius > 5;
@@ -76,7 +77,7 @@ const matchCircle = (shape: Shape): shape is Circle => shape.type === "CIRCLE";
 
     evtLargeShape.waitFor(circle => circle === smallCircle, 10)
         .then(
-            ()=> console.assert(false),
+            ()=> assert(false),
             ()=> {}
         )
         ;

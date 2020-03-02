@@ -20,16 +20,16 @@ var __spread = (this && this.__spread) || function () {
     return ar;
 };
 exports.__esModule = true;
-var defs_1 = require("../defs");
-function compose(tm1, tm2) {
+var _Matcher_1 = require("../types/$Matcher");
+function composeMatcher(tm1, tm2) {
     var bPrev = typeof tm1 === "function" ? undefined : tm1[1];
     var f = function (a, cPrev, cbInvokedIfMatched) {
         //console.log({ a, cPrev, cbInvokedIfMatched });
         var bWrap = typeof tm1 === "function" ?
             tm1(a, undefined, cbInvokedIfMatched) :
             tm1[0](a, bPrev, cbInvokedIfMatched);
-        if (defs_1.TransformativeMatcher.Returns.NotMatched.match(bWrap)) {
-            return null;
+        if (_Matcher_1.$Matcher.Result.NotMatched.match(bWrap)) {
+            return bWrap;
         }
         var _a = __read(bWrap, 1), b = _a[0];
         var cWrap = typeof tm2 === "function" ?
@@ -37,52 +37,24 @@ function compose(tm1, tm2) {
             tm2[0](b, cPrev, cbInvokedIfMatched);
         if (!!cbInvokedIfMatched &&
             typeof tm1 !== "function" &&
-            !defs_1.TransformativeMatcher.Returns.NotMatched.match(cWrap)) {
+            _Matcher_1.$Matcher.Result.Matched.match(cWrap)) {
             bPrev = b;
         }
         return cWrap;
     };
     return typeof tm2 === "function" ? f : [f, tm2[1]];
 }
-exports.compose = compose;
-/** assert args length !== 0 */
-function composeMany(args) {
-    if (args.length === 0) {
-        throw new Error();
+exports.composeMatcher = composeMatcher;
+(function (composeMatcher) {
+    function many(args) {
+        if (args.length === 1) {
+            return args[0];
+        }
+        var _a = __read(args), tm1 = _a[0], tm2 = _a[1], rest = _a.slice(2);
+        return many(__spread([
+            composeMatcher(tm1, tm2)
+        ], rest));
     }
-    if (args.length === 1) {
-        return args[0];
-    }
-    var _a = __read(args), tm1 = _a[0], tm2 = _a[1], rest = _a.slice(2);
-    return composeMany(__spread([
-        compose(tm1, tm2)
-    ], rest));
-}
-exports.composeMany = composeMany;
-function scan(accumulator, seed) {
-    return [
-        function (data, _a) {
-            var _b = __read(_a, 3), acc = _b[1], index = _b[2];
-            return [[data, accumulator(acc, data, index), index + 1]];
-        },
-        [null, seed, 0]
-    ];
-}
-exports.scan = scan;
-function throttleTime(duration) {
-    return compose([
-        function (data, _a) {
-            var lastClick = _a.lastClick;
-            var now = Date.now();
-            return now - lastClick < duration ?
-                null :
-                [{ data: data, "lastClick": now }];
-        },
-        { "lastClick": 0, "data": null }
-    ], function (_a) {
-        var data = _a.data;
-        return [data];
-    });
-}
-exports.throttleTime = throttleTime;
+    composeMatcher.many = many;
+})(composeMatcher = exports.composeMatcher || (exports.composeMatcher = {}));
 //# sourceMappingURL=composeMatcher.js.map

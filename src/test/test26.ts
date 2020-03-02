@@ -1,7 +1,7 @@
 
 import { Evt } from "../lib";
-import { UnpackEvt, NonPostable } from "../lib/helperTypes";
-type UnpackEvt_<T> = import("../lib/helperTypes").UnpackEvt<T>;
+import { UnpackEvt, NonPostable } from "../lib/types/helper";
+type UnpackEvt_<T> = import("../lib/types/helper").UnpackEvt<T>;
 
 {
 

@@ -1,5 +1,5 @@
 
-import { ObservableImpl } from "../lib/Observable";
+import { Observable } from "../lib/Observable";
 
 const names1 = [
     "alice",
@@ -18,7 +18,7 @@ const names3 = [
     "louis"
 ];
 
-const obsNames = new ObservableImpl<string[]>(
+const obsNames = new Observable<string[]>(
     names1,
     (names, newNames) => {
 

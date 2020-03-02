@@ -1,5 +1,5 @@
 import { Evt } from "../lib";
-import { Evt as EvtNext } from "../lib/Evt";
+//import { Evt as EvtNext } from "../lib/Evt";
 import { id } from "../tools/typeSafety";
 import { getPromiseAssertionApi } from "../tools/testing";
 const { mustResolve, mustStayPending } = getPromiseAssertionApi();
@@ -213,6 +213,7 @@ for (const methodName of ["$attachOnce", "$attach", "$attachOncePrepend", "$atta
 
 
 
+/*
 for (const methodName of ["attachOnce", "attach", "attachOncePrepend", "attachPrepend"] as any as [
     "attachOnce",
     //"attach"
@@ -356,6 +357,8 @@ for (const methodName of ["attachOnce", "attach", "attachOncePrepend", "attachPr
     test(higherOrder("CALLBACK"));
 
 }
+
+*/
 
 setTimeout(() => console.log("PASS".green), 0);
 

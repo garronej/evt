@@ -4,14 +4,14 @@ var Evt_1 = require("./Evt");
 var overwriteReadonlyProp_1 = require("../tools/overwriteReadonlyProp");
 ;
 /** https://garronej.github.io/ts-evt/#observert-documentation */
-var ObservableImpl = /** @class */ (function () {
-    function ObservableImpl(initialValue, areSame) {
+var Observable = /** @class */ (function () {
+    function Observable(initialValue, areSame) {
         if (areSame === void 0) { areSame = function (currentValue, newValue) { return currentValue === newValue; }; }
         this.areSame = areSame;
         {
             var evtChangeDiff_1 = new Evt_1.Evt();
             this.evtChangeDiff_post = function (changeDiff) { return evtChangeDiff_1.post(changeDiff); };
-            this.evtChange = evtChangeDiff_1.createDelegate(function (_a) {
+            this.evtChange = evtChangeDiff_1.pipe(function (_a) {
                 var newValue = _a.newValue;
                 return [newValue];
             });
@@ -19,11 +19,11 @@ var ObservableImpl = /** @class */ (function () {
         }
         this.overwriteReadonlyValue(initialValue);
     }
-    ObservableImpl.prototype.overwriteReadonlyValue = function (newValue) {
+    Observable.prototype.overwriteReadonlyValue = function (newValue) {
         overwriteReadonlyProp_1.overwriteReadonlyProp(this, "value", newValue);
     };
     /** Return true if the value have been changed */
-    ObservableImpl.prototype.onPotentialChange = function (newValue) {
+    Observable.prototype.onPotentialChange = function (newValue) {
         if (this.areSame(this.value, newValue)) {
             return false;
         }
@@ -32,7 +32,7 @@ var ObservableImpl = /** @class */ (function () {
         this.evtChangeDiff_post({ previousValue: previousValue, newValue: newValue });
         return true;
     };
-    return ObservableImpl;
+    return Observable;
 }());
-exports.ObservableImpl = ObservableImpl;
+exports.Observable = Observable;
 //# sourceMappingURL=Observable.js.map

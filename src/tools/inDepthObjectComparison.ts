@@ -1,5 +1,4 @@
 
-import { setPrototypeOf } from "./setPrototypeOfPolyfill";
 import { assert } from "./typeSafety/assert";
 
 export class RepresentsSameDataError<T> extends Error {
@@ -9,7 +8,7 @@ export class RepresentsSameDataError<T> extends Error {
         public readonly expected: T
     ) {
         super(message);
-        setPrototypeOf(this, new.target.prototype);
+        Object.setPrototypeOf(this, new.target.prototype);
     }
 }
 

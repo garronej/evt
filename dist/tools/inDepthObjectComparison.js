@@ -24,7 +24,6 @@ var __values = (this && this.__values) || function(o) {
     throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
 exports.__esModule = true;
-var setPrototypeOfPolyfill_1 = require("./setPrototypeOfPolyfill");
 var assert_1 = require("./typeSafety/assert");
 var RepresentsSameDataError = /** @class */ (function (_super) {
     __extends(RepresentsSameDataError, _super);
@@ -33,7 +32,7 @@ var RepresentsSameDataError = /** @class */ (function (_super) {
         var _this_1 = _super.call(this, message) || this;
         _this_1.got = got;
         _this_1.expected = expected;
-        setPrototypeOfPolyfill_1.setPrototypeOf(_this_1, _newTarget.prototype);
+        Object.setPrototypeOf(_this_1, _newTarget.prototype);
         return _this_1;
     }
     return RepresentsSameDataError;
