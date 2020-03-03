@@ -45,9 +45,7 @@ export class Observable<T> implements IObservable<T> {
 
             this.evtChangeDiff_post = changeDiff => evtChangeDiff.post(changeDiff);
 
-            this.evtChange = evtChangeDiff.pipe(
-                ({ newValue }) => [newValue]
-            );
+            this.evtChange = evtChangeDiff.pipe(({ newValue }) => [newValue]);
 
             this.evtChangeDiff = evtChangeDiff;
 
@@ -57,7 +55,7 @@ export class Observable<T> implements IObservable<T> {
 
     }
 
-    private overwriteReadonlyValue(newValue: T){
+    private overwriteReadonlyValue(newValue: T) {
         overwriteReadonlyProp(this, "value", newValue);
     }
 

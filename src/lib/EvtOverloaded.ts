@@ -1,285 +1,293 @@
 import { EvtCore } from "./EvtCore";
-import { Bindable, Handler, $Matcher } from "./types"
+import { Bindable, Handler, Operator } from "./types"
 import { isCallableFunction } from "../tools/isCallableFunction";
 import { id } from "../tools/typeSafety";
-import { composeMatcher } from "./util/composeMatcher";
+import { composeOperators } from "./util/composeOperators";
 
-export function parseOverloadParamsFactory<T>(
-    { defaultBoundTo }: { defaultBoundTo: Object; }
-) {
 
-    const canBeMatcher = (p: any): boolean => {
-        return isCallableFunction(p) || (
-            typeof p === "object" &&
-            p.length === 2 &&
-            isCallableFunction(p[0])
-        );
-    };
+export const parseOverloadParamsFactory = (() => {
 
-    const defaultParams = id<Handler.PropsFromArgs<T, any>>({
-        "matcher": function matchAll() { return true; },
-        "boundTo": defaultBoundTo,
-        "timeout": undefined,
-        "callback": undefined
-    })
+    function matchAll() { return true; }
 
-    return function parseOverloadParams(
-        inputs: readonly any[],
-        methodName: "waitFor" | "attach-ish" | "createDelegate" | "pipe"
-    ): Handler.PropsFromArgs<T, any> {
+    return function parseOverloadParamsFactory<T>(
+        { defaultBoundTo }: { defaultBoundTo: Object; }
+    ) {
 
-        type Out = Handler.PropsFromArgs<T, any>;
+        const canBeMatcher = (p: any): boolean => {
+            return isCallableFunction(p) || (
+                typeof p === "object" &&
+                p.length === 2 &&
+                isCallableFunction(p[0])
+            );
+        };
 
-        switch (methodName) {
-            case "pipe": {
+        const defaultParams = id<Handler.PropsFromArgs<T, any>>({
+            "op": matchAll,
+            "boundTo": defaultBoundTo,
+            "timeout": undefined,
+            "callback": undefined
+        })
 
-                //[]
-                //[ boundTo, ...matcher[] ]
-                //[ ...matcher[] ]
-                //NOTE: In matcher the first element if any can be a filter.
+        return function parseOverloadParams(
+            inputs: readonly any[],
+            methodName: "waitFor" | "attach*" | "createDelegate" | "pipe"
+        ): Handler.PropsFromArgs<T, any> {
 
-                const getMatcherWrap = (args: readonly any[]) =>
-                    args.length === 0 ? {} :
-                        { "matcher": args.length === 1 ? args[0] : composeMatcher.many<T>(args as any) }
-                    ;
+            type Out = Handler.PropsFromArgs<T, any>;
 
-                if (canBeMatcher(inputs[0])) {
-
-                    //[ ...$Matcher[] ]
-
-                    return id<Out>({
-                        ...defaultParams,
-                        ...getMatcherWrap(inputs)
-                    });
-
-                } else {
+            switch (methodName) {
+                case "pipe": {
 
                     //[]
-                    //[ boundTo, ...$Matcher[] ]
+                    //[ boundTo, ...op[] ]
+                    //[ ...op[] ]
 
-                    const [boundTo, ...rest] = inputs;
+                    const getOpWrap = (ops: [Operator<T, any>, ...Operator<any, any>[]])  =>
+                        ops.length === 0 ?
+                            {} 
+                            : 
+                            { "op": ops.length === 1 ? ops[0]: composeOperators(...ops) }
+                        ;
 
-                    return id<Out>({
-                        ...defaultParams,
-                        ...(boundTo !== undefined ? {boundTo}:{}),
-                        ...getMatcherWrap(rest)
-                    });
+                    if (canBeMatcher(inputs[0])) {
 
-                }
-
-
-            } break;
-            case "createDelegate": {
-
-                const n =
-                    inputs.length
-                    -
-                    (
-                        inputs.length !== 0 &&
-                            inputs[inputs.length - 1] === undefined ?
-                            1 : 0
-                    ) as 0 | 1 | 2;
-
-                switch (n) {
-                    case 0:
-                        return id<Out>({
-                            ...defaultParams
-                        });
-                    case 1:
-                        //[ matcher ]
-                        //[ boundTo ]
-                        const [p] = inputs;
-                        return canBeMatcher(p) ? id<Out>({
-                            ...defaultParams,
-                            "matcher": p
-                        }) : id<Out>({
-                            ...defaultParams,
-                            "boundTo": p
-                        });
-                    case 2:
-                        //[ matcher, boundTo ]
-                        const [p1, p2] = inputs;
-                        return id<Out>({
-                            ...defaultParams,
-                            "matcher": p1,
-                            "boundTo": p2
-                        });
-                }
-
-            } break;
-
-            case "waitFor": {
-
-                const n = inputs.length;
-
-                if (n === 2) {
-
-                    const [p1, p2] = inputs;
-
-                    return id<Out>({
-                        ...defaultParams,
-                        "matcher": p1,
-                        "timeout": p2
-                    });
-
-                } else {
-
-                    const [p] = inputs;
-
-                    return id<Out>(
-                        canBeMatcher(p) ? ({
-                            ...defaultParams,
-                            "matcher": p
-                        }) : ({
-                            ...defaultParams,
-                            "timeout": p
-                        })
-                    );
-
-                }
-
-
-            } break;
-            case "attach-ish": {
-
-                //[ matcher, boundTo, timeout, callback ]
-                //[ matcher, boundTo, callback ]
-                //[ matcher, timeout, callback ]
-                //[ boundTo, timeout, callback ]
-                //[ matcher, callback ]
-                //[ boundTo, callback ]
-                //[ timeout, callback ]
-                //[ callback ]
-
-                const n = inputs.length as 4 | 3 | 2 | 1 | 0;
-
-                switch (n) {
-                    case 4: {
-
-                        //[ matcher, boundTo, timeout, callback ]
-                        const [p1, p2, p3, p4] = inputs;
+                        //[ ...op[] ]
 
                         return id<Out>({
                             ...defaultParams,
-                            "matcher": p1,
-                            "boundTo": p2,
-                            "timeout": p3,
-                            "callback": p4
+                            ...getOpWrap(inputs as any)
+                        });
+
+                    } else {
+
+                        //[]
+                        //[ boundTo, ...Operator.fλ[] ]
+
+                        const [boundTo, ...rest] = inputs;
+
+                        return id<Out>({
+                            ...defaultParams,
+                            ...(boundTo !== undefined ? { boundTo } : {}),
+                            ...getOpWrap(rest as any)
                         });
 
                     }
-                    case 3: {
 
-                        //[ matcher, boundTo, callback ]
-                        //[ matcher, timeout, callback ]
-                        //[ boundTo, timeout, callback ]
-                        const [p1, p2, p3] = inputs;
-                        if (typeof p2 === "number") {
-                            //[ matcher, timeout, callback ]
+
+                } break;
+                case "createDelegate": {
+
+                    const n =
+                        inputs.length
+                        -
+                        (
+                            inputs.length !== 0 &&
+                                inputs[inputs.length - 1] === undefined ?
+                                1 : 0
+                        ) as 0 | 1 | 2;
+
+                    switch (n) {
+                        case 0:
+                            return id<Out>({
+                                ...defaultParams
+                            });
+                        case 1:
+                            //[ op ]
+                            //[ boundTo ]
+                            const [p] = inputs;
+                            return canBeMatcher(p) ? id<Out>({
+                                ...defaultParams,
+                                "op": p
+                            }) : id<Out>({
+                                ...defaultParams,
+                                "boundTo": p
+                            });
+                        case 2:
+                            //[ op, boundTo ]
+                            const [p1, p2] = inputs;
+                            return id<Out>({
+                                ...defaultParams,
+                                "op": p1,
+                                "boundTo": p2
+                            });
+                    }
+
+                } break;
+
+                case "waitFor": {
+
+                    const n = inputs.length;
+
+                    if (n === 2) {
+
+                        const [p1, p2] = inputs;
+
+                        return id<Out>({
+                            ...defaultParams,
+                            "op": p1,
+                            "timeout": p2
+                        });
+
+                    } else {
+
+                        const [p] = inputs;
+
+                        return id<Out>(
+                            canBeMatcher(p) ? ({
+                                ...defaultParams,
+                                "op": p
+                            }) : ({
+                                ...defaultParams,
+                                "timeout": p
+                            })
+                        );
+
+                    }
+
+
+                } break;
+                case "attach*": {
+
+                    //[ op, boundTo, timeout, callback ]
+                    //[ op, boundTo, callback ]
+                    //[ op, timeout, callback ]
+                    //[ boundTo, timeout, callback ]
+                    //[ op, callback ]
+                    //[ boundTo, callback ]
+                    //[ timeout, callback ]
+                    //[ callback ]
+
+                    const n = inputs.length as 4 | 3 | 2 | 1 | 0;
+
+                    switch (n) {
+                        case 4: {
+
+                            //[ op, boundTo, timeout, callback ]
+                            const [p1, p2, p3, p4] = inputs;
+
+                            return id<Out>({
+                                ...defaultParams,
+                                "op": p1,
+                                "boundTo": p2,
+                                "timeout": p3,
+                                "callback": p4
+                            });
+
+                        }
+                        case 3: {
+
+                            //[ op, boundTo, callback ]
+                            //[ op, timeout, callback ]
                             //[ boundTo, timeout, callback ]
-
-                            const timeout: Out["timeout"] = p2;
-                            const callback: Out["callback"] = p3;
-
-                            if (canBeMatcher(p1)) {
-                                //[ matcher, timeout, callback ]
-                                return id<Out>({
-                                    ...defaultParams,
-                                    timeout,
-                                    callback,
-                                    "matcher": p1
-                                });
-
-                            } else {
+                            const [p1, p2, p3] = inputs;
+                            if (typeof p2 === "number") {
+                                //[ op, timeout, callback ]
                                 //[ boundTo, timeout, callback ]
 
-                                return id<Out>({
-                                    ...defaultParams,
-                                    timeout,
-                                    callback,
-                                    "boundTo": p1
-                                });
+                                const timeout: Out["timeout"] = p2;
+                                const callback: Out["callback"] = p3;
 
-                            }
-                        } else {
-                            //[ matcher, boundTo, callback ]
-                            return id<Out>({
-                                ...defaultParams,
-                                "matcher": p1,
-                                "boundTo": p2,
-                                "callback": p3
-                            });
+                                if (canBeMatcher(p1)) {
+                                    //[ op, timeout, callback ]
+                                    return id<Out>({
+                                        ...defaultParams,
+                                        timeout,
+                                        callback,
+                                        "op": p1
+                                    });
 
-                        }
+                                } else {
+                                    //[ boundTo, timeout, callback ]
 
-                    }
-                    case 2: {
+                                    return id<Out>({
+                                        ...defaultParams,
+                                        timeout,
+                                        callback,
+                                        "boundTo": p1
+                                    });
 
-                        //[ matcher, callback ]
-                        //[ boundTo, callback ]
-                        //[ timeout, callback ]
-                        const [p1, p2] = inputs;
-                        if (typeof p1 === "number") {
-                            //[ timeout, callback ]
-                            return id<Out>({
-                                ...defaultParams,
-                                "timeout": p1,
-                                "callback": p2
-                            });
-                        } else {
-                            //[ matcher, callback ]
-                            //[ boundTo, callback ]
-                            const callback: Out["callback"] = p2;
-                            if (canBeMatcher(p1)) {
-
-                                return id<Out>({
-                                    ...defaultParams,
-                                    callback,
-                                    "matcher": p1
-                                });
-
+                                }
                             } else {
-
+                                //[ op, boundTo, callback ]
                                 return id<Out>({
                                     ...defaultParams,
-                                    callback,
-                                    "boundTo": p1
+                                    "op": p1,
+                                    "boundTo": p2,
+                                    "callback": p3
                                 });
 
                             }
+
+                        }
+                        case 2: {
+
+                            //[ op, callback ]
+                            //[ boundTo, callback ]
+                            //[ timeout, callback ]
+                            const [p1, p2] = inputs;
+                            if (typeof p1 === "number") {
+                                //[ timeout, callback ]
+                                return id<Out>({
+                                    ...defaultParams,
+                                    "timeout": p1,
+                                    "callback": p2
+                                });
+                            } else {
+                                //[ op, callback ]
+                                //[ boundTo, callback ]
+                                const callback: Out["callback"] = p2;
+                                if (canBeMatcher(p1)) {
+
+                                    return id<Out>({
+                                        ...defaultParams,
+                                        callback,
+                                        "op": p1
+                                    });
+
+                                } else {
+
+                                    return id<Out>({
+                                        ...defaultParams,
+                                        callback,
+                                        "boundTo": p1
+                                    });
+
+                                }
+                            }
+
+                        }
+                        case 1: {
+
+                            //[ callback ]
+                            const [p] = inputs;
+
+                            return id<Out>({
+                                ...defaultParams,
+                                "callback": p
+                            });
+
+                        }
+                        case 0: {
+                            return id<Out>({ ...defaultParams });
                         }
 
                     }
-                    case 1: {
-
-                        //[ callback ]
-                        const [p] = inputs;
-
-                        return id<Out>({
-                            ...defaultParams,
-                            "callback": p
-                        });
-
-                    }
-                    case 0: {
-                        return id<Out>({ ...defaultParams });
-                    }
-
-                }
 
 
-            } break;
+                } break;
 
 
 
 
-        }
+            }
 
-    };
+        };
 
 
 
-}
+    }
+
+})();
 
 /** Evt without evtAttach property, attachOnceMatched and createDelegate */
 export class EvtOverloaded<T> extends EvtCore<T> {
@@ -289,36 +297,36 @@ export class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtwaitfor
      * 
-     * $matcher
+     * op - fλ
      * 
      * timeout?
      */
     public waitFor<U>(
-        matcher: $Matcher.Once<T, U>,
+        op: Operator.fλ.Once<T, U>,
         timeout?: number
     ): Promise<U>;
 
     /**
      * https://garronej.github.io/ts-evt/#evtwaitfor
      * 
-     * matcher - Type guard
+     * op - Type guard
      * 
      * timeout?
      */
     public waitFor<Q extends T>(
-        matcher: (data: T) => data is Q,
+        op: (data: T) => data is Q,
         timeout?: number
     ): Promise<Q>;
 
     /**
      * https://garronej.github.io/ts-evt/#evtwaitfor
      * 
-     * matcher - Filter only
+     * op - Filter
      * 
      * timeout?
      */
     public waitFor(
-        matcher: (data: T) => boolean,
+        op: (data: T) => boolean,
         timeout?: number
     ): Promise<T>;
 
@@ -337,9 +345,9 @@ export class EvtOverloaded<T> extends EvtCore<T> {
 
 
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      * 
-     * matcher - transformative
+     * op - fλ
      * 
      * boundTo
      * 
@@ -348,48 +356,48 @@ export class EvtOverloaded<T> extends EvtCore<T> {
      * callback
      */
     public $attach<U>(
-        matcher: $Matcher<T, U>,
+        op: Operator.fλ<T, U>,
         boundTo: Bindable,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      * 
-     * matcher - transformative
+     * op - fλ
      * 
      * boundTo
      * 
      * callback
      */
     public $attach<U>(
-        matcher: $Matcher<T, U>,
+        op: Operator.fλ<T, U>,
         boundTo: Bindable,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      * 
-     * matcher - transformative
+     * op - fλ
      * 
      * timeout
      * 
      * callback
      */
     public $attach<U>(
-        matcher: $Matcher<T, U>,
+        op: Operator.fλ<T, U>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      * 
-     * matcher - transformative
+     * op - fλ
      * 
      * callback
      */
     public $attach<U>(
-        matcher: $Matcher<T, U>,
+        op: Operator.fλ<T, U>,
         callback: (transformedData: U) => void
     ): Promise<U>;
     public $attach(...inputs: any[]) {
@@ -405,7 +413,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
-     * matcher - Type guard
+     * op - Type guard
      * 
      * boundTo
      * 
@@ -414,7 +422,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
      * callback
      */
     public attach<Q extends T>(
-        matcher: (data: T) => data is Q,
+        op: (data: T) => data is Q,
         boundTo: Bindable,
         timeout: number,
         callback: (data: Q) => void
@@ -422,7 +430,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
-     * matcher - Filter only
+     * op - Filter
      * 
      * boundTo
      * 
@@ -431,7 +439,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
      * callback
      */
     public attach(
-        matcher: (data: T) => boolean,
+        op: (data: T) => boolean,
         boundTo: Bindable,
         timeout: number,
         callback: (data: T) => void
@@ -439,56 +447,56 @@ export class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
-     * matcher - Type guard
+     * op - Type guard
      * 
      * boundTo
      * 
      * callback
      */
     public attach<Q extends T>(
-        matcher: (data: T) => data is Q,
+        op: (data: T) => data is Q,
         boundTo: Bindable,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
-     * matcher - Filter only
+     * op - Filter
      * 
      * boundTo
      * 
      * callback
      */
     public attach(
-        matcher: (data: T) => boolean,
+        op: (data: T) => boolean,
         boundTo: Bindable,
         callback: (data: T) => void
     ): Promise<T>;
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
-     * matcher - Type guard
+     * op - Type guard
      * 
      * timeout
      * 
      * callback
      */
     public attach<Q extends T>(
-        matcher: (data: T) => data is Q,
+        op: (data: T) => data is Q,
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
-     * matcher - Filter only
+     * op - Filter
      * 
      * timeout
      * 
      * callback
      */
     public attach(
-        matcher: (data: T) => boolean,
+        op: (data: T) => boolean,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -509,23 +517,23 @@ export class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
-     * matcher - Type guard
+     * op - Type guard
      * 
      * callback
      */
     public attach<Q extends T>(
-        matcher: (data: T) => data is Q,
+        op: (data: T) => data is Q,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
-     * matcher - Filter only
+     * op - Filter
      * 
      * callback
      */
     public attach(
-        matcher: (data: T) => boolean,
+        op: (data: T) => boolean,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -559,16 +567,16 @@ export class EvtOverloaded<T> extends EvtCore<T> {
         callback: (data: T) => void
     ): Promise<T>;
     public attach(...inputs: any[]) {
-        return this.__attach(this.parseOverloadParams(inputs, "attach-ish"));
+        return this.__attach(this.parseOverloadParams(inputs, "attach*"));
     }
 
 
 
 
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      * 
-     * $matcher
+     * op - fλ
      * 
      * boundTo
      * 
@@ -577,48 +585,48 @@ export class EvtOverloaded<T> extends EvtCore<T> {
      * callback
      */
     public $attachOnce<U>(
-        matcher: $Matcher.Once<T, U>,
+        op: Operator.fλ.Once<T, U>,
         boundTo: Bindable,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative 
+     * https://garronej.github.io/ts-evt/#op---fλ 
      * 
-     * $matcher
+     * op - fλ
      * 
      * boundTo
      * 
      * callback
      */
     public $attachOnce<U>(
-        matcher: $Matcher.Once<T, U>,
+        op: Operator.fλ.Once<T, U>,
         boundTo: Bindable,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      * 
-     * $matcher
+     * op - fλ
      * 
      * timeout
      * 
      * callback
      */
     public $attachOnce<U>(
-        matcher: $Matcher.Once<T, U>,
+        op: Operator.fλ.Once<T, U>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      * 
-     * $matcher
+     * op - fλ
      * 
      * callback
      */
     public $attachOnce<U>(
-        matcher: $Matcher.Once<T, U>,
+        op: Operator.fλ.Once<T, U>,
         callback: (transformedData: U) => void
     ): Promise<U>;
     public $attachOnce(...inputs: any[]) {
@@ -633,7 +641,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
-     * matcher - Type guard
+     * op - Type guard
      * 
      * boundTo
      * 
@@ -642,7 +650,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
      * callback
      */
     public attachOnce<Q extends T>(
-        matcher: (data: T) => data is Q,
+        op: (data: T) => data is Q,
         boundTo: Bindable,
         timeout: number,
         callback: (data: Q) => void
@@ -650,7 +658,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
-     * matcher - Filter only
+     * op - Filter
      * 
      * boundTo
      * 
@@ -659,7 +667,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
      * callback
      */
     public attachOnce(
-        matcher: (data: T) => boolean,
+        op: (data: T) => boolean,
         boundTo: Bindable,
         timeout: number,
         callback: (data: T) => void
@@ -667,56 +675,56 @@ export class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
-     * matcher - Type guard
+     * op - Type guard
      * 
      * boundTo
      * 
      * callback
      */
     public attachOnce<Q extends T>(
-        matcher: (data: T) => data is Q,
+        op: (data: T) => data is Q,
         boundTo: Bindable,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
-     * matcher - Filter only
+     * op - Filter
      * 
      * boundTo
      * 
      * callback
      */
     public attachOnce(
-        matcher: (data: T) => boolean,
+        op: (data: T) => boolean,
         boundTo: Bindable,
         callback: (data: T) => void
     ): Promise<T>;
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
-     * matcher - Type guard
+     * op - Type guard
      * 
      * timeout
      * 
      * callback
      */
     public attachOnce<Q extends T>(
-        matcher: (data: T) => data is Q,
+        op: (data: T) => data is Q,
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
-     * matcher - Filter only
+     * op - Filter
      * 
      * timeout
      * 
      * callback
      */
     public attachOnce(
-        matcher: (data: T) => boolean,
+        op: (data: T) => boolean,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -737,23 +745,23 @@ export class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
-     * matcher - Type guard
+     * op - Type guard
      * 
      * callback
      */
     public attachOnce<Q extends T>(
-        matcher: (data: T) => data is Q,
+        op: (data: T) => data is Q,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
-     * matcher - Filter only
+     * op - Filter
      * 
      * callback
      */
     public attachOnce(
-        matcher: (data: T) => boolean,
+        op: (data: T) => boolean,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -787,7 +795,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
         callback: (data: T) => void
     ): Promise<T>;
     public attachOnce(...inputs: any[]) {
-        return this.__attachOnce(this.parseOverloadParams(inputs, "attach-ish"));
+        return this.__attachOnce(this.parseOverloadParams(inputs, "attach*"));
     }
 
 
@@ -795,9 +803,9 @@ export class EvtOverloaded<T> extends EvtCore<T> {
 
 
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      * 
-     * $matcher
+     * op - fλ
      * 
      * boundTo
      * 
@@ -806,48 +814,48 @@ export class EvtOverloaded<T> extends EvtCore<T> {
      * callback
      */
     public $attachExtract<U>(
-        matcher: $Matcher<T, U>,
+        op: Operator.fλ<T, U>,
         boundTo: Bindable,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      * 
-     * $matcher
+     * op - fλ
      * 
      * boundTo
      * 
      * callback
      */
     public $attachExtract<U>(
-        matcher: $Matcher<T, U>,
+        op: Operator.fλ<T, U>,
         boundTo: Bindable,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      * 
-     * $matcher
+     * op - fλ
      * 
      * timeout
      * 
      * callback
      */
     public $attachExtract<U>(
-        matcher: $Matcher<T, U>,
+        op: Operator.fλ<T, U>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      * 
-     * $matcher
+     * op - fλ
      * 
      * callback
      */
     public $attachExtract<U>(
-        matcher: $Matcher<T, U>,
+        op: Operator.fλ<T, U>,
         callback: (transformedData: U) => void
     ): Promise<U>;
     public $attachExtract(...inputs: any[]) {
@@ -864,7 +872,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * matcher - Type guard
+     * op - Type guard
      * 
      * boundTo
      * 
@@ -873,7 +881,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
      * callback
      */
     public attachExtract<Q extends T>(
-        matcher: (data: T) => data is Q,
+        op: (data: T) => data is Q,
         boundTo: Bindable,
         timeout: number,
         callback: (data: Q) => void
@@ -881,7 +889,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * $matcher
+     * op - fλ
      * 
      * boundTo
      * 
@@ -890,7 +898,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
      * callback
      */
     public attachExtract(
-        matcher: (data: T) => boolean,
+        op: (data: T) => boolean,
         boundTo: Bindable,
         timeout: number,
         callback: (data: T) => void
@@ -898,83 +906,83 @@ export class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * matcher - Type guard
+     * op - Type guard
      * 
      * boundTo
      * 
      * callback
      */
     public attachExtract<Q extends T>(
-        matcher: (data: T) => data is Q,
+        op: (data: T) => data is Q,
         boundTo: Bindable,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * matcher - Filter only
+     * op - Filter
      * 
      * boundTo
      * 
      * callback
      */
     public attachExtract(
-        matcher: (data: T) => boolean,
+        op: (data: T) => boolean,
         boundTo: Bindable,
         callback: (data: T) => void
     ): Promise<T>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * matcher - Type guard
+     * op - Type guard
      * 
      * timeout
      * 
      * callback
      */
     public attachExtract<Q extends T>(
-        matcher: (data: T) => data is Q,
+        op: (data: T) => data is Q,
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * matcher - Filter only
+     * op - Filter
      * 
      * timeout
      * 
      * callback
      */
     public attachExtract(
-        matcher: (data: T) => boolean,
+        op: (data: T) => boolean,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * matcher - Type guard
+     * op - Type guard
      * 
      * callback
      */
     public attachExtract<Q extends T>(
-        matcher: (data: T) => data is Q,
+        op: (data: T) => data is Q,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * matcher - Filter only
+     * op - Filter
      * 
      * callback
      */
     public attachExtract(
-        matcher: (data: T) => boolean,
+        op: (data: T) => boolean,
         callback: (data: T) => void
     ): Promise<T>;
     public attachExtract(...inputs: any[]) {
-        return this.__attachExtract(this.parseOverloadParams(inputs, "attach-ish"));
+        return this.__attachExtract(this.parseOverloadParams(inputs, "attach*"));
     }
 
 
@@ -988,9 +996,9 @@ export class EvtOverloaded<T> extends EvtCore<T> {
 
 
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      * 
-     * $matcher
+     * op - fλ
      * 
      * boundTo
      * 
@@ -999,48 +1007,48 @@ export class EvtOverloaded<T> extends EvtCore<T> {
      * callback
      */
     public $attachPrepend<U>(
-        matcher: $Matcher<T, U>,
+        op: Operator.fλ<T, U>,
         boundTo: Bindable,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      * 
-     * $matcher
+     * op - fλ
      * 
      * boundTo
      * 
      * callback
      */
     public $attachPrepend<U>(
-        matcher: $Matcher<T, U>,
+        op: Operator.fλ<T, U>,
         boundTo: Bindable,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      * 
-     * $matcher
+     * op - fλ
      * 
      * timeout
      * 
      * callback
      */
     public $attachPrepend<U>(
-        matcher: $Matcher<T, U>,
+        op: Operator.fλ<T, U>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      * 
-     * $matcher
+     * op - fλ
      * 
      * callback
      */
     public $attachPrepend<U>(
-        matcher: $Matcher<T, U>,
+        op: Operator.fλ<T, U>,
         callback: (transformedData: U) => void
     ): Promise<U>;
     public $attachPrepend(...inputs: any[]) {
@@ -1058,7 +1066,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      * 
-     * matcher - Type guard
+     * op - Type guard
      * 
      * boundTo
      * 
@@ -1067,7 +1075,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
      * callback
      */
     public attachPrepend<Q extends T>(
-        matcher: (data: T) => data is Q,
+        op: (data: T) => data is Q,
         boundTo: Bindable,
         timeout: number,
         callback: (data: Q) => void
@@ -1076,7 +1084,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      * 
-     * matcher - Filter only
+     * op - Filter
      * 
      * boundTo
      * 
@@ -1085,7 +1093,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
      * callback
      */
     public attachPrepend(
-        matcher: (data: T) => boolean,
+        op: (data: T) => boolean,
         boundTo: Bindable,
         timeout: number,
         callback: (data: T) => void
@@ -1094,56 +1102,56 @@ export class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      * 
-     * matcher - Type guard
+     * op - Type guard
      * 
      * boundTo
      * 
      * callback
      */
     public attachPrepend<Q extends T>(
-        matcher: (data: T) => data is Q,
+        op: (data: T) => data is Q,
         boundTo: Bindable,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      * 
-     * matcher - Filter only
+     * op - Filter
      * 
      * boundTo
      * 
      * callback
      */
     public attachPrepend(
-        matcher: (data: T) => boolean,
+        op: (data: T) => boolean,
         boundTo: Bindable,
         callback: (data: T) => void
     ): Promise<T>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      * 
-     * matcher - Type guard
+     * op - Type guard
      * 
      * timeout
      * 
      * callback
      */
     public attachPrepend<Q extends T>(
-        matcher: (data: T) => data is Q,
+        op: (data: T) => data is Q,
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      * 
-     * matcher - Filter only
+     * op - Filter
      * 
      * timeout
      * 
      * callback
      */
     public attachPrepend(
-        matcher: (data: T) => boolean,
+        op: (data: T) => boolean,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -1164,23 +1172,23 @@ export class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      * 
-     * matcher - Type guard
+     * op - Type guard
      * 
      * callback
      */
     public attachPrepend<Q extends T>(
-        matcher: (data: T) => data is Q,
+        op: (data: T) => data is Q,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      * 
-     * matcher - Filter only
+     * op - Filter
      * 
      * callback
      */
     public attachPrepend(
-        matcher: (data: T) => boolean,
+        op: (data: T) => boolean,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -1214,7 +1222,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
         callback: (data: T) => void
     ): Promise<T>;
     public attachPrepend(...inputs: any[]) {
-        return this.__attachPrepend(this.parseOverloadParams(inputs, "attach-ish"));
+        return this.__attachPrepend(this.parseOverloadParams(inputs, "attach*"));
     }
 
 
@@ -1224,9 +1232,9 @@ export class EvtOverloaded<T> extends EvtCore<T> {
 
 
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      * 
-     * $matcher
+     * op - fλ
      * 
      * boundTo
      * 
@@ -1235,48 +1243,48 @@ export class EvtOverloaded<T> extends EvtCore<T> {
      * callback
      */
     public $attachOncePrepend<U>(
-        matcher: $Matcher.Once<T, U>,
+        op: Operator.fλ.Once<T, U>,
         boundTo: Bindable,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      * 
-     * $matcher
+     * op - fλ
      * 
      * boundTo
      * 
      * callback
      */
     public $attachOncePrepend<U>(
-        matcher: $Matcher.Once<T, U>,
+        op: Operator.fλ.Once<T, U>,
         boundTo: Bindable,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      * 
-     * $matcher
+     * op - fλ
      * 
      * timeout
      * 
      * callback
      */
     public $attachOncePrepend<U>(
-        matcher: $Matcher.Once<T, U>,
+        op: Operator.fλ.Once<T, U>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      * 
-     * $matcher
+     * op - fλ
      * 
      * callback
      */
     public $attachOncePrepend<U>(
-        matcher: $Matcher.Once<T, U>,
+        op: Operator.fλ.Once<T, U>,
         callback: (transformedData: U) => void
     ): Promise<U>;
     public $attachOncePrepend(...inputs: any[]) {
@@ -1294,7 +1302,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      * 
-     * matcher - Type guard
+     * op - Type guard
      * 
      * boundTo
      * 
@@ -1303,7 +1311,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
      * callback
      */
     public attachOncePrepend<Q extends T>(
-        matcher: (data: T) => data is Q,
+        op: (data: T) => data is Q,
         boundTo: Bindable,
         timeout: number,
         callback: (data: Q) => void
@@ -1311,7 +1319,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      * 
-     * matcher - Filter only
+     * op - Filter
      * 
      * boundTo
      * 
@@ -1320,7 +1328,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
      * callback
      */
     public attachOncePrepend(
-        matcher: (data: T) => boolean,
+        op: (data: T) => boolean,
         boundTo: Bindable,
         timeout: number,
         callback: (data: T) => void
@@ -1328,56 +1336,56 @@ export class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      * 
-     * matcher - Type guard
+     * op - Type guard
      * 
      * boundTo
      * 
      * callback
      */
     public attachOncePrepend<Q extends T>(
-        matcher: (data: T) => data is Q,
+        op: (data: T) => data is Q,
         boundTo: Bindable,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      * 
-     * matcher - Filter only
+     * op - Filter
      * 
      * boundTo
      * 
      * callback
      */
     public attachOncePrepend(
-        matcher: (data: T) => boolean,
+        op: (data: T) => boolean,
         boundTo: Bindable,
         callback: (data: T) => void
     ): Promise<T>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      * 
-     * matcher - Type guard
+     * op - Type guard
      * 
      * timeout
      * 
      * callback
      */
     public attachOncePrepend<Q extends T>(
-        matcher: (data: T) => data is Q,
+        op: (data: T) => data is Q,
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      * 
-     * matcher - Filter only
+     * op - Filter
      * 
      * timeout
      * 
      * callback
      */
     public attachOncePrepend(
-        matcher: (data: T) => boolean,
+        op: (data: T) => boolean,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -1398,23 +1406,23 @@ export class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      * 
-     * matcher - Type guard
+     * op - Type guard
      * 
      * callback
      */
     public attachOncePrepend<Q extends T>(
-        matcher: (data: T) => data is Q,
+        op: (data: T) => data is Q,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      * 
-     * matcher - Filter only
+     * op - Filter
      * 
      * callback
      */
     public attachOncePrepend(
-        matcher: (data: T) => boolean,
+        op: (data: T) => boolean,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -1448,7 +1456,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
         callback: (data: T) => void
     ): Promise<T>;
     public attachOncePrepend(...inputs: any[]) {
-        return this.__attachOncePrepend(this.parseOverloadParams(inputs, "attach-ish"));
+        return this.__attachOncePrepend(this.parseOverloadParams(inputs, "attach*"));
     }
 
 
@@ -1459,9 +1467,9 @@ export class EvtOverloaded<T> extends EvtCore<T> {
 
 
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      * 
-     * $matcher
+     * op - fλ
      * 
      * boundTo
      * 
@@ -1470,48 +1478,48 @@ export class EvtOverloaded<T> extends EvtCore<T> {
      * callback
      */
     public $attachOnceExtract<U>(
-        matcher: $Matcher.Once<T, U>,
+        op: Operator.fλ.Once<T, U>,
         boundTo: Bindable,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      * 
-     * $matcher
+     * op - fλ
      * 
      * boundTo
      * 
      * callback
      */
     public $attachOnceExtract<U>(
-        matcher: $Matcher.Once<T, U>,
+        op: Operator.fλ.Once<T, U>,
         boundTo: Bindable,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      * 
-     * $matcher
+     * op - fλ
      * 
      * timeout
      * 
      * callback
      */
     public $attachOnceExtract<U>(
-        matcher: $Matcher.Once<T, U>,
+        op: Operator.fλ.Once<T, U>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      * 
-     * $matcher
+     * op - fλ
      * 
      * callback
      */
     public $attachOnceExtract<U>(
-        matcher: $Matcher.Once<T, U>,
+        op: Operator.fλ.Once<T, U>,
         callback: (transformedData: U) => void
     ): Promise<U>;
 
@@ -1528,7 +1536,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * matcher - Type guard
+     * op - Type guard
      * 
      * boundTo
      * 
@@ -1537,7 +1545,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
      * callback
      */
     public attachOnceExtract<Q extends T>(
-        matcher: (data: T) => data is Q,
+        op: (data: T) => data is Q,
         boundTo: Bindable,
         timeout: number,
         callback: (data: Q) => void
@@ -1545,7 +1553,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * matcher - Filter only
+     * op - Filter
      * 
      * boundTo
      * 
@@ -1554,7 +1562,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
      * callback
      */
     public attachOnceExtract(
-        matcher: (data: T) => boolean,
+        op: (data: T) => boolean,
         boundTo: Bindable,
         timeout: number,
         callback: (data: T) => void
@@ -1562,56 +1570,56 @@ export class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * matcher - Type guard
+     * op - Type guard
      * 
      * boundTo
      * 
      * callback
      */
     public attachOnceExtract<Q extends T>(
-        matcher: (data: T) => data is Q,
+        op: (data: T) => data is Q,
         boundTo: Bindable,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * matcher - Filter only
+     * op - Filter
      * 
      * boundTo
      * 
      * callback
      */
     public attachOnceExtract(
-        matcher: (data: T) => boolean,
+        op: (data: T) => boolean,
         boundTo: Bindable,
         callback: (data: T) => void
     ): Promise<T>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * matcher - Type guard
+     * op - Type guard
      * 
      * timeout
      * 
      * callback
      */
     public attachOnceExtract<Q extends T>(
-        matcher: (data: T) => data is Q,
+        op: (data: T) => data is Q,
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * matcher - Filter only
+     * op - Filter
      * 
      * timeout
      * 
      * callback
      */
     public attachOnceExtract(
-        matcher: (data: T) => boolean,
+        op: (data: T) => boolean,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -1630,23 +1638,23 @@ export class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * matcher - Type guard
+     * op - Type guard
      * 
      * callback
      */
     public attachOnceExtract<Q extends T>(
-        matcher: (data: T) => data is Q,
+        op: (data: T) => data is Q,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * matcher - Filter only
+     * op - Filter
      * 
      * callback
      */
     public attachOnceExtract(
-        matcher: (data: T) => boolean,
+        op: (data: T) => boolean,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -1680,7 +1688,7 @@ export class EvtOverloaded<T> extends EvtCore<T> {
         callback: (data: T) => void
     ): Promise<T>;
     public attachOnceExtract(...inputs: any[]) {
-        return this.__attachOnceExtract(this.parseOverloadParams(inputs, "attach-ish"));
+        return this.__attachOnceExtract(this.parseOverloadParams(inputs, "attach*"));
     }
 
 

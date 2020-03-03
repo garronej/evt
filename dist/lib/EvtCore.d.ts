@@ -1,5 +1,7 @@
 import "minimal-polyfills/dist/lib/Array.prototype.find";
-import { Bindable, Handler, $Matcher } from "./types";
+import { Bindable } from "./types/Bindable";
+import { Handler } from "./types/Handler";
+import { Operator } from "./types/Operator";
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 export declare class EvtCore<T> {
     /** https://garronej.github.io/ts-evt/#evtpostcount */
@@ -17,9 +19,10 @@ export declare class EvtCore<T> {
     private readonly asyncHandlerChronologyMark;
     private readonly asyncHandlerChronologyExceptionRange;
     private readonly getChronologyMark;
-    private readonly previousDadaOfStateful$Matchers;
+    private readonly statelessByStatefulOp;
     protected onHandlerAdded(handler: Handler<T, any>): void;
     private addHandler;
+    getStatelessOp(op: Operator<T, any>): Operator.Stateless<T, any>;
     private trace;
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
@@ -27,8 +30,6 @@ export declare class EvtCore<T> {
      * Returns post count
      * */
     post(data: T): number;
-    /** If the matcher is not $ then the transformedData will be the input data */
-    protected invokeMatcher<U>(matcher: $Matcher<T, U> | ((data: T) => boolean), data: T, cbInvokedIfMatched?: true): $Matcher.Result<T | U>;
     /** Return isExtracted */
     private postSync;
     private readonly postAsync;

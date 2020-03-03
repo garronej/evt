@@ -4,10 +4,10 @@ import { Bindable, EvtError } from "../types";
 import { UnpackEvt, NonPostable, OneShot } from "../types/helper";
 import { id } from "../../tools/typeSafety";
 import { Deferred } from "../../tools/Deferred";
-import { invokeMatcher } from "./invokeMatcher";
+import { invokeOperator } from "./invokeOperator";
+import { Operator } from "../types/Operator";
 import { parseOverloadParamsFactory } from "../EvtOverloaded";
 
-//export type OneShotEvt<T> = Pick<Evt<T>, "waitFor" | "attachOnce" | "$attachOnce" | "detach" | "evtAttach" | "evtDetach" | "postCount">;
 export type OneShotEvt<T> = OneShot<Evt<T>>;
 
 export type Racer<T> = OneShotEvt<T> | PromiseLike<T> | T;
@@ -103,11 +103,11 @@ const raceUnsafe = (() => {
 
                     evt.evtAttach.attach(
                         raceContext,
-                        ({ matcher }) => {
+                        ({ op }) => {
 
-                            assert(typeof matcher === "function");
+                            assert(!Operator.fλ.Stateful.match(op));
 
-                            if (!matcher(raceCoupleResult)) {
+                            if (!op(raceCoupleResult)) {
                                 return;
                             }
                             post(raceCoupleResult);
@@ -136,11 +136,11 @@ const raceUnsafe = (() => {
 
                         evtWeak.evtAttach.attach(
                             raceContext,
-                            ({ matcher }) => {
+                            ({ op }) => {
 
-                                assert(typeof matcher === "function");
+                                assert(!Operator.fλ.Stateful.match(op));
 
-                                if (!matcher(raceCoupleResult)) {
+                                if (!op(raceCoupleResult)) {
                                     return;
                                 }
                                 post(raceCoupleResult);
@@ -162,11 +162,11 @@ const raceUnsafe = (() => {
 
                     evt.evtAttach.attach(
                         raceContext,
-                        ({ matcher }) =>
+                        ({ op }) =>
                             racer.attachOnce(
                                 data => {
-                                    assert(typeof matcher === "function");
-                                    return !!matcher(toRaceCoupleResult(data));
+                                    assert(!Operator.fλ.Stateful.match(op));
+                                    return !!op(toRaceCoupleResult(data));
                                 },
                                 raceContext,
                                 data => post(toRaceCoupleResult(data))
@@ -221,11 +221,11 @@ const raceUnsafe = (() => {
 
                 evt.evtAttach.attach(
                     raceContext,
-                    ({ matcher }) =>
+                    ({ op }) =>
                         evtRaceCoupleResult.attachOnce(
                             raceCoupleResult => {
-                                assert(typeof matcher === "function");
-                                return !!matcher(toRaceRecResult(raceCoupleResult));
+                                assert(!Operator.fλ.Stateful.match(op));
+                                return !!op(toRaceRecResult(raceCoupleResult));
                             },
                             raceCoupleResult => post(toRaceRecResult(raceCoupleResult))
 
@@ -261,11 +261,11 @@ const raceUnsafe = (() => {
 
                 evtData.evtAttach.attach(
                     raceContext,
-                    ({ matcher }) =>
+                    ({ op }) =>
                         evtRaceCoupleResult.attachOnce(
                             raceCoupleResult => {
-                                assert(typeof matcher === "function");
-                                return !!matcher(toData(raceCoupleResult));
+                                assert(!Operator.fλ.Stateful.match(op));
+                                return !!op(toData(raceCoupleResult));
                             },
                             raceCoupleResult => {
                                 evtData.evtAttach.detach(raceContext);
@@ -300,11 +300,11 @@ const raceUnsafe = (() => {
 
                 evt.evtAttach.attach(
                     raceContext,
-                    ({ matcher }) =>
+                    ({ op }) =>
                         evtRaceRecResult.attachOnce(
                             raceRecResult => {
-                                assert(typeof matcher === "function");
-                                return !!matcher(transformRaceRecResult(raceRecResult));
+                                assert(!Operator.fλ.Stateful.match(op));
+                                return !!op(transformRaceRecResult(raceRecResult));
                             },
                             raceRecResult => post(transformRaceRecResult(raceRecResult))
                         )
@@ -368,7 +368,7 @@ const raceUnsafe = (() => {
 
         evt.evtAttach.attach(
             raceContext,
-            ({ matcher, promise }) => {
+            ({ op, promise }) => {
 
                 promise.catch(() => {
 
@@ -382,8 +382,8 @@ const raceUnsafe = (() => {
 
                 evtRaceRecResult.attachOnce(
                     raceRecResult => {
-                        assert(typeof matcher === "function");
-                        return !!matcher(toRaceResult(raceRecResult));
+                        assert(!Operator.fλ.Stateful.match(op));
+                        return !!op(toRaceResult(raceRecResult));
                     },
                     raceContext,
                     raceRecResult => {
@@ -464,13 +464,13 @@ function generateProxyFunctionFactory(oneShotEvt: OneShotEvt<RaceResult<Racer<an
             {
                 "value": (...inputs: any[]) => {
 
-                    const { matcher } = parseOverloadParams(
+                    const { op } = parseOverloadParams(
                         inputs,
                         methodName === "waitFor" ?
-                            "waitFor" : "attach-ish"
+                            "waitFor" : "attach*"
                     );
 
-                    let i = inputs.indexOf(matcher);
+                    let i = inputs.indexOf(op);
 
                     if (i < 0) {
                         inputs = [undefined, ...inputs];
@@ -482,8 +482,8 @@ function generateProxyFunctionFactory(oneShotEvt: OneShotEvt<RaceResult<Racer<an
                     inputs[i] = function matcherOverride(raceResult: RaceResult<Racer<any>>) {
 
                         if (!matchPromiseLike<any>(raceResult.racer)) {
-                            assert(typeof matcher === "function");
-                            return matcher(raceResult);
+                            assert(!Operator.fλ.Stateful.match(op));
+                            return op(raceResult);
                         }
 
 
@@ -503,14 +503,15 @@ function generateProxyFunctionFactory(oneShotEvt: OneShotEvt<RaceResult<Racer<an
 
                         }
 
-                        return invokeMatcher(
-                            matcher,
+                        assert(!Operator.fλ.Stateful.match(op));
+
+                        return invokeOperator(
+                            op,
                             {
                                 "i": raceResult.i,
                                 "data": prResultWrap.data,
                                 "racer": prResultWrap.promise,
-                            },
-                            undefined
+                            }
                         );
 
                     };

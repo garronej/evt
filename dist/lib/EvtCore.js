@@ -46,10 +46,12 @@ var Map_1 = require("minimal-polyfills/dist/lib/Map");
 var WeakMap_1 = require("minimal-polyfills/dist/lib/WeakMap");
 require("minimal-polyfills/dist/lib/Array.prototype.find");
 var runExclusive = require("run-exclusive");
-var types_1 = require("./types");
+var EvtError_1 = require("./types/EvtError");
+var Operator_1 = require("./types/Operator");
 var overwriteReadonlyProp_1 = require("../tools/overwriteReadonlyProp");
-var invokeMatcher_1 = require("./util/invokeMatcher");
-var HandlerGroupCore_1 = require("./HandlerGroupCore");
+var invokeOperator_1 = require("./util/invokeOperator");
+var encapsulateOpState_1 = require("./util/encapsulateOpState");
+var RefCore_1 = require("./RefCore");
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 var EvtCore = /** @class */ (function () {
     function EvtCore() {
@@ -78,7 +80,7 @@ var EvtCore = /** @class */ (function () {
             var currentChronologyMark = 0;
             return function () { return currentChronologyMark++; };
         })();
-        this.previousDadaOfStateful$Matchers = new WeakMap_1.Polyfill();
+        this.statelessByStatefulOp = new WeakMap_1.Polyfill();
         this.postAsync = runExclusive.buildMethodCb(function (data, postChronologyMark, releaseLock) {
             var e_1, _a;
             var promises = [];
@@ -89,9 +91,9 @@ var EvtCore = /** @class */ (function () {
                 if (!handler.async) {
                     return "continue";
                 }
-                var $results = _this_1.invokeMatcher(handler.matcher, data);
-                if (types_1.$Matcher.Result.NotMatched.match($results)) {
-                    if (types_1.$Matcher.Result.Detach.match($results)) {
+                var opResult = invokeOperator_1.invokeOperator(_this_1.getStatelessOp(handler.op), data);
+                if (Operator_1.Operator.fλ.Result.NotMatched.match(opResult)) {
+                    if (Operator_1.Operator.fλ.Result.Detach.match(opResult)) {
                         handler.detach();
                     }
                     return "continue";
@@ -116,7 +118,7 @@ var EvtCore = /** @class */ (function () {
                 }
                 promises.push(new Promise(function (resolve) { return handler.promise
                     .then(function () { return resolve(); })["catch"](function () { return resolve(); }); }));
-                handlerTrigger($results);
+                handlerTrigger(opResult);
             };
             try {
                 for (var _b = __values(__spread(_this_1.handlers)), _c = _b.next(); !_c.done; _c = _b.next()) {
@@ -194,8 +196,8 @@ var EvtCore = /** @class */ (function () {
     };
     EvtCore.prototype.addHandler = function (propsFromArgs, propsFromMethodName) {
         var _this_1 = this;
-        if (typeof propsFromArgs.matcher !== "function") {
-            this.previousDadaOfStateful$Matchers.set(propsFromArgs.matcher, propsFromArgs.matcher[1]);
+        if (Operator_1.Operator.fλ.Stateful.match(propsFromArgs.op)) {
+            this.statelessByStatefulOp.set(propsFromArgs.op, encapsulateOpState_1.encapsulateOpState(propsFromArgs.op));
         }
         var handler = __assign(__assign(__assign({}, propsFromArgs), propsFromMethodName), { "detach": null, "promise": null });
         if (handler.async) {
@@ -207,7 +209,7 @@ var EvtCore = /** @class */ (function () {
                 timer = setTimeout(function () {
                     timer = undefined;
                     handler.detach();
-                    reject(new types_1.EvtError.Timeout(handler.timeout));
+                    reject(new EvtError_1.EvtError.Timeout(handler.timeout));
                 }, handler.timeout);
             }
             handler.detach = function () {
@@ -215,33 +217,29 @@ var EvtCore = /** @class */ (function () {
                 if (index < 0) {
                     return false;
                 }
-                if (HandlerGroupCore_1.HandlerGroupCore.match(handler.boundTo)) {
+                if (RefCore_1.RefCore.match(handler.boundTo)) {
                     handler.boundTo.removeHandler(handler);
                 }
                 _this_1.handlers.splice(index, 1);
                 _this_1.handlerTriggers["delete"](handler);
                 if (timer !== undefined) {
                     clearTimeout(timer);
-                    reject(new types_1.EvtError.Detached());
+                    reject(new EvtError_1.EvtError.Detached());
                 }
                 _this_1.onHandlerDetached(handler);
                 return true;
             };
-            _this_1.handlerTriggers.set(handler, function ($matchedResult) {
+            _this_1.handlerTriggers.set(handler, function (opResult) {
                 var callback = handler.callback, once = handler.once;
                 if (timer !== undefined) {
                     clearTimeout(timer);
                     timer = undefined;
                 }
-                var _a = __read($matchedResult, 1), transformedData = _a[0];
                 if (once ||
-                    ($matchedResult.length === 2 &&
-                        $matchedResult[1] === "DETACH")) {
+                    opResult[1] === "DETACH") {
                     handler.detach();
                 }
-                else if (typeof handler.matcher !== "function") {
-                    _this_1.previousDadaOfStateful$Matchers.set(handler.matcher, transformedData);
-                }
+                var _a = __read(opResult, 1), transformedData = _a[0];
                 callback === null || callback === void 0 ? void 0 : callback.call(handler.boundTo, transformedData);
                 resolve(transformedData);
             });
@@ -259,11 +257,16 @@ var EvtCore = /** @class */ (function () {
         else {
             this.handlers.push(handler);
         }
-        if (HandlerGroupCore_1.HandlerGroupCore.match(handler.boundTo)) {
+        if (RefCore_1.RefCore.match(handler.boundTo)) {
             handler.boundTo.addHandler(handler);
         }
         this.onHandlerAdded(handler);
         return handler;
+    };
+    EvtCore.prototype.getStatelessOp = function (op) {
+        return Operator_1.Operator.fλ.Stateful.match(op) ?
+            this.statelessByStatefulOp.get(op) :
+            op;
     };
     EvtCore.prototype.trace = function (data) {
         var _this_1 = this;
@@ -272,8 +275,9 @@ var EvtCore = /** @class */ (function () {
         }
         var message = "(" + this.traceId + ") ";
         var isExtracted = !!this.handlers.find(function (_a) {
-            var extract = _a.extract, matcher = _a.matcher;
-            return extract && !!_this_1.invokeMatcher(matcher, data);
+            var extract = _a.extract, op = _a.op;
+            return (extract &&
+                !!invokeOperator_1.invokeOperator(_this_1.getStatelessOp(op), data));
         });
         if (isExtracted) {
             message += "extracted ";
@@ -281,8 +285,8 @@ var EvtCore = /** @class */ (function () {
         else {
             var handlerCount = this.handlers
                 .filter(function (_a) {
-                var extract = _a.extract, matcher = _a.matcher;
-                return !extract && !!_this_1.invokeMatcher(matcher, data);
+                var extract = _a.extract, op = _a.op;
+                return !extract && !!invokeOperator_1.invokeOperator(_this_1.getStatelessOp(op), data);
             })
                 .length;
             message += handlerCount + " handler" + ((handlerCount > 1) ? "s" : "") + " => ";
@@ -305,25 +309,19 @@ var EvtCore = /** @class */ (function () {
         }
         return this.postCount;
     };
-    /** If the matcher is not $ then the transformedData will be the input data */
-    EvtCore.prototype.invokeMatcher = function (matcher, data, cbInvokedIfMatched) {
-        return invokeMatcher_1.invokeMatcher(matcher, data, cbInvokedIfMatched, typeof matcher === "function" ?
-            undefined :
-            this.previousDadaOfStateful$Matchers.get(matcher));
-    };
     /** Return isExtracted */
     EvtCore.prototype.postSync = function (data) {
         var e_3, _a;
         try {
             for (var _b = __values(__spread(this.handlers)), _c = _b.next(); !_c.done; _c = _b.next()) {
                 var handler = _c.value;
-                var async = handler.async, matcher = handler.matcher, extract = handler.extract;
+                var async = handler.async, op = handler.op, extract = handler.extract;
                 if (async) {
                     continue;
                 }
-                var $results = this.invokeMatcher(matcher, data, true);
-                if (types_1.$Matcher.Result.NotMatched.match($results)) {
-                    if (types_1.$Matcher.Result.Detach.match($results)) {
+                var opResult = invokeOperator_1.invokeOperator(this.getStatelessOp(op), data, true);
+                if (Operator_1.Operator.fλ.Result.NotMatched.match(opResult)) {
+                    if (Operator_1.Operator.fλ.Result.Detach.match(opResult)) {
                         handler.detach();
                     }
                     continue;
@@ -333,7 +331,7 @@ var EvtCore = /** @class */ (function () {
                 if (!handlerTrigger) {
                     continue;
                 }
-                handlerTrigger($results);
+                handlerTrigger(opResult);
                 if (extract) {
                     return true;
                 }
@@ -421,8 +419,8 @@ var EvtCore = /** @class */ (function () {
         var _this_1 = this;
         return !!this.getHandlers()
             .find(function (_a) {
-            var matcher = _a.matcher;
-            return !!_this_1.invokeMatcher(matcher, data);
+            var op = _a.op;
+            return !!invokeOperator_1.invokeOperator(_this_1.getStatelessOp(op), data);
         });
     };
     /** https://garronej.github.io/ts-evt/#evtgethandlers */

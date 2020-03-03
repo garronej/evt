@@ -158,9 +158,9 @@ const updateModelFactory = (
         "handlerHandlingEventCount": personChange =>
             evtPersonChange
                 .getHandlers()
-                .filter(({ matcher }) => { 
-                    assert(typeof matcher === "function");
-                    return !!matcher(personChange); 
+                .filter(({ op }) => { 
+                    assert(typeof op === "function");
+                    return !!op(personChange); 
                 })
                 .length
     });

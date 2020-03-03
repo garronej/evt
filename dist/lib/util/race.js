@@ -36,7 +36,8 @@ var typeSafety_1 = require("../../tools/typeSafety");
 var types_1 = require("../types");
 var typeSafety_2 = require("../../tools/typeSafety");
 var Deferred_1 = require("../../tools/Deferred");
-var invokeMatcher_1 = require("./invokeMatcher");
+var invokeOperator_1 = require("./invokeOperator");
+var Operator_1 = require("../types/Operator");
 var EvtOverloaded_2 = require("../EvtOverloaded");
 var prNever = new Promise(function () { });
 var matchOnceEvt = function (o) {
@@ -71,9 +72,9 @@ var raceUnsafe = (function () {
                         i: i
                     };
                     evt.evtAttach.attach(raceContext, function (_a) {
-                        var matcher = _a.matcher;
-                        typeSafety_1.assert(typeof matcher === "function");
-                        if (!matcher(raceCoupleResult_1)) {
+                        var op = _a.op;
+                        typeSafety_1.assert(!Operator_1.Operator.fλ.Stateful.match(op));
+                        if (!op(raceCoupleResult_1)) {
                             return;
                         }
                         post(raceCoupleResult_1);
@@ -93,9 +94,9 @@ var raceUnsafe = (function () {
                             return;
                         }
                         evtWeak.evtAttach.attach(raceContext, function (_a) {
-                            var matcher = _a.matcher;
-                            typeSafety_1.assert(typeof matcher === "function");
-                            if (!matcher(raceCoupleResult)) {
+                            var op = _a.op;
+                            typeSafety_1.assert(!Operator_1.Operator.fλ.Stateful.match(op));
+                            if (!op(raceCoupleResult)) {
                                 return;
                             }
                             post(raceCoupleResult);
@@ -108,10 +109,10 @@ var raceUnsafe = (function () {
                         i: i
                     }); };
                     evt.evtAttach.attach(raceContext, function (_a) {
-                        var matcher = _a.matcher;
+                        var op = _a.op;
                         return racer.attachOnce(function (data) {
-                            typeSafety_1.assert(typeof matcher === "function");
-                            return !!matcher(toRaceCoupleResult_1(data));
+                            typeSafety_1.assert(!Operator_1.Operator.fλ.Stateful.match(op));
+                            return !!op(toRaceCoupleResult_1(data));
                         }, raceContext, function (data) { return post(toRaceCoupleResult_1(data)); });
                     });
                 }
@@ -133,10 +134,10 @@ var raceUnsafe = (function () {
                 var toRaceRecResult_1 = function (raceCoupleResult) { return (__assign(__assign({}, raceCoupleResult), { "i": null })); };
                 var evtRaceCoupleResult_1 = raceCouple(raceContext, racerLast, prNever);
                 evt.evtAttach.attach(raceContext, function (_a) {
-                    var matcher = _a.matcher;
+                    var op = _a.op;
                     return evtRaceCoupleResult_1.attachOnce(function (raceCoupleResult) {
-                        typeSafety_1.assert(typeof matcher === "function");
-                        return !!matcher(toRaceRecResult_1(raceCoupleResult));
+                        typeSafety_1.assert(!Operator_1.Operator.fλ.Stateful.match(op));
+                        return !!op(toRaceRecResult_1(raceCoupleResult));
                     }, function (raceCoupleResult) { return post(toRaceRecResult_1(raceCoupleResult)); });
                 });
                 return evt;
@@ -152,10 +153,10 @@ var raceUnsafe = (function () {
                     return raceCoupleResult.data;
                 };
                 evtData.evtAttach.attach(raceContext, function (_a) {
-                    var matcher = _a.matcher;
+                    var op = _a.op;
                     return evtRaceCoupleResult_2.attachOnce(function (raceCoupleResult) {
-                        typeSafety_1.assert(typeof matcher === "function");
-                        return !!matcher(toData_1(raceCoupleResult));
+                        typeSafety_1.assert(!Operator_1.Operator.fλ.Stateful.match(op));
+                        return !!op(toData_1(raceCoupleResult));
                     }, function (raceCoupleResult) {
                         evtData.evtAttach.detach(raceContext);
                         evtData.post(toData_1(raceCoupleResult));
@@ -175,10 +176,10 @@ var raceUnsafe = (function () {
                             raceRecResult.i
                 }); };
                 evt.evtAttach.attach(raceContext, function (_a) {
-                    var matcher = _a.matcher;
+                    var op = _a.op;
                     return evtRaceRecResult_1.attachOnce(function (raceRecResult) {
-                        typeSafety_1.assert(typeof matcher === "function");
-                        return !!matcher(transformRaceRecResult_1(raceRecResult));
+                        typeSafety_1.assert(!Operator_1.Operator.fλ.Stateful.match(op));
+                        return !!op(transformRaceRecResult_1(raceRecResult));
                     }, function (raceRecResult) { return post(transformRaceRecResult_1(raceRecResult)); });
                 });
             }
@@ -205,7 +206,7 @@ var raceUnsafe = (function () {
             });
         };
         evt.evtAttach.attach(raceContext, function (_a) {
-            var matcher = _a.matcher, promise = _a.promise;
+            var op = _a.op, promise = _a.promise;
             promise["catch"](function () {
                 if (evt.getHandlers().length !== 0) {
                     return;
@@ -213,8 +214,8 @@ var raceUnsafe = (function () {
                 detachAllEvtRacers();
             });
             evtRaceRecResult.attachOnce(function (raceRecResult) {
-                typeSafety_1.assert(typeof matcher === "function");
-                return !!matcher(toRaceResult(raceRecResult));
+                typeSafety_1.assert(!Operator_1.Operator.fλ.Stateful.match(op));
+                return !!op(toRaceResult(raceRecResult));
             }, raceContext, function (raceRecResult) {
                 evt.evtAttach.detach(raceContext);
                 detachAllEvtRacers();
@@ -246,9 +247,9 @@ function generateProxyFunctionFactory(oneShotEvt) {
                 for (var _i = 0; _i < arguments.length; _i++) {
                     inputs[_i] = arguments[_i];
                 }
-                var matcher = parseOverloadParams(inputs, methodName === "waitFor" ?
-                    "waitFor" : "attach-ish").matcher;
-                var i = inputs.indexOf(matcher);
+                var op = parseOverloadParams(inputs, methodName === "waitFor" ?
+                    "waitFor" : "attach*").op;
+                var i = inputs.indexOf(op);
                 if (i < 0) {
                     inputs = __spread([undefined], inputs);
                     i = 0;
@@ -256,19 +257,20 @@ function generateProxyFunctionFactory(oneShotEvt) {
                 var dOut = new Deferred_1.Deferred();
                 inputs[i] = function matcherOverride(raceResult) {
                     if (!matchPromiseLike(raceResult.racer)) {
-                        typeSafety_1.assert(typeof matcher === "function");
-                        return matcher(raceResult);
+                        typeSafety_1.assert(!Operator_1.Operator.fλ.Stateful.match(op));
+                        return op(raceResult);
                     }
                     var prResultWrap = raceResult.data;
                     if (!prResultWrap.isFulfilled) {
                         dOut.reject(new types_1.EvtError.RacePromiseRejection(prResultWrap.error, raceResult.i, raceResult.racer));
                         return "DETACH";
                     }
-                    return invokeMatcher_1.invokeMatcher(matcher, {
+                    typeSafety_1.assert(!Operator_1.Operator.fλ.Stateful.match(op));
+                    return invokeOperator_1.invokeOperator(op, {
                         "i": raceResult.i,
                         "data": prResultWrap.data,
                         "racer": prResultWrap.promise
-                    }, undefined);
+                    });
                 };
                 methodBackup.apply(void 0, __spread(inputs)).then(function (data) { return dOut.resolve(data); }, function (error) { return dOut.reject(error); });
                 return dOut.pr;

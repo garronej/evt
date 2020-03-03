@@ -2,15 +2,14 @@ import { Polyfill as Map, LightMap } from "minimal-polyfills/dist/lib/Map";
 import { Polyfill as WeakMap } from "minimal-polyfills/dist/lib/WeakMap";
 import "minimal-polyfills/dist/lib/Array.prototype.find";
 import * as runExclusive from "run-exclusive";
-import {
-    Bindable,
-    Handler,
-    EvtError,
-    $Matcher
-} from "./types";
+import { Bindable } from "./types/Bindable";
+import { Handler } from "./types/Handler";
+import { EvtError } from "./types/EvtError";
+import { Operator } from "./types/Operator";
 import { overwriteReadonlyProp } from "../tools/overwriteReadonlyProp";
-import { invokeMatcher } from "./util/invokeMatcher";
-import { HandlerGroupCore } from "./HandlerGroupCore";
+import { invokeOperator } from "./util/invokeOperator";
+import { encapsulateOpState } from "./util/encapsulateOpState";
+import { RefCore } from "./RefCore";
 
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 export class EvtCore<T> {
@@ -68,7 +67,7 @@ export class EvtCore<T> {
 
     private readonly handlerTriggers: LightMap<
         Handler<T, any>,
-        ($matchedResult: $Matcher.Result.Matched<any>) => void
+        (opResult: Operator.fλ.Result.Matched<any>) => void
     > = new Map();
 
     //NOTE: An async handler ( attached with waitFor ) is only eligible to handle a post if the post
@@ -99,12 +98,7 @@ export class EvtCore<T> {
 
     })();
 
-
-    private readonly previousDadaOfStateful$Matchers = new WeakMap<
-        $Matcher.Stateful<T, any>,
-        any
-    >();
-
+    private readonly statelessByStatefulOp = new WeakMap<Operator.fλ.Stateful<T,any>, Operator.fλ.Stateless<T,any>>();
 
     protected onHandlerAdded(handler: Handler<T, any>): void {
         //NOTE: Overwritten by Evt for post detach.
@@ -115,11 +109,11 @@ export class EvtCore<T> {
         propsFromMethodName: Handler.PropsFromMethodName
     ): Handler<T, U> {
 
-        if (typeof propsFromArgs.matcher !== "function") {
+        if( Operator.fλ.Stateful.match<T, any>(propsFromArgs.op) ){
 
-            this.previousDadaOfStateful$Matchers.set(
-                propsFromArgs.matcher,
-                propsFromArgs.matcher[1]
+            this.statelessByStatefulOp.set(
+                propsFromArgs.op,
+                encapsulateOpState(propsFromArgs.op)
             );
 
         }
@@ -167,7 +161,7 @@ export class EvtCore<T> {
                         return false;
                     }
 
-                    if (HandlerGroupCore.match(handler.boundTo)) {
+                    if (RefCore.match(handler.boundTo)) {
                         handler.boundTo.removeHandler(handler);
                     }
 
@@ -192,7 +186,7 @@ export class EvtCore<T> {
 
                 this.handlerTriggers.set(
                     handler,
-                    ($matchedResult: $Matcher.Result.Matched<U>) => {
+                    (opResult: Operator.fλ.Result.Matched<any>) => {
 
                         const { callback, once } = handler;
 
@@ -201,27 +195,16 @@ export class EvtCore<T> {
                             timer = undefined;
                         }
 
-                        const [transformedData] = $matchedResult;
-
                         if (
                             once ||
-                            (
-                                $matchedResult.length === 2 &&
-                                $matchedResult[1] === "DETACH"
-                            )
+                            opResult[1] === "DETACH"
                         ) {
 
                             handler.detach();
 
-                        } else if (typeof handler.matcher !== "function") {
-
-                            this.previousDadaOfStateful$Matchers.set(
-                                handler.matcher,
-                                transformedData
-                            );
-
                         }
 
+                        const [transformedData] = opResult;
 
                         callback?.call(
                             handler.boundTo,
@@ -258,7 +241,7 @@ export class EvtCore<T> {
 
         }
 
-        if (HandlerGroupCore.match(handler.boundTo)) {
+        if (RefCore.match(handler.boundTo)) {
             handler.boundTo.addHandler(handler);
         }
 
@@ -266,6 +249,12 @@ export class EvtCore<T> {
 
         return handler;
 
+    }
+
+    public getStatelessOp(op: Operator<T, any>): Operator.Stateless<T, any> {
+        return Operator.fλ.Stateful.match(op) ?
+            this.statelessByStatefulOp.get(op)! :
+            op
     }
 
     private trace(data: T) {
@@ -276,8 +265,11 @@ export class EvtCore<T> {
 
         let message = `(${this.traceId}) `;
 
-        let isExtracted = !!this.handlers.find(
-            ({ extract, matcher }) => extract && !!this.invokeMatcher(matcher, data)
+        const isExtracted = !!this.handlers.find(
+            ({ extract, op }) => (
+                extract && 
+                !!invokeOperator(this.getStatelessOp(op), data)
+            )
         );
 
         if (isExtracted) {
@@ -286,8 +278,13 @@ export class EvtCore<T> {
 
         } else {
 
-            let handlerCount = this.handlers
-                .filter(({ extract, matcher }) => !extract && !!this.invokeMatcher(matcher, data))
+            const handlerCount = this.handlers
+                .filter(
+                    ({ extract, op }) => !extract && !!invokeOperator(
+                        this.getStatelessOp(op), 
+                        data
+                    )
+                )
                 .length;
 
             message += `${handlerCount} handler${(handlerCount > 1) ? "s" : ""} => `;
@@ -327,44 +324,29 @@ export class EvtCore<T> {
     }
 
 
-    /** If the matcher is not $ then the transformedData will be the input data */
-    protected invokeMatcher<U>(
-        matcher: $Matcher<T, U> | ((data: T) => boolean),
-        data: T,
-        cbInvokedIfMatched?: true
-    ): $Matcher.Result<T | U> {
-
-        return invokeMatcher<T, U>(
-            matcher,
-            data,
-            cbInvokedIfMatched,
-            typeof matcher === "function" ?
-                undefined :
-                this.previousDadaOfStateful$Matchers.get(matcher)!
-        );
-
-
-    }
 
     /** Return isExtracted */
     private postSync(data: T): boolean {
 
         for (const handler of [...this.handlers]) {
 
-            const { async, matcher, extract } = handler;
+            const { async, op, extract } = handler;
 
             if (async) {
                 continue;
             }
-            const $results = this.invokeMatcher(matcher, data, true);
+            const opResult = invokeOperator(
+                this.getStatelessOp(op), 
+                data, 
+                true
+            );
 
-            if ($Matcher.Result.NotMatched.match($results)) {
-                if ($Matcher.Result.Detach.match($results)) {
+            if (Operator.fλ.Result.NotMatched.match(opResult)) {
+                if (Operator.fλ.Result.Detach.match(opResult)) {
                     handler.detach();
                 }
                 continue;
             }
-
 
             const handlerTrigger = this.handlerTriggers.get(handler);
 
@@ -373,7 +355,7 @@ export class EvtCore<T> {
                 continue;
             }
 
-            handlerTrigger($results);
+            handlerTrigger(opResult);
 
             if (extract) {
                 return true;
@@ -403,15 +385,14 @@ export class EvtCore<T> {
                     continue;
                 }
 
-                const $results = this.invokeMatcher(handler.matcher, data);
+                const opResult = invokeOperator(this.getStatelessOp(handler.op), data);
 
-                if ($Matcher.Result.NotMatched.match($results)) {
-                    if ($Matcher.Result.Detach.match($results)) {
+                if (Operator.fλ.Result.NotMatched.match(opResult)) {
+                    if (Operator.fλ.Result.Detach.match(opResult)) {
                         handler.detach();
                     }
                     continue;
                 }
-
 
                 const handlerTrigger = this.handlerTriggers.get(handler);
 
@@ -450,7 +431,7 @@ export class EvtCore<T> {
                     )
                 );
 
-                handlerTrigger($results);
+                handlerTrigger(opResult);
 
             }
 
@@ -615,7 +596,10 @@ export class EvtCore<T> {
      */
     public isHandled(data: T): boolean {
         return !!this.getHandlers()
-            .find(({ matcher }) => !!this.invokeMatcher(matcher, data))
+            .find(({ op }) => !!invokeOperator(
+                this.getStatelessOp(op),
+                data
+            ))
             ;
     }
 

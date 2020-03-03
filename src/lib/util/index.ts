@@ -1,4 +1,6 @@
 
-export * from "./op";
-export * from "./composeMatcher";
-export * from "./invokeMatcher";
+export * from "./genericOperators";
+export * from "./composeOperators";
+export * from "./encapsulateOpState";
+export * from "./composeOperators";
+export * from "./invokeOperator";

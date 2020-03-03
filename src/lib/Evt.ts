@@ -1,10 +1,11 @@
 import { EvtOverloaded } from "./EvtOverloaded";
-import { Handler, $Matcher } from "./types";
-import { HandlerGroup } from "./HandlerGroup";
+import { Handler, Operator } from "./types";
+import { Ref } from "./Ref";
+import { invokeOperator } from "./util/invokeOperator";
 
 export class Evt<T> extends EvtOverloaded<T> {
 
-    public static createHandlerGroup() { return new HandlerGroup(); }
+    public static newRef() { return new Ref(); }
 
     /** https://garronej.github.io/ts-evt/#evtevtattach */
     public readonly evtAttach = new EvtOverloaded<Handler<T, any>>()
@@ -44,7 +45,7 @@ export class Evt<T> extends EvtOverloaded<T> {
         const resolvePrAndPost = (data: T) => resolvePr(this.post(data));
 
         this.evtAttach.attachOnce(
-            ({ matcher }) => !!this.invokeMatcher(matcher, data),
+            ({ op }) => !!invokeOperator(this.getStatelessOp(op), data),
             () => isSync ?
                 resolvePrAndPost(data) :
                 Promise.resolve().then(() => resolvePrAndPost(data))
@@ -56,35 +57,138 @@ export class Evt<T> extends EvtOverloaded<T> {
     }
 
     public pipe(): Evt<T>;
-    public pipe<A>($matcher: $Matcher<T, A>): Evt<A>;
-    public pipe<A, B>($matcher: $Matcher<T, A>, $matcher2: $Matcher<A, B>): Evt<B>;
-    public pipe<A, B, C>($matcher1: $Matcher<T, A>, $matcher2: $Matcher<A, B>, $matcher3: $Matcher<B, C>): Evt<C>;
-    public pipe<A, B, C, D>($matcher1: $Matcher<T, A>, $matcher2: $Matcher<A, B>, $matcher3: $Matcher<B, C>, $matcher4: $Matcher<C, D>): Evt<D>;
-    public pipe<A, B, C, D, E>($matcher1: $Matcher<T, A>, $matcher2: $Matcher<A, B>, $matcher3: $Matcher<B, C>, $matcher4: $Matcher<C, D>, $matcher5: $Matcher<D, E>): Evt<E>;
-    public pipe<A, B, C, D, E, F>($matcher1: $Matcher<T, A>, $matcher2: $Matcher<A, B>, $matcher3: $Matcher<B, C>, $matcher4: $Matcher<C, D>, $matcher5: $Matcher<D, E>, $matcher6: $Matcher<E, F>): Evt<F>;
-    public pipe<A, B, C, D, E, F, G>($matcher1: $Matcher<T, A>, $matcher2: $Matcher<A, B>, $matcher3: $Matcher<B, C>, $matcher4: $Matcher<C, D>, $matcher5: $Matcher<D, E>, $matcher6: $Matcher<E, F>, $matcher7: $Matcher<F, G>): Evt<G>;
-    public pipe<A, B, C, D, E, F, G, H>($matcher1: $Matcher<T, A>, $matcher2: $Matcher<A, B>, $matcher3: $Matcher<B, C>, $matcher4: $Matcher<C, D>, $matcher5: $Matcher<D, E>, $matcher6: $Matcher<E, F>, $matcher7: $Matcher<F, G>, $matcher8: $Matcher<G, H>): Evt<H>;
-    public pipe<A, B, C, D, E, F, G, H, I>($matcher1: $Matcher<T, A>, $matcher2: $Matcher<A, B>, $matcher3: $Matcher<B, C>, $matcher4: $Matcher<C, D>, $matcher5: $Matcher<D, E>, $matcher6: $Matcher<E, F>, $matcher7: $Matcher<F, G>, $matcher8: $Matcher<G, H>, $matcher9: $Matcher<H, I>): Evt<I>;
-    public pipe<A, B, C, D, E, F, G, H, I>($matcher1: $Matcher<T, A>, $matcher2: $Matcher<A, B>, $matcher3: $Matcher<B, C>, $matcher4: $Matcher<C, D>, $matcher5: $Matcher<D, E>, $matcher6: $Matcher<E, F>, $matcher7: $Matcher<F, G>, $matcher8: $Matcher<G, H>, $matcher9: $Matcher<H, I>, ...$matchererations: $Matcher<any, any>[]): Evt<{}>;
 
-    public pipe(boundTo: HandlerGroup): Evt<T>;
-    //public pipe(boundTo: HandlerGroup): Evt<T>;
-    //public pipe<A>(boundTo: HandlerGroup, $matcher: $Matcher<T, A>): Evt<A>;
-    //public pipe<A, B>(boundTo: HandlerGroup, $matcher1: $Matcher<T, A>, $matcher2: $Matcher<A, B>): Evt<B>;
-    //public pipe<A, B, C>(boundTo: HandlerGroup, $matcher1: $Matcher<T, A>, $matcher2: $Matcher<A, B>, $matcher3: $Matcher<B, C>): Evt<C>;
-    //public pipe<A, B, C, D>(boundTo: HandlerGroup, $matcher1: $Matcher<T, A>, $matcher2: $Matcher<A, B>, $matcher3: $Matcher<B, C>, $matcher4: $Matcher<C, D>): Evt<D>;
-    //public pipe<A, B, C, D, E>(boundTo: HandlerGroup, $matcher1: $Matcher<T, A>, $matcher2: $Matcher<A, B>, $matcher3: $Matcher<B, C>, $matcher4: $Matcher<C, D>, $matcher5: $Matcher<D, E>): Evt<E>;
-    //public pipe<A, B, C, D, E, F>(boundTo: HandlerGroup, $matcher1: $Matcher<T, A>, $matcher2: $Matcher<A, B>, $matcher3: $Matcher<B, C>, $matcher4: $Matcher<C, D>, $matcher5: $Matcher<D, E>, $matcher6: $Matcher<E, F>): Evt<F>;
-    //public pipe<A, B, C, D, E, F, G>(boundTo: HandlerGroup, $matcher1: $Matcher<T, A>, $matcher2: $Matcher<A, B>, $matcher3: $Matcher<B, C>, $matcher4: $Matcher<C, D>, $matcher5: $Matcher<D, E>, $matcher6: $Matcher<E, F>, $matcher7: $Matcher<F, G>): Evt<G>;
-    //public pipe<A, B, C, D, E, F, G, H>(boundTo: HandlerGroup, $matcher1: $Matcher<T, A>, $matcher2: $Matcher<A, B>, $matcher3: $Matcher<B, C>, $matcher4: $Matcher<C, D>, $matcher5: $Matcher<D, E>, $matcher6: $Matcher<E, F>, $matcher7: $Matcher<F, G>, $matcher8: $Matcher<G, H>): Evt<H>;
-    //public pipe<A, B, C, D, E, F, G, H, I>(boundTo: HandlerGroup, $matcher1: $Matcher<T, A>, $matcher2: $Matcher<A, B>, $matcher3: $Matcher<B, C>, $matcher4: $Matcher<C, D>, $matcher5: $Matcher<D, E>, $matcher6: $Matcher<E, F>, $matcher7: $Matcher<F, G>, $matcher8: $Matcher<G, H>, $matcher9: $Matcher<H, I>): Evt<I>;
-    //public pipe<A, B, C, D, E, F, G, H, I>(boundTo: HandlerGroup, $matcher1: $Matcher<T, A>, $matcher2: $Matcher<A, B>, $matcher3: $Matcher<B, C>, $matcher4: $Matcher<C, D>, $matcher5: $Matcher<D, E>, $matcher6: $Matcher<E, F>, $matcher7: $Matcher<F, G>, $matcher8: $Matcher<G, H>, $matcher9: $Matcher<H, I>, ...$matchers: $Matcher<any, any>[]): Evt<{}>;
+    public pipe<U>(
+        op: Operator.fλ<T,U>
+    ): Evt<U>;
+    public pipe<U extends T>(
+        op: (data: T)=> data is U
+    ): Evt<U>;
+    public pipe(
+        op: (data: T)=> boolean
+    ): Evt<T>;
 
-    public pipe<Q extends T>(matcher: (data: T) => data is Q): Evt<Q>;
-    //public pipe<Q extends T>(boundTo: HandlerGroup, matcher: (data: T) => data is Q): Evt<Q>;
+    public pipe(ref: Ref): Evt<T>;
 
-    public pipe(matcher: (data: T) => boolean): Evt<T>;
-    //public pipe(boundTo: HandlerGroup, matcher: (data: T) => boolean): Evt<T>;
+    public pipe<U>(
+        ref: Ref,
+        op: Operator.fλ<T,U>
+    ): Evt<U>;
+    public pipe<U extends T>(
+        ref: Ref,
+        op: (data: T)=> data is U
+    ): Evt<U>;
+    public pipe(
+        ref: Ref,
+        op: (data: T)=> boolean
+    ): Evt<T>;
+
+    public pipe<B, C>(
+        op1: Operator.fλ<T, B>,
+        op2: Operator.fλ<B, C>
+    ): Evt<C>;
+    public pipe<B, C extends B>(
+        op1: Operator.fλ<T, B>,
+        op2: (data: B) => data is C,
+    ): Evt<C>;
+    public pipe<B>(
+        op1: Operator.fλ<T, B>,
+        op2: (data: B) => boolean,
+    ): Evt<B>;
+    public pipe<B extends T, C>(
+        op1: (data: T) => data is B,
+        op2: Operator.fλ<B, C>
+    ): Evt<B>;
+    public pipe<B>(
+        op1: (data: T) => boolean,
+        op2: Operator.fλ<T, B>
+    ): Evt<B>;
+    public pipe<B extends T, C extends B>(
+        op1: (data: T) => data is B,
+        op2: (data: B) => data is C,
+    ): Evt<C>;
+    public pipe<B extends T>(
+        op1: (data: T) => data is B,
+        op2: (data: B) => boolean,
+    ): Evt<B>;
+    public pipe<B extends T>(
+        op1: (data: T) => boolean,
+        op2: (data: T) => data is B
+    ): Evt<B>;
+    public pipe<T>(
+        op1: (data: T) => boolean,
+        op2: (data: T) => boolean,
+    ): Evt<T>;
+
+
+    public pipe<B, C, D>(
+        op1: Operator.fλ<T, B>,
+        op2: Operator.fλ<B, C>,
+        op3: Operator.fλ<C, D>
+    ): Evt<D>;
+
+    public pipe<B, C, D, E>(
+        op1: Operator.fλ<T, B>,
+        op2: Operator.fλ<B, C>,
+        op3: Operator.fλ<C, D>,
+        op4: Operator.fλ<D, E>
+    ): Evt<E>;
+
+    public pipe<B, C, D, E>(
+        op1: Operator.fλ<T, B>,
+        op2: Operator.fλ<B, C>,
+        op3: Operator.fλ<C, D>,
+        op4: Operator.fλ<D, E>
+    ): Evt<E>;
+
+    public pipe<B, C, D, E, F>(
+        op1: Operator.fλ<T, B>,
+        op2: Operator.fλ<B, C>,
+        op3: Operator.fλ<C, D>,
+        op4: Operator.fλ<D, E>,
+        op5: Operator.fλ<E, F>,
+    ): Evt<F>;
+
+
+    public pipe<B, C>(
+        op1: Operator<T, B>,
+        op2: Operator<B, C>
+    ): Evt<C>;
+
+    public pipe<B, C, D>(
+        op1: Operator<T, B>,
+        op2: Operator<B, C>,
+        op3: Operator<C, D>
+    ): Evt<D>;
+
+    public pipe<B, C, D, E>(
+        op1: Operator<T, B>,
+        op2: Operator<B, C>,
+        op3: Operator<C, D>,
+        op4: Operator<D, E>,
+    ): Evt<E>;
+
+    public pipe<B, C, D, E, F>(
+        op1: Operator<T, B>,
+        op2: Operator<B, C>,
+        op3: Operator<C, D>,
+        op4: Operator<D, E>,
+        op5: Operator<E, F>
+    ): Evt<F>;
+
+    public pipe(
+        ...ops: [
+            Operator<T, any>,
+            ...Operator<any, any>[]
+        ]
+    ): Evt<any>;
+
+    public pipe<T>(
+        ...ops: [
+            Operator<T, any>,
+            ...Operator<any, any>[]
+        ]
+    ): Evt<any>;
 
     public pipe(...inputs: any[]): Evt<any> {
 

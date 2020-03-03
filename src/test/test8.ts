@@ -68,7 +68,7 @@ evt.post({
 });
 
 
-evt.getHandlers().find(({ matcher })=> matcher === isTyped )!.detach();
+evt.getHandlers().find(({ op })=> op === isTyped )!.detach();
 
 console.assert( evt.getHandlers().length === 0, "m5");
 

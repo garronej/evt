@@ -1,35 +1,35 @@
 import { EvtCore } from "./EvtCore";
-import { Bindable, Handler, $Matcher } from "./types";
-export declare function parseOverloadParamsFactory<T>({ defaultBoundTo }: {
+import { Bindable, Handler, Operator } from "./types";
+export declare const parseOverloadParamsFactory: <T>({ defaultBoundTo }: {
     defaultBoundTo: Object;
-}): (inputs: readonly any[], methodName: "pipe" | "waitFor" | "attach-ish" | "createDelegate") => Handler.PropsFromArgs<T, any>;
+}) => (inputs: readonly any[], methodName: "pipe" | "waitFor" | "attach*" | "createDelegate") => Handler.PropsFromArgs<T, any>;
 /** Evt without evtAttach property, attachOnceMatched and createDelegate */
 export declare class EvtOverloaded<T> extends EvtCore<T> {
-    protected parseOverloadParams: (inputs: readonly any[], methodName: "pipe" | "waitFor" | "attach-ish" | "createDelegate") => Handler.PropsFromArgs<T, any>;
+    protected parseOverloadParams: (inputs: readonly any[], methodName: "pipe" | "waitFor" | "attach*" | "createDelegate") => Handler.PropsFromArgs<T, any>;
     /**
      * https://garronej.github.io/ts-evt/#evtwaitfor
      *
-     * $matcher
+     * op - fλ
      *
      * timeout?
      */
-    waitFor<U>(matcher: $Matcher.Once<T, U>, timeout?: number): Promise<U>;
+    waitFor<U>(op: Operator.fλ.Once<T, U>, timeout?: number): Promise<U>;
     /**
      * https://garronej.github.io/ts-evt/#evtwaitfor
      *
-     * matcher - Type guard
+     * op - Type guard
      *
      * timeout?
      */
-    waitFor<Q extends T>(matcher: (data: T) => data is Q, timeout?: number): Promise<Q>;
+    waitFor<Q extends T>(op: (data: T) => data is Q, timeout?: number): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtwaitfor
      *
-     * matcher - Filter only
+     * op - Filter
      *
      * timeout?
      */
-    waitFor(matcher: (data: T) => boolean, timeout?: number): Promise<T>;
+    waitFor(op: (data: T) => boolean, timeout?: number): Promise<T>;
     /**
      * https://garronej.github.io/ts-evt/#evtwaitfor
      *
@@ -37,49 +37,9 @@ export declare class EvtOverloaded<T> extends EvtCore<T> {
      */
     waitFor(timeout?: number): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      *
-     * matcher - transformative
-     *
-     * boundTo
-     *
-     * timeout
-     *
-     * callback
-     */
-    $attach<U>(matcher: $Matcher<T, U>, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
-    /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
-     *
-     * matcher - transformative
-     *
-     * boundTo
-     *
-     * callback
-     */
-    $attach<U>(matcher: $Matcher<T, U>, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
-    /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
-     *
-     * matcher - transformative
-     *
-     * timeout
-     *
-     * callback
-     */
-    $attach<U>(matcher: $Matcher<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
-    /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
-     *
-     * matcher - transformative
-     *
-     * callback
-     */
-    $attach<U>(matcher: $Matcher<T, U>, callback: (transformedData: U) => void): Promise<U>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Type guard
+     * op - fλ
      *
      * boundTo
      *
@@ -87,11 +47,39 @@ export declare class EvtOverloaded<T> extends EvtCore<T> {
      *
      * callback
      */
-    attach<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => void): Promise<Q>;
+    $attach<U>(op: Operator.fλ<T, U>, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
+    /**
+     * https://garronej.github.io/ts-evt/#op---fλ
+     *
+     * op - fλ
+     *
+     * boundTo
+     *
+     * callback
+     */
+    $attach<U>(op: Operator.fλ<T, U>, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
+    /**
+     * https://garronej.github.io/ts-evt/#op---fλ
+     *
+     * op - fλ
+     *
+     * timeout
+     *
+     * callback
+     */
+    $attach<U>(op: Operator.fλ<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
+    /**
+     * https://garronej.github.io/ts-evt/#op---fλ
+     *
+     * op - fλ
+     *
+     * callback
+     */
+    $attach<U>(op: Operator.fλ<T, U>, callback: (transformedData: U) => void): Promise<U>;
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      *
-     * matcher - Filter only
+     * op - Type guard
      *
      * boundTo
      *
@@ -99,47 +87,59 @@ export declare class EvtOverloaded<T> extends EvtCore<T> {
      *
      * callback
      */
-    attach(matcher: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
+    attach<Q extends T>(op: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      *
-     * matcher - Type guard
+     * op - Filter
      *
      * boundTo
-     *
-     * callback
-     */
-    attach<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => void): Promise<Q>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Filter only
-     *
-     * boundTo
-     *
-     * callback
-     */
-    attach(matcher: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Type guard
      *
      * timeout
      *
      * callback
      */
-    attach<Q extends T>(matcher: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
+    attach(op: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      *
-     * matcher - Filter only
+     * op - Type guard
+     *
+     * boundTo
+     *
+     * callback
+     */
+    attach<Q extends T>(op: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => void): Promise<Q>;
+    /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     *
+     * op - Filter
+     *
+     * boundTo
+     *
+     * callback
+     */
+    attach(op: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => void): Promise<T>;
+    /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     *
+     * op - Type guard
      *
      * timeout
      *
      * callback
      */
-    attach(matcher: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
+    attach<Q extends T>(op: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
+    /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     *
+     * op - Filter
+     *
+     * timeout
+     *
+     * callback
+     */
+    attach(op: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      *
@@ -153,19 +153,19 @@ export declare class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      *
-     * matcher - Type guard
+     * op - Type guard
      *
      * callback
      */
-    attach<Q extends T>(matcher: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
+    attach<Q extends T>(op: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      *
-     * matcher - Filter only
+     * op - Filter
      *
      * callback
      */
-    attach(matcher: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
+    attach(op: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      *
@@ -189,49 +189,9 @@ export declare class EvtOverloaded<T> extends EvtCore<T> {
      */
     attach(callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      *
-     * $matcher
-     *
-     * boundTo
-     *
-     * timeout
-     *
-     * callback
-     */
-    $attachOnce<U>(matcher: $Matcher.Once<T, U>, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
-    /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
-     *
-     * $matcher
-     *
-     * boundTo
-     *
-     * callback
-     */
-    $attachOnce<U>(matcher: $Matcher.Once<T, U>, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
-    /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
-     *
-     * $matcher
-     *
-     * timeout
-     *
-     * callback
-     */
-    $attachOnce<U>(matcher: $Matcher.Once<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
-    /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
-     *
-     * $matcher
-     *
-     * callback
-     */
-    $attachOnce<U>(matcher: $Matcher.Once<T, U>, callback: (transformedData: U) => void): Promise<U>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Type guard
+     * op - fλ
      *
      * boundTo
      *
@@ -239,11 +199,39 @@ export declare class EvtOverloaded<T> extends EvtCore<T> {
      *
      * callback
      */
-    attachOnce<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => void): Promise<Q>;
+    $attachOnce<U>(op: Operator.fλ.Once<T, U>, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
+    /**
+     * https://garronej.github.io/ts-evt/#op---fλ
+     *
+     * op - fλ
+     *
+     * boundTo
+     *
+     * callback
+     */
+    $attachOnce<U>(op: Operator.fλ.Once<T, U>, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
+    /**
+     * https://garronej.github.io/ts-evt/#op---fλ
+     *
+     * op - fλ
+     *
+     * timeout
+     *
+     * callback
+     */
+    $attachOnce<U>(op: Operator.fλ.Once<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
+    /**
+     * https://garronej.github.io/ts-evt/#op---fλ
+     *
+     * op - fλ
+     *
+     * callback
+     */
+    $attachOnce<U>(op: Operator.fλ.Once<T, U>, callback: (transformedData: U) => void): Promise<U>;
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      *
-     * matcher - Filter only
+     * op - Type guard
      *
      * boundTo
      *
@@ -251,47 +239,59 @@ export declare class EvtOverloaded<T> extends EvtCore<T> {
      *
      * callback
      */
-    attachOnce(matcher: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
+    attachOnce<Q extends T>(op: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      *
-     * matcher - Type guard
+     * op - Filter
      *
      * boundTo
-     *
-     * callback
-     */
-    attachOnce<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => void): Promise<Q>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Filter only
-     *
-     * boundTo
-     *
-     * callback
-     */
-    attachOnce(matcher: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
-     *
-     * matcher - Type guard
      *
      * timeout
      *
      * callback
      */
-    attachOnce<Q extends T>(matcher: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
+    attachOnce(op: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      *
-     * matcher - Filter only
+     * op - Type guard
+     *
+     * boundTo
+     *
+     * callback
+     */
+    attachOnce<Q extends T>(op: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => void): Promise<Q>;
+    /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     *
+     * op - Filter
+     *
+     * boundTo
+     *
+     * callback
+     */
+    attachOnce(op: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => void): Promise<T>;
+    /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     *
+     * op - Type guard
      *
      * timeout
      *
      * callback
      */
-    attachOnce(matcher: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
+    attachOnce<Q extends T>(op: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
+    /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     *
+     * op - Filter
+     *
+     * timeout
+     *
+     * callback
+     */
+    attachOnce(op: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      *
@@ -305,19 +305,19 @@ export declare class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      *
-     * matcher - Type guard
+     * op - Type guard
      *
      * callback
      */
-    attachOnce<Q extends T>(matcher: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
+    attachOnce<Q extends T>(op: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      *
-     * matcher - Filter only
+     * op - Filter
      *
      * callback
      */
-    attachOnce(matcher: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
+    attachOnce(op: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      *
@@ -341,49 +341,9 @@ export declare class EvtOverloaded<T> extends EvtCore<T> {
      */
     attachOnce(callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      *
-     * $matcher
-     *
-     * boundTo
-     *
-     * timeout
-     *
-     * callback
-     */
-    $attachExtract<U>(matcher: $Matcher<T, U>, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
-    /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
-     *
-     * $matcher
-     *
-     * boundTo
-     *
-     * callback
-     */
-    $attachExtract<U>(matcher: $Matcher<T, U>, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
-    /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
-     *
-     * $matcher
-     *
-     * timeout
-     *
-     * callback
-     */
-    $attachExtract<U>(matcher: $Matcher<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
-    /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
-     *
-     * $matcher
-     *
-     * callback
-     */
-    $attachExtract<U>(matcher: $Matcher<T, U>, callback: (transformedData: U) => void): Promise<U>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
-     *
-     * matcher - Type guard
+     * op - fλ
      *
      * boundTo
      *
@@ -391,11 +351,39 @@ export declare class EvtOverloaded<T> extends EvtCore<T> {
      *
      * callback
      */
-    attachExtract<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => void): Promise<Q>;
+    $attachExtract<U>(op: Operator.fλ<T, U>, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
+    /**
+     * https://garronej.github.io/ts-evt/#op---fλ
+     *
+     * op - fλ
+     *
+     * boundTo
+     *
+     * callback
+     */
+    $attachExtract<U>(op: Operator.fλ<T, U>, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
+    /**
+     * https://garronej.github.io/ts-evt/#op---fλ
+     *
+     * op - fλ
+     *
+     * timeout
+     *
+     * callback
+     */
+    $attachExtract<U>(op: Operator.fλ<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
+    /**
+     * https://garronej.github.io/ts-evt/#op---fλ
+     *
+     * op - fλ
+     *
+     * callback
+     */
+    $attachExtract<U>(op: Operator.fλ<T, U>, callback: (transformedData: U) => void): Promise<U>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      *
-     * $matcher
+     * op - Type guard
      *
      * boundTo
      *
@@ -403,67 +391,11 @@ export declare class EvtOverloaded<T> extends EvtCore<T> {
      *
      * callback
      */
-    attachExtract(matcher: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
+    attachExtract<Q extends T>(op: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      *
-     * matcher - Type guard
-     *
-     * boundTo
-     *
-     * callback
-     */
-    attachExtract<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => void): Promise<Q>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
-     *
-     * matcher - Filter only
-     *
-     * boundTo
-     *
-     * callback
-     */
-    attachExtract(matcher: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
-     *
-     * matcher - Type guard
-     *
-     * timeout
-     *
-     * callback
-     */
-    attachExtract<Q extends T>(matcher: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
-     *
-     * matcher - Filter only
-     *
-     * timeout
-     *
-     * callback
-     */
-    attachExtract(matcher: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
-     *
-     * matcher - Type guard
-     *
-     * callback
-     */
-    attachExtract<Q extends T>(matcher: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
-     *
-     * matcher - Filter only
-     *
-     * callback
-     */
-    attachExtract(matcher: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
-     *
-     * $matcher
+     * op - fλ
      *
      * boundTo
      *
@@ -471,39 +403,107 @@ export declare class EvtOverloaded<T> extends EvtCore<T> {
      *
      * callback
      */
-    $attachPrepend<U>(matcher: $Matcher<T, U>, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
+    attachExtract(op: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      *
-     * $matcher
+     * op - Type guard
      *
      * boundTo
      *
      * callback
      */
-    $attachPrepend<U>(matcher: $Matcher<T, U>, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
+    attachExtract<Q extends T>(op: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      *
-     * $matcher
+     * op - Filter
+     *
+     * boundTo
+     *
+     * callback
+     */
+    attachExtract(op: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => void): Promise<T>;
+    /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     *
+     * op - Type guard
      *
      * timeout
      *
      * callback
      */
-    $attachPrepend<U>(matcher: $Matcher<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
+    attachExtract<Q extends T>(op: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      *
-     * $matcher
+     * op - Filter
+     *
+     * timeout
      *
      * callback
      */
-    $attachPrepend<U>(matcher: $Matcher<T, U>, callback: (transformedData: U) => void): Promise<U>;
+    attachExtract(op: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
+    /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     *
+     * op - Type guard
+     *
+     * callback
+     */
+    attachExtract<Q extends T>(op: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
+    /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     *
+     * op - Filter
+     *
+     * callback
+     */
+    attachExtract(op: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
+    /**
+     * https://garronej.github.io/ts-evt/#op---fλ
+     *
+     * op - fλ
+     *
+     * boundTo
+     *
+     * timeout
+     *
+     * callback
+     */
+    $attachPrepend<U>(op: Operator.fλ<T, U>, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
+    /**
+     * https://garronej.github.io/ts-evt/#op---fλ
+     *
+     * op - fλ
+     *
+     * boundTo
+     *
+     * callback
+     */
+    $attachPrepend<U>(op: Operator.fλ<T, U>, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
+    /**
+     * https://garronej.github.io/ts-evt/#op---fλ
+     *
+     * op - fλ
+     *
+     * timeout
+     *
+     * callback
+     */
+    $attachPrepend<U>(op: Operator.fλ<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
+    /**
+     * https://garronej.github.io/ts-evt/#op---fλ
+     *
+     * op - fλ
+     *
+     * callback
+     */
+    $attachPrepend<U>(op: Operator.fλ<T, U>, callback: (transformedData: U) => void): Promise<U>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      *
-     * matcher - Type guard
+     * op - Type guard
      *
      * boundTo
      *
@@ -511,11 +511,11 @@ export declare class EvtOverloaded<T> extends EvtCore<T> {
      *
      * callback
      */
-    attachPrepend<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => void): Promise<Q>;
+    attachPrepend<Q extends T>(op: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      *
-     * matcher - Filter only
+     * op - Filter
      *
      * boundTo
      *
@@ -523,47 +523,47 @@ export declare class EvtOverloaded<T> extends EvtCore<T> {
      *
      * callback
      */
-    attachPrepend(matcher: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
+    attachPrepend(op: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      *
-     * matcher - Type guard
+     * op - Type guard
      *
      * boundTo
      *
      * callback
      */
-    attachPrepend<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => void): Promise<Q>;
+    attachPrepend<Q extends T>(op: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => void): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      *
-     * matcher - Filter only
+     * op - Filter
      *
      * boundTo
      *
      * callback
      */
-    attachPrepend(matcher: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => void): Promise<T>;
+    attachPrepend(op: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => void): Promise<T>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      *
-     * matcher - Type guard
+     * op - Type guard
      *
      * timeout
      *
      * callback
      */
-    attachPrepend<Q extends T>(matcher: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
+    attachPrepend<Q extends T>(op: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      *
-     * matcher - Filter only
+     * op - Filter
      *
      * timeout
      *
      * callback
      */
-    attachPrepend(matcher: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
+    attachPrepend(op: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      *
@@ -577,19 +577,19 @@ export declare class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      *
-     * matcher - Type guard
+     * op - Type guard
      *
      * callback
      */
-    attachPrepend<Q extends T>(matcher: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
+    attachPrepend<Q extends T>(op: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      *
-     * matcher - Filter only
+     * op - Filter
      *
      * callback
      */
-    attachPrepend(matcher: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
+    attachPrepend(op: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      *
@@ -613,49 +613,9 @@ export declare class EvtOverloaded<T> extends EvtCore<T> {
      */
     attachPrepend(callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      *
-     * $matcher
-     *
-     * boundTo
-     *
-     * timeout
-     *
-     * callback
-     */
-    $attachOncePrepend<U>(matcher: $Matcher.Once<T, U>, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
-    /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
-     *
-     * $matcher
-     *
-     * boundTo
-     *
-     * callback
-     */
-    $attachOncePrepend<U>(matcher: $Matcher.Once<T, U>, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
-    /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
-     *
-     * $matcher
-     *
-     * timeout
-     *
-     * callback
-     */
-    $attachOncePrepend<U>(matcher: $Matcher.Once<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
-    /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
-     *
-     * $matcher
-     *
-     * callback
-     */
-    $attachOncePrepend<U>(matcher: $Matcher.Once<T, U>, callback: (transformedData: U) => void): Promise<U>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
-     *
-     * matcher - Type guard
+     * op - fλ
      *
      * boundTo
      *
@@ -663,11 +623,39 @@ export declare class EvtOverloaded<T> extends EvtCore<T> {
      *
      * callback
      */
-    attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => void): Promise<Q>;
+    $attachOncePrepend<U>(op: Operator.fλ.Once<T, U>, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
+    /**
+     * https://garronej.github.io/ts-evt/#op---fλ
+     *
+     * op - fλ
+     *
+     * boundTo
+     *
+     * callback
+     */
+    $attachOncePrepend<U>(op: Operator.fλ.Once<T, U>, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
+    /**
+     * https://garronej.github.io/ts-evt/#op---fλ
+     *
+     * op - fλ
+     *
+     * timeout
+     *
+     * callback
+     */
+    $attachOncePrepend<U>(op: Operator.fλ.Once<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
+    /**
+     * https://garronej.github.io/ts-evt/#op---fλ
+     *
+     * op - fλ
+     *
+     * callback
+     */
+    $attachOncePrepend<U>(op: Operator.fλ.Once<T, U>, callback: (transformedData: U) => void): Promise<U>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      *
-     * matcher - Filter only
+     * op - Type guard
      *
      * boundTo
      *
@@ -675,47 +663,59 @@ export declare class EvtOverloaded<T> extends EvtCore<T> {
      *
      * callback
      */
-    attachOncePrepend(matcher: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
+    attachOncePrepend<Q extends T>(op: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      *
-     * matcher - Type guard
+     * op - Filter
      *
      * boundTo
-     *
-     * callback
-     */
-    attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => void): Promise<Q>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
-     *
-     * matcher - Filter only
-     *
-     * boundTo
-     *
-     * callback
-     */
-    attachOncePrepend(matcher: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
-     *
-     * matcher - Type guard
      *
      * timeout
      *
      * callback
      */
-    attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
+    attachOncePrepend(op: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      *
-     * matcher - Filter only
+     * op - Type guard
+     *
+     * boundTo
+     *
+     * callback
+     */
+    attachOncePrepend<Q extends T>(op: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => void): Promise<Q>;
+    /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
+     *
+     * op - Filter
+     *
+     * boundTo
+     *
+     * callback
+     */
+    attachOncePrepend(op: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => void): Promise<T>;
+    /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
+     *
+     * op - Type guard
      *
      * timeout
      *
      * callback
      */
-    attachOncePrepend(matcher: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
+    attachOncePrepend<Q extends T>(op: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
+    /**
+     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
+     *
+     * op - Filter
+     *
+     * timeout
+     *
+     * callback
+     */
+    attachOncePrepend(op: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      *
@@ -729,19 +729,19 @@ export declare class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      *
-     * matcher - Type guard
+     * op - Type guard
      *
      * callback
      */
-    attachOncePrepend<Q extends T>(matcher: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
+    attachOncePrepend<Q extends T>(op: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      *
-     * matcher - Filter only
+     * op - Filter
      *
      * callback
      */
-    attachOncePrepend(matcher: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
+    attachOncePrepend(op: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      *
@@ -765,49 +765,9 @@ export declare class EvtOverloaded<T> extends EvtCore<T> {
      */
     attachOncePrepend(callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
+     * https://garronej.github.io/ts-evt/#op---fλ
      *
-     * $matcher
-     *
-     * boundTo
-     *
-     * timeout
-     *
-     * callback
-     */
-    $attachOnceExtract<U>(matcher: $Matcher.Once<T, U>, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
-    /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
-     *
-     * $matcher
-     *
-     * boundTo
-     *
-     * callback
-     */
-    $attachOnceExtract<U>(matcher: $Matcher.Once<T, U>, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
-    /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
-     *
-     * $matcher
-     *
-     * timeout
-     *
-     * callback
-     */
-    $attachOnceExtract<U>(matcher: $Matcher.Once<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
-    /**
-     * https://garronej.github.io/ts-evt/#matcher---transformative
-     *
-     * $matcher
-     *
-     * callback
-     */
-    $attachOnceExtract<U>(matcher: $Matcher.Once<T, U>, callback: (transformedData: U) => void): Promise<U>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
-     *
-     * matcher - Type guard
+     * op - fλ
      *
      * boundTo
      *
@@ -815,11 +775,39 @@ export declare class EvtOverloaded<T> extends EvtCore<T> {
      *
      * callback
      */
-    attachOnceExtract<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => void): Promise<Q>;
+    $attachOnceExtract<U>(op: Operator.fλ.Once<T, U>, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
+    /**
+     * https://garronej.github.io/ts-evt/#op---fλ
+     *
+     * op - fλ
+     *
+     * boundTo
+     *
+     * callback
+     */
+    $attachOnceExtract<U>(op: Operator.fλ.Once<T, U>, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
+    /**
+     * https://garronej.github.io/ts-evt/#op---fλ
+     *
+     * op - fλ
+     *
+     * timeout
+     *
+     * callback
+     */
+    $attachOnceExtract<U>(op: Operator.fλ.Once<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
+    /**
+     * https://garronej.github.io/ts-evt/#op---fλ
+     *
+     * op - fλ
+     *
+     * callback
+     */
+    $attachOnceExtract<U>(op: Operator.fλ.Once<T, U>, callback: (transformedData: U) => void): Promise<U>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      *
-     * matcher - Filter only
+     * op - Type guard
      *
      * boundTo
      *
@@ -827,47 +815,59 @@ export declare class EvtOverloaded<T> extends EvtCore<T> {
      *
      * callback
      */
-    attachOnceExtract(matcher: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
+    attachOnceExtract<Q extends T>(op: (data: T) => data is Q, boundTo: Bindable, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      *
-     * matcher - Type guard
+     * op - Filter
      *
      * boundTo
-     *
-     * callback
-     */
-    attachOnceExtract<Q extends T>(matcher: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => void): Promise<Q>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
-     *
-     * matcher - Filter only
-     *
-     * boundTo
-     *
-     * callback
-     */
-    attachOnceExtract(matcher: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => void): Promise<T>;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
-     *
-     * matcher - Type guard
      *
      * timeout
      *
      * callback
      */
-    attachOnceExtract<Q extends T>(matcher: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
+    attachOnceExtract(op: (data: T) => boolean, boundTo: Bindable, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      *
-     * matcher - Filter only
+     * op - Type guard
+     *
+     * boundTo
+     *
+     * callback
+     */
+    attachOnceExtract<Q extends T>(op: (data: T) => data is Q, boundTo: Bindable, callback: (data: Q) => void): Promise<Q>;
+    /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     *
+     * op - Filter
+     *
+     * boundTo
+     *
+     * callback
+     */
+    attachOnceExtract(op: (data: T) => boolean, boundTo: Bindable, callback: (data: T) => void): Promise<T>;
+    /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     *
+     * op - Type guard
      *
      * timeout
      *
      * callback
      */
-    attachOnceExtract(matcher: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
+    attachOnceExtract<Q extends T>(op: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
+    /**
+     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     *
+     * op - Filter
+     *
+     * timeout
+     *
+     * callback
+     */
+    attachOnceExtract(op: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      *
@@ -879,19 +879,19 @@ export declare class EvtOverloaded<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      *
-     * matcher - Type guard
+     * op - Type guard
      *
      * callback
      */
-    attachOnceExtract<Q extends T>(matcher: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
+    attachOnceExtract<Q extends T>(op: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      *
-     * matcher - Filter only
+     * op - Filter
      *
      * callback
      */
-    attachOnceExtract(matcher: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
+    attachOnceExtract(op: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      *

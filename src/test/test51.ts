@@ -4,7 +4,7 @@ import { Evt } from "../lib";
 import { scan, throttleTime } from "../lib/util";
 
 
-const hg = Evt.createHandlerGroup();
+const ref = Evt.newRef();
 
 const evtText = new Evt<string>();
 
@@ -25,14 +25,14 @@ evtText
 
 */
 
-//TODO: Detach from matcher
+//TODO: Detach from op
 evtText
-    .pipe(hg)
+    .pipe(ref)
     .pipe(str => [str.toUpperCase()])
     .pipe(str => str.startsWith("H"))
     .pipe(scan((charCount, str) => charCount + str.length, 0))
-    .pipe( count=> count < 33 ? [ `${count}` ] : "DETACH" )
-    .attach(str => console.log("2 " + str))
+    .pipe( count=> count <= 33 ? [ `${count}` ] : "DETACH" )
+    .attach(str => console.log("=>", str))
     ;
 
 
@@ -45,7 +45,7 @@ const evtStr = new Evt<string>();
 
 evtStr
     .pipe(throttleTime(1000))
-    .attach(str => console.log("2", { str }))
+    .attach(str => console.log({ str }))
     ;
 
 

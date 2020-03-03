@@ -6,10 +6,6 @@
  * -A number
  * -An array with two elements, the first being a callable function
  */
-export declare type Bindable = Bindable.Object_ | string;
-export declare namespace Bindable {
-    /** Way of defining Object so it does not match number and string */
-    type Object_ = {
-        [k: string]: any;
-    };
-}
+export declare type Bindable = {
+    [k: string]: any;
+} | string;

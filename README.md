@@ -38,10 +38,10 @@ There is a lot of things that can't easily be done with ``EventEmitter``:
   to the event flow. In consequence we are often forced to arbitrate between readability, type safety and performance, achieving both tree being impossible.
 - Combining the right abstractions/operators to achieve the expected behavior can be challenging, even for seemingly straights forward control flows.
 
-``ts-evt`` introduce the concept of (transformative) ``$Matcher``, a singe function to filter, transform, encapsulate state and unsubscribe.
+``ts-evt`` introduce the concept of λ Operator, a singe function to filter, transform, unsubscribe and encapsulate state.  
 Those functions are easy to write, easy to reason about, inline 
 and most importantly enable TypeScript to infer what is happening.  
-As with ``RxJS`` operators ``$Matcher``s can be composed and chained but most of the time it wont be necessary.
+As with ``RxJS`` operators λ operators can be composed and chained but it is rarely necessary.
 
 
 <p align="center">

@@ -3,7 +3,7 @@ import { Evt } from "../lib";
 import { getPromiseAssertionApi } from "../tools/testing";
 const { mustResolve, mustReject } = getPromiseAssertionApi();
 
-let matcher = (object: Object): object is Array<any> => object instanceof Array;
+let op = (object: Object): object is Array<any> => object instanceof Array;
 
 let boundTo = {};
 
@@ -31,10 +31,10 @@ function mkCb(expect: Object[]) {
 
     let posts = [[], [], [], "foo", {}, []];
 
-    let expect = posts.filter(matcher);
+    let expect = posts.filter(op);
 
     mustResolve({
-        "promise": evt.attach(matcher, boundTo, timeout, mkCb(expect)),
+        "promise": evt.attach(op, boundTo, timeout, mkCb(expect)),
         "expectedData": expect[0],
         "delay": 2000
     });
@@ -52,10 +52,10 @@ function mkCb(expect: Object[]) {
 
     let posts = [[], [], [], "foo", {}, []];
 
-    let expect = posts.filter(matcher);
+    let expect = posts.filter(op);
 
     mustResolve({
-        "promise": evt.attach(matcher, timeout, mkCb(expect)),
+        "promise": evt.attach(op, timeout, mkCb(expect)),
         "expectedData": expect[0],
         "delay": 2000
     });
@@ -73,10 +73,10 @@ function mkCb(expect: Object[]) {
 
     let posts = [[], [], [], "foo", {}, []];
 
-    let expect = posts.filter(matcher);
+    let expect = posts.filter(op);
 
     mustResolve({
-        "promise": evt.attach(matcher, mkCb(expect)),
+        "promise": evt.attach(op, mkCb(expect)),
         "expectedData": expect[0],
         "delay": 2000
     });
@@ -182,9 +182,9 @@ function mkCb(expect: Object[]) {
 
     let posts = [[], [], [], "foo", {}, []];
 
-    mustReject({ "promise": evt.attach(matcher, timeout, () => { }), "delay": 3000 });
+    mustReject({ "promise": evt.attach(op, timeout, () => { }), "delay": 3000 });
 
-    posts.filter(object => !matcher(object)).forEach(object => evt.post(object));
+    posts.filter(object => !op(object)).forEach(object => evt.post(object));
 
 })();
 
@@ -196,9 +196,9 @@ function mkCb(expect: Object[]) {
 
     let posts = [[], [], [], "foo", {}, []];
 
-    mustReject({ "promise": evt.attach(matcher, boundTo, timeout, () => { }), "delay": 2000 });
+    mustReject({ "promise": evt.attach(op, boundTo, timeout, () => { }), "delay": 2000 });
 
-    posts.filter(object => !matcher(object)).forEach(object => evt.post(object));
+    posts.filter(object => !op(object)).forEach(object => evt.post(object));
 
 })();
 
@@ -231,10 +231,10 @@ function mkCb(expect: Object[]) {
 
     let posts = [[], [], [], "foo", {}, []];
 
-    let expect = posts.filter(matcher);
+    let expect = posts.filter(op);
 
     mustResolve({
-        "promise": evt.attachPrepend(matcher, boundTo, timeout, mkCb(expect)),
+        "promise": evt.attachPrepend(op, boundTo, timeout, mkCb(expect)),
         "expectedData": expect[0],
         "delay": 2000
     });
@@ -253,10 +253,10 @@ function mkCb(expect: Object[]) {
 
     let posts = [[], [], [], "foo", {}, []];
 
-    let expect = posts.filter(matcher);
+    let expect = posts.filter(op);
 
     mustResolve({
-        "promise": evt.attachPrepend(matcher, timeout, mkCb(expect)),
+        "promise": evt.attachPrepend(op, timeout, mkCb(expect)),
         "expectedData": expect[0],
         "delay": 2000
     });
@@ -275,10 +275,10 @@ function mkCb(expect: Object[]) {
 
     let posts = [[], [], [], "foo", {}, []];
 
-    let expect = posts.filter(matcher);
+    let expect = posts.filter(op);
 
     mustResolve({
-        "promise": evt.attachPrepend(matcher, mkCb(expect)),
+        "promise": evt.attachPrepend(op, mkCb(expect)),
         "expectedData": expect[0],
         "delay": 2000
     });
@@ -390,11 +390,11 @@ function mkCb(expect: Object[]) {
     let posts = [[], [], [], "foo", {}, []];
 
     mustReject({
-        "promise": evt.attachPrepend(matcher, timeout, () => { }),
+        "promise": evt.attachPrepend(op, timeout, () => { }),
         "delay": 2000
     });
 
-    posts.filter(object => !matcher(object)).forEach(object => evt.post(object));
+    posts.filter(object => !op(object)).forEach(object => evt.post(object));
 
 })();
 
@@ -407,9 +407,9 @@ function mkCb(expect: Object[]) {
 
     let posts = [[], [], [], "foo", {}, []];
 
-    mustReject({ "promise": evt.attachPrepend(matcher, boundTo, timeout, () => { }), "delay": 2000 });
+    mustReject({ "promise": evt.attachPrepend(op, boundTo, timeout, () => { }), "delay": 2000 });
 
-    posts.filter(object => !matcher(object)).forEach(object => evt.post(object));
+    posts.filter(object => !op(object)).forEach(object => evt.post(object));
 
 })();
 
@@ -439,10 +439,10 @@ function mkCb(expect: Object[]) {
 
     let posts = [[], [], [], "foo", {}, []];
 
-    let expect = posts.filter(matcher);
+    let expect = posts.filter(op);
 
     mustResolve({
-        "promise": evt.attachOnce(matcher, boundTo, timeout, mkCb([expect[0]])),
+        "promise": evt.attachOnce(op, boundTo, timeout, mkCb([expect[0]])),
         "expectedData": expect[0],
         "delay": 2000
     });
@@ -460,10 +460,10 @@ function mkCb(expect: Object[]) {
 
     let posts = [[], [], [], "foo", {}, []];
 
-    let expect = posts.filter(matcher);
+    let expect = posts.filter(op);
 
     mustResolve({
-        "promise": evt.attachOnce(matcher, timeout, mkCb([expect[0]])),
+        "promise": evt.attachOnce(op, timeout, mkCb([expect[0]])),
         "expectedData": expect[0],
         "delay": 2000
     });
@@ -481,10 +481,10 @@ function mkCb(expect: Object[]) {
 
     let posts = [[], [], [], "foo", {}, []];
 
-    let expect = posts.filter(matcher);
+    let expect = posts.filter(op);
 
     mustResolve({
-        "promise": evt.attachOnce(matcher, mkCb([expect[0]])),
+        "promise": evt.attachOnce(op, mkCb([expect[0]])),
         "expectedData": expect[0],
         "delay": 2000
     });
@@ -591,11 +591,11 @@ function mkCb(expect: Object[]) {
     let posts = [[], [], [], "foo", {}, []];
 
     mustReject({
-        "promise": evt.attachOnce(matcher, timeout, () => { }),
+        "promise": evt.attachOnce(op, timeout, () => { }),
         "delay": 2000
     });
 
-    posts.filter(object => !matcher(object)).forEach(object => evt.post(object));
+    posts.filter(object => !op(object)).forEach(object => evt.post(object));
 
 })();
 
@@ -607,9 +607,9 @@ function mkCb(expect: Object[]) {
 
     let posts = [[], [], [], "foo", {}, []];
 
-    mustReject({ "promise": evt.attachOnce(matcher, boundTo, timeout, () => { }), "delay": 2000 });
+    mustReject({ "promise": evt.attachOnce(op, boundTo, timeout, () => { }), "delay": 2000 });
 
-    posts.filter(object => !matcher(object)).forEach(object => evt.post(object));
+    posts.filter(object => !op(object)).forEach(object => evt.post(object));
 
 })();
 
@@ -639,16 +639,16 @@ function mkCb(expect: Object[]) {
 
     let posts = [[], [], [], "foo", {}, []];
 
-    let expect = posts.filter(matcher);
+    let expect = posts.filter(op);
 
     mustResolve({
-        "promise": evt.attachOnce(matcher, boundTo, timeout, mkCb([expect[1]])),
+        "promise": evt.attachOnce(op, boundTo, timeout, mkCb([expect[1]])),
         "expectedData": expect[1],
         "delay": 2000
     });
 
     mustResolve({
-        "promise": evt.attachOnceExtract(matcher, boundTo, timeout, mkCb([expect[0]])),
+        "promise": evt.attachOnceExtract(op, boundTo, timeout, mkCb([expect[0]])),
         "expectedData": expect[0],
         "delay": 2000
     });
@@ -667,16 +667,16 @@ function mkCb(expect: Object[]) {
 
     let posts = [[], [], [], "foo", {}, []];
 
-    let expect = posts.filter(matcher);
+    let expect = posts.filter(op);
 
     mustResolve({
-        "promise": evt.attachOnce(matcher, timeout, mkCb([expect[1]])),
+        "promise": evt.attachOnce(op, timeout, mkCb([expect[1]])),
         "expectedData": expect[1],
         "delay": 2000
     });
 
     mustResolve({
-        "promise": evt.attachOnceExtract(matcher, timeout, mkCb([expect[0]])),
+        "promise": evt.attachOnceExtract(op, timeout, mkCb([expect[0]])),
         "expectedData": expect[0],
         "delay": 2000
     });
@@ -695,16 +695,16 @@ function mkCb(expect: Object[]) {
 
     let posts = [[], [], [], "foo", {}, []];
 
-    let expect = posts.filter(matcher);
+    let expect = posts.filter(op);
 
     mustResolve({
-        "promise": evt.attachOnce(matcher, mkCb([expect[1]])),
+        "promise": evt.attachOnce(op, mkCb([expect[1]])),
         "expectedData": expect[1],
         "delay": 2000
     });
 
     mustResolve({
-        "promise": evt.attachOnceExtract(matcher, mkCb([expect[0]])),
+        "promise": evt.attachOnceExtract(op, mkCb([expect[0]])),
         "expectedData": expect[0],
         "delay": 2000
     });
@@ -840,11 +840,11 @@ function mkCb(expect: Object[]) {
     let posts = [[], [], [], "foo", {}, []];
 
     mustReject({
-        "promise": evt.attachOnceExtract(matcher, timeout, () => { }),
+        "promise": evt.attachOnceExtract(op, timeout, () => { }),
         "delay": 2000
     });
 
-    posts.filter(object => !matcher(object)).forEach(object => evt.post(object));
+    posts.filter(object => !op(object)).forEach(object => evt.post(object));
 
 })();
 
@@ -856,9 +856,9 @@ function mkCb(expect: Object[]) {
 
     let posts = [[], [], [], "foo", {}, []];
 
-    mustReject({ "promise": evt.attachOnceExtract(matcher, boundTo, timeout, () => { }), "delay": 2000 });
+    mustReject({ "promise": evt.attachOnceExtract(op, boundTo, timeout, () => { }), "delay": 2000 });
 
-    posts.filter(object => !matcher(object)).forEach(object => evt.post(object));
+    posts.filter(object => !op(object)).forEach(object => evt.post(object));
 
 })();
 

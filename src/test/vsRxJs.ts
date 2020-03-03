@@ -1,10 +1,10 @@
 
 //The event have this form: 
 type Data = {
-    eventName: "TEXT";
+    type: "TEXT";
     text: string;
 } | {
-    eventName: "AGE";
+    type: "AGE";
     age: number;
 };
 
@@ -19,20 +19,20 @@ type Data = {
 
         const prText = subject
             .pipe(
-                filter(data => data.eventName === "TEXT"), //Typescript does not restrict to TextEvent
+                filter(data => data.type === "TEXT"), //Typescript does not restrict to TextEvent
                 first(),
                 //We have to cast, it's unsafe and verbose...
-                map(data => (data as Extract<Data, { eventName: "TEXT" }>).text)
+                map(data => (data as Extract<Data, { type: "TEXT" }>).text)
             )
             .toPromise();
 
         prText.then(console.log);
 
         //Prints "Hello World RxJS"
-        subject.next({ "eventName": "TEXT", "text": "Hello World RxJS" });
+        subject.next({ "type": "TEXT", "text": "Hello World RxJS" });
     }
 
-    await new Promise(resolve=> setTimeout(resolve,0));
+    await new Promise(resolve => setTimeout(resolve, 0));
     console.log("===================");
 
     //..Safer but more cryptic and less performant way of doing the same thing.
@@ -41,7 +41,7 @@ type Data = {
 
         const prText = subject
             .pipe(
-                map(data => (data.eventName === "TEXT" ? [data.text] : null)),
+                map(data => (data.type === "TEXT" ? [data.text] : null)),
                 first((data): data is NonNullable<typeof data> => !!data), //Explicitly tell that we filler out null
                 map(([text]) => text)
             )
@@ -50,10 +50,10 @@ type Data = {
         prText.then(console.log);
 
         //Prints "Hello World RxJS 2"
-        subject.next({ "eventName": "TEXT", "text": "Hello World RxJS 2" });
+        subject.next({ "type": "TEXT", "text": "Hello World RxJS 2" });
     }
 
-    await new Promise(resolve=> setTimeout(resolve,0));
+    await new Promise(resolve => setTimeout(resolve, 0));
     console.log("===================");
 
     const { Evt } = await import("../lib");
@@ -63,18 +63,20 @@ type Data = {
         const evtData = new Evt<Data>();
 
         const prText = evtData.waitFor(
-            data => data.eventName === "TEXT" ? [data.text] : null
+            data => data.type !== "TEXT" ?
+                null :
+                [data.text]
         );
 
         prText.then(console.log);
 
         evtData.post({
-            eventName: "TEXT",
+            type: "TEXT",
             text: "Hello World ts-evt"
         });
     }
 
-    await new Promise(resolve=> setTimeout(resolve,0));
+    await new Promise(resolve => setTimeout(resolve, 0));
     console.log("===================");
 
 
@@ -86,7 +88,7 @@ type Data = {
 
         subject
             .pipe(
-                map(data => (data.eventName === "TEXT" ? [data.text] : null)),
+                map(data => (data.type === "TEXT" ? [data.text] : null)),
                 filter((data): data is NonNullable<typeof data> => !!data),
                 map(([text]) => text),
                 takeWhile(text => text !== "STOP"),
@@ -96,41 +98,44 @@ type Data = {
             ;
 
         //Prints "TICK"
-        subject.next({ "eventName": "TEXT", "text": "TICK" });
+        subject.next({ "type": "TEXT", "text": "TICK" });
         //Prints "TICK TACK"
-        subject.next({ "eventName": "TEXT", "text": "TACK" });
+        subject.next({ "type": "TEXT", "text": "TACK" });
         //Prints nothing
-        subject.next({ "eventName": "TEXT", "text": "STOP" });
+        subject.next({ "type": "TEXT", "text": "STOP" });
         //Prints nothing
-        subject.next({ "eventName": "TEXT", "text": "TICK" });
+        subject.next({ "type": "TEXT", "text": "TICK" });
 
     }
 
     console.log("===================");
 
-    //Same thing with ts-evt and a single $Matcher...
+    //Same thing with ts-evt and a single λ function operator...
     {
         const evtData = new Evt<Data>();
 
         evtData.$attach(
             [
                 (data, prev) =>
-                    data.eventName === "TEXT" ?
-                        data.text !== "STOP" ? [`${prev} ${data.text}`] : "DETACH"
-                        : null,
+                    data.type !== "TEXT" ?
+                        null :
+                        data.text === "STOP" ?
+                            "DETACH" :
+                            [`${prev} ${data.text}`]
+                ,
                 "=>"
             ],
             str => console.log(str)
         );
 
         //Prints "TICK"
-        evtData.post({ "eventName": "TEXT", "text": "TICK" });
+        evtData.post({ "type": "TEXT", "text": "TICK" });
         //Prints "TICK TACK"
-        evtData.post({ "eventName": "TEXT", "text": "TACK" });
+        evtData.post({ "type": "TEXT", "text": "TACK" });
         //Prints nothing
-        evtData.post({ "eventName": "TEXT", "text": "STOP" });
+        evtData.post({ "type": "TEXT", "text": "STOP" });
         //Prints nothing
-        evtData.post({ "eventName": "TEXT", "text": "TICK" });
+        evtData.post({ "type": "TEXT", "text": "TICK" });
 
     }
 
@@ -141,19 +146,20 @@ type Data = {
 
         const evtData = new Evt<Data>();
 
-        //$Matcher does not have to be anonymous...
-        const takeWhileNot = (stopStr: string): import("../lib").$Matcher<string, string> =>
+        //Operators does not have to be anonymous...
+        const takeWhileNot = (stopStr: string): import("../lib").Operator.fλ<string, string> =>
             text => text !== stopStr ? [text] : "DETACH";
 
         //...Some standard ones are provided in utils...
-        const { scan } = await import("../lib/util");
+        const { scan } = await import("../lib");
 
         //...But you could define it yourself
         /*
-        const { composeMatcher } = await import("../lib/util");
+        const { composeOperators } = await import("../lib");
         const myScan = <T, U>(
-            accumulator: (acc: U, value: T, index: number) => U, seed: U
-        ) => composeMatcher<T, [T, U, number], U>(
+            accumulator: (acc: U, value: T, index: number) => U, 
+            seed: U
+        ) => composeOperators<T, [T, U, number], U>(
             [
                 (data, [, acc, index]) =>
                     [[data, accumulator(acc, data, index), index + 1]],
@@ -165,7 +171,7 @@ type Data = {
 
         evtData
             .pipe(
-                data => (data.eventName === "TEXT") ? [data.text] : null,
+                data => data.type === "TEXT" ? [data.text] : null,
                 takeWhileNot("STOP"),
                 scan((prev, text) => `${prev} ${text}`, "=>")
             )
@@ -173,13 +179,13 @@ type Data = {
             ;
 
         //Prints "TICK"
-        evtData.post({ "eventName": "TEXT", "text": "TICK" });
+        evtData.post({ "type": "TEXT", "text": "TICK" });
         //Prints "TICK TACK"
-        evtData.post({ "eventName": "TEXT", "text": "TACK" });
+        evtData.post({ "type": "TEXT", "text": "TACK" });
         //Prints nothing
-        evtData.post({ "eventName": "TEXT", "text": "STOP" });
+        evtData.post({ "type": "TEXT", "text": "STOP" });
         //Prints nothing
-        evtData.post({ "eventName": "TEXT", "text": "TICK" });
+        evtData.post({ "type": "TEXT", "text": "TICK" });
 
     }
 

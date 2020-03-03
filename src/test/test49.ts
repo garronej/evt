@@ -14,7 +14,7 @@ const evtText = new Evt<string>();
 
 const evtAge = new Evt<number>();
 
-const boundTo = Evt.createHandlerGroup();
+const boundTo = Evt.newRef();
 
 evtText.attach(boundTo, () => assert(false));
 evtAge.attach(boundTo, () => assert(false));

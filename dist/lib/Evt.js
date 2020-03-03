@@ -61,7 +61,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var EvtOverloaded_2 = require("./EvtOverloaded");
-var HandlerGroup_1 = require("./HandlerGroup");
+var Ref_1 = require("./Ref");
+var invokeOperator_1 = require("./util/invokeOperator");
 var Evt = /** @class */ (function (_super) {
     __extends(Evt, _super);
     function Evt() {
@@ -71,7 +72,7 @@ var Evt = /** @class */ (function (_super) {
         _this_1.evtDetach = new EvtOverloaded_2.EvtOverloaded();
         return _this_1;
     }
-    Evt.createHandlerGroup = function () { return new HandlerGroup_1.HandlerGroup(); };
+    Evt.newRef = function () { return new Ref_1.Ref(); };
     Evt.prototype.onHandlerAdded = function (handler) {
         _super.prototype.onHandlerDetached.call(this, handler);
         this.evtAttach.post(handler);
@@ -104,14 +105,13 @@ var Evt = /** @class */ (function (_super) {
         var pr = new Promise(function (resolve) { return resolvePr = resolve; });
         var resolvePrAndPost = function (data) { return resolvePr(_this_1.post(data)); };
         this.evtAttach.attachOnce(function (_a) {
-            var matcher = _a.matcher;
-            return !!_this_1.invokeMatcher(matcher, data);
+            var op = _a.op;
+            return !!invokeOperator_1.invokeOperator(_this_1.getStatelessOp(op), data);
         }, function () { return isSync ?
             resolvePrAndPost(data) :
             Promise.resolve().then(function () { return resolvePrAndPost(data); }); });
         return pr;
     };
-    //public pipe(boundTo: HandlerGroup, matcher: (data: T) => boolean): Evt<T>;
     Evt.prototype.pipe = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
