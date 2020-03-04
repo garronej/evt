@@ -161,8 +161,8 @@ export class EvtCore<T> {
                         return false;
                     }
 
-                    if (RefCore.match(handler.boundTo)) {
-                        handler.boundTo.removeHandler(handler);
+                    if (RefCore.matchHandler(handler)) {
+                        RefCore.__removeHandlerFromRefCore(handler);
                     }
 
 
@@ -241,8 +241,8 @@ export class EvtCore<T> {
 
         }
 
-        if (RefCore.match(handler.boundTo)) {
-            handler.boundTo.addHandler(handler);
+        if (RefCore.matchHandler(handler)) {
+            RefCore.__addHandlerToRefCore(handler, this);
         }
 
         this.onHandlerAdded(handler);

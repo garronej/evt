@@ -217,8 +217,8 @@ var EvtCore = /** @class */ (function () {
                 if (index < 0) {
                     return false;
                 }
-                if (RefCore_1.RefCore.match(handler.boundTo)) {
-                    handler.boundTo.removeHandler(handler);
+                if (RefCore_1.RefCore.matchHandler(handler)) {
+                    RefCore_1.RefCore.__removeHandlerFromRefCore(handler);
                 }
                 _this_1.handlers.splice(index, 1);
                 _this_1.handlerTriggers["delete"](handler);
@@ -257,8 +257,8 @@ var EvtCore = /** @class */ (function () {
         else {
             this.handlers.push(handler);
         }
-        if (RefCore_1.RefCore.match(handler.boundTo)) {
-            handler.boundTo.addHandler(handler);
+        if (RefCore_1.RefCore.matchHandler(handler)) {
+            RefCore_1.RefCore.__addHandlerToRefCore(handler, this);
         }
         this.onHandlerAdded(handler);
         return handler;

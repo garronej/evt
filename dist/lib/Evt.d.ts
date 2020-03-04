@@ -4,9 +4,9 @@ import { Ref } from "./Ref";
 export declare class Evt<T> extends EvtOverloaded<T> {
     static newRef(): Ref;
     /** https://garronej.github.io/ts-evt/#evtevtattach */
-    readonly evtAttach: EvtOverloaded<Handler<T, any>>;
+    readonly evtAttach: EvtOverloaded<Handler<T, any, import("./types").Bindable>>;
     protected onHandlerAdded(handler: Handler<T, any>): void;
-    readonly evtDetach: EvtOverloaded<Handler<T, any>>;
+    readonly evtDetach: EvtOverloaded<Handler<T, any, import("./types").Bindable>>;
     protected onHandlerDetached(handler: Handler<T, any>): void;
     postAsyncOnceHandled(data: T): Promise<number>;
     postSyncOnceHandled(data: T): Promise<number>;

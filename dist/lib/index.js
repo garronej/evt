@@ -7,4 +7,5 @@ __export(require("./Evt"));
 __export(require("./types"));
 __export(require("./Observable"));
 __export(require("./util"));
+__export(require("./Ref"));
 //# sourceMappingURL=index.js.map

@@ -1,12 +1,11 @@
 import { RefCore } from "./RefCore";
-import { OneShot } from "./types/helper/OneShot";
 import { Handler } from "./types/Handler";
 import { UnpackEvt } from "./types/helper/UnpackEvt";
 import { Evt } from "./Evt";
 
 export class Ref extends RefCore {
 
-    public readonly evtDetached: OneShot<Evt<Handler<any, any>[]>>;
+    public readonly evtDetached: Evt<Handler.WithEvt<any>[]>;
 
     constructor() {
         super();

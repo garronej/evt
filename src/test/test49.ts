@@ -1,8 +1,9 @@
 
-import { Evt } from "../lib";
+import { Evt, Handler, Ref } from "../lib";
 import { assert } from "../tools/typeSafety";
 import { getPromiseAssertionApi } from "../tools/testing";
 import { assertRepresentsSameDataFactory } from "../tools/inDepthObjectComparison";
+
 
 const { assertRepresentsSameData } = assertRepresentsSameDataFactory({
     "takeIntoAccountArraysOrdering": false
@@ -14,18 +15,18 @@ const evtText = new Evt<string>();
 
 const evtAge = new Evt<number>();
 
-const boundTo = Evt.newRef();
+const ref = Evt.newRef();
 
-evtText.attach(boundTo, () => assert(false));
-evtAge.attach(boundTo, () => assert(false));
+evtText.attach(ref, () => assert(false));
+evtAge.attach(ref, () => assert(false));
 
 const handlers_ = [
-    ...evtText.getHandlers(),
-    ...evtAge.getHandlers()
+    ...(evtText.getHandlers() as Handler<string, any, Ref>[]).map(handler => ({ handler, "evt": evtText })),
+    ...(evtAge.getHandlers() as Handler<string, any, Ref>[]).map(handler => ({ handler, "evt": evtAge }))
 ];
 
 mustResolve({
-    "promise": boundTo.evtDetached.attachOnce(
+    "promise": ref.evtDetached.attachOnce(
         handlers => assertRepresentsSameData({
             "got": handlers,
             "expected": handlers_
@@ -34,12 +35,12 @@ mustResolve({
 });
 
 mustResolve({
-    "promise": evtAge.evtDetach.attachOnce(handler => assert(handler.boundTo === boundTo)),
+    "promise": evtAge.evtDetach.attachOnce(handler => assert(handler.boundTo === ref)),
     "delay": 0
 });
 
 
-boundTo.detach();
+ref.detach();
 
 
 evtText.post("nothing");

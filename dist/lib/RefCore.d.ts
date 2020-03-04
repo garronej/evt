@@ -1,11 +1,16 @@
 import { Handler } from "./types/Handler";
 import { Bindable } from "./types/Bindable";
+declare type EvtCore<T> = import("./EvtCore").EvtCore<T>;
 export declare class RefCore {
-    readonly isRefCore = true;
-    detach(): Handler<any, any>[];
-    protected onDetach: ((detachedHandlers: Handler<any, any>[]) => void) | undefined;
+    detach(attachedTo?: EvtCore<any>): Handler.WithEvt<any>[];
+    protected onDetach: ((detachedHandlers: Handler.WithEvt<any>[]) => void) | undefined;
     private handlers;
-    addHandler(handler: Handler<any, any>): void;
-    removeHandler(handler: Handler<any, any>): void;
-    static match(boundTo: Bindable): boundTo is RefCore;
+    private evtByHandler;
+    getHandlers(): Handler.WithEvt<any>[];
+    static __addHandlerToRefCore<T>(handler: Handler<T, any, RefCore>, evt: EvtCore<T>): void;
+    static __removeHandlerFromRefCore(handler: Handler<any, any, RefCore>): void;
+    private static readonly REF_CORE_VERSION;
+    private static match;
+    static matchHandler<T>(handler: Handler<T, any, Bindable>): handler is Handler<T, any, RefCore>;
 }
+export {};

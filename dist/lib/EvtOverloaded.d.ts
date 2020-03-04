@@ -2,10 +2,10 @@ import { EvtCore } from "./EvtCore";
 import { Bindable, Handler, Operator } from "./types";
 export declare const parseOverloadParamsFactory: <T>({ defaultBoundTo }: {
     defaultBoundTo: Object;
-}) => (inputs: readonly any[], methodName: "pipe" | "waitFor" | "attach*" | "createDelegate") => Handler.PropsFromArgs<T, any>;
+}) => (inputs: readonly any[], methodName: "pipe" | "waitFor" | "attach*" | "createDelegate") => Handler.PropsFromArgs<T, any, Bindable>;
 /** Evt without evtAttach property, attachOnceMatched and createDelegate */
 export declare class EvtOverloaded<T> extends EvtCore<T> {
-    protected parseOverloadParams: (inputs: readonly any[], methodName: "pipe" | "waitFor" | "attach*" | "createDelegate") => Handler.PropsFromArgs<T, any>;
+    protected parseOverloadParams: (inputs: readonly any[], methodName: "pipe" | "waitFor" | "attach*" | "createDelegate") => Handler.PropsFromArgs<T, any, Bindable>;
     /**
      * https://garronej.github.io/ts-evt/#evtwaitfor
      *
