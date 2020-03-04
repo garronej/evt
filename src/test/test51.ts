@@ -1,67 +1,99 @@
 
-//import { id } from "../tools/typeSafety"
-import { Evt } from "../lib";
-import { scan, throttleTime } from "../lib/util";
+import { Evt } from "../lib";
+import { assert } from "../tools/typeSafety/assert";
+import { scan } from "../lib/util";
+import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi";
+
+const { mustResolve } = getPromiseAssertionApi();
+
+{
+
+    const ref = Evt.newRef();
+
+    const evtText = new Evt<string>();
+
+    mustResolve({
+        "promise": ref.evtDetached.attach(() => { }).then(handlers => handlers.length),
+        "expectedData": 1
+    });
+
+    const nothing = {};
+
+    let last: string | {} = nothing;
+
+    evtText
+        .pipe(ref)
+        .pipe(str => [str.toUpperCase()])
+        .pipe(str => str.startsWith("H"))
+        .pipe(scan((charCount, str) => charCount + str.length, 0))
+        .pipe(count => count <= 33 ? [`${count}`] : { "DETACH": ref })
+        .attach(str => last = str)
+        ;
 
 
-const ref = Evt.newRef();
+    evtText.post("hello world");
+    assert(last === "11");
+    last = nothing
 
-const evtText = new Evt<string>();
+    evtText.post("hello world");
+    assert(last === "22");
+    last = nothing
 
-/*
-
-
-
-evtText
-    .pipe(
-        hg,
-        str => [str.toUpperCase()],
-        str => str.startsWith("H") ? [str] : null,
-        scan((charCount, str: string) => charCount + str.length, 0),
-        ([str, charCount, index]) => [`${str} ${charCount}`, charCount > 30 || index === 10 ? "DETACH" : null]
-    )
-    .attach(str => console.log("1 " + str))
+    evtText.post("hello world");
+    assert(last === "33");
+    last = nothing
 
 
-*/
+    evtText.post("hello world");
+    assert(last === nothing);
+    assert(evtText.getHandlers().length === 0);
+    assert(ref.getHandlers().length === 0);
 
-//TODO: Detach from op
-evtText
-    .pipe(ref)
-    .pipe(str => [str.toUpperCase()])
-    .pipe(str => str.startsWith("H"))
-    .pipe(scan((charCount, str) => charCount + str.length, 0))
-    .pipe( count=> count <= 33 ? [ `${count}` ] : "DETACH" )
-    .attach(str => console.log("=>", str))
-    ;
+}
 
+{
 
-evtText.post("hello world");
-evtText.post("hello world");
-evtText.post("hello world");
-evtText.post("hello world");
+    const ref = Evt.newRef();
 
-const evtStr = new Evt<string>();
+    const evtText = new Evt<string>();
 
-evtStr
-    .pipe(throttleTime(1000))
-    .attach(str => console.log({ str }))
-    ;
+    mustResolve({
+        "promise": ref.evtDetached.attach(() => { }).then(handlers => handlers.length),
+        "expectedData": 1
+    });
 
+    const nothing = {};
 
-(async () => {
+    let last: string | {} = nothing;
 
-    let count = 0;
-
-    while (true) {
-
-        count++;
-
-        evtStr.post(`===>${count}`);
-
-        await new Promise(resolve => setTimeout(resolve, 100));
-
-    }
+    evtText
+        .pipe(ref)
+        .pipe(str => [str.toUpperCase()])
+        .pipe(str => str.startsWith("H"))
+        .pipe(scan((charCount, str) => charCount + str.length, 0))
+        .pipe(count => [`${count}`, count < 33 ? null : { "DETACH": ref }])
+        .attach(str => last = str ) 
+        ;
 
 
-})();
+    evtText.post("hello world");
+    assert(last === "11");
+    last = nothing
+
+    evtText.post("hello world");
+    assert(last === "22");
+    last = nothing
+
+    evtText.post("hello world");
+    assert(last === "33");
+    last = nothing
+
+    assert(evtText.getHandlers().length === 0);
+    assert(ref.getHandlers().length === 0);
+
+    evtText.post("hello world");
+    assert(last === nothing);
+
+}
+
+setTimeout(() => console.log("PASS".green), 0);

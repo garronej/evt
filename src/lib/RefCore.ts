@@ -16,7 +16,10 @@ export class RefCore {
 
             const evt = this.evtByHandler.get(handler)!;
 
-            if (attachedTo !== undefined && evt === attachedTo) {
+            if (
+                attachedTo !== undefined &&
+                evt !== attachedTo
+            ) {
                 continue;
             }
 

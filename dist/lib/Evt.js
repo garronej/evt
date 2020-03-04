@@ -63,6 +63,8 @@ exports.__esModule = true;
 var EvtOverloaded_2 = require("./EvtOverloaded");
 var Ref_1 = require("./Ref");
 var invokeOperator_1 = require("./util/invokeOperator");
+var merge_1 = require("./util/merge");
+var fromEvent_1 = require("./util/fromEvent");
 var Evt = /** @class */ (function (_super) {
     __extends(Evt, _super);
     function Evt() {
@@ -121,6 +123,8 @@ var Evt = /** @class */ (function (_super) {
         this.__attach(__assign(__assign({}, this.parseOverloadParams(inputs, "pipe")), { "callback": function (transformedData) { return evtDelegate.post(transformedData); } }));
         return evtDelegate;
     };
+    Evt.merge = merge_1.merge;
+    Evt.fromEvent = fromEvent_1.fromEvent;
     return Evt;
 }(EvtOverloaded_2.EvtOverloaded));
 exports.Evt = Evt;

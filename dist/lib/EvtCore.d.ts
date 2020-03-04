@@ -20,7 +20,7 @@ export declare class EvtCore<T> {
     private readonly asyncHandlerChronologyExceptionRange;
     private readonly getChronologyMark;
     private readonly statelessByStatefulOp;
-    protected onHandlerAdded(handler: Handler<T, any>): void;
+    protected onHandlerAdded(...[]: [Handler<T, any>]): void;
     private addHandler;
     getStatelessOp(op: Operator<T, any>): Operator.Stateless<T, any>;
     private trace;

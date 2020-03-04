@@ -11,12 +11,13 @@ function getPromiseAssertionApi(params) {
     function mustResolve(params) {
         var _a;
         var timer = setTimeout(function () { return typeSafety_1.assert(false, "did not resolve in time"); }, (_a = params.delay) !== null && _a !== void 0 ? _a : 0);
-        params.promise.then(function (data) {
+        return params.promise.then(function (data) {
             clearTimeout(timer);
             if (!("expectedData" in params)) {
-                return;
+                return data;
             }
-            typeSafety_1.assert(areEquals(data, params.expectedData));
+            typeSafety_1.assert(areEquals(data, params.expectedData), "Not equals expected value");
+            return data;
         });
     }
     /** Must reject within delay ms*/

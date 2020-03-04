@@ -18,11 +18,12 @@
 It enable and encourage __functional programming__ and makes heavy use of __typescript__'s 
 type inference features to provide __type safety__ while keeping things __concise and elegant__ 🍸.
 
+
  <b>Browserify friendly:</b>
 
 - No polyfills needed ✅  
 - Transpiled down to ES3 ✅  
-- Light-weight ✅   
+- Light-weight, no third party dependencies ✅   
 
 # Motivation
 
@@ -36,16 +37,16 @@ There is a lot of things that can't easily be done with ``EventEmitter``:
 - When chaining operators the type is often lost along the way as
   Typescript struggle to keep track of the mutation / filtering being applied
   to the event flow. In consequence we are often forced to arbitrate between readability, type safety and performance, achieving both tree being impossible.
-- Combining the right abstractions/operators to achieve the expected behavior can be challenging, even for seemingly straights forward control flows.
+- Combining the right abstractions/operators can be challenging, even for  seemingly straights forward control flows.
 
 ``ts-evt`` introduce the concept of λ operator, a singe function to filter, transform, unsubscribe and encapsulate states.  
 λ operators are easy to write, easy to reason about, inline 
 and most importantly enable TypeScript to infer what is happening.  
-As with ``RxJS`` operators λ operators can be composed and chained but it is rarely necessary.
+As with ``RxJS`` operators, λ operators can be composed and chained.
 
 
 <p align="center">
-<b><a href="https://stackblitz.com/edit/ts-evt-vs-rxjs?embed=1&file=index.ts">See for yourself</a></b>
+<b><a href="https://stackblitz.com/edit/ts-evt-vs-rxjs?embed=1&file=index.ts">See in action how ts-evt compare to RxJs</a></b>
 </br>
 </br>
     <img src="https://user-images.githubusercontent.com/6702424/75049459-82a1f300-54ca-11ea-9b09-66ae107ceb8f.gif">  

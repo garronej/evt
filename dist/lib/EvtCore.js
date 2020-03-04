@@ -93,7 +93,11 @@ var EvtCore = /** @class */ (function () {
                 }
                 var opResult = invokeOperator_1.invokeOperator(_this_1.getStatelessOp(handler.op), data);
                 if (Operator_1.Operator.fλ.Result.NotMatched.match(opResult)) {
-                    if (Operator_1.Operator.fλ.Result.Detach.match(opResult)) {
+                    var detach = Operator_1.Operator.fλ.Result.getDetachArg(opResult);
+                    if (typeof detach !== "boolean") {
+                        detach.detach();
+                    }
+                    else if (detach) {
                         handler.detach();
                     }
                     return "continue";
@@ -191,7 +195,12 @@ var EvtCore = /** @class */ (function () {
     EvtCore.prototype.disableTrace = function () {
         this.traceId = null;
     };
-    EvtCore.prototype.onHandlerAdded = function (handler) {
+    EvtCore.prototype.onHandlerAdded = function () {
+        var _a = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            _a[_i] = arguments[_i];
+        }
+        var _b = __read(_a, 0);
         //NOTE: Overwritten by Evt for post detach.
     };
     EvtCore.prototype.addHandler = function (propsFromArgs, propsFromMethodName) {
@@ -235,9 +244,14 @@ var EvtCore = /** @class */ (function () {
                     clearTimeout(timer);
                     timer = undefined;
                 }
-                if (once ||
-                    opResult[1] === "DETACH") {
-                    handler.detach();
+                {
+                    var detach = Operator_1.Operator.fλ.Result.getDetachArg(opResult);
+                    if (typeof detach !== "boolean") {
+                        detach.detach();
+                    }
+                    else if (detach || once) {
+                        handler.detach();
+                    }
                 }
                 var _a = __read(opResult, 1), transformedData = _a[0];
                 callback === null || callback === void 0 ? void 0 : callback.call(handler.boundTo, transformedData);
@@ -321,7 +335,11 @@ var EvtCore = /** @class */ (function () {
                 }
                 var opResult = invokeOperator_1.invokeOperator(this.getStatelessOp(op), data, true);
                 if (Operator_1.Operator.fλ.Result.NotMatched.match(opResult)) {
-                    if (Operator_1.Operator.fλ.Result.Detach.match(opResult)) {
+                    var detach = Operator_1.Operator.fλ.Result.getDetachArg(opResult);
+                    if (typeof detach !== "boolean") {
+                        detach.detach();
+                    }
+                    else if (detach) {
                         handler.detach();
                     }
                     continue;

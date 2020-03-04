@@ -1,3 +1,7 @@
+type Ref = import("../Ref").Ref;
+type RefConstructor = typeof import("../Ref").Ref;
+import { typeGuard } from "../../tools/typeSafety";
+import { id } from "../../tools/typeSafety/id";
 
 export type Operator<T, U> =
     Operator.fλ<T, U> |
@@ -17,19 +21,22 @@ export namespace Operator {
         export type Stateless<T, U> = (data: T, prev?: undefined, cbInvokedIfMatched?: true) => Result<U>;
 
         export type Stateful<T, U> = [
-            (data: T, prev: U, cbInvokedIfMatched?: true) => Result<U>, 
+            (data: T, prev: U, cbInvokedIfMatched?: true) => Result<U>,
             U //Initial value
         ];
 
         export namespace Stateful {
 
-            export function match<T, U>(op: Operator<T,U>): op is Stateful<T, U> {
+            export function match<T, U>(op: Operator<T, U>): op is Stateful<T, U> {
                 return typeof op !== "function";
             }
 
         }
 
         /**
+         * 
+         * TODO: Update
+         * 
          * [U] or [U,null] => pass U to the handler's callback.
          * [U,"DETACH"] => detach the handler then pass U to the handler's callback.
          * null => do not pass the event data to the handler callback.
@@ -39,14 +46,23 @@ export namespace Operator {
 
         export namespace Result {
 
-            //export type Detach = "DETACH" | { DETACH: import("./EvtCompat").HandlerGroup };
-            export type Detach = "DETACH";
+            export function match<U>(result: any): result is Result<U> {
+                return Matched.match(result) || NotMatched.match(result);
+            }
 
-            export namespace Detach {
+            export function getDetachArg(result: Result<any>): boolean | Ref {
 
-                export function match($result: Result<any>): $result is Detach {
-                    return $result === "DETACH";
+                const detach = Matched.match(result) ? result[1] : result;
+
+                if (Detach.FromEvt.match(detach)) {
+                    return true;
                 }
+
+                if (Detach.WithRefArg.match(detach)) {
+                    return detach.DETACH;
+                }
+
+                return false;
 
             }
 
@@ -54,10 +70,10 @@ export namespace Operator {
 
             export namespace NotMatched {
 
-                export function match($result: Result<any>): $result is NotMatched {
+                export function match(result: any): result is NotMatched {
                     return (
-                        $result === null ||
-                        Detach.match($result)
+                        result === null ||
+                        Detach.match(result)
                     );
                 }
 
@@ -68,17 +84,69 @@ export namespace Operator {
             export namespace Matched {
 
                 export type NoDetachArg<U> = readonly [U];
+
                 export type WithDetachArg<U> = readonly [U, Detach | null];
 
-                export function match($result: Result<any>): $result is Matched<any> {
-                    return !NotMatched.match($result)
+                export function match(
+                    result: any,
+                ): result is Matched<any> {
+                    return (
+                        typeGuard.dry<Matched<any>>(result) &&
+                        result instanceof Object &&
+                        (
+                            result.length === 1 ||
+                            (
+                                result.length === 2 &&
+                                (
+                                    result[1] === null ||
+                                    Detach.match(result[1])
+                                )
+                            )
+                        )
+                    );
+                }
+
+            }
+
+            export type Detach = Detach.FromEvt | Detach.WithRefArg;
+
+            export namespace Detach {
+
+                export type FromEvt = "DETACH";
+
+                export namespace FromEvt {
+
+                    export function match(detach: any): detach is FromEvt {
+                        return detach === "DETACH";
+                    }
+
+                }
+
+                export type WithRefArg = { DETACH: Ref; };
+
+                export namespace WithRefArg {
+                    export function match(detach: any): detach is WithRefArg {
+                        return (
+                            typeGuard.dry<Detach>(detach) &&
+                            detach instanceof Object &&
+                            detach.DETACH instanceof Object &&
+                            id<RefConstructor>(
+                                Object.getPrototypeOf(detach.DETACH)
+                                    .constructor
+                            ).__RefForEvtBrand === true
+                        );
+                    }
+                }
+
+                export function match(detach: any): detach is Detach {
+                    return FromEvt.match(detach) || WithRefArg.match(detach);
                 }
 
             }
 
         }
 
-        
+
 
         /**
          * When using a λ operator with
@@ -93,8 +161,6 @@ export namespace Operator {
             Result.NotMatched
         );
 
-        //const o: fλ<any,any> = null as any as Once<any, any>;
-
     }
 
     export type Stateless<T, U> =
@@ -104,17 +170,3 @@ export namespace Operator {
         ;
 
 }
-
-
-
-
-/*
-function f<T,U,V>(m1: Matcher<T,U>, m2: Matcher<U,V>){
-}
-
-f(
-(data: string) => [data] as const,
-data => [data.length] as const
-);
-*/
-

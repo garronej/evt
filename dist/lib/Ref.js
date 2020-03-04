@@ -24,6 +24,7 @@ var Ref = /** @class */ (function (_super) {
         _this_1.evtDetached = evtDetached;
         return _this_1;
     }
+    Ref.__RefForEvtBrand = true;
     return Ref;
 }(RefCore_1.RefCore));
 exports.Ref = Ref;

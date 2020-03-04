@@ -1,0 +1,11 @@
+import { Evt } from "../Evt";
+import { EventTargetLike } from "../types/EventTargetLike";
+declare type Ref = import("../Ref").Ref;
+declare type OneOrMany<T> = T | ArrayLike<T>;
+export declare function fromEvent<T>(ref: Ref, target: OneOrMany<EventTargetLike.NodeStyleEventEmitter | EventTargetLike.JQueryStyleEventEmitter>, eventName: string): Evt<T>;
+export declare function fromEvent<T>(ref: Ref, target: OneOrMany<EventTargetLike.HasEventTargetAddRemove<T>>, eventName: string, options?: EventTargetLike.HasEventTargetAddRemove.Options): Evt<T>;
+export declare function fromEvent<T>(ref: Ref, target: OneOrMany<EventTargetLike.RxJSSubject<T>>): Evt<T>;
+export declare function fromEvent<T>(target: OneOrMany<EventTargetLike.NodeStyleEventEmitter | EventTargetLike.JQueryStyleEventEmitter>, eventName: string): Evt<T>;
+export declare function fromEvent<T>(target: OneOrMany<EventTargetLike.HasEventTargetAddRemove<T>>, eventName: string, options?: EventTargetLike.HasEventTargetAddRemove.Options): Evt<T>;
+export declare function fromEvent<T>(target: OneOrMany<EventTargetLike.RxJSSubject<T>>): Evt<T>;
+export {};

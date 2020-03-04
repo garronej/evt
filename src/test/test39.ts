@@ -36,7 +36,9 @@ const startUi = (() => {
             person => createPersonLogger({
                 person,
                 "evtFieldChange": evtPersonChange.pipe(
-                    personChange => personChange.person === person ?
+                    personChange => personChange.person !== person ?
+                        null
+                        :
                         (() => {
                             switch (personChange.eventType) {
                                 case "NEW": return null;
@@ -44,8 +46,6 @@ const startUi = (() => {
                                 case "DELETE": return "DETACH";
                             }
                         })()
-                        :
-                        null
                 )
             })
         )

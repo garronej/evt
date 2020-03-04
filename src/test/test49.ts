@@ -42,6 +42,8 @@ mustResolve({
 
 ref.detach();
 
+assert(evtText.getHandlers().length === 0);
+assert(evtAge.getHandlers().length === 0);
 
 evtText.post("nothing");
 evtAge.post(0);

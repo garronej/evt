@@ -1,3 +1,4 @@
+declare type Ref = import("../Ref").Ref;
 export declare type Operator<T, U> = Operator.fλ<T, U> | ((data: U) => boolean) | //Filter
 (U extends T ? (data: T) => data is U : never);
 export declare namespace Operator {
@@ -9,6 +10,9 @@ export declare namespace Operator {
             function match<T, U>(op: Operator<T, U>): op is Stateful<T, U>;
         }
         /**
+         *
+         * TODO: Update
+         *
          * [U] or [U,null] => pass U to the handler's callback.
          * [U,"DETACH"] => detach the handler then pass U to the handler's callback.
          * null => do not pass the event data to the handler callback.
@@ -16,19 +20,31 @@ export declare namespace Operator {
          */
         type Result<U> = Result.Matched<U> | Result.NotMatched;
         namespace Result {
-            type Detach = "DETACH";
-            namespace Detach {
-                function match($result: Result<any>): $result is Detach;
-            }
+            function match<U>(result: any): result is Result<U>;
+            function getDetachArg(result: Result<any>): boolean | Ref;
             type NotMatched = Detach | null;
             namespace NotMatched {
-                function match($result: Result<any>): $result is NotMatched;
+                function match(result: any): result is NotMatched;
             }
             type Matched<U> = Matched.NoDetachArg<U> | Matched.WithDetachArg<U>;
             namespace Matched {
                 type NoDetachArg<U> = readonly [U];
                 type WithDetachArg<U> = readonly [U, Detach | null];
-                function match($result: Result<any>): $result is Matched<any>;
+                function match(result: any): result is Matched<any>;
+            }
+            type Detach = Detach.FromEvt | Detach.WithRefArg;
+            namespace Detach {
+                type FromEvt = "DETACH";
+                namespace FromEvt {
+                    function match(detach: any): detach is FromEvt;
+                }
+                type WithRefArg = {
+                    DETACH: Ref;
+                };
+                namespace WithRefArg {
+                    function match(detach: any): detach is WithRefArg;
+                }
+                function match(detach: any): detach is Detach;
             }
         }
         /**
@@ -42,3 +58,4 @@ export declare namespace Operator {
     }
     type Stateless<T, U> = fλ.Stateless<T, U> | ((data: U) => boolean) | (U extends T ? (data: T) => data is U : never);
 }
+export {};

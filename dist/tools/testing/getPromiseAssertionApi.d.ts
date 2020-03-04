@@ -5,7 +5,7 @@ export declare function getPromiseAssertionApi(params?: {
         promise: Promise<T>;
         expectedData?: T | undefined;
         delay?: number | undefined;
-    }) => void;
+    }) => Promise<T>;
     mustReject: (params: {
         promise: Promise<any>;
         expectedRejectedValue?: any;

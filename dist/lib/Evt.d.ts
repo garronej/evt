@@ -1,8 +1,12 @@
 import { EvtOverloaded } from "./EvtOverloaded";
 import { Handler, Operator } from "./types";
 import { Ref } from "./Ref";
+import { merge } from "./util/merge";
+import { fromEvent } from "./util/fromEvent";
 export declare class Evt<T> extends EvtOverloaded<T> {
     static newRef(): Ref;
+    static merge: typeof merge;
+    static fromEvent: typeof fromEvent;
     /** https://garronej.github.io/ts-evt/#evtevtattach */
     readonly evtAttach: EvtOverloaded<Handler<T, any, import("./types").Bindable>>;
     protected onHandlerAdded(handler: Handler<T, any>): void;

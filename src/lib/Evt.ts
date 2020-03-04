@@ -2,10 +2,14 @@ import { EvtOverloaded } from "./EvtOverloaded";
 import { Handler, Operator } from "./types";
 import { Ref } from "./Ref";
 import { invokeOperator } from "./util/invokeOperator";
+import { merge } from "./util/merge";
+import { fromEvent } from "./util/fromEvent";
 
 export class Evt<T> extends EvtOverloaded<T> {
 
     public static newRef() { return new Ref(); }
+    public static merge = merge;
+    public static fromEvent = fromEvent;
 
     /** https://garronej.github.io/ts-evt/#evtevtattach */
     public readonly evtAttach = new EvtOverloaded<Handler<T, any>>()
@@ -59,28 +63,28 @@ export class Evt<T> extends EvtOverloaded<T> {
     public pipe(): Evt<T>;
 
     public pipe<U>(
-        op: Operator.fλ<T,U>
+        op: Operator.fλ<T, U>
     ): Evt<U>;
     public pipe<U extends T>(
-        op: (data: T)=> data is U
+        op: (data: T) => data is U
     ): Evt<U>;
     public pipe(
-        op: (data: T)=> boolean
+        op: (data: T) => boolean
     ): Evt<T>;
 
     public pipe(ref: Ref): Evt<T>;
 
     public pipe<U>(
         ref: Ref,
-        op: Operator.fλ<T,U>
+        op: Operator.fλ<T, U>
     ): Evt<U>;
     public pipe<U extends T>(
         ref: Ref,
-        op: (data: T)=> data is U
+        op: (data: T) => data is U
     ): Evt<U>;
     public pipe(
         ref: Ref,
-        op: (data: T)=> boolean
+        op: (data: T) => boolean
     ): Evt<T>;
 
     public pipe<B, C>(
@@ -193,6 +197,7 @@ export class Evt<T> extends EvtOverloaded<T> {
     public pipe(...inputs: any[]): Evt<any> {
 
         const evtDelegate = new Evt<any>();
+
         this.__attach(
             {
                 ...this.parseOverloadParams(inputs, "pipe"),

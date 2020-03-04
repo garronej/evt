@@ -14,4 +14,6 @@ export class Ref extends RefCore {
         this.evtDetached = evtDetached;
     }
 
+    public static __RefForEvtBrand = true;
+
 }

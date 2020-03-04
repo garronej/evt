@@ -98,9 +98,12 @@ export class EvtCore<T> {
 
     })();
 
-    private readonly statelessByStatefulOp = new WeakMap<Operator.fλ.Stateful<T,any>, Operator.fλ.Stateless<T,any>>();
+    private readonly statelessByStatefulOp = new WeakMap<
+        Operator.fλ.Stateful<T, any>,
+        Operator.fλ.Stateless<T, any>
+    >();
 
-    protected onHandlerAdded(handler: Handler<T, any>): void {
+    protected onHandlerAdded(...[]: [Handler<T, any>]): void {
         //NOTE: Overwritten by Evt for post detach.
     }
 
@@ -109,7 +112,7 @@ export class EvtCore<T> {
         propsFromMethodName: Handler.PropsFromMethodName
     ): Handler<T, U> {
 
-        if( Operator.fλ.Stateful.match<T, any>(propsFromArgs.op) ){
+        if (Operator.fλ.Stateful.match<T, any>(propsFromArgs.op)) {
 
             this.statelessByStatefulOp.set(
                 propsFromArgs.op,
@@ -195,12 +198,14 @@ export class EvtCore<T> {
                             timer = undefined;
                         }
 
-                        if (
-                            once ||
-                            opResult[1] === "DETACH"
-                        ) {
+                        {
+                            const detach = Operator.fλ.Result.getDetachArg(opResult);
 
-                            handler.detach();
+                            if( typeof detach !== "boolean" ){
+                                detach.detach();
+                            }else if( detach || once ){
+                                handler.detach();
+                            }
 
                         }
 
@@ -267,7 +272,7 @@ export class EvtCore<T> {
 
         const isExtracted = !!this.handlers.find(
             ({ extract, op }) => (
-                extract && 
+                extract &&
                 !!invokeOperator(this.getStatelessOp(op), data)
             )
         );
@@ -281,7 +286,7 @@ export class EvtCore<T> {
             const handlerCount = this.handlers
                 .filter(
                     ({ extract, op }) => !extract && !!invokeOperator(
-                        this.getStatelessOp(op), 
+                        this.getStatelessOp(op),
                         data
                     )
                 )
@@ -335,17 +340,25 @@ export class EvtCore<T> {
             if (async) {
                 continue;
             }
+
             const opResult = invokeOperator(
-                this.getStatelessOp(op), 
-                data, 
+                this.getStatelessOp(op),
+                data,
                 true
             );
 
             if (Operator.fλ.Result.NotMatched.match(opResult)) {
-                if (Operator.fλ.Result.Detach.match(opResult)) {
+
+                const detach = Operator.fλ.Result.getDetachArg(opResult);
+
+                if( typeof detach !== "boolean" ){
+                    detach.detach();
+                }else if( detach ){
                     handler.detach();
                 }
+
                 continue;
+
             }
 
             const handlerTrigger = this.handlerTriggers.get(handler);
@@ -388,10 +401,17 @@ export class EvtCore<T> {
                 const opResult = invokeOperator(this.getStatelessOp(handler.op), data);
 
                 if (Operator.fλ.Result.NotMatched.match(opResult)) {
-                    if (Operator.fλ.Result.Detach.match(opResult)) {
+
+                    const detach = Operator.fλ.Result.getDetachArg(opResult);
+
+                    if (typeof detach !== "boolean") {
+                        detach.detach();
+                    } else if (detach) {
                         handler.detach();
                     }
+
                     continue;
+
                 }
 
                 const handlerTrigger = this.handlerTriggers.get(handler);

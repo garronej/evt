@@ -21,16 +21,17 @@ export function getPromiseAssertionApi(
             expectedData?: T;
             delay?: number
         }
-    ) {
+    ): Promise<T> {
 
         const timer = setTimeout(() => assert(false, "did not resolve in time"), params.delay ?? 0);
 
-        params.promise.then(data => {
+        return params.promise.then(data => {
             clearTimeout(timer);
             if (!("expectedData" in params)) {
-                return;
+                return data;
             }
-            assert(areEquals(data, params.expectedData));
+            assert(areEquals(data, params.expectedData), "Not equals expected value");
+            return data;
         });
 
     }

@@ -28,7 +28,8 @@ var RefCore = /** @class */ (function () {
             for (var _c = __values(this.handlers.values()), _d = _c.next(); !_d.done; _d = _c.next()) {
                 var handler = _d.value;
                 var evt = this.evtByHandler.get(handler);
-                if (attachedTo !== undefined && evt === attachedTo) {
+                if (attachedTo !== undefined &&
+                    evt !== attachedTo) {
                     continue;
                 }
                 var wasStillAttached = handler.detach();

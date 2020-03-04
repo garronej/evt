@@ -10,7 +10,6 @@ evtText.$attach(
     text=> acc += " " + text
 );
 
-
 evtText.post("TICK");
 evtText.post("TICK");
 evtText.post("END");
