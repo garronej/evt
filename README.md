@@ -33,13 +33,13 @@ There is a lot of things that can't easily be done with ``EventEmitter``:
 - Waiting (via a Promise) for one thing or another to happen. <i>Example: waiting at most one second for the next message, stop waiting if the socket disconnect.</i>
 
 ``RxJS`` have it's issues as well:
-- When chaining operators the types are often lost along the way as
+- When chaining operators the type is often lost along the way as
   Typescript struggle to keep track of the mutation / filtering being applied
   to the event flow. In consequence we are often forced to arbitrate between readability, type safety and performance, achieving both tree being impossible.
 - Combining the right abstractions/operators to achieve the expected behavior can be challenging, even for seemingly straights forward control flows.
 
-``ts-evt`` introduce the concept of λ Operator, a singe function to filter, transform, unsubscribe and encapsulate state.  
-Those functions are easy to write, easy to reason about, inline 
+``ts-evt`` introduce the concept of λ operator, a singe function to filter, transform, unsubscribe and encapsulate states.  
+λ operators are easy to write, easy to reason about, inline 
 and most importantly enable TypeScript to infer what is happening.  
 As with ``RxJS`` operators λ operators can be composed and chained but it is rarely necessary.
 
