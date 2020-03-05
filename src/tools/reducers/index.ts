@@ -9,7 +9,8 @@ import { every } from "./every";
 import { or } from "./or";
 import { removeDuplicates, removeDuplicatesFactory } from "./removeDuplicates";
 import { sameAs, sameAsFactory } from "./sameAs";
-import { split } from "./split";
+import { partition } from "./partition";
+import { diff } from "./diff";
 
 export {
     allEquals, allEqualsFactory,
@@ -22,5 +23,6 @@ export {
     or,
     removeDuplicates, removeDuplicatesFactory,
     sameAs, sameAsFactory,
-    split
+    partition,
+    diff
 };

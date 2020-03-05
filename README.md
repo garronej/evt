@@ -1023,7 +1023,7 @@ This will print:
 
 ```typescript
 
-import { Observable, IObservable } from "ts-evth";
+import { Observable, IObservable } from "ts-evt";
 
 const obsText= new Observable<string>("foo");
 
@@ -1091,52 +1091,38 @@ changed.
 TODO: Demo with representSameData. 
 
 ```typescript
-import { Observable } from "ts-evt/dist/lib/Observable";
+import { Observable } from "ts-evt";
+import { representsSameDataFactory } from "ts-evt/dist/tools/inDepthObjectComparison";
+import { diff } from "ts-evt/dist/tools/reducers";
 
-const obsNames = new Observable<string[]>(
-    [
-        "alice",
-        "bob",
-        "louis"
-    ],
-    //areSame function, optional parameter to determine if the new candidate 
-    //value should be considered a change from the previous one
-    //default (value, newValue)=> value === newValue
-    //Here we tell that two array of name are considered same if they represent 
-    //the same set of names, we don't care about order.
-    (names, newNames) => {
+const { representsSameData } = representsSameDataFactory(
+    { "takeIntoAccountArraysOrdering": false }
+);
 
-        if (names.length !== newNames.length) {
-            return false;
-        }
+const obsUsers = new Observable<string[]>(
+    ["Bob", "Alice"],
+    representsSameData
+);
 
-        return names.every(name => newNames.indexOf(name) >= 0);
+obsUsers.evtChangeDiff.attach(
+    ({ newValue, previousValue }) => {
+
+        const { added, removed } = previousValue.reduce(...diff(newValue))
+
+        console.log(`${added.join(", ")} joined the chat`);
+        console.log(`${removed.join(", ")} left the chat`);
 
     }
 );
 
-obsNames.evtChangeDiff.attach(
-    ({ previousValue: previousNames }) => {
+//New array, "Bob" has been removed and "Louis" has been added.
+const updatedUsers = [
+    ...obsUsers.value.filter(name => name !== "Bob"),
+    "Louis"
+];
 
-        if (previousNames.length > obsNames.value.length) {
-            console.log("Fewer names");
-            return;
-        }
-
-        if (previousNames.length < obsNames.value.length) {
-            console.log("More names");
-            return;
-        }
-
-        console.log("same number of names");
-
-    });
-
-//Same set of names in a different order, nothing will be printed.
-obsNames.onPotentialChange(["bob", "louis", "alice"]);
-
-//"Fewer names" will be printed
-obsNames.onPotentialChange(["bob", "louis"]);
+//Prints "Louis joined the chat" "Bob left the chat"
+obsUsers.onPotentialChange(updatedUsers);
 ```
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-observable-change-condition?embed=1&file=index.ts)

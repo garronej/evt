@@ -3,7 +3,7 @@
 import { assert, typeGuard } from "../typeSafety";
 import { ReduceArguments, toReduceArguments } from "./reduceify";
 
-function arrSplitImpl<ArrOf, U extends ArrOf>(
+function arrPartitionImpl<ArrOf, U extends ArrOf>(
     arr: readonly ArrOf[],
     matcher: (entry: ArrOf) => entry is U
 ): [U[], Exclude<ArrOf, U>[]] {
@@ -29,20 +29,20 @@ function arrSplitImpl<ArrOf, U extends ArrOf>(
 
 }
 
-export function arrSplit<ArrOf, U extends ArrOf>(arr: readonly ArrOf[], matcher: (entry: ArrOf) => entry is U): [U[], Exclude<ArrOf, U>[]];
-export function arrSplit<ArrOf>(arr: readonly ArrOf[], matcher: (entry: ArrOf) => boolean): [ArrOf[], ArrOf[]];
-export function arrSplit<ArrOf>(arr: readonly ArrOf[], matcher: (entry: ArrOf) => boolean): [ArrOf[], ArrOf[]] {
-    return arrSplitImpl(arr, (entry: ArrOf): entry is ArrOf => matcher(entry));
+export function arrPartition<ArrOf, U extends ArrOf>(arr: readonly ArrOf[], matcher: (entry: ArrOf) => entry is U): [U[], Exclude<ArrOf, U>[]];
+export function arrPartition<ArrOf>(arr: readonly ArrOf[], matcher: (entry: ArrOf) => boolean): [ArrOf[], ArrOf[]];
+export function arrPartition<ArrOf>(arr: readonly ArrOf[], matcher: (entry: ArrOf) => boolean): [ArrOf[], ArrOf[]] {
+    return arrPartitionImpl(arr, (entry: ArrOf): entry is ArrOf => matcher(entry));
 }
 
-export function split<ArrOf, U extends ArrOf>(
+export function partition<ArrOf, U extends ArrOf>(
     matcher: (entry: ArrOf) => entry is U
 ): ReduceArguments<ArrOf, [U[], Exclude<ArrOf, U>[]]>;
-export function split<ArrOf>(
+export function partition<ArrOf>(
     matcher: (entry: ArrOf) => boolean
 ): ReduceArguments<ArrOf, [ArrOf[], ArrOf[]]>;
-export function split<ArrOf>(
+export function partition<ArrOf>(
     matcher: (entry: ArrOf) => boolean
 ): ReduceArguments<ArrOf, [ArrOf[], ArrOf[]]> | ReduceArguments<ArrOf, [any[], Exclude<ArrOf, any>[]]> {
-    return toReduceArguments<ArrOf, [ArrOf[], ArrOf[]], [(entry: ArrOf) => boolean]>(arrSplit, matcher);
+    return toReduceArguments<ArrOf, [ArrOf[], ArrOf[]], [(entry: ArrOf) => boolean]>(arrPartition, matcher);
 }

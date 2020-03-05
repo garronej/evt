@@ -1,8 +1,11 @@
 
 import { assert } from "../typeSafety";
-import {every, allEqualsTo, allEquals, removeDuplicates, split, allUniq, and, count, includes, or, sameAs} from "./index";
+import {every, allEqualsTo, allEquals, removeDuplicates, partition, allUniq, and, count, includes, or, sameAs, diff} from "./index";
 import { arrEvery } from "./every";
-import { arrSplit } from "./split";
+import { arrPartition } from "./partition";
+import { assertRepresentsSameDataFactory } from "../inDepthObjectComparison";
+
+const { assertRepresentsSameData } = assertRepresentsSameDataFactory({ "takeIntoAccountArraysOrdering": false });
 
 if (
     typeof require !== "undefined" &&
@@ -118,7 +121,7 @@ if (
 
     {
 
-        const [arr1, arr2] = (["FOO", "BAR", "FOO"] as const).reduce(...split((e: "FOO" | "BAR"): e is "BAR" => e === "BAR"));
+        const [arr1, arr2] = (["FOO", "BAR", "FOO"] as const).reduce(...partition((e: "FOO" | "BAR"): e is "BAR" => e === "BAR"));
 
         assert(areSameStringArr(arr1, ["BAR"]));
         assert(areSameStringArr(arr2, ["FOO", "FOO"]));
@@ -127,7 +130,7 @@ if (
 
     {
 
-        const [arr1, arr2] = arrSplit(["FOO", "BAR", "FOO"] as const, (e): e is "BAR" => e === "BAR");
+        const [arr1, arr2] = arrPartition(["FOO", "BAR", "FOO"] as const, (e): e is "BAR" => e === "BAR");
 
         assert(areSameStringArr(arr1, ["BAR"]));
         assert(areSameStringArr(arr2, ["FOO", "FOO"]));
@@ -185,6 +188,14 @@ if (
     assert(["a", "b"].reduce(...sameAs<string>(["a", "b"])) === true);
     assert(["a", "b"].reduce(...sameAs<string>(["a", "bc"])) === false);
     assert(["a", "b"].reduce(...sameAs<string>(["a", "b", "c"])) === false);
+
+    assertRepresentsSameData({
+        "got": ["bob", "alice"].reduce(...diff<string>(["bob", "louis"])),
+        "expected": {
+            "added": [ "louis" ],
+            "removed": [ "alice" ]
+        }
+    });
 
     console.log("PASS");
 

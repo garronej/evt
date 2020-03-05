@@ -19,12 +19,14 @@ var __spread = (this && this.__spread) || function () {
     for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
     return ar;
 };
-var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5;
+var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6;
 exports.__esModule = true;
 var typeSafety_1 = require("../typeSafety");
 var index_1 = require("./index");
 var every_1 = require("./every");
-var split_1 = require("./split");
+var partition_1 = require("./partition");
+var inDepthObjectComparison_1 = require("../inDepthObjectComparison");
+var assertRepresentsSameData = inDepthObjectComparison_1.assertRepresentsSameDataFactory({ "takeIntoAccountArraysOrdering": false }).assertRepresentsSameData;
 if (typeof require !== "undefined" &&
     typeof module !== "undefined" &&
     require.main === module) {
@@ -70,12 +72,12 @@ if (typeof require !== "undefined" &&
         ===
             JSON.stringify([["a", "b", "c"], ["a", "b", "c", "d"]]));
     {
-        var _6 = __read((_x = ["FOO", "BAR", "FOO"]).reduce.apply(_x, __spread(index_1.split(function (e) { return e === "BAR"; }))), 2), arr1 = _6[0], arr2 = _6[1];
+        var _7 = __read((_x = ["FOO", "BAR", "FOO"]).reduce.apply(_x, __spread(index_1.partition(function (e) { return e === "BAR"; }))), 2), arr1 = _7[0], arr2 = _7[1];
         typeSafety_1.assert(areSameStringArr(arr1, ["BAR"]));
         typeSafety_1.assert(areSameStringArr(arr2, ["FOO", "FOO"]));
     }
     {
-        var _7 = __read(split_1.arrSplit(["FOO", "BAR", "FOO"], function (e) { return e === "BAR"; }), 2), arr1 = _7[0], arr2 = _7[1];
+        var _8 = __read(partition_1.arrPartition(["FOO", "BAR", "FOO"], function (e) { return e === "BAR"; }), 2), arr1 = _8[0], arr2 = _8[1];
         typeSafety_1.assert(areSameStringArr(arr1, ["BAR"]));
         typeSafety_1.assert(areSameStringArr(arr2, ["FOO", "FOO"]));
     }
@@ -111,6 +113,13 @@ if (typeof require !== "undefined" &&
     typeSafety_1.assert((_3 = ["a", "b"]).reduce.apply(_3, __spread(index_1.sameAs(["a", "b"]))) === true);
     typeSafety_1.assert((_4 = ["a", "b"]).reduce.apply(_4, __spread(index_1.sameAs(["a", "bc"]))) === false);
     typeSafety_1.assert((_5 = ["a", "b"]).reduce.apply(_5, __spread(index_1.sameAs(["a", "b", "c"]))) === false);
+    assertRepresentsSameData({
+        "got": (_6 = ["bob", "alice"]).reduce.apply(_6, __spread(index_1.diff(["bob", "louis"]))),
+        "expected": {
+            "added": ["louis"],
+            "removed": ["alice"]
+        }
+    });
     console.log("PASS");
 }
 //# sourceMappingURL=test.js.map
