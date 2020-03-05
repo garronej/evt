@@ -15,12 +15,12 @@ var assert_1 = require("../tools/typeSafety/assert");
 var Set_1 = require("minimal-polyfills/dist/lib/Set");
 var WeakMap_1 = require("minimal-polyfills/dist/lib/WeakMap");
 var id_1 = require("../tools/typeSafety/id");
-var RefCore = /** @class */ (function () {
-    function RefCore() {
+var CtxCore = /** @class */ (function () {
+    function CtxCore() {
         this.handlers = new Set_1.Polyfill();
         this.evtByHandler = new WeakMap_1.Polyfill();
     }
-    RefCore.prototype.detach = function (attachedTo) {
+    CtxCore.prototype.detach = function (attachedTo) {
         var e_1, _a;
         var _b;
         var out = [];
@@ -49,22 +49,22 @@ var RefCore = /** @class */ (function () {
         (_b = this.onDetach) === null || _b === void 0 ? void 0 : _b.call(this, out);
         return out;
     };
-    RefCore.prototype.getHandlers = function () {
+    CtxCore.prototype.getHandlers = function () {
         var _this_1 = this;
         return Array.from(this.handlers.values())
             .map(function (handler) { return ({ handler: handler, "evt": _this_1.evtByHandler.get(handler) }); });
     };
-    RefCore.__addHandlerToRefCore = function (handler, evt) {
-        var ref = handler.boundTo;
-        ref.handlers.add(handler);
-        ref.evtByHandler.set(handler, evt);
+    CtxCore.__addHandlerToCtxCore = function (handler, evt) {
+        var ctx = handler.boundTo;
+        ctx.handlers.add(handler);
+        ctx.evtByHandler.set(handler, evt);
     };
-    RefCore.__removeHandlerFromRefCore = function (handler) {
-        var ref = handler.boundTo;
-        ref.handlers["delete"](handler);
+    CtxCore.__removeHandlerFromCtxCore = function (handler) {
+        var ctx = handler.boundTo;
+        ctx.handlers["delete"](handler);
     };
     //NOTE: Use this instead of instanceof for interoperability between versions.
-    RefCore.match = function (boundTo) {
+    CtxCore.match = function (boundTo) {
         if (typeof boundTo !== "object") {
             return false;
         }
@@ -72,14 +72,14 @@ var RefCore = /** @class */ (function () {
         if (typeof REF_CORE_VERSION !== "number") {
             return false;
         }
-        assert_1.assert(REF_CORE_VERSION === RefCore.REF_CORE_VERSION, "Compatibility issues between different version of ts-evt");
+        assert_1.assert(REF_CORE_VERSION === CtxCore.REF_CORE_VERSION, "Compatibility issues between different version of ts-evt");
         return true;
     };
-    RefCore.matchHandler = function (handler) {
-        return RefCore.match(handler.boundTo);
+    CtxCore.matchHandler = function (handler) {
+        return CtxCore.match(handler.boundTo);
     };
-    RefCore.REF_CORE_VERSION = 1;
-    return RefCore;
+    CtxCore.REF_CORE_VERSION = 1;
+    return CtxCore;
 }());
-exports.RefCore = RefCore;
-//# sourceMappingURL=RefCore.js.map
+exports.CtxCore = CtxCore;
+//# sourceMappingURL=CtxCore.js.map

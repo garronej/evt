@@ -1,4 +1,4 @@
-declare type Ref = import("../Ref").Ref;
+declare type Ctx = import("../Ctx").Ctx;
 export declare type Operator<T, U> = Operator.fλ<T, U> | ((data: U) => boolean) | //Filter
 (U extends T ? (data: T) => data is U : never);
 export declare namespace Operator {
@@ -21,7 +21,7 @@ export declare namespace Operator {
         type Result<U> = Result.Matched<U> | Result.NotMatched;
         namespace Result {
             function match<U>(result: any): result is Result<U>;
-            function getDetachArg(result: Result<any>): boolean | Ref;
+            function getDetachArg(result: Result<any>): boolean | Ctx;
             type NotMatched = Detach | null;
             namespace NotMatched {
                 function match(result: any): result is NotMatched;
@@ -32,17 +32,17 @@ export declare namespace Operator {
                 type WithDetachArg<U> = readonly [U, Detach | null];
                 function match(result: any): result is Matched<any>;
             }
-            type Detach = Detach.FromEvt | Detach.WithRefArg;
+            type Detach = Detach.FromEvt | Detach.WithCtxArg;
             namespace Detach {
                 type FromEvt = "DETACH";
                 namespace FromEvt {
                     function match(detach: any): detach is FromEvt;
                 }
-                type WithRefArg = {
-                    DETACH: Ref;
+                type WithCtxArg = {
+                    DETACH: Ctx;
                 };
-                namespace WithRefArg {
-                    function match(detach: any): detach is WithRefArg;
+                namespace WithCtxArg {
+                    function match(detach: any): detach is WithCtxArg;
                 }
                 function match(detach: any): detach is Detach;
             }

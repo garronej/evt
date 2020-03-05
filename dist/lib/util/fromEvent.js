@@ -4,9 +4,9 @@ var Evt_1 = require("../Evt");
 var typeSafety_1 = require("../../tools/typeSafety");
 var EventTargetLike_1 = require("../types/EventTargetLike");
 var merge_1 = require("./merge");
-function fromEventImpl(ref, target, eventName, options) {
+function fromEventImpl(ctx, target, eventName, options) {
     if ("length" in target) {
-        return merge_1.mergeImpl(ref, Array.from(target).map(function (target) { return fromEventImpl(ref, target, eventName, options); }));
+        return merge_1.mergeImpl(ctx, Array.from(target).map(function (target) { return fromEventImpl(ctx, target, eventName, options); }));
     }
     var proxy;
     if (EventTargetLike_1.EventTargetLike.NodeStyleEventEmitter.match(target)) {
@@ -40,24 +40,24 @@ function fromEventImpl(ref, target, eventName, options) {
     }
     var evt = new Evt_1.Evt();
     var listener = function (data) { return evt.post(data); };
-    ref === null || ref === void 0 ? void 0 : ref.evtDetached.attachOnce(function () { return proxy.off(listener, eventName, options); });
+    ctx === null || ctx === void 0 ? void 0 : ctx.evtDetached.attachOnce(function () { return proxy.off(listener, eventName, options); });
     proxy.on(listener, eventName, options);
     return evt;
 }
-function fromEvent(refOrTarget, targetOrEventName, eventNameOrOptions, options) {
-    if (typeSafety_1.id(Object.getPrototypeOf(refOrTarget)
-        .constructor).__RefForEvtBrand === true) {
-        typeSafety_1.assert(typeSafety_1.typeGuard.dry(refOrTarget) &&
+function fromEvent(ctxOrTarget, targetOrEventName, eventNameOrOptions, options) {
+    if (typeSafety_1.id(Object.getPrototypeOf(ctxOrTarget)
+        .constructor).__CtxForEvtBrand === true) {
+        typeSafety_1.assert(typeSafety_1.typeGuard.dry(ctxOrTarget) &&
             typeSafety_1.typeGuard.dry(targetOrEventName) &&
             typeSafety_1.typeGuard.dry(eventNameOrOptions) &&
             typeSafety_1.typeGuard.dry(options));
-        return fromEventImpl(refOrTarget, targetOrEventName, eventNameOrOptions, options);
+        return fromEventImpl(ctxOrTarget, targetOrEventName, eventNameOrOptions, options);
     }
     else {
-        typeSafety_1.assert(typeSafety_1.typeGuard.dry(refOrTarget) &&
+        typeSafety_1.assert(typeSafety_1.typeGuard.dry(ctxOrTarget) &&
             typeSafety_1.typeGuard.dry(targetOrEventName) &&
             typeSafety_1.typeGuard.dry(eventNameOrOptions));
-        return fromEventImpl(undefined, refOrTarget, targetOrEventName, eventNameOrOptions);
+        return fromEventImpl(undefined, ctxOrTarget, targetOrEventName, eventNameOrOptions);
     }
 }
 exports.fromEvent = fromEvent;

@@ -13,19 +13,19 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 exports.__esModule = true;
-var RefCore_1 = require("./RefCore");
+var CtxCore_1 = require("./CtxCore");
 var Evt_1 = require("./Evt");
-var Ref = /** @class */ (function (_super) {
-    __extends(Ref, _super);
-    function Ref() {
+var Ctx = /** @class */ (function (_super) {
+    __extends(Ctx, _super);
+    function Ctx() {
         var _this_1 = _super.call(this) || this;
         var evtDetached = new Evt_1.Evt();
         _this_1.onDetach = function (handlers) { return evtDetached.post(handlers); };
         _this_1.evtDetached = evtDetached;
         return _this_1;
     }
-    Ref.__RefForEvtBrand = true;
-    return Ref;
-}(RefCore_1.RefCore));
-exports.Ref = Ref;
-//# sourceMappingURL=Ref.js.map
+    Ctx.__CtxForEvtBrand = true;
+    return Ctx;
+}(CtxCore_1.CtxCore));
+exports.Ctx = Ctx;
+//# sourceMappingURL=Ctx.js.map

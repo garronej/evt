@@ -1,13 +1,13 @@
 import { EvtOverloaded } from "./EvtOverloaded";
 import { Handler, Operator } from "./types";
-import { Ref } from "./Ref";
+import { Ctx } from "./Ctx";
 import { invokeOperator } from "./util/invokeOperator";
 import { merge } from "./util/merge";
 import { fromEvent } from "./util/fromEvent";
 
 export class Evt<T> extends EvtOverloaded<T> {
 
-    public static newRef() { return new Ref(); }
+    public static newCtx() { return new Ctx(); }
     public static merge = merge;
     public static fromEvent = fromEvent;
 
@@ -72,18 +72,18 @@ export class Evt<T> extends EvtOverloaded<T> {
         op: (data: T) => boolean
     ): Evt<T>;
 
-    public pipe(ref: Ref): Evt<T>;
+    public pipe(ctx: Ctx): Evt<T>;
 
     public pipe<U>(
-        ref: Ref,
+        ctx: Ctx,
         op: Operator.fλ<T, U>
     ): Evt<U>;
     public pipe<U extends T>(
-        ref: Ref,
+        ctx: Ctx,
         op: (data: T) => data is U
     ): Evt<U>;
     public pipe(
-        ref: Ref,
+        ctx: Ctx,
         op: (data: T) => boolean
     ): Evt<T>;
 

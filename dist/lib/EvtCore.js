@@ -51,7 +51,7 @@ var Operator_1 = require("./types/Operator");
 var overwriteReadonlyProp_1 = require("../tools/overwriteReadonlyProp");
 var invokeOperator_1 = require("./util/invokeOperator");
 var encapsulateOpState_1 = require("./util/encapsulateOpState");
-var RefCore_1 = require("./RefCore");
+var CtxCore_1 = require("./CtxCore");
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 var EvtCore = /** @class */ (function () {
     function EvtCore() {
@@ -226,8 +226,8 @@ var EvtCore = /** @class */ (function () {
                 if (index < 0) {
                     return false;
                 }
-                if (RefCore_1.RefCore.matchHandler(handler)) {
-                    RefCore_1.RefCore.__removeHandlerFromRefCore(handler);
+                if (CtxCore_1.CtxCore.matchHandler(handler)) {
+                    CtxCore_1.CtxCore.__removeHandlerFromCtxCore(handler);
                 }
                 _this_1.handlers.splice(index, 1);
                 _this_1.handlerTriggers["delete"](handler);
@@ -271,8 +271,8 @@ var EvtCore = /** @class */ (function () {
         else {
             this.handlers.push(handler);
         }
-        if (RefCore_1.RefCore.matchHandler(handler)) {
-            RefCore_1.RefCore.__addHandlerToRefCore(handler, this);
+        if (CtxCore_1.CtxCore.matchHandler(handler)) {
+            CtxCore_1.CtxCore.__addHandlerToCtxCore(handler, this);
         }
         this.onHandlerAdded(handler);
         return handler;

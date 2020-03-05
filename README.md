@@ -39,11 +39,10 @@ There is a lot of things that can't easily be done with ``EventEmitter``:
   to the event flow. In consequence we are often forced to arbitrate between readability, type safety and performance, achieving both tree being impossible.
 - Combining the right abstractions/operators can be challenging, even for  seemingly straights forward control flows.
 
-``ts-evt`` introduce the concept of λ operator, a singe function to filter, transform, unsubscribe and encapsulate states.  
-λ operators are easy to write, easy to reason about, inline 
+``ts-evt`` introduce the concept of fλ operator, a singe function to filter, transform, unsubscribe and encapsulate states.  
+fλ operators are easy to write, easy to reason about, inline 
 and most importantly enable TypeScript to infer what is happening.  
-As with ``RxJS`` operators, λ operators can be composed and chained.
-
+As with ``RxJS`` operators, fλ operators can be composed and chained.
 
 <p align="center">
 <b><a href="https://stackblitz.com/edit/ts-evt-vs-rxjs?embed=1&file=index.ts">See in action how ts-evt compare to RxJs</a></b>
@@ -77,14 +76,14 @@ As with ``RxJS`` operators, λ operators can be composed and chained.
 - [Dependency requirement](#dependency-requirement)
 - [``Evt<T>`` documentation](#evtt-documentation)
   - [``evt.attach(...)``, ``evt.attachOnce(...)`` and ``evt.post(data)``](#evtattach-evtattachonce-and-evtpostdata)
-  - [``evt.waitFor(...)``](#evtwaitfor)
-    - [Without timeout](#without-timeout)
-    - [With timeout](#with-timeout)
   - [Matcher functions](#matcher-functions)
     - [Matcher - Filter only](#matcher---filter-only)
     - [Matcher - Type guard](#matcher---type-guard)
     - [Matcher - Transformative](#matcher---transformative)
     - [Matcher - Compatible methods](#matcher---compatible-methods)
+  - [``evt.waitFor(...)``](#evtwaitfor)
+    - [Without timeout](#without-timeout)
+    - [With timeout](#with-timeout)
   - [``VoidEvt``](#voidevt)
   - [``evt.attachPrepend(...)`` and  ``evt.attachOncePrepend(...)``](#evtattachprepend-and-evtattachonceprepend)
   - [``evt.attachExtract(...)`` and ``evt.attachOnceExtract(...)``](#evtattachextract-and-evtattachonceextract)
@@ -159,6 +158,294 @@ eventEmitter.emit("time", 1234);
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-compared-with-events?embed=1&file=index.ts)
 
+## Operators
+
+Operator provide a way to transform events data before it is passed to the callback.
+
+Operators can be of three types:  
++ __Filter__: ``(data: T)=> boolean``.  
+  Only the matched event data will be passed to the callback.
++ __Type guard__: ``<Q extends T>(data: T)=> data is Q``  
+  Functionally equivalent to filter but restrict the event data type.  
++ __fλ__  
+  Filter / transform / stipulate when to detach the handler ( or a group of handler )
+  + __Stateless fλ__: ``<U>(data: T)=> [U]|null|"DETACH"|{DETACH:Ref}|...``  
+  + __Stateful fλ__: ``[ <U>(data:T,prev:U)=> ..., U(initial value) ]``  
+  Uses the previous result to perform the computation
+
+### Operator - Filter
+
+```typescript
+import { Evt } from "ts-evt";
+
+const evtText= new Evt<string>();
+
+evtText.attach(
+    text=> text.startsWith("H"), 
+    text=> {
+        console.assert( text.startsWith("H") );
+        console.log(text);
+    }
+);
+
+//Nothing will be printed to the console.
+evtText.post("Bonjour");
+
+//"Hi!" will be printed to the console.
+evtText.post("Hi!");
+```
+
+NOTE: Make sure that your filters always returns a ``boolean`` at runtime.  
+If in doubts use 'bang bang' ( ``!!returnedValue`` ).  
+True as well for type guard operators.
+
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-matcher-return-boolean?embed=1&file=index.ts)
+
+### Operator - Type guard
+
+If the operator is a type guard, the type of the callback argument will be narrowed down.  
+
+Let us define a straight forward type hierarchy to illustrate this feature.
+
+```typescript
+type Circle = {
+    type: "CIRCLE";
+    radius: number;
+};
+
+type Square = {
+    type: "SQUARE";
+    sideLength: number;
+};
+
+type Shape = Circle | Square;
+
+const matchCircle = (shape: Shape): shape is Circle =>
+    shape.type === "CIRCLE";
+```
+
+Now we can easily attach an handler that will only handle circles on our shape emitter.
+
+```typescript
+
+import { Evt } from "ts-evt";
+
+const evtShape = new Evt<Shape>();
+
+evtShape.attach(
+    matchCircle,
+    shape => console.log(shape.radius)
+);
+
+//Nothing will be printed to the console, a Square is not a Circle.
+evtShape.post({
+    "type": "SQUARE",
+    "sideLength": 3
+});
+
+//"33" Will be printed to the console.
+evtShape.post({
+    "type": "CIRCLE",
+    "radius": 33
+});
+
+```
+The type of the Shape object is narrowed down to ``Circle``  
+![Screenshot 2020-02-08 at 19 17 46](https://user-images.githubusercontent.com/6702424/74090059-baab3e00-4aa7-11ea-9c75-97f1fb99666d.png)
+
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-matcher-type-guard?embed=1&file=index.ts)
+
+### Operator - fλ
+
+
+#### fλ returns 
+
+The value that a fλ operator can return are: 
+
+
++ ``null`` If the event should be ignored and nothing passed to the callback.
++ ``[ U ]`` or ``[ U, null ]`` When the event should be handled, wrapped into a singleton is the value to pass to the callback.
++ ``"DETACH"`` When the event should be ignored and the handler detached from the ``Evt``
++ ``{DETACH:Ref}`` When the event should be ignored and all the handlers of a given ``Ref`` be detached.
++ ``[ U, "DETACH" ]`` / ``[ U, {DETACH:Ref} ]`` To handle the event then detach.
+
+NOTE: Make sure when you return a singleton that it is an array with one or two element.
+
+#### Operator - Stateless fλ
+
+Stateless fλ operator only takes the event data as argument.  
+
+```typescript
+import { Evt } from "ts-evt";
+
+{
+
+    const evtShape = new Evt<Shape>();
+
+    /*
+     * Only circle event are handled.
+     * AND
+     * to be handled circle must have a radius greater than 100
+     * 
+     * Pass the radius of such circle to the callback.
+     */
+    evtShape.$attach(
+        shape => shape.type === "CIRCLE" && shape.radius > 100 ? 
+            [ shape.radius ] : null,
+        radius => console.log(`radius: ${radius}`) 
+        //NOTE: The radius argument is inferred as being of type number!
+    );
+
+    //Nothing will be printed to the console, it's not a circle
+    evtShape.post({
+        "type": "SQUARE",
+        "sideLength": 3
+    });
+    
+    //Nothing will be printed to the console, The circle is too small.
+    evtShape.post({
+        "type": "CIRCLE",
+        "radius": 3
+    });
+    
+    //"radius 200" Will be printed to the console.
+    evtShape.post({
+        "type": "CIRCLE",
+        "radius": 200
+    });
+
+}
+
+{
+
+    const evtText= new Evt<"TICK" | "END">();
+
+    /*
+     * Only handle events that are not "END".
+     * If the event is "END", detach the handler.
+     * Pass the event data string in lower cace to the callback.
+     */
+    evtText.attach(
+        text => text !== "END" ? [ text.toLowerCase() ] : "DETACH",
+        text => console.log(text) 
+    );
+
+    //"tick" is printed to the console
+    evtText.post("TICK");
+
+    //Nothing is printed to the console, the handler is detached
+    evtText.post("END");
+
+    //Nothing is printed to the console the handler have been detached.
+    evtText.post("TICK");
+
+}
+
+
+{
+
+    const evtText= new Evt<"TICK" | "END">();
+
+    evtText.attach(
+        text => [ text, text === "END" ? "DETACH" : null ],
+        text => console.log(text) 
+    );
+
+    //"TICK" is printed to the console
+    evtText.post("TICK");
+    //"END" is printed to the console, the handler is detached.
+    evtText.post("END");
+
+    //Nothing is printed to the console the handler have been detached.
+    evtText.post("TICK");
+
+}
+```
+
+[__Run example__](https://stackblitz.com/edit/ts-evt-demo-transformative-matcher?embed=1&file=index.ts)
+
+#### Operator - Stateful fλ
+
+
+To filter, transform the data that should be passed to the callback and optionally detach
+the handler.
+
+The matcher should return the value that is to be passed to the callback wrapped into a singleton ``[val]``.  
+If should return ``null`` when the callback should not be invoked for the event.
+
+If the matcher return ``[val, "DETACH"]`` the handler is detached from the ``Evt`` and
+callback is invoked a last time with ``val``.  
+
+If the matcher return ``"DETACH"`` the callback is not invoked and the handler is detached.
+
+
+### Matcher - Compatible methods
+
+Matcher functions can be used with:  
+    -``attach()``  
+    -``attachOnce()``  
+    -``waitFor()``   
+    -``createDelegate()``   
+    -``attachExtract()``  
+    -``attachOnceExtract``  
+    -``attachPrepend``  
+    -``attachOncePrepend``  
+
+Except for ``waitFor(...)`` and ``createDelegate(...)`` prepend ``$`` to the method  
+name to use a transformative matcher.
+
+``waitFor(...)`` and ``attachOnce(...)`` combined with matcher address the main shortcoming of EventEmitter
+allowing us to asynchronously wait for the next shape that is a circle, for example.
+
+```typescript
+import { Evt } from "ts-evt";
+
+const evtShape = new Evt<Shape>();
+
+evtShape.waitFor(matchCircle)
+    .then(circle => console.log(`radius: ${circle.radius}`))
+    ;
+
+evtShape.$attachOnce(
+    shape => shape.type === "SQUARE" && shape.sideLength > 100 ? 
+        [ shape.sideLength ] : null,
+    sideLength => console.log(`length: ${sideLength}`)
+);
+    
+
+const circle: Circle = {
+    "type": "CIRCLE",
+    "radius": 33
+};
+
+//"radius: 33" will be printed to the console.
+evtShape.post(circle);
+
+//Nothing will be printed on the console, the promise returned by waitFor has already resolved.
+evtShape.post(circle);
+
+//Nothing will be printed, the side length is too short
+evtShape.post({
+    "type": "SQUARE",
+    "sideLength": 12
+});
+
+evtShape.post({
+    "type": "SQUARE",
+    "sideLength": 21
+});
+//"length: 21" have been  printed to the console.
+
+//Noting will be printed, attachOnce's callback function has already been invoked.
+evtShape.post({
+    "type": "SQUARE",
+    "sideLength": 44
+});
+
+```
+
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-matcher-and-waitfor?embed=1&file=index.ts)
+
 ## ``evt.waitFor(...)``
 
 Method that returns a promise that will resolve when the next event is posted.
@@ -231,245 +518,6 @@ setTimeout(
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-waitfor-timeout?embed=1&file=index.ts)
 
-## Matcher functions
-
-Matcher functions are used to attach handlers that should only be called against events data
-satisfying certain conditions.
-
-Matcher function can be of three types:  
-    - __Filter only__: ``(data: T)=> boolean``. Filter the events that should be passed to the callback.  
-    - __Type guard__: ``<Q extends T>(data: T)=> data is Q``. Filters and restrict the type of the event data to a subtype of T.  
-    - __Transformative__: ``<U>(data: T)=> [U]|[U,"DETACH"]|null|"DETACH"``. Filters and transform the event data before it is passed to the handler function; Controls when the handler should be detached.
-
-__NOTE: A matcher function should be pure__  
-It should be invocable without producing side effects.  
-
-### Matcher - Filter only
-
-```typescript
-import { Evt } from "ts-evt";
-
-const evtText= new Evt<string>();
-
-evtText.attach(
-    text=> text.startsWith("H"), 
-    text=> {
-        console.assert( text.startsWith("H") );
-        console.log(text);
-    }
-);
-
-//Nothing will be printed to the console.
-evtText.post("Bonjour");
-
-//"Hi!" will be printed to the console.
-evtText.post("Hi!");
-```
-
-NOTE: Make sure that your matcher function always returns a ``boolean`` at runtime.  
-When in doubts use 'bang bang' ( ``!!returnedValue`` ). 
-If the value returned happens to be an array with one element, your matcher will be
-considered as a transformative matcher and you will run into a runtime error.
-
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-matcher-return-boolean?embed=1&file=index.ts)
-
-### Matcher - Type guard
-
-If the matcher function is a type guard, the type of the event data  will be narrowed down
-to the subtype the matcher function is matching.  
-Let us define a straight forward type hierarchy to illustrate this feature.
-
-```typescript
-type Circle = {
-    type: "CIRCLE";
-    radius: number;
-};
-
-type Square = {
-    type: "SQUARE";
-    sideLength: number;
-};
-
-type Shape = Circle | Square;
-
-const matchCircle = (shape: Shape): shape is Circle =>
-    shape.type === "CIRCLE";
-```
-
-Now we can easily attach an handler that will only handle circles on our shape emitter.
-
-```typescript
-
-import { Evt } from "ts-evt";
-
-const evtShape = new Evt<Shape>();
-
-evtShape.attach(
-    matchCircle,
-    shape => console.log(shape.radius)
-);
-
-//Nothing will be printed to the console.
-evtShape.post({
-    "type": "SQUARE",
-    "sideLength": 3
-});
-
-//"33" Will be printed to the console.
-evtShape.post({
-    "type": "CIRCLE",
-    "radius": 33
-});
-
-```
-The type of the Shape object is narrowed down to ``Circle``  
-![Screenshot 2020-02-08 at 19 17 46](https://user-images.githubusercontent.com/6702424/74090059-baab3e00-4aa7-11ea-9c75-97f1fb99666d.png)
-
-NOTE: Make sure that your matcher function always returns a ``boolean`` at runtime.  
-When in doubts use 'bang bang' ( ``!!returnedValue`` )
-If the value returned happens to be an array with one element, your matcher will be  
-considered as a transformative matcher and you will run into a runtime error.
-
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-matcher-type-guard?embed=1&file=index.ts)
-
-### Matcher - Transformative
-
-To filter, transform the data that should be passed to the callback and optionally detach
-the handler.
-
-The matcher should return the value that is to be passed to the callback wrapped into a singleton ``[val]``.  
-If should return ``null`` when the callback should not be invoked for the event.
-
-If the matcher return ``[val, "DETACH"]`` the handler is detached from the ``Evt`` and
-callback is invoked a last time with ``val``.  
-
-If the matcher return ``"DETACH"`` the callback is not invoked and the handler is detached.
-
-__When you wish to use a transformative matcher, you need to prefix the method name by ``$``.__
-
-NOTE: Make sure when you return a singleton that it is an array with one or two element.
-
-```typescript
-
-import { Evt } from "ts-evt";
-
-{
-
-const evtShape = new Evt<Shape>();
-
-evtShape.$attach(
-    shape => shape.type === "CIRCLE" && shape.radius > 100 ? 
-        [ shape.radius ] : null,
-    radius => console.log(`radius: ${radius}`) //NOTE: radius is inferred as being of type numbers !
-);
-
-//Nothing will be printed on the console, it's a SQUARE
-evtShape.post({
-    "type": "SQUARE",
-    "sideLength": 3
-});
-
-//Nothing will be printed on the console, The circle is too small.
-evtShape.post({
-    "type": "CIRCLE",
-    "radius": 3
-});
-
-//"radius 200" Will be printed to the console.
-evtShape.post({
-    "type": "CIRCLE",
-    "radius": 200
-});
-
-}
-{
-
-const evtText= new Evt<"TICK" | "END">();
-
-evtText.attach(
-    text => [ text, text === "END" ? "DETACH" : null ],
-    text => console.log(text) 
-);
-
-//"TICK" is printed to the console
-evtText.post("TICK");
-//"END" is printed to the console
-evtText.post("END");
-
-//Nothing is printed to the console the handler have been detached.
-evtText.post("TICK");
-
-}
-```
-
-[__Run example__](https://stackblitz.com/edit/ts-evt-demo-transformative-matcher?embed=1&file=index.ts)
-
-### Matcher - Compatible methods
-
-Matcher functions can be used with:  
-    -``attach()``  
-    -``attachOnce()``  
-    -``waitFor()``   
-    -``createDelegate()``   
-    -``attachExtract()``  
-    -``attachOnceExtract``  
-    -``attachPrepend``  
-    -``attachOncePrepend``  
-
-Except for ``waitFor(...)`` and ``createDelegate(...)`` prepend ``$`` to the method  
-name to use a transformative matcher.
-
-``waitFor(...)`` and ``attachOnce(...)`` combined with matcher address the main shortcoming of EventEmitter
-allowing us to asynchronously wait for the next shape that is a circle, for example.
-
-```typescript
-import { Evt } from "ts-evt";
-
-const evtShape = new Evt<Shape>();
-
-evtShape.waitFor(matchCircle)
-    .then(circle => console.log(`radius: ${circle.radius}`))
-    ;
-
-evtShape.$attachOnce(
-    shape => shape.type === "SQUARE" && shape.sideLength > 100 ? 
-        [ shape.sideLength ] : null,
-    sideLength => console.log(`length: ${sideLength}`)
-);
-    
-
-const circle: Circle = {
-    "type": "CIRCLE",
-    "radius": 33
-};
-
-//"radius: 33" will be printed to the console.
-evtShape.post(circle);
-
-//Nothing will be printed on the console, the promise returned by waitFor has already resolved.
-evtShape.post(circle);
-
-//Nothing will be printed, the side length is too short
-evtShape.post({
-    "type": "SQUARE",
-    "sideLength": 12
-});
-
-evtShape.post({
-    "type": "SQUARE",
-    "sideLength": 21
-});
-//"length: 21" have been  printed to the console.
-
-//Noting will be printed, attachOnce's callback function has already been invoked.
-evtShape.post({
-    "type": "SQUARE",
-    "sideLength": 44
-});
-
-```
-
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-matcher-and-waitfor?embed=1&file=index.ts)
 
 ## ``VoidEvt``
 

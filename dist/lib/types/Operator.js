@@ -24,7 +24,7 @@ var Operator;
                 if (Detach.FromEvt.match(detach)) {
                     return true;
                 }
-                if (Detach.WithRefArg.match(detach)) {
+                if (Detach.WithCtxArg.match(detach)) {
                     return detach.DETACH;
                 }
                 return false;
@@ -59,19 +59,19 @@ var Operator;
                     }
                     FromEvt.match = match;
                 })(FromEvt = Detach.FromEvt || (Detach.FromEvt = {}));
-                var WithRefArg;
-                (function (WithRefArg) {
+                var WithCtxArg;
+                (function (WithCtxArg) {
                     function match(detach) {
                         return (typeSafety_1.typeGuard.dry(detach) &&
                             detach instanceof Object &&
                             detach.DETACH instanceof Object &&
                             id_1.id(Object.getPrototypeOf(detach.DETACH)
-                                .constructor).__RefForEvtBrand === true);
+                                .constructor).__CtxForEvtBrand === true);
                     }
-                    WithRefArg.match = match;
-                })(WithRefArg = Detach.WithRefArg || (Detach.WithRefArg = {}));
+                    WithCtxArg.match = match;
+                })(WithCtxArg = Detach.WithCtxArg || (Detach.WithCtxArg = {}));
                 function match(detach) {
-                    return FromEvt.match(detach) || WithRefArg.match(detach);
+                    return FromEvt.match(detach) || WithCtxArg.match(detach);
                 }
                 Detach.match = match;
             })(Detach = Result.Detach || (Result.Detach = {}));

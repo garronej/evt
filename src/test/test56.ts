@@ -12,9 +12,9 @@ import { assert } from "../tools/typeSafety";
 
         const ee = new EventEmitter();
 
-        const ref = Evt.newRef();
+        const ctx = Evt.newCtx();
 
-        const evtText = Evt.fromEvent<string>(ref, ee, "text");
+        const evtText = Evt.fromEvent<string>(ctx, ee, "text");
 
         const text = "ok";
 
@@ -33,7 +33,7 @@ import { assert } from "../tools/typeSafety";
 
         assert(ee.listenerCount("text") === 1);
 
-        ref.detach();
+        ctx.detach();
 
         assert(ee.listenerCount("text") === 0);
 

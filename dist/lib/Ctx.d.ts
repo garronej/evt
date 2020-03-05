@@ -1,8 +1,8 @@
-import { RefCore } from "./RefCore";
+import { CtxCore } from "./CtxCore";
 import { Handler } from "./types/Handler";
 import { Evt } from "./Evt";
-export declare class Ref extends RefCore {
+export declare class Ctx extends CtxCore {
     readonly evtDetached: Evt<Handler.WithEvt<any>[]>;
     constructor();
-    static __RefForEvtBrand: boolean;
+    static __CtxForEvtBrand: boolean;
 }

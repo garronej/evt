@@ -1,16 +1,16 @@
 "use strict";
 exports.__esModule = true;
 var Evt_1 = require("../Evt");
-function mergeImpl(ref, evts) {
+function mergeImpl(ctx, evts) {
     var evtUnion = new Evt_1.Evt();
     var callback = function (data) { return evtUnion.post(data); };
     evts
         .forEach(function (evt) {
-        if (ref === undefined) {
+        if (ctx === undefined) {
             evt.attach(callback);
         }
         else {
-            evt.attach(ref, callback);
+            evt.attach(ctx, callback);
         }
     });
     return evtUnion;

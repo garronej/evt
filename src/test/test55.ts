@@ -13,9 +13,9 @@ import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi"
 
         const evtAge = new Evt<number>();
 
-        const ref = Evt.newRef();
+        const ctx = Evt.newCtx();
 
-        const evtUnion = Evt.merge(ref, [evtText, evtAge]);
+        const evtUnion = Evt.merge(ctx, [evtText, evtAge]);
 
 
         const text = "ok";
@@ -52,12 +52,12 @@ import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi"
         assert(evtAge.getHandlers().length === 1);
 
 
-        ref.detach(evtText);
+        ctx.detach(evtText);
 
         assert(evtText.getHandlers().length === 0);
         assert(evtAge.getHandlers().length === 1);
 
-        ref.detach(evtAge);
+        ctx.detach(evtAge);
 
         assert(evtAge.getHandlers().length === 0);
 

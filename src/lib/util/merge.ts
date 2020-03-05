@@ -4,11 +4,11 @@ import { NonPostable } from "../types/helper/NonPostable";
 import { UnpackEvt } from "../types/helper/UnpackEvt";
 
 type EvtOverloaded<T> = import("../EvtOverloaded").EvtOverloaded<T>;
-type Ref = import("../Ref").Ref;
+type Ctx = import("../Ctx").Ctx;
 
 
 export function mergeImpl<EvtUnion extends NonPostable<EvtOverloaded<any>>>(
-    ref: Ref | undefined,
+    ctx: Ctx | undefined,
     evts: readonly EvtUnion[]
 ): Evt<UnpackEvt<EvtUnion>> {
 
@@ -20,10 +20,10 @@ export function mergeImpl<EvtUnion extends NonPostable<EvtOverloaded<any>>>(
         .forEach(
             evt => {
 
-                if (ref === undefined) {
+                if (ctx === undefined) {
                     evt.attach(callback);
                 } else {
-                    evt.attach(ref, callback);
+                    evt.attach(ctx, callback);
                 }
 
             }
@@ -36,14 +36,14 @@ export function mergeImpl<EvtUnion extends NonPostable<EvtOverloaded<any>>>(
 
 
 export function merge<EvtUnion extends NonPostable<EvtOverloaded<any>>>(
-    ref: Ref,
+    ctx: Ctx,
     evts: readonly EvtUnion[]
 ): Evt<UnpackEvt<EvtUnion>>;
 export function merge<EvtUnion extends NonPostable<EvtOverloaded<any>>>(
     evts: readonly EvtUnion[]
 ): Evt<UnpackEvt<EvtUnion>>;
 export function merge<EvtUnion extends NonPostable<EvtOverloaded<any>>>(
-    p1: Ref | readonly EvtUnion[],
+    p1: Ctx | readonly EvtUnion[],
     p2?: readonly EvtUnion[]
 ): Evt<UnpackEvt<EvtUnion>> {
 

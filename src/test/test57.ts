@@ -10,9 +10,9 @@ import { getPromiseAssertionApi } from "../tools/testing";
 
         const subject = new Subject<string>();
 
-        const ref = Evt.newRef();
+        const ctx = Evt.newCtx();
 
-        const evtText = Evt.fromEvent<string>(ref, subject);
+        const evtText = Evt.fromEvent<string>(ctx, subject);
 
         const text = "ok";
 
@@ -29,7 +29,7 @@ import { getPromiseAssertionApi } from "../tools/testing";
 
         }
 
-        ref.detach();
+        ctx.detach();
 
         mustStayPending(evtText.waitFor());
 

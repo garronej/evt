@@ -1,7 +1,7 @@
 import { Bindable } from "./Bindable";
 import { Operator } from "./Operator";
 type EvtCore<T> = import("../EvtCore").EvtCore<T>;
-type RefCore = import("../RefCore").RefCore;
+type CtxCore = import("../CtxCore").CtxCore;
 
 
 export type Handler<T, U, BoundTo extends Bindable = Bindable> =
@@ -50,7 +50,7 @@ export namespace Handler {
     }
 
     export type WithEvt<T> = {
-        handler: Handler<T, any, RefCore>;
+        handler: Handler<T, any, CtxCore>;
         evt: EvtCore<T>;
     };
 

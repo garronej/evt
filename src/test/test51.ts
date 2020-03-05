@@ -8,12 +8,12 @@ const { mustResolve } = getPromiseAssertionApi();
 
 {
 
-    const ref = Evt.newRef();
+    const ctx = Evt.newCtx();
 
     const evtText = new Evt<string>();
 
     mustResolve({
-        "promise": ref.evtDetached.attach(() => { }).then(handlers => handlers.length),
+        "promise": ctx.evtDetached.attach(() => { }).then(handlers => handlers.length),
         "expectedData": 1
     });
 
@@ -22,11 +22,11 @@ const { mustResolve } = getPromiseAssertionApi();
     let last: string | {} = nothing;
 
     evtText
-        .pipe(ref)
+        .pipe(ctx)
         .pipe(str => [str.toUpperCase()])
         .pipe(str => str.startsWith("H"))
         .pipe(scan((charCount, str) => charCount + str.length, 0))
-        .pipe(count => count <= 33 ? [`${count}`] : { "DETACH": ref })
+        .pipe(count => count <= 33 ? [`${count}`] : { "DETACH": ctx })
         .attach(str => last = str)
         ;
 
@@ -47,18 +47,18 @@ const { mustResolve } = getPromiseAssertionApi();
     evtText.post("hello world");
     assert(last === nothing);
     assert(evtText.getHandlers().length === 0);
-    assert(ref.getHandlers().length === 0);
+    assert(ctx.getHandlers().length === 0);
 
 }
 
 {
 
-    const ref = Evt.newRef();
+    const ctx = Evt.newCtx();
 
     const evtText = new Evt<string>();
 
     mustResolve({
-        "promise": ref.evtDetached.attach(() => { }).then(handlers => handlers.length),
+        "promise": ctx.evtDetached.attach(() => { }).then(handlers => handlers.length),
         "expectedData": 1
     });
 
@@ -67,11 +67,11 @@ const { mustResolve } = getPromiseAssertionApi();
     let last: string | {} = nothing;
 
     evtText
-        .pipe(ref)
+        .pipe(ctx)
         .pipe(str => [str.toUpperCase()])
         .pipe(str => str.startsWith("H"))
         .pipe(scan((charCount, str) => charCount + str.length, 0))
-        .pipe(count => [`${count}`, count < 33 ? null : { "DETACH": ref }])
+        .pipe(count => [`${count}`, count < 33 ? null : { "DETACH": ctx }])
         .attach(str => last = str ) 
         ;
 
@@ -89,7 +89,7 @@ const { mustResolve } = getPromiseAssertionApi();
     last = nothing
 
     assert(evtText.getHandlers().length === 0);
-    assert(ref.getHandlers().length === 0);
+    assert(ctx.getHandlers().length === 0);
 
     evtText.post("hello world");
     assert(last === nothing);

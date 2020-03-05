@@ -61,7 +61,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var EvtOverloaded_2 = require("./EvtOverloaded");
-var Ref_1 = require("./Ref");
+var Ctx_1 = require("./Ctx");
 var invokeOperator_1 = require("./util/invokeOperator");
 var merge_1 = require("./util/merge");
 var fromEvent_1 = require("./util/fromEvent");
@@ -74,7 +74,7 @@ var Evt = /** @class */ (function (_super) {
         _this_1.evtDetach = new EvtOverloaded_2.EvtOverloaded();
         return _this_1;
     }
-    Evt.newRef = function () { return new Ref_1.Ref(); };
+    Evt.newCtx = function () { return new Ctx_1.Ctx(); };
     Evt.prototype.onHandlerAdded = function (handler) {
         _super.prototype.onHandlerDetached.call(this, handler);
         this.evtAttach.post(handler);

@@ -9,7 +9,7 @@ import { Operator } from "./types/Operator";
 import { overwriteReadonlyProp } from "../tools/overwriteReadonlyProp";
 import { invokeOperator } from "./util/invokeOperator";
 import { encapsulateOpState } from "./util/encapsulateOpState";
-import { RefCore } from "./RefCore";
+import { CtxCore } from "./CtxCore";
 
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 export class EvtCore<T> {
@@ -164,8 +164,8 @@ export class EvtCore<T> {
                         return false;
                     }
 
-                    if (RefCore.matchHandler(handler)) {
-                        RefCore.__removeHandlerFromRefCore(handler);
+                    if (CtxCore.matchHandler(handler)) {
+                        CtxCore.__removeHandlerFromCtxCore(handler);
                     }
 
 
@@ -246,8 +246,8 @@ export class EvtCore<T> {
 
         }
 
-        if (RefCore.matchHandler(handler)) {
-            RefCore.__addHandlerToRefCore(handler, this);
+        if (CtxCore.matchHandler(handler)) {
+            CtxCore.__addHandlerToCtxCore(handler, this);
         }
 
         this.onHandlerAdded(handler);

@@ -6,7 +6,7 @@ import { Polyfill as WeakMap } from "minimal-polyfills/dist/lib/WeakMap";
 import { id } from "../tools/typeSafety/id";
 type EvtCore<T> = import("./EvtCore").EvtCore<T>;
 
-export class RefCore {
+export class CtxCore {
 
     public detach(attachedTo?: EvtCore<any>): Handler.WithEvt<any>[] {
 
@@ -41,10 +41,10 @@ export class RefCore {
     protected onDetach: ((detachedHandlers: Handler.WithEvt<any>[]) => void) | undefined;
 
     private handlers = new Set<
-        Handler<any, any, RefCore>
+        Handler<any, any, CtxCore>
     >();
     private evtByHandler = new WeakMap<
-        Handler<any, any, RefCore>,
+        Handler<any, any, CtxCore>,
         EvtCore<any>
     >();
 
@@ -55,40 +55,40 @@ export class RefCore {
     }
 
 
-    public static __addHandlerToRefCore<T>(
-        handler: Handler<T, any, RefCore>,
+    public static __addHandlerToCtxCore<T>(
+        handler: Handler<T, any, CtxCore>,
         evt: EvtCore<T>
     ) {
-        const ref = handler.boundTo;
-        ref.handlers.add(handler);
-        ref.evtByHandler.set(handler, evt);
+        const ctx = handler.boundTo;
+        ctx.handlers.add(handler);
+        ctx.evtByHandler.set(handler, evt);
     }
 
-    public static __removeHandlerFromRefCore(
-        handler: Handler<any, any, RefCore>
+    public static __removeHandlerFromCtxCore(
+        handler: Handler<any, any, CtxCore>
     ) {
-        const ref = handler.boundTo;
-        ref.handlers.delete(handler);
+        const ctx = handler.boundTo;
+        ctx.handlers.delete(handler);
     }
 
 
     private static readonly REF_CORE_VERSION = 1;
 
     //NOTE: Use this instead of instanceof for interoperability between versions.
-    private static match(boundTo: Bindable): boundTo is RefCore {
+    private static match(boundTo: Bindable): boundTo is CtxCore {
 
         if (typeof boundTo !== "object") {
             return false;
         }
 
-        const { REF_CORE_VERSION } = id<typeof RefCore>(Object.getPrototypeOf(boundTo).constructor);
+        const { REF_CORE_VERSION } = id<typeof CtxCore>(Object.getPrototypeOf(boundTo).constructor);
 
         if (typeof REF_CORE_VERSION !== "number") {
             return false;
         }
 
         assert(
-            REF_CORE_VERSION === RefCore.REF_CORE_VERSION,
+            REF_CORE_VERSION === CtxCore.REF_CORE_VERSION,
             "Compatibility issues between different version of ts-evt"
         );
 
@@ -96,8 +96,8 @@ export class RefCore {
 
     }
 
-    public static matchHandler<T>(handler: Handler<T, any, Bindable>): handler is Handler<T, any, RefCore> {
-        return RefCore.match(handler.boundTo);
+    public static matchHandler<T>(handler: Handler<T, any, Bindable>): handler is Handler<T, any, CtxCore> {
+        return CtxCore.match(handler.boundTo);
     }
 
 

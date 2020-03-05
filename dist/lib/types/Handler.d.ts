@@ -1,7 +1,7 @@
 import { Bindable } from "./Bindable";
 import { Operator } from "./Operator";
 declare type EvtCore<T> = import("../EvtCore").EvtCore<T>;
-declare type RefCore = import("../RefCore").RefCore;
+declare type CtxCore = import("../CtxCore").CtxCore;
 export declare type Handler<T, U, BoundTo extends Bindable = Bindable> = Handler.PropsFromArgs<T, U, BoundTo> & Handler.PropsFromMethodName & Readonly<{
     detach(): boolean;
     promise: Promise<U>;
@@ -37,7 +37,7 @@ export declare namespace Handler {
         export {};
     }
     type WithEvt<T> = {
-        handler: Handler<T, any, RefCore>;
+        handler: Handler<T, any, CtxCore>;
         evt: EvtCore<T>;
     };
 }

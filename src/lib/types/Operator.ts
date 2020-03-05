@@ -1,5 +1,5 @@
-type Ref = import("../Ref").Ref;
-type RefConstructor = typeof import("../Ref").Ref;
+type Ctx = import("../Ctx").Ctx;
+type CtxConstructor = typeof import("../Ctx").Ctx;
 import { typeGuard } from "../../tools/typeSafety";
 import { id } from "../../tools/typeSafety/id";
 
@@ -50,7 +50,7 @@ export namespace Operator {
                 return Matched.match(result) || NotMatched.match(result);
             }
 
-            export function getDetachArg(result: Result<any>): boolean | Ref {
+            export function getDetachArg(result: Result<any>): boolean | Ctx {
 
                 const detach = Matched.match(result) ? result[1] : result;
 
@@ -58,7 +58,7 @@ export namespace Operator {
                     return true;
                 }
 
-                if (Detach.WithRefArg.match(detach)) {
+                if (Detach.WithCtxArg.match(detach)) {
                     return detach.DETACH;
                 }
 
@@ -108,7 +108,7 @@ export namespace Operator {
 
             }
 
-            export type Detach = Detach.FromEvt | Detach.WithRefArg;
+            export type Detach = Detach.FromEvt | Detach.WithCtxArg;
 
             export namespace Detach {
 
@@ -122,24 +122,24 @@ export namespace Operator {
 
                 }
 
-                export type WithRefArg = { DETACH: Ref; };
+                export type WithCtxArg = { DETACH: Ctx; };
 
-                export namespace WithRefArg {
-                    export function match(detach: any): detach is WithRefArg {
+                export namespace WithCtxArg {
+                    export function match(detach: any): detach is WithCtxArg {
                         return (
                             typeGuard.dry<Detach>(detach) &&
                             detach instanceof Object &&
                             detach.DETACH instanceof Object &&
-                            id<RefConstructor>(
+                            id<CtxConstructor>(
                                 Object.getPrototypeOf(detach.DETACH)
                                     .constructor
-                            ).__RefForEvtBrand === true
+                            ).__CtxForEvtBrand === true
                         );
                     }
                 }
 
                 export function match(detach: any): detach is Detach {
-                    return FromEvt.match(detach) || WithRefArg.match(detach);
+                    return FromEvt.match(detach) || WithCtxArg.match(detach);
                 }
 
             }

@@ -3,13 +3,13 @@ import { Evt } from "../Evt";
 import { id, assert, typeGuard } from "../../tools/typeSafety";
 import { EventTargetLike } from "../types/EventTargetLike";
 import { mergeImpl } from "./merge";
-type Ref = import("../Ref").Ref;
-type RefConstructor = typeof import("../Ref").Ref;
+type Ctx = import("../Ctx").Ctx;
+type CtxConstructor = typeof import("../Ctx").Ctx;
 
 type OneOrMany<T> = T | ArrayLike<T>;
 
 function fromEventImpl<T>(
-    ref: Ref | undefined,
+    ctx: Ctx | undefined,
     target: OneOrMany<EventTargetLike<T>>,
     eventName?: string,
     options?: EventTargetLike.HasEventTargetAddRemove.Options
@@ -17,9 +17,9 @@ function fromEventImpl<T>(
 
     if ("length" in target) {
         return mergeImpl<Evt<T>>(
-            ref,
+            ctx,
             Array.from(target).map(
-                target => fromEventImpl<T>(ref, target, eventName, options)
+                target => fromEventImpl<T>(ctx, target, eventName, options)
             )
         );
     }
@@ -70,7 +70,7 @@ function fromEventImpl<T>(
 
     const listener = (data: T) => evt.post(data);
 
-    ref?.evtDetached.attachOnce(
+    ctx?.evtDetached.attachOnce(
         () => proxy.off(
             listener,
             eventName!,
@@ -85,7 +85,7 @@ function fromEventImpl<T>(
 }
 
 export function fromEvent<T>(
-    ref: Ref,
+    ctx: Ctx,
     target: OneOrMany<
         EventTargetLike.NodeStyleEventEmitter |
         EventTargetLike.JQueryStyleEventEmitter
@@ -93,7 +93,7 @@ export function fromEvent<T>(
     eventName: string
 ): Evt<T>;
 export function fromEvent<T>(
-    ref: Ref,
+    ctx: Ctx,
     target: OneOrMany<
         EventTargetLike.HasEventTargetAddRemove<T>
     >,
@@ -101,7 +101,7 @@ export function fromEvent<T>(
     options?: EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<T>;
 export function fromEvent<T>(
-    ref: Ref,
+    ctx: Ctx,
     target: OneOrMany<EventTargetLike.RxJSSubject<T>>
 ): Evt<T>;
 
@@ -124,28 +124,28 @@ export function fromEvent<T>(
 ): Evt<T>;
 
 export function fromEvent<T>(
-    refOrTarget: Ref | OneOrMany<EventTargetLike<T>>,
+    ctxOrTarget: Ctx | OneOrMany<EventTargetLike<T>>,
     targetOrEventName?: OneOrMany<EventTargetLike<T>> | string,
     eventNameOrOptions?: string | EventTargetLike.HasEventTargetAddRemove.Options,
     options?: EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<T> {
 
     if (
-        id<RefConstructor>(
-            Object.getPrototypeOf(refOrTarget)
+        id<CtxConstructor>(
+            Object.getPrototypeOf(ctxOrTarget)
                 .constructor
-        ).__RefForEvtBrand === true
+        ).__CtxForEvtBrand === true
     ) {
 
         assert(
-            typeGuard.dry<Ref>(refOrTarget) &&
+            typeGuard.dry<Ctx>(ctxOrTarget) &&
             typeGuard.dry<OneOrMany<EventTargetLike<T>>>(targetOrEventName) &&
             typeGuard.dry<string | undefined>(eventNameOrOptions) &&
             typeGuard.dry<EventTargetLike.HasEventTargetAddRemove.Options | undefined>(options)
         );
 
         return fromEventImpl(
-            refOrTarget,
+            ctxOrTarget,
             targetOrEventName,
             eventNameOrOptions,
             options
@@ -154,14 +154,14 @@ export function fromEvent<T>(
     } else {
 
         assert(
-            typeGuard.dry<OneOrMany<EventTargetLike<T>>>(refOrTarget) &&
+            typeGuard.dry<OneOrMany<EventTargetLike<T>>>(ctxOrTarget) &&
             typeGuard.dry<string | undefined>(targetOrEventName) &&
             typeGuard.dry<EventTargetLike.HasEventTargetAddRemove.Options | undefined>(eventNameOrOptions)
         );
 
         return fromEventImpl(
             undefined,
-            refOrTarget,
+            ctxOrTarget,
             targetOrEventName,
             eventNameOrOptions
         );

@@ -1,10 +1,10 @@
 import { EvtOverloaded } from "./EvtOverloaded";
 import { Handler, Operator } from "./types";
-import { Ref } from "./Ref";
+import { Ctx } from "./Ctx";
 import { merge } from "./util/merge";
 import { fromEvent } from "./util/fromEvent";
 export declare class Evt<T> extends EvtOverloaded<T> {
-    static newRef(): Ref;
+    static newCtx(): Ctx;
     static merge: typeof merge;
     static fromEvent: typeof fromEvent;
     /** https://garronej.github.io/ts-evt/#evtevtattach */
@@ -19,10 +19,10 @@ export declare class Evt<T> extends EvtOverloaded<T> {
     pipe<U>(op: Operator.fλ<T, U>): Evt<U>;
     pipe<U extends T>(op: (data: T) => data is U): Evt<U>;
     pipe(op: (data: T) => boolean): Evt<T>;
-    pipe(ref: Ref): Evt<T>;
-    pipe<U>(ref: Ref, op: Operator.fλ<T, U>): Evt<U>;
-    pipe<U extends T>(ref: Ref, op: (data: T) => data is U): Evt<U>;
-    pipe(ref: Ref, op: (data: T) => boolean): Evt<T>;
+    pipe(ctx: Ctx): Evt<T>;
+    pipe<U>(ctx: Ctx, op: Operator.fλ<T, U>): Evt<U>;
+    pipe<U extends T>(ctx: Ctx, op: (data: T) => data is U): Evt<U>;
+    pipe(ctx: Ctx, op: (data: T) => boolean): Evt<T>;
     pipe<B, C>(op1: Operator.fλ<T, B>, op2: Operator.fλ<B, C>): Evt<C>;
     pipe<B, C extends B>(op1: Operator.fλ<T, B>, op2: (data: B) => data is C): Evt<C>;
     pipe<B>(op1: Operator.fλ<T, B>, op2: (data: B) => boolean): Evt<B>;
