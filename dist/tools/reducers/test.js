@@ -25,8 +25,8 @@ var typeSafety_1 = require("../typeSafety");
 var index_1 = require("./index");
 var every_1 = require("./every");
 var partition_1 = require("./partition");
-var inDepthObjectComparison_1 = require("../inDepthObjectComparison");
-var assertRepresentsSameData = inDepthObjectComparison_1.assertRepresentsSameDataFactory({ "takeIntoAccountArraysOrdering": false }).assertRepresentsSameData;
+var inDepthComparison_1 = require("../inDepthComparison");
+var assertRepresentsSameData = inDepthComparison_1.assertRepresentsSameDataFactory({ "takeIntoAccountArraysOrdering": false }).assertRepresentsSameData;
 if (typeof require !== "undefined" &&
     typeof module !== "undefined" &&
     require.main === module) {

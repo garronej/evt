@@ -3,7 +3,7 @@ import { assert } from "../typeSafety";
 import {every, allEqualsTo, allEquals, removeDuplicates, partition, allUniq, and, count, includes, or, sameAs, diff} from "./index";
 import { arrEvery } from "./every";
 import { arrPartition } from "./partition";
-import { assertRepresentsSameDataFactory } from "../inDepthObjectComparison";
+import { assertRepresentsSameDataFactory } from "../inDepthComparison";
 
 const { assertRepresentsSameData } = assertRepresentsSameDataFactory({ "takeIntoAccountArraysOrdering": false });
 

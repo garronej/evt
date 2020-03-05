@@ -1,6 +1,6 @@
 
 import { assert } from "../typeSafety";
-import { representsSameDataFactory } from "../inDepthObjectComparison";
+import { representsSameDataFactory } from "../inDepthComparison";
 
 export function getPromiseAssertionApi(
     params?: { takeIntoAccountArraysOrdering: boolean; }

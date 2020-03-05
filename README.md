@@ -1015,15 +1015,18 @@ This will print:
 
 # ``Observable<T>`` documentation
 
-``Observable`` in ``RxJS`` and ``ts-evt`` are **not** a different implementation
- of the same abstraction.
+``Observable`` in ``RxJS`` and ``ts-evt`` are **not** the same abstraction.
 
- In ``ts-evt`` an ``Observable<T>`` represent a variable that can be observed,j
- meaning that if the value change an event is posted.
+``Observable<T>`` in ``ts-evt`` provide a way to react to an object mutation.
+
+ A ``Observable<T>`` encapsulate a value of type ``T`` when this value get 
+ changed ``.evtChange`` is posted.
+
 
 ```typescript
 
 import { Observable, IObservable } from "ts-evt";
+import { assert } from "ts-evt/dist/tools/typeSafety";
 
 const obsText= new Observable<string>("foo");
 
@@ -1031,7 +1034,7 @@ console.assert(obsText.value === "foo");
 
 obsText.evtChange.attachOnce(
     newText=> {
-        console.assert(newText === obsText.value);
+        assert(newText === obsText.value);
         console.log(`newValue: ${newText}`);
     }
 );
@@ -1039,7 +1042,7 @@ obsText.evtChange.attachOnce(
 obsText.evtChangeDiff.attachOnce(
     ({ newValue, previousValue })=> {
 
-        console.assert(newValue === obsText.value);
+        assert(newValue === obsText.value);
 
         console.log(`newValue: ${newValue}, previousValue ${previousValue}`);
 
@@ -1049,46 +1052,23 @@ obsText.evtChangeDiff.attachOnce(
 //Nothing will be printed as the value did not change.
 let hasChanged = obsText.onPotentialChange("foo");
 
-console.assert( hasChanged === false );
+assert( hasChanged === false );
 
 hasChanged = obsText.onPotentialChange("bar");
 //"newValue: bar" have been printed to the console.
 //"newValue: bar, previousValue foo" have been printed to the console.
 
-console.assert(hasChanged === true);
+assert(hasChanged === true);
 
-console.assert(obsText.value === "bar");
+assert(obsText.value === "bar");
 
-//ObservableImpl is assignable to Observable but
-//Observable is missing the onPotentialChange method.
-//the Observable interface is used to expose an observable that should not be
-//modified by the user.
+//Instance of Observable are assignable to IObservable but
+//the IObservable interface does not expose onPotentialChange().
+//The IObservable interface is used to expose an observable as readonly.
 const exposedObsText: IObservable<string> = obsText;
-
 ```
 
-Impossible to unintentionally misuse:
-
-![Screenshot 2020-02-10 at 08 50 14](https://user-images.githubusercontent.com/6702424/74130842-568d9480-4be3-11ea-851a-dc3cc0c83034.png)
-
-
-The TSC won’t let the value to be set directly.
-
-![Screenshot 2020-02-10 at 09 00 49](https://user-images.githubusercontent.com/6702424/74131123-f0554180-4be3-11ea-96e1-a235ec46e20f.png)
-
-
-It won’t allow either the ``evtChange`` or ``evtChangeDiff`` to be posted manually, ``post()``  
-and ``postOnceMatched()`` are not exposed.
-
-![Screenshot 2020-02-10 at 10 45 10](https://user-images.githubusercontent.com/6702424/74138812-8bedae80-4bf2-11ea-9ce3-0f31eb22df1a.png)
-
-
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-observer?embed=1&file=index.ts)
-
-It is also possible to define the criteria upon which the value will be deemed
-changed.
-
-TODO: Demo with representSameData. 
+Is is possible to define what qualify as a change.
 
 ```typescript
 import { Observable } from "ts-evt";

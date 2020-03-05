@@ -2,7 +2,7 @@
 import { Evt, Handler, Ref } from "../lib";
 import { assert } from "../tools/typeSafety";
 import { getPromiseAssertionApi } from "../tools/testing";
-import { assertRepresentsSameDataFactory } from "../tools/inDepthObjectComparison";
+import { assertRepresentsSameDataFactory } from "../tools/inDepthComparison";
 
 
 const { assertRepresentsSameData } = assertRepresentsSameDataFactory({

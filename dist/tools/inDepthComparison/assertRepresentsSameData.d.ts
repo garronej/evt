@@ -12,9 +12,3 @@ export declare function assertRepresentsSameDataFactory({ takeIntoAccountArraysO
         errorMessage?: string | undefined;
     }) => void;
 };
-/** Return a function that perform a in depth comparison of two things of arbitrary type T. */
-export declare function representsSameDataFactory({ takeIntoAccountArraysOrdering }: {
-    takeIntoAccountArraysOrdering: boolean;
-}): {
-    representsSameData: <T>(o1: T, o2: T) => boolean;
-};

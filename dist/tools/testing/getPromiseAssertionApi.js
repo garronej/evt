@@ -1,11 +1,11 @@
 "use strict";
 exports.__esModule = true;
 var typeSafety_1 = require("../typeSafety");
-var inDepthObjectComparison_1 = require("../inDepthObjectComparison");
+var inDepthComparison_1 = require("../inDepthComparison");
 function getPromiseAssertionApi(params) {
     var areEquals = params === undefined ?
         function (o1, o2) { return o1 === o2; } :
-        inDepthObjectComparison_1.representsSameDataFactory({
+        inDepthComparison_1.representsSameDataFactory({
             "takeIntoAccountArraysOrdering": params.takeIntoAccountArraysOrdering
         }).representsSameData;
     function mustResolve(params) {
