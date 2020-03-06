@@ -14,7 +14,7 @@
 
 ---
 
-``ts-evt`` is intended to be a replacement for Node's ``events``.  
+``ts-evt`` is intended to be a replacement for Node's ``events`` and ``RxJS``.  
 It enable and encourage __functional programming__ and makes heavy use of __typescript__'s 
 type inference features to provide __type safety__ while keeping things __concise and elegant__ 🍸.
 
@@ -23,7 +23,9 @@ type inference features to provide __type safety__ while keeping things __concis
 
 - No polyfills needed ✅  
 - Transpiled down to ES3 ✅  
-- Light-weight, no third party dependencies ✅   
+- Light-weight compared to RxJS, no third party dependencies ✅   
+
+...Will be cross compatible with __Deno__ very soon.
 
 # Motivation
 
@@ -31,30 +33,17 @@ There is a lot of things that can't easily be done with ``EventEmitter``:
 - Enforcing type safety.
 - Removing a particular listener when the callback is an anonymous function.
 - Adding a one-time listener for the next event that meet a condition.
-- Waiting (via a Promise) for one thing or another to happen. <i>Example: waiting at most one second for the next message, stop waiting if the socket disconnect.</i>
+- Waiting (via a Promise) for one thing or another to happen.  
+  <i>Example: waiting at most one second for the next message, stop waiting if the socket disconnects.</i>
 
 ``RxJS`` have it's issues as well:
 - When chaining operators the type is often lost along the way as
   Typescript struggle to keep track of the mutation / filtering being applied
-  to the event flow. In consequence we are often forced to arbitrate between readability, type safety and performance, achieving both tree being impossible.
+  to the event flow.
 - Combining the right abstractions/operators can be challenging, even for  seemingly straights forward control flows.
 
-``ts-evt`` introduce the concept of fλ operator, a singe function to filter, transform, unsubscribe and encapsulate states.  
-fλ operators are easy to write, easy to reason about, inline 
-and most importantly enable TypeScript to infer what is happening.  
-As with ``RxJS`` operators, fλ operators can be composed and chained.
 
-<p align="center">
-<b><a href="https://stackblitz.com/edit/ts-evt-vs-rxjs?embed=1&file=index.ts">See in action how ts-evt compare to RxJs</a></b>
-</br>
-</br>
-    <img src="https://user-images.githubusercontent.com/6702424/75049459-82a1f300-54ca-11ea-9b09-66ae107ceb8f.gif">  
-</p>
-
-
-
-
-# Try it in your browser right now
+# Try it
 
 <p align="center">
     <img src="
@@ -67,80 +56,11 @@ As with ``RxJS`` operators, fλ operators can be composed and chained.
 <b><a href="https://stackblitz.com/edit/ts-evt-demo-hello-world?embed=1&file=index.ts">Run hello world</a></b>
 </p>
 
+# Side by side comparison with ``EventEmitter``
 
-# Table of content
 
-- [Motivation](#motivation)
-- [Try it in your browser right now](#try-it-in-your-browser-right-now)
-- [Table of content](#table-of-content)
-- [Dependency requirement](#dependency-requirement)
-- [``Evt<T>`` documentation](#evtt-documentation)
-  - [``evt.attach(...)``, ``evt.attachOnce(...)`` and ``evt.post(data)``](#evtattach-evtattachonce-and-evtpostdata)
-  - [Matcher functions](#matcher-functions)
-    - [Matcher - Filter only](#matcher---filter-only)
-    - [Matcher - Type guard](#matcher---type-guard)
-    - [Matcher - Transformative](#matcher---transformative)
-    - [Matcher - Compatible methods](#matcher---compatible-methods)
-  - [``evt.waitFor(...)``](#evtwaitfor)
-    - [Without timeout](#without-timeout)
-    - [With timeout](#with-timeout)
-  - [``VoidEvt``](#voidevt)
-  - [``evt.attachPrepend(...)`` and  ``evt.attachOncePrepend(...)``](#evtattachprepend-and-evtattachonceprepend)
-  - [``evt.attachExtract(...)`` and ``evt.attachOnceExtract(...)``](#evtattachextract-and-evtattachonceextract)
-  - [``evt.detach(...)``](#evtdetach)
-    - [``evt.detach()`` all handlers.](#evtdetach-all-handlers)
-    - [``evt.handler(boundTo)`` - bound to a given context](#evthandlerboundto---bound-to-a-given-context)
-    - [``handler.detach(callback)``](#handlerdetachcallback)
-  - [``evt.getHandlers()``](#evtgethandlers)
-  - [Combining Once, Prepend, matcher, timeout and boundTo](#combining-once-prepend-matcher-timeout-and-boundto)
-  - [``evt.createDelegate(...)``](#evtcreatedelegate)
-  - [``evt.postCount``](#evtpostcount)
-  - [``evt.evtAttach`` and ``evt.evtDetach``](#evtevtattach-and-evtevtdetach)
-  - [``evt.isHandled(data)``](#evtishandleddata)
-  - [``evt.postAsyncOnceHandled(data)`` and ``evt.postSyncOnceHandled(data)``](#evtpostasynconcehandleddata-and-evtpostsynconcehandleddata)
-  - [``evtUtil.race([...])``](#evtutilrace)
-  - [``NonPostable<Evt<T>>``](#nonpostableevtt)
-  - [``UnpackEvt<typeof evt>``.](#unpackevttypeof-evt)
-  - [``evt.enableTrace(...)``](#evtenabletrace)
-- [``Observable<T>`` documentation](#observablet-documentation)
-- [``evt.waitFor(...)`` used in ``async`` procedure or loop](#evtwaitfor-used-in-async-procedure-or-loop)
-- [History of the project](#history-of-the-project)
 
-# Dependency requirement
-
-Minimum version of typescript your project needs to be using is:
-
-typescript >= __2.8__ ( Mar 2018 )
-
-Exposed api use typescript keywords that were added in this version.
-
-# ``Evt<T>`` documentation
-
-## ``evt.attach(...)``, ``evt.attachOnce(...)`` and ``evt.post(data)``
-
-````typescript
-import { Evt } from "ts-evt";
-
-const evtText = new Evt<string>();
-//Unlike in node's events we use a different instance of emitter for every event type.
-const evtTime = new Evt<number>();
-
-evtText.attach(text => console.log(text));
-
-//Attach one time only handler
-evtTime.attachOnce(time => console.log(time));
-
-evtText.post("hi!");
-// At this point, "hi!" have been printed to the console.
-
-evtTime.post(123);
-// At this point, "123" have been printed to the console.
-
-evtTime.post(1234);
-//Nothing was printed to the console. ( attachOnce )
-````
-
-Exact equivalent with  ``EventEmitter`` from the *"events"* node module.
+## Reference example
 
 ````typescript
 import { EventEmitter } from "events";
@@ -150,17 +70,323 @@ const eventEmitter = new EventEmitter();
 eventEmitter.on("text", text => console.log(text));
 eventEmitter.once("time", time => console.log(time));
 
-eventEmitter.emit("text", "hi!");
-eventEmitter.emit("time", 123);
-eventEmitter.emit("time", 1234);
-
+eventEmitter.emit("text", "hi!"); //Prints "hi!"
+eventEmitter.emit("time", 123); //Prints "123"
+eventEmitter.emit("time", 1234); //Prints nothing ( once )
 ````
+
+## Equivalent, the recommended approach:
+
+In ``ts-evt`` the recommended approach is to have a different ``Evt`` for each event type.
+
+```typescript
+import { Evt } from "ts-evt";
+
+const evtText = new Evt<string>();
+const evtTime = new Evt<number>();
+
+evtText.attach(text => console.log(text));
+evtTime.attachOnce(time => console.log(time));
+
+evtText.post("hi!");
+evtTime.post(123);
+evtTime.post(1234);
+```
+
+## Equivalent, traditional approach:
+
+But the traditional approach of gathering all the events in a single bus is still an option.  
+It is a bit more verbose but you get the type safety as well.
+
+```typescript
+const evt = new Evt<
+    [ "text",  string ] | 
+    [ "time",  number ]
+>();
+
+evt.$attach(
+    t => t[0] !== "text" ? null : [t[1]],
+    text => console.log(text)
+);
+
+evt.$attachOnce(
+    t => t[0] !== "time" ? null : [t[1]],
+    time => console.log(time)
+);
+
+evt.post(["text", "hi!"]);
+evt.post(["time", 123]);
+evt.post(["time", 1234]);
+```
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-compared-with-events?embed=1&file=index.ts)
 
-## Operators
+# Side by side comparison with ``RxJS``
 
-Operator provide a way to transform events data before it is passed to the callback.
+## Transcription of the *"get started"* examples from the ``RxJS`` documentation.
+
+You will have to put on you 👓 to notice any difference...
+
+### First example
+
+```typescript
+import { fromEvent } from 'rxjs';
+
+fromEvent(document, 'click').subscribe(() => console.log('Clicked!'));
+
+/* ---------------------------------------------------------------- */
+
+import { Evt } from "ts-evt";
+
+Evt.fromEvent(document, "click").attach(()=> console.log("Clicked!"));
+```
+
+### Values
+
+```typescript
+import { fromEvent } from 'rxjs';
+import { throttleTime, map, scan } from 'rxjs/operators';
+
+fromEvent(document, 'click')
+  .pipe(
+    throttleTime(1000),
+    map(event => event.clientX),
+    scan((count, clientX) => count + clientX, 0)
+  )
+  .subscribe(count => console.log(count));
+
+/* ---------------------------------------------------------------- */
+
+import { Evt, throttleTime, scan } from "ts-evt";
+
+Evt.fromEvent(document, "click")
+    .pipe(
+        throttleTime(1000),
+        event => [ event.clientX ],
+        scan((count, clientX) => count + clientX, 0)
+    )
+    .attach(count => console.log(count))
+    ;
+```
+
+## Transcription of examples that where not specifically designed to make ``RxJS`` looks good.
+
+Instead of providing a ton of elementary operator for the user to combine 
+
+``ts-evt`` provide a way to define custom operator on the fly.
+
+Introducing __fλ__ operators.  
+__fλ__ are functions that are meant to be __anonymous__. 
+They are designed in such a way that make them:  
++ Easy to write.  
++ Easy to reason about for __humans__, they are self explanatory.
++ Easy to reason about for the compiler, no type annotation are needed TypeScript can infer what they are doing.
++ Very concise, a single __fλ__ operator can replace the combination of multiple elementary operators such as ``map()``, ``filter()``, ``takeWhile()``, ``scan()``...
++ Modular, if a single operator is not enough they can be composed to achieve more complex behavior.
+
+### Waiting for the next event of a certain type
+
+Consider that we have an emitter for this data type:
+
+```typescript
+type Data = {
+    type: "TEXT";
+    text: string;
+} | {
+    type: "AGE";
+    age: number;
+};
+```
+
+We want to get a ``Promise<string>`` that resolves with the next text event.
+
+```typescript
+import { Subject } from "rxjs";
+import { filter, first, map } from "rxjs/operators";
+
+const subject = new Subject<Data>();
+
+const prText = subject
+    .pipe(
+        filter(data => data.type === "TEXT"), 
+        //From now on data can only be text event but TypeScript is unaware...
+        first(),
+        //...So we have to cast, it's unsafe and verbose. It may silently break on refactoring 🚨...
+        map(data => (data as Extract<Data, { type: "TEXT" }>).text) 
+    )
+    .toPromise()
+    ;
+
+/* ---------------------------------------------------------------- */
+
+import { Evt } from "ts-evt";
+
+const evt = new Evt<Data>();
+
+const prText = evt.waitFor(
+    data => data.type !== "TEXT" ? null : [data.text] 
+    //^ Single fλ operator replacing 'filter', 'first' and 'map'
+);
+```
+
+## Example involving states encapsulation
+
+We want to accumulate all texts event until ``"STOP"``.
+
+```typescript
+import { Subject } from "rxjs";
+import { map, filter, takeWhile, scan } from "rxjs/operators";
+
+const subject = new Subject<Data>();
+
+subject
+    .pipe(
+        filter(data => data.type === "TEXT"), 
+        map((data => (data as Extract<Data, { type: "TEXT" }>).text),
+        takeWhile(text => text !== "STOP"),
+        scan((prev, text) => `${prev} ${text}`, "=>")
+    )
+    .subscribe(str => console.log(str))
+    ;
+
+/* ---------------------------------------------------------------- */
+
+import { Evt } from "ts-evt";
+
+const evtData = new Evt<Data>();
+
+evtData.$attach(
+    [
+        (data, prev) =>
+            data.type !== "TEXT" ?
+                null :
+                data.text === "STOP" ?
+                    "DETACH" :
+                    [`${prev} ${data.text}`]
+        ,
+        "=>"
+    ], //<= Stateful fλ operator 
+    str => console.log(str)
+);
+```
+
+<p align="center">
+<b><a href="https://stackblitz.com/edit/ts-evt-vs-rxjs?embed=1&file=index.ts">Run the examples</a></b>
+</br>
+</br>
+    <img src="https://user-images.githubusercontent.com/6702424/76122716-01cd1600-5ff7-11ea-8751-daf7b689e1b7.gif">  
+</p>
+
+# Dependency requirement
+
+Minimum version of typescript your project needs to be using is:
+
+typescript >= __2.8__ ( Mar 2018 )
+
+Exposed api use typescript keywords that were added in this version.
+
+# Table of content
+
+- [Motivation](#motivation)
+- [Try it](#try-it)
+- [Side by side comparison with ``EventEmitter``](#side-by-side-comparison-with-eventemitter)
+  - [Reference example](#reference-example)
+  - [Equivalent, the recommended approach:](#equivalent-the-recommended-approach)
+  - [Equivalent, traditional approach:](#equivalent-traditional-approach)
+- [Side by side comparison with ``RxJS``](#side-by-side-comparison-with-rxjs)
+  - [Transcription of the *"get started"* examples from the ``RxJS`` documentation.](#transcription-of-the-get-started-examples-from-the-rxjs-documentation)
+    - [First example](#first-example)
+    - [Values](#values)
+  - [Transcription of examples that where not specifically designed to make ``RxJS`` looks good.](#transcription-of-examples-that-where-not-specifically-designed-to-make-rxjs-looks-good)
+    - [Waiting for the next event of a certain type](#waiting-for-the-next-event-of-a-certain-type)
+  - [Example involving states encapsulation](#example-involving-states-encapsulation)
+- [Dependency requirement](#dependency-requirement)
+- [Table of content](#table-of-content)
+- [Api Documentation](#api-documentation)
+  - [Operator](#operator)
+    - [Operator - Filter](#operator---filter)
+    - [Operator - Type guard](#operator---type-guard)
+    - [Operator - fλ](#operator---fλ)
+      - [fλ Returns](#fλ-returns)
+      - [Stateless fλ](#stateless-fλ)
+      - [Stateful fλ](#stateful-fλ)
+    - [``composeOperator(op1, op2, ...)``](#composeoperatorop1-op2-)
+  - [``Evt<T>``](#evtt)
+    - [``evt.[$]attach*(...)`` methods](#evtattach-methods)
+      - [Arguments](#arguments)
+        - [Operator](#operator-1)
+        - [Timeout](#timeout)
+        - [BoundTo ( context )](#boundto--context-)
+        - [Callback](#callback)
+      - [Returned value](#returned-value)
+      - [The ``$`` prefix](#the--prefix)
+      - [``evt.[$]attach(...)``](#evtattach)
+      - [``evt.[$]attachOnce*(...)``](#evtattachonce)
+      - [``evt.[$]attach[Once]Prepend(...)``](#evtattachonceprepend)
+      - [``evt.[$]attach[Once]Extract(...)``](#evtattachonceextract)
+    - [``evt.post*(data)`` methods](#evtpostdata-methods)
+      - [``evt.post(data)``](#evtpostdata)
+      - [``evtPostCount: number``](#evtpostcount-number)
+      - [``evt.postAsyncOnceMatched(data)``](#evtpostasynconcematcheddata)
+      - [``evt.postSyncOnceMatched(data)``](#evtpostsynconcematcheddata)
+    - [The ``Handler<T,U>`` type](#the-handlertu-type)
+    - [``evt.getHandlers()``](#evtgethandlers)
+    - [``evt.evt[Attach|Detach]: Evt<Handler>`` properties](#evtevtattachdetach-evthandler-properties)
+    - [``evt.isHandled(data)``](#evtishandleddata)
+    - [``evt.waitFor(...)``](#evtwaitfor)
+    - [``evt.pipe(...)``](#evtpipe)
+    - [``Evt.merge([evt1, evt2, ...])``](#evtmergeevt1-evt2-)
+    - [Detaching handlers.](#detaching-handlers)
+      - [``evt.detach([boundTo])``](#evtdetachboundto)
+      - [``handler.detach()``](#handlerdetach)
+      - [``ctx.detach([evt])``](#ctxdetachevt)
+  - [``Ctx``](#ctx)
+    - [``ctx.getHandlers()``](#ctxgethandlers)
+    - [``ctx.evtDetach: Evt<Handler[]>``](#ctxevtdetach-evthandler)
+    - [``ctx.detach([evt])](#ctxdetachevt-1)
+  - [``VoidEvt``](#voidevt)
+  - [``Observable<T>``](#observablet)
+- [Difference between ``evt.waitFor(...)`` and ``evt.attachOnce(...)``](#difference-between-evtwaitfor-and-evtattachonce)
+- [Credits](#credits)
+  - [Operators](#operators)
+    - [Operator - Filter](#operator---filter-1)
+    - [Operator - Type guard](#operator---type-guard-1)
+    - [Operator - fλ](#operator---fλ-1)
+      - [fλ returns](#fλ-returns-1)
+      - [Operator - Stateless fλ](#operator---stateless-fλ)
+      - [Operator - Stateful fλ](#operator---stateful-fλ)
+    - [Operator - Composition](#operator---composition)
+    - [Matcher - Compatible methods](#matcher---compatible-methods)
+  - [``evt.waitFor(...)``](#evtwaitfor-1)
+    - [Without timeout](#without-timeout)
+    - [With timeout](#with-timeout)
+  - [``VoidEvt``](#voidevt-1)
+  - [``evt.attachPrepend(...)`` and  ``evt.attachOncePrepend(...)``](#evtattachprepend-and-evtattachonceprepend)
+  - [``evt.attachExtract(...)`` and ``evt.attachOnceExtract(...)``](#evtattachextract-and-evtattachonceextract)
+  - [``evt.detach(...)``](#evtdetach)
+    - [``evt.detach()`` all handlers.](#evtdetach-all-handlers)
+    - [``evt.handler(boundTo)`` - bound to a given context](#evthandlerboundto---bound-to-a-given-context)
+    - [``handler.detach(callback)``](#handlerdetachcallback)
+  - [``evt.getHandlers()``](#evtgethandlers-1)
+  - [Combining Once, Prepend, matcher, timeout and boundTo](#combining-once-prepend-matcher-timeout-and-boundto)
+  - [``evt.createDelegate(...)``](#evtcreatedelegate)
+  - [``evt.postCount``](#evtpostcount)
+  - [``evt.evtAttach`` and ``evt.evtDetach``](#evtevtattach-and-evtevtdetach)
+  - [``evt.isHandled(data)``](#evtishandleddata-1)
+  - [``evt.postAsyncOnceHandled(data)`` and ``evt.postSyncOnceHandled(data)``](#evtpostasynconcehandleddata-and-evtpostsynconcehandleddata)
+  - [``evtUtil.race([...])``](#evtutilrace)
+  - [``NonPostable<Evt<T>>``](#nonpostableevtt)
+  - [``UnpackEvt<typeof evt>``.](#unpackevttypeof-evt)
+  - [``evt.enableTrace(...)``](#evtenabletrace)
+- [``Observable<T>`` documentation](#observablet-documentation)
+- [Appendix: ``evt.waitFor(...)`` used in ``async`` procedure or loop](#appendix-evtwaitfor-used-in-async-procedure-or-loop)
+- [History of the project](#history-of-the-project)
+
+# Api Documentation
+
+## Operator
+
+Operator provide a way to transform events data before they are passed to the callback.
 
 Operators can be of three types:  
 + __Filter__: ``(data: T)=> boolean``.  
@@ -172,6 +398,8 @@ Operators can be of three types:
   + __Stateless fλ__: ``<U>(data: T)=> [U]|null|"DETACH"|{DETACH:Ref}|...``  
   + __Stateful fλ__: ``[ <U>(data:T,prev:U)=> ..., U(initial value) ]``  
   Uses the previous result to perform the computation
+
+Operators should not produce any side effect.
 
 ### Operator - Filter
 
@@ -224,10 +452,9 @@ const matchCircle = (shape: Shape): shape is Circle =>
     shape.type === "CIRCLE";
 ```
 
-Now we can easily attach an handler that will only handle circles on our shape emitter.
+The ``matchCircle`` type guard enables to attach a callback to an ``Evt<Shape>`` that will only be called against circles.
 
 ```typescript
-
 import { Evt } from "ts-evt";
 
 const evtShape = new Evt<Shape>();
@@ -238,18 +465,12 @@ evtShape.attach(
 );
 
 //Nothing will be printed to the console, a Square is not a Circle.
-evtShape.post({
-    "type": "SQUARE",
-    "sideLength": 3
-});
+evtShape.post({ "type": "SQUARE", "sideLength": 3 });
 
 //"33" Will be printed to the console.
-evtShape.post({
-    "type": "CIRCLE",
-    "radius": 33
-});
-
+evtShape.post({ "type": "CIRCLE", "radius": 33 });
 ```
+
 The type of the Shape object is narrowed down to ``Circle``  
 ![Screenshot 2020-02-08 at 19 17 46](https://user-images.githubusercontent.com/6702424/74090059-baab3e00-4aa7-11ea-9c75-97f1fb99666d.png)
 
@@ -257,142 +478,347 @@ The type of the Shape object is narrowed down to ``Circle``
 
 ### Operator - fλ
 
+Filter - Transform - Detach.  
 
-#### fλ returns 
+#### fλ Returns
 
 The value that a fλ operator can return are: 
-
 
 + ``null`` If the event should be ignored and nothing passed to the callback.
 + ``[ U ]`` or ``[ U, null ]`` When the event should be handled, wrapped into a singleton is the value to pass to the callback.
 + ``"DETACH"`` When the event should be ignored and the handler detached from the ``Evt``
-+ ``{DETACH:Ref}`` When the event should be ignored and all the handlers of a given ``Ref`` be detached.
-+ ``[ U, "DETACH" ]`` / ``[ U, {DETACH:Ref} ]`` To handle the event then detach.
++ ``{ DETACH: Ctx }`` When the event should be ignored and a group of handler bound to a certain context must be detached. See [``Ctx``](#Ctx)
++ ``[ U, "DETACH" ]`` / ``[ U, {DETACH:Ref} ]`` To handle the event AND detach.
 
-NOTE: Make sure when you return a singleton that it is an array with one or two element.
-
-#### Operator - Stateless fλ
+#### Stateless fλ 
 
 Stateless fλ operator only takes the event data as argument.  
 
 ```typescript
 import { Evt } from "ts-evt";
 
-{
+const evtShape = new Evt<Shape>();
 
-    const evtShape = new Evt<Shape>();
+/*
+ * Filter: 
+ *  Only circle event are handled.
+ *  AND
+ *  to be handled circles must have a radius greater than 100
+ * 
+ * Transform:
+ *  Pass the radius of such circle to the callback.
+ */
+evtShape.$attach(
+    shape => shape.type === "CIRCLE" && shape.radius > 100 ? 
+        [ shape.radius ] : null,
+    radius => console.log(`radius: ${radius}`) 
+    //NOTE: The radius argument is inferred as being of type number!
+);
 
-    /*
-     * Only circle event are handled.
-     * AND
-     * to be handled circle must have a radius greater than 100
-     * 
-     * Pass the radius of such circle to the callback.
-     */
-    evtShape.$attach(
-        shape => shape.type === "CIRCLE" && shape.radius > 100 ? 
-            [ shape.radius ] : null,
-        radius => console.log(`radius: ${radius}`) 
-        //NOTE: The radius argument is inferred as being of type number!
-    );
+evtShape.post({ "type": "SQUARE", "sideLength": 3 }); //Nothing will be printed to the console, it's not a circle
+evtShape.post({ "type": "CIRCLE", "radius": 3 }); //Nothing will be printed to the console, The circle is too small.
+evtShape.post({ "type": "CIRCLE", "radius": 200 }); //"radius 200" Will be printed to the console.
+```
 
-    //Nothing will be printed to the console, it's not a circle
-    evtShape.post({
-        "type": "SQUARE",
-        "sideLength": 3
-    });
-    
-    //Nothing will be printed to the console, The circle is too small.
-    evtShape.post({
-        "type": "CIRCLE",
-        "radius": 3
-    });
-    
-    //"radius 200" Will be printed to the console.
-    evtShape.post({
-        "type": "CIRCLE",
-        "radius": 200
-    });
+Other example using ``"DETACH"``
 
-}
+```typescript
+import { Evt } from "ts-evt";
 
-{
+const evtText= new Evt<"TICK" | "END">();
 
-    const evtText= new Evt<"TICK" | "END">();
+/*
+ * Only handle events that are not "END".
+ * If the event is "END", detach the handler.
+ * Pass the event data string in lower cace to the callback.
+ */
+evtText.$attach(
+    text => text !== "END" ? [ text.toLowerCase() ] : "DETACH",
+    text => console.log(text) 
+);
 
-    /*
-     * Only handle events that are not "END".
-     * If the event is "END", detach the handler.
-     * Pass the event data string in lower cace to the callback.
-     */
-    evtText.attach(
-        text => text !== "END" ? [ text.toLowerCase() ] : "DETACH",
-        text => console.log(text) 
-    );
+evtText.post("TICK"); //"tick" is printed to the console
+evtText.post("END"); //Nothing is printed to the console, the handler is detached
+evtText.post("TICK"); //Nothing is printed to the console the handler have been detached.
+```
 
-    //"tick" is printed to the console
-    evtText.post("TICK");
+Example use of ``[U,null|"DETACH"]``, handling the event that cause the handler to be detached.
 
-    //Nothing is printed to the console, the handler is detached
-    evtText.post("END");
+```typescript
+const evtText= new Evt<"TICK" | "END">();
 
-    //Nothing is printed to the console the handler have been detached.
-    evtText.post("TICK");
+evtText.$attach(
+    text => [ text, text === "END" ? "DETACH" : null ],
+    text => console.log(text) 
+);
 
-}
+evtText.post("TICK"); //"TICK" is printed to the console
+evtText.post("END"); //"END" is printed to the console, the handler is detached.
+evtText.post("TICK"); //Nothing is printed to the console the handler have been detached.
+```
 
+Example use of ``{ DETACH: Ctx }``, detaching a group of handler bound to a given context.
 
-{
+```typescript
+const evtBtnClick = new Evt<"OK" | "QUIT">();
 
-    const evtText= new Evt<"TICK" | "END">();
+const evtMessage = new Evt<string>();
+const evtNotification = new Evt<string>();
 
-    evtText.attach(
-        text => [ text, text === "END" ? "DETACH" : null ],
-        text => console.log(text) 
-    );
+const ctx= Evt.newCtx();
 
-    //"TICK" is printed to the console
-    evtText.post("TICK");
-    //"END" is printed to the console, the handler is detached.
-    evtText.post("END");
+evtMessage.attach(
+    ctx,
+    message => console.log(`message: ${message}`)
+);
 
-    //Nothing is printed to the console the handler have been detached.
-    evtText.post("TICK");
+evtNotification.attach(
+    ctx,
+    notification => console.log(`notification: ${notification}`)
+);
 
+evtBtnClick.$attach(
+    type => [ 
+        type, 
+        type !== "QUIT" ? null : { "DETACH": ctx } 
+    ],
+    type => console.log(`Button clicked: ${type}`)
+);
+
+evtBtnClick.post("OK"); //Prints "Button clicked: OK"
+evtMessage.post("Hello World"); //Prints "Message: Hello World"
+evtNotification.post("Poke"); //Prints "Notification: Poke"
+evtBtnClick.post("QUIT"); //Prints "Button clicked: QUIT", handler are detached...
+evtMessage.post("Hello World 2"); //Prints nothing
+evtNotification.post("Poke 2"); //Prints nothing
+evtBtnClick.post("OK"); //Prints "OK", evtBtnClick handler hasn't been detached as it was not bound to ctx.
+```
+
+[__Run examples__](https://stackblitz.com/edit/ts-evt-demo-transformative-matcher?embed=1&file=index.ts)
+
+#### Stateful fλ 
+
+The result of the previously matched event is passed as argument to the operator.
+
+```typescript
+import { Evt } from "ts-evt";
+
+const evtText= new Evt<string>();
+
+evtText.$attach(
+    [ 
+        (str, prev)=> [`${prev} ${str}`], 
+        "START: "  //<== Initial value
+    ],
+    sentence => console.log(sentence)
+);
+
+evtText.post("Hello"); //Prints "START: Hello"
+evtText.post("World"); //Prints "START: Hello World"
+```
+
+Keep in mind that operator are not supposed to produce side effect.  
+You should not make assumption on where and when operator are called.  
+The following example seems equivalent from the previous one but it is not.
+
+```typescript
+const evtText= new Evt<string>();
+
+//🚨 Do NOT do that 🚨...
+evtText.$attach(
+    (()=> {
+
+        let acc= "START:";
+
+        return (data: string) => [acc += ` ${data}`] as const;
+
+    })(),
+    sentence => console.log(sentence)
+);
+
+const text= "Foo bar";
+
+if( evtText.isHandled(text) ){
+    evtText.post(text); //Prints "START: Foo Bar Foo bar", probably not what you wanted.
 }
 ```
 
-[__Run example__](https://stackblitz.com/edit/ts-evt-demo-transformative-matcher?embed=1&file=index.ts)
+[__Run example__](https://stackblitz.com/edit/ts-evt-demo-stateful?embed=1&file=index.ts)
+
+### ``composeOperator(op1, op2, ...)``
+
+Operators can be composed to achieve more complex behavior.
+Note that all the type are inferred on the fly.  
+
+Example composing Type guard with  fλ:
+
+```typescript
+import { Evt, composeOperators } from "ts-evt";
+
+const evtShape= new Evt<Shape>();
+
+evtShape.$attach(
+    composeOperators(
+        matchCircle,
+        ({ radius })=> [ radius ]
+    ),
+    radius => console.log(radius)
+);
+
+evtShape.post({ "type": "SQUARE", "sideLength": 10 }); //Prints nothing, Square does not matchCircle
+evtShape.post({ "type": "CIRCLE", "radius": 12 }); //Prints "12"
+```
+
+Example composing tre fλ to count the number of different word in a sentence:
+
+```typescript
+import { Evt, composeOperators } from "ts-evt";
+
+const evtSentence = new Evt<string>();
+
+evtSentence.$attach(
+    composeOperators(
+        str=> [ str.toLowerCase().split(" ") ],
+        arr=> [ new Set(arr) ],
+        set=> [ set.size ]
+    ),
+    numberOfUniqWordInSentence => console.log(numberOfUniqWordInSentence)
+);
+
+evtSentence.post("Hello World"); //Prints "2"
+evtSentence.post("Boys will be boys"); //Prints "3", "boys" appears two times.
+```
+
+Using stateful fλ operators to implement ``throttleTime(duration)``, 
+an operator that let through at most one event every [duration] milliseconds.
+
+```typescript
+
+    const throttleTime = <T>(duration: number) =>
+        composeOperators<T, { data: T; lastClick: number; }, T>(
+            [
+                (data, { lastClick }) => {
+
+                    const now = Date.now();
+
+                    return now - lastClick < duration ?
+                        null :
+                        [{ data, "lastClick": now }]
+                        ;
+
+                },
+                { "lastClick": 0, "data": null as any }
+            ],
+            ({ data }) => [data]
+        )
+        ;
+
+    const evtText = new Evt<string>();
+
+    evtText.$attach(
+        throttleTime(1000), //<= At most one event per second is handled.
+        text => console.log(text)
+    );
+
+    setTimeout(()=>evtText.post("A"), 0); //Prints "A"
+    setTimeout(()=>evtText.post("B"), 500); //Prints nothing, the previous event was handled less than 1 second ago.
+    setTimeout(()=>evtText.post("B"), 750); //Prints nothing, the previous event was handled less than 1 second ago.
+    setTimeout(()=>evtText.post("C"), 1001); //Prints "C"
+    setTimeout(()=>evtText.post("D"), 2500); //Prints "D"
+
+```
+[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-compose?embed=1&file=index.ts)
+
+## ``Evt<T>`` 
+
+Class that is the equivalent of ``EventEmitter`` in ``"events"`` and ``Subject<T>`` in ``"rxjs"``
+
+### ``evt.[$]attach*(...)`` methods
+#### Arguments
+##### Operator
+##### Timeout
+##### BoundTo ( context )
+##### Callback
+#### Returned value
+#### The ``$`` prefix
+#### ``evt.[$]attach(...)``
+#### ``evt.[$]attachOnce*(...)``
+#### ``evt.[$]attach[Once]Prepend(...)``
+#### ``evt.[$]attach[Once]Extract(...)``
+
+### ``evt.post*(data)`` methods  
+#### ``evt.post(data)``
+#### ``evtPostCount: number``
+#### ``evt.postAsyncOnceMatched(data)``
+#### ``evt.postSyncOnceMatched(data)``
+
+
+### The ``Handler<T,U>`` type
+### ``evt.getHandlers()``
+### ``evt.evt[Attach|Detach]: Evt<Handler>`` properties
+### ``evt.isHandled(data)``
+
+### ``evt.waitFor(...)``
+### ``evt.pipe(...)``
+### ``Evt.merge([evt1, evt2, ...])``
+### Detaching handlers.
+#### ``evt.detach([boundTo])``
+#### ``handler.detach()``
+#### ``ctx.detach([evt])``
+
+## ``Ctx``
+### ``ctx.getHandlers()``
+### ``ctx.evtDetach: Evt<Handler[]>``
+### ``ctx.detach([evt])
+
+## ``VoidEvt``
+
+## ``Observable<T>``
+
+# Difference between ``evt.waitFor(...)`` and ``evt.attachOnce(...)``
+
+# Credits
+
+
+## Operators
+
+
+### Operator - Filter
+
+
+### Operator - Type guard
+
+
+### Operator - fλ
+
+
+
+#### fλ returns 
+
+
+
+#### Operator - Stateless fλ
+
 
 #### Operator - Stateful fλ
 
 
-To filter, transform the data that should be passed to the callback and optionally detach
-the handler.
-
-The matcher should return the value that is to be passed to the callback wrapped into a singleton ``[val]``.  
-If should return ``null`` when the callback should not be invoked for the event.
-
-If the matcher return ``[val, "DETACH"]`` the handler is detached from the ``Evt`` and
-callback is invoked a last time with ``val``.  
-
-If the matcher return ``"DETACH"`` the callback is not invoked and the handler is detached.
-
+### Operator - Composition
 
 ### Matcher - Compatible methods
 
-Matcher functions can be used with:  
-    -``attach()``  
-    -``attachOnce()``  
-    -``waitFor()``   
-    -``createDelegate()``   
-    -``attachExtract()``  
-    -``attachOnceExtract``  
-    -``attachPrepend``  
-    -``attachOncePrepend``  
+Operators functions can be used with:  
++ All the ``attach*(...)`` methods  
++ ``waitFor(...)``   
++ ``pipe(...)``   
 
-Except for ``waitFor(...)`` and ``createDelegate(...)`` prepend ``$`` to the method  
-name to use a transformative matcher.
+Due to current [TypeScript limitation](https://github.com/microsoft/TypeScript/issues/36735)
+the ``.attach*()`` methods need to be prefixed with ``$`` when used with ``fλ`` operator.  
+``evt.$attach*()`` are actually just aliases to the corresponding ``evt.attach*()`` methods but the ``$`` is currently required for the type inference to work.
+
+
+
+
 
 ``waitFor(...)`` and ``attachOnce(...)`` combined with matcher address the main shortcoming of EventEmitter
 allowing us to asynchronously wait for the next shape that is a circle, for example.
@@ -1155,7 +1581,7 @@ obsUsers.onPotentialChange(updatedUsers);
 
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-observable-change-condition?embed=1&file=index.ts)
 
-# ``evt.waitFor(...)`` used in ``async`` procedure or loop
+# Appendix: ``evt.waitFor(...)`` used in ``async`` procedure or loop
 
 ``evt.waitFor()`` is <b>NOT</b> equivalent to ``new Promise(resolve=> evt.attachOnce(resolve))``
 
