@@ -9,7 +9,7 @@ import { Operator } from "./types/Operator";
 import { overwriteReadonlyProp } from "../tools/overwriteReadonlyProp";
 import { invokeOperator } from "./util/invokeOperator";
 import { encapsulateOpState } from "./util/encapsulateOpState";
-import { CtxCore } from "./CtxCore";
+import { Ctx } from "./Ctx";
 
 export const setPostCount = (evt: EvtCore<any>, value: number) => 
     overwriteReadonlyProp(evt, "postCount", value);
@@ -159,8 +159,8 @@ export class EvtCore<T> {
                         return false;
                     }
 
-                    if (CtxCore.matchHandler(handler)) {
-                        CtxCore.__removeHandlerFromCtxCore(handler);
+                    if (Ctx.matchHandler(handler)) {
+                        Ctx.__removeHandlerFromCtxCore(handler);
                     }
 
 
@@ -241,8 +241,8 @@ export class EvtCore<T> {
 
         }
 
-        if (CtxCore.matchHandler(handler)) {
-            CtxCore.__addHandlerToCtxCore(handler, this);
+        if (Ctx.matchHandler(handler)) {
+            Ctx.__addHandlerToCtxCore(handler, this);
         }
 
         this.onHandler("evtAttach",handler);

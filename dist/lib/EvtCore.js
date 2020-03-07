@@ -51,7 +51,7 @@ var Operator_1 = require("./types/Operator");
 var overwriteReadonlyProp_1 = require("../tools/overwriteReadonlyProp");
 var invokeOperator_1 = require("./util/invokeOperator");
 var encapsulateOpState_1 = require("./util/encapsulateOpState");
-var CtxCore_1 = require("./CtxCore");
+var Ctx_1 = require("./Ctx");
 exports.setPostCount = function (evt, value) {
     return overwriteReadonlyProp_1.overwriteReadonlyProp(evt, "postCount", value);
 };
@@ -223,8 +223,8 @@ var EvtCore = /** @class */ (function () {
                 if (index < 0) {
                     return false;
                 }
-                if (CtxCore_1.CtxCore.matchHandler(handler)) {
-                    CtxCore_1.CtxCore.__removeHandlerFromCtxCore(handler);
+                if (Ctx_1.Ctx.matchHandler(handler)) {
+                    Ctx_1.Ctx.__removeHandlerFromCtxCore(handler);
                 }
                 _this_1.handlers.splice(index, 1);
                 _this_1.handlerTriggers["delete"](handler);
@@ -268,8 +268,8 @@ var EvtCore = /** @class */ (function () {
         else {
             this.handlers.push(handler);
         }
-        if (CtxCore_1.CtxCore.matchHandler(handler)) {
-            CtxCore_1.CtxCore.__addHandlerToCtxCore(handler, this);
+        if (Ctx_1.Ctx.matchHandler(handler)) {
+            Ctx_1.Ctx.__addHandlerToCtxCore(handler, this);
         }
         this.onHandler("evtAttach", handler);
         return handler;
