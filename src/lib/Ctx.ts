@@ -11,6 +11,7 @@ type EvtCore<T> = import("./EvtCore").EvtCore<T>;
 export class Ctx {
 
     public static __CtxForEvtBrand = true;
+    private static readonly __CTX_FOR_EVT_VERSION = 1;
 
     private evtDetachedInitialPostCount = 0;
     private evtDetach: Evt<Handler.WithEvt<any>[]> | undefined = undefined;
@@ -104,7 +105,6 @@ export class Ctx {
     }
 
 
-    private static readonly __EVT_CTX_VERSION = 1;
 
     //NOTE: Use this instead of instanceof for interoperability between versions.
     private static match(boundTo: Bindable): boundTo is Ctx {
@@ -113,14 +113,14 @@ export class Ctx {
             return false;
         }
 
-        const { __EVT_CTX_VERSION: REF_CORE_VERSION } = id<typeof Ctx>(Object.getPrototypeOf(boundTo).constructor);
+        const { __CTX_FOR_EVT_VERSION: REF_CORE_VERSION } = id<typeof Ctx>(Object.getPrototypeOf(boundTo).constructor);
 
         if (typeof REF_CORE_VERSION !== "number") {
             return false;
         }
 
         assert(
-            REF_CORE_VERSION === Ctx.__EVT_CTX_VERSION,
+            REF_CORE_VERSION === Ctx.__CTX_FOR_EVT_VERSION,
             "Compatibility issues between different version of ts-evt"
         );
 

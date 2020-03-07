@@ -3,6 +3,7 @@ import { Bindable } from "./types/Bindable";
 declare type EvtCore<T> = import("./EvtCore").EvtCore<T>;
 export declare class Ctx {
     static __CtxForEvtBrand: boolean;
+    private static readonly __CTX_FOR_EVT_VERSION;
     private evtDetachedInitialPostCount;
     private evtDetach;
     getEvtDetach(): NonNullable<typeof Ctx.prototype.evtDetach>;
@@ -14,7 +15,6 @@ export declare class Ctx {
     getHandlers(): Handler.WithEvt<any>[];
     static __addHandlerToCtxCore<T>(handler: Handler<T, any, Ctx>, evt: EvtCore<T>): void;
     static __removeHandlerFromCtxCore(handler: Handler<any, any, Ctx>): void;
-    private static readonly __EVT_CTX_VERSION;
     private static match;
     static matchHandler<T>(handler: Handler<T, any, Bindable>): handler is Handler<T, any, Ctx>;
 }

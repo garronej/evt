@@ -255,7 +255,7 @@ export class Evt<T> extends EvtCore<T> {
      * timeout?
      */
     public waitFor<U>(
-        op: Operator.fλ.Once<T, U>,
+        op: Operator.fλ.Stateless<T, U>,
         timeout?: number
     ): Promise<U>;
 
@@ -538,7 +538,7 @@ export class Evt<T> extends EvtCore<T> {
      * callback
      */
     public $attachOnce<U>(
-        op: Operator.fλ.Once<T, U>,
+        op: Operator.fλ.Stateless<T, U>,
         boundTo: Bindable,
         timeout: number,
         callback: (transformedData: U) => void
@@ -553,7 +553,7 @@ export class Evt<T> extends EvtCore<T> {
      * callback
      */
     public $attachOnce<U>(
-        op: Operator.fλ.Once<T, U>,
+        op: Operator.fλ.Stateless<T, U>,
         boundTo: Bindable,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -567,7 +567,7 @@ export class Evt<T> extends EvtCore<T> {
      * callback
      */
     public $attachOnce<U>(
-        op: Operator.fλ.Once<T, U>,
+        op: Operator.fλ.Stateless<T, U>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -579,7 +579,7 @@ export class Evt<T> extends EvtCore<T> {
      * callback
      */
     public $attachOnce<U>(
-        op: Operator.fλ.Once<T, U>,
+        op: Operator.fλ.Stateless<T, U>,
         callback: (transformedData: U) => void
     ): Promise<U>;
     public $attachOnce(...inputs: any[]) {
@@ -1196,7 +1196,7 @@ export class Evt<T> extends EvtCore<T> {
      * callback
      */
     public $attachOncePrepend<U>(
-        op: Operator.fλ.Once<T, U>,
+        op: Operator.fλ.Stateless<T, U>,
         boundTo: Bindable,
         timeout: number,
         callback: (transformedData: U) => void
@@ -1211,7 +1211,7 @@ export class Evt<T> extends EvtCore<T> {
      * callback
      */
     public $attachOncePrepend<U>(
-        op: Operator.fλ.Once<T, U>,
+        op: Operator.fλ.Stateless<T, U>,
         boundTo: Bindable,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -1225,7 +1225,7 @@ export class Evt<T> extends EvtCore<T> {
      * callback
      */
     public $attachOncePrepend<U>(
-        op: Operator.fλ.Once<T, U>,
+        op: Operator.fλ.Stateless<T, U>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -1237,7 +1237,7 @@ export class Evt<T> extends EvtCore<T> {
      * callback
      */
     public $attachOncePrepend<U>(
-        op: Operator.fλ.Once<T, U>,
+        op: Operator.fλ.Stateless<T, U>,
         callback: (transformedData: U) => void
     ): Promise<U>;
     public $attachOncePrepend(...inputs: any[]) {
@@ -1431,7 +1431,7 @@ export class Evt<T> extends EvtCore<T> {
      * callback
      */
     public $attachOnceExtract<U>(
-        op: Operator.fλ.Once<T, U>,
+        op: Operator.fλ.Stateless<T, U>,
         boundTo: Bindable,
         timeout: number,
         callback: (transformedData: U) => void
@@ -1446,7 +1446,7 @@ export class Evt<T> extends EvtCore<T> {
      * callback
      */
     public $attachOnceExtract<U>(
-        op: Operator.fλ.Once<T, U>,
+        op: Operator.fλ.Stateless<T, U>,
         boundTo: Bindable,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -1460,7 +1460,7 @@ export class Evt<T> extends EvtCore<T> {
      * callback
      */
     public $attachOnceExtract<U>(
-        op: Operator.fλ.Once<T, U>,
+        op: Operator.fλ.Stateless<T, U>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -1472,7 +1472,7 @@ export class Evt<T> extends EvtCore<T> {
      * callback
      */
     public $attachOnceExtract<U>(
-        op: Operator.fλ.Once<T, U>,
+        op: Operator.fλ.Stateless<T, U>,
         callback: (transformedData: U) => void
     ): Promise<U>;
 

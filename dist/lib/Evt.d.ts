@@ -54,7 +54,7 @@ export declare class Evt<T> extends EvtCore<T> {
      *
      * timeout?
      */
-    waitFor<U>(op: Operator.fλ.Once<T, U>, timeout?: number): Promise<U>;
+    waitFor<U>(op: Operator.fλ.Stateless<T, U>, timeout?: number): Promise<U>;
     /**
      * https://garronej.github.io/ts-evt/#evtwaitfor
      *
@@ -240,7 +240,7 @@ export declare class Evt<T> extends EvtCore<T> {
      *
      * callback
      */
-    $attachOnce<U>(op: Operator.fλ.Once<T, U>, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
+    $attachOnce<U>(op: Operator.fλ.Stateless<T, U>, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
      * https://garronej.github.io/ts-evt/#op---fλ
      *
@@ -250,7 +250,7 @@ export declare class Evt<T> extends EvtCore<T> {
      *
      * callback
      */
-    $attachOnce<U>(op: Operator.fλ.Once<T, U>, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
+    $attachOnce<U>(op: Operator.fλ.Stateless<T, U>, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
     /**
      * https://garronej.github.io/ts-evt/#op---fλ
      *
@@ -260,7 +260,7 @@ export declare class Evt<T> extends EvtCore<T> {
      *
      * callback
      */
-    $attachOnce<U>(op: Operator.fλ.Once<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
+    $attachOnce<U>(op: Operator.fλ.Stateless<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
      * https://garronej.github.io/ts-evt/#op---fλ
      *
@@ -268,7 +268,7 @@ export declare class Evt<T> extends EvtCore<T> {
      *
      * callback
      */
-    $attachOnce<U>(op: Operator.fλ.Once<T, U>, callback: (transformedData: U) => void): Promise<U>;
+    $attachOnce<U>(op: Operator.fλ.Stateless<T, U>, callback: (transformedData: U) => void): Promise<U>;
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      *
@@ -664,7 +664,7 @@ export declare class Evt<T> extends EvtCore<T> {
      *
      * callback
      */
-    $attachOncePrepend<U>(op: Operator.fλ.Once<T, U>, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
+    $attachOncePrepend<U>(op: Operator.fλ.Stateless<T, U>, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
      * https://garronej.github.io/ts-evt/#op---fλ
      *
@@ -674,7 +674,7 @@ export declare class Evt<T> extends EvtCore<T> {
      *
      * callback
      */
-    $attachOncePrepend<U>(op: Operator.fλ.Once<T, U>, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
+    $attachOncePrepend<U>(op: Operator.fλ.Stateless<T, U>, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
     /**
      * https://garronej.github.io/ts-evt/#op---fλ
      *
@@ -684,7 +684,7 @@ export declare class Evt<T> extends EvtCore<T> {
      *
      * callback
      */
-    $attachOncePrepend<U>(op: Operator.fλ.Once<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
+    $attachOncePrepend<U>(op: Operator.fλ.Stateless<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
      * https://garronej.github.io/ts-evt/#op---fλ
      *
@@ -692,7 +692,7 @@ export declare class Evt<T> extends EvtCore<T> {
      *
      * callback
      */
-    $attachOncePrepend<U>(op: Operator.fλ.Once<T, U>, callback: (transformedData: U) => void): Promise<U>;
+    $attachOncePrepend<U>(op: Operator.fλ.Stateless<T, U>, callback: (transformedData: U) => void): Promise<U>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      *
@@ -816,7 +816,7 @@ export declare class Evt<T> extends EvtCore<T> {
      *
      * callback
      */
-    $attachOnceExtract<U>(op: Operator.fλ.Once<T, U>, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
+    $attachOnceExtract<U>(op: Operator.fλ.Stateless<T, U>, boundTo: Bindable, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
      * https://garronej.github.io/ts-evt/#op---fλ
      *
@@ -826,7 +826,7 @@ export declare class Evt<T> extends EvtCore<T> {
      *
      * callback
      */
-    $attachOnceExtract<U>(op: Operator.fλ.Once<T, U>, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
+    $attachOnceExtract<U>(op: Operator.fλ.Stateless<T, U>, boundTo: Bindable, callback: (transformedData: U) => void): Promise<U>;
     /**
      * https://garronej.github.io/ts-evt/#op---fλ
      *
@@ -836,7 +836,7 @@ export declare class Evt<T> extends EvtCore<T> {
      *
      * callback
      */
-    $attachOnceExtract<U>(op: Operator.fλ.Once<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
+    $attachOnceExtract<U>(op: Operator.fλ.Stateless<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
      * https://garronej.github.io/ts-evt/#op---fλ
      *
@@ -844,7 +844,7 @@ export declare class Evt<T> extends EvtCore<T> {
      *
      * callback
      */
-    $attachOnceExtract<U>(op: Operator.fλ.Once<T, U>, callback: (transformedData: U) => void): Promise<U>;
+    $attachOnceExtract<U>(op: Operator.fλ.Stateless<T, U>, callback: (transformedData: U) => void): Promise<U>;
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      *

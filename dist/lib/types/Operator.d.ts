@@ -9,15 +9,6 @@ export declare namespace Operator {
         namespace Stateful {
             function match<T, U>(op: Operator<T, U>): op is Stateful<T, U>;
         }
-        /**
-         *
-         * TODO: Update
-         *
-         * [U] or [U,null] => pass U to the handler's callback.
-         * [U,"DETACH"] => detach the handler then pass U to the handler's callback.
-         * null => do not pass the event data to the handler callback.
-         * "DETACH" => detach the handler and do not pass the event data to the handler's callback.
-         */
         type Result<U> = Result.Matched<U> | Result.NotMatched;
         namespace Result {
             function match<U>(result: any): result is Result<U>;
@@ -47,14 +38,6 @@ export declare namespace Operator {
                 function match(detach: any): detach is Detach;
             }
         }
-        /**
-         * When using a λ operator with
-         * waitFor, attachOnce or attachOncePrepend
-         * the first matched event will cause the handler
-         * to be detached so there is no purpose of
-         * detaching via the matcher or using a stateful matcher
-         */
-        type Once<T, U> = (data: T) => (Result.Matched.NoDetachArg<U> | Result.NotMatched);
     }
     type Stateless<T, U> = fλ.Stateless<T, U> | ((data: U) => boolean) | (U extends T ? (data: T) => data is U : never);
 }

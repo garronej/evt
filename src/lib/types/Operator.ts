@@ -33,15 +33,6 @@ export namespace Operator {
 
         }
 
-        /**
-         * 
-         * TODO: Update
-         * 
-         * [U] or [U,null] => pass U to the handler's callback.
-         * [U,"DETACH"] => detach the handler then pass U to the handler's callback.
-         * null => do not pass the event data to the handler callback.
-         * "DETACH" => detach the handler and do not pass the event data to the handler's callback.
-         */
         export type Result<U> = Result.Matched<U> | Result.NotMatched;
 
         export namespace Result {
@@ -145,21 +136,6 @@ export namespace Operator {
             }
 
         }
-
-
-
-        /**
-         * When using a λ operator with
-         * waitFor, attachOnce or attachOncePrepend 
-         * the first matched event will cause the handler
-         * to be detached so there is no purpose of 
-         * detaching via the matcher or using a stateful matcher
-         */
-        export type Once<T, U> = (data: T) => (
-            Result.Matched.NoDetachArg<U>
-            |
-            Result.NotMatched
-        );
 
     }
 

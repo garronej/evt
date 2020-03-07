@@ -87,18 +87,18 @@ var Ctx = /** @class */ (function () {
         if (typeof boundTo !== "object") {
             return false;
         }
-        var REF_CORE_VERSION = id_1.id(Object.getPrototypeOf(boundTo).constructor).__EVT_CTX_VERSION;
+        var REF_CORE_VERSION = id_1.id(Object.getPrototypeOf(boundTo).constructor).__CTX_FOR_EVT_VERSION;
         if (typeof REF_CORE_VERSION !== "number") {
             return false;
         }
-        assert_1.assert(REF_CORE_VERSION === Ctx.__EVT_CTX_VERSION, "Compatibility issues between different version of ts-evt");
+        assert_1.assert(REF_CORE_VERSION === Ctx.__CTX_FOR_EVT_VERSION, "Compatibility issues between different version of ts-evt");
         return true;
     };
     Ctx.matchHandler = function (handler) {
         return Ctx.match(handler.boundTo);
     };
     Ctx.__CtxForEvtBrand = true;
-    Ctx.__EVT_CTX_VERSION = 1;
+    Ctx.__CTX_FOR_EVT_VERSION = 1;
     return Ctx;
 }());
 exports.Ctx = Ctx;
