@@ -96,23 +96,18 @@ evtTime.post(1234);
 ## Equivalent, traditional approach:
 
 But the traditional approach of gathering all the events in a single bus is still an option.  
-It is a bit more verbose but you get the type safety as well.
 
 ```typescript
+import { evt, to } from "ts-evt";
+
 const evt = new Evt<
     [ "text",  string ] | 
     [ "time",  number ]
 >();
 
-evt.$attach(
-    t => t[0] !== "text" ? null : [t[1]],
-    text => console.log(text)
-);
+evt.$attach(to("text") text => console.log(text));
 
-evt.$attachOnce(
-    t => t[0] !== "time" ? null : [t[1]],
-    time => console.log(time)
-);
+evt.$attachOnce(to("time"), time => console.log(time));
 
 evt.post(["text", "hi!"]);
 evt.post(["time", 123]);

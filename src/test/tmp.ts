@@ -1,15 +1,33 @@
 
-import { Evt } from "../lib";
+import { Evt, to } from "../lib";
 
+//import { Operator } from "../lib/types/Operator";
 
 {
 
-    const evtText= new Evt<string>();
+    const evt = new Evt<
+        ["text", string] |
+        ["time", number]
+    >();
+
+    evt.$attach(to("text"), text => console.log(text));
+
+    evt.$attachOnce(to("time"), time => console.log(time));
+
+    evt.post(["text", "hi!"]);
+    evt.post(["time", 123]);
+    evt.post(["time", 1234]);
+
+}
+
+{
+
+    const evtText = new Evt<string>();
 
     evtText.$attach(
-        (()=> {
+        (() => {
 
-            let acc= "START:";
+            let acc = "START:";
 
             return (data: string) => [acc += ` ${data}`] as const;
 
@@ -17,9 +35,9 @@ import { Evt } from "../lib";
         sentence => console.log(sentence)
     );
 
-    const text= "Foo bar";
+    const text = "Foo bar";
 
-    if( evtText.isHandled(text) ){
+    if (evtText.isHandled(text)) {
 
         evtText.post(text);
 
@@ -35,7 +53,7 @@ import { Evt } from "../lib";
     const evtMessage = new Evt<string>();
     const evtNotification = new Evt<string>();
 
-    const ctx= Evt.newCtx();
+    const ctx = Evt.newCtx();
 
     evtMessage.attach(
         ctx,
@@ -48,9 +66,9 @@ import { Evt } from "../lib";
     );
 
     evtBtnClick.$attach(
-        type => [ 
-            type, 
-            type !== "QUIT" ? null : { "DETACH": ctx } 
+        type => [
+            type,
+            type !== "QUIT" ? null : { "DETACH": ctx }
         ],
         type => console.log(`Button clicked: ${type}`)
     );
@@ -82,8 +100,8 @@ type Shape = Circle | Square;
 
 
 const evt = new Evt<
-    [ "text",  string ] | 
-    [ "time",  number ]
+    ["text", string] |
+    ["time", number]
 >();
 
 evt.$attach(
@@ -117,9 +135,9 @@ const matchCircle = (shape: Shape): shape is Circle =>
      * Pass the radius of such circle to the callback.
      */
     evtShape.$attach(
-        shape => shape.type === "CIRCLE" && shape.radius > 100 ? 
-            [ shape.radius ] : null,
-        radius => console.log(`radius: ${radius}`) 
+        shape => shape.type === "CIRCLE" && shape.radius > 100 ?
+            [shape.radius] : null,
+        radius => console.log(`radius: ${radius}`)
         //NOTE: The radius argument is inferred as being of type number!
     );
 
@@ -128,13 +146,13 @@ const matchCircle = (shape: Shape): shape is Circle =>
         "type": "SQUARE",
         "sideLength": 3
     });
-    
+
     //Nothing will be printed to the console, The circle is too small.
     evtShape.post({
         "type": "CIRCLE",
         "radius": 3
     });
-    
+
     //"radius 200" Will be printed to the console.
     evtShape.post({
         "type": "CIRCLE",
@@ -145,7 +163,7 @@ const matchCircle = (shape: Shape): shape is Circle =>
 
 {
 
-    const evtText= new Evt<"TICK" | "END">();
+    const evtText = new Evt<"TICK" | "END">();
 
     /*
      * Only handle events that are not "END".
@@ -153,8 +171,8 @@ const matchCircle = (shape: Shape): shape is Circle =>
      * Pass the event data string in lower cace to the callback.
      */
     evtText.$attach(
-        text => text !== "END" ? [ text.toLowerCase() ] : "DETACH",
-        text => console.log(text) 
+        text => text !== "END" ? [text.toLowerCase()] : "DETACH",
+        text => console.log(text)
     );
 
     //"tick" is printed to the console
@@ -172,11 +190,11 @@ console.log("============");
 
 {
 
-    const evtText= new Evt<"TICK" | "END">();
+    const evtText = new Evt<"TICK" | "END">();
 
     evtText.attach(
-        text => [ text, text === "END" ? "DETACH" : null ],
-        text => console.log(text) 
+        text => [text, text === "END" ? "DETACH" : null],
+        text => console.log(text)
     );
 
     //"TICK" is printed to the console
@@ -192,11 +210,11 @@ console.log("============");
 
 {
 
-    const evtText= new Evt<string>();
+    const evtText = new Evt<string>();
 
     evtText.$attach(
-        [ 
-            (str, prev)=> [`${prev} ${str}`], 
+        [
+            (str, prev) => [`${prev} ${str}`],
             "START: "  //<== Initial value
         ],
         sentence => console.log(sentence)
@@ -217,13 +235,13 @@ import { first } from 'rxjs/operators';
 
 //reusable custom operator
 function firstTruthy<T>(): MonoTypeOperatorFunction<T> {
-  return input$ => input$.pipe(first())
+    return input$ => input$.pipe(first())
 }
 
 const source$ = of(0, '', 'foo', 69);
 
 const result$ = source$.pipe(
-  firstTruthy()
+    firstTruthy()
 );
 
 result$.subscribe(console.log);
@@ -238,13 +256,13 @@ import { composeOperators } from "../lib";
 //Composing type guard with fλ
 {
 
-    const evtShape= new Evt<Shape>();
+    const evtShape = new Evt<Shape>();
 
 
     evtShape.$attach(
         composeOperators(
             matchCircle,
-            ({ radius })=> [ radius ]
+            ({ radius }) => [radius]
         ),
         radius => console.log(radius)
     );
@@ -264,9 +282,9 @@ import { composeOperators } from "../lib";
 
     evtSentence.$attach(
         composeOperators(
-            str=> [ str.toLowerCase().split(" ") ],
-            arr=> [ new Set(arr) ],
-            set=> [ set.size ]
+            str => [str.toLowerCase().split(" ")],
+            arr => [new Set(arr)],
+            set => [set.size]
         ),
         numberOfUniqWordInSentence => console.log(numberOfUniqWordInSentence)
     );
@@ -309,15 +327,15 @@ import { composeOperators } from "../lib";
     );
 
     //Prints "A"
-    setTimeout(()=>evtText.post("A"), 0);
+    setTimeout(() => evtText.post("A"), 0);
     //Prints nothing the previous event was handled less than 1 second ago.
-    setTimeout(()=>evtText.post("B"), 500);
+    setTimeout(() => evtText.post("B"), 500);
     //Prints nothing the previous event was handled less than 1 second ago.
-    setTimeout(()=>evtText.post("B"), 750);
+    setTimeout(() => evtText.post("B"), 750);
     //Prints "C"
-    setTimeout(()=>evtText.post("C"), 1001);
+    setTimeout(() => evtText.post("C"), 1001);
     //Prints "D"
-    setTimeout(()=>evtText.post("D"), 2500);
+    setTimeout(() => evtText.post("D"), 2500);
 
 }
 
