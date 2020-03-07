@@ -1,6 +1,6 @@
 "use strict";
 exports.__esModule = true;
-var Evt_1 = require("../Evt");
+var Evt_2 = require("../Evt");
 var typeSafety_1 = require("../../tools/typeSafety");
 var EventTargetLike_1 = require("../types/EventTargetLike");
 var merge_1 = require("./merge");
@@ -38,7 +38,7 @@ function fromEventImpl(ctx, target, eventName, options) {
         typeSafety_1.id(target);
         typeSafety_1.assert(false);
     }
-    var evt = new Evt_1.Evt();
+    var evt = new Evt_2.Evt();
     var listener = function (data) { return evt.post(data); };
     ctx === null || ctx === void 0 ? void 0 : ctx.getEvtDetach().attachOnce(function () { return proxy.off(listener, eventName, options); });
     proxy.on(listener, eventName, options);

@@ -1,6 +1,6 @@
 "use strict";
 exports.__esModule = true;
-var Evt_1 = require("./Evt");
+var Evt_2 = require("./Evt");
 var overwriteReadonlyProp_1 = require("../tools/overwriteReadonlyProp");
 ;
 /** https://garronej.github.io/ts-evt/#observert-documentation */
@@ -9,7 +9,7 @@ var Observable = /** @class */ (function () {
         if (areSame === void 0) { areSame = function (currentValue, newValue) { return currentValue === newValue; }; }
         this.areSame = areSame;
         {
-            var evtChangeDiff_1 = new Evt_1.Evt();
+            var evtChangeDiff_1 = new Evt_2.Evt();
             this.evtChangeDiff_post = function (changeDiff) { return evtChangeDiff_1.post(changeDiff); };
             this.evtChange = evtChangeDiff_1.pipe(function (_a) {
                 var newValue = _a.newValue;

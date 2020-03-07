@@ -14,7 +14,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 exports.__esModule = true;
 var CtxCore_1 = require("./CtxCore");
-var Evt_1 = require("./Evt");
+var Evt_2 = require("./Evt");
 var EvtCore_1 = require("./EvtCore");
 var Ctx = /** @class */ (function (_super) {
     __extends(Ctx, _super);
@@ -33,7 +33,7 @@ var Ctx = /** @class */ (function (_super) {
     }
     Ctx.prototype.getEvtDetach = function () {
         if (this.evtDetach === undefined) {
-            this.evtDetach = new Evt_1.Evt();
+            this.evtDetach = new Evt_2.Evt();
             EvtCore_1.setPostCount(this.evtDetach, this.evtDetachedInitialPostCount);
         }
         return this.evtDetach;

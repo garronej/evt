@@ -1,8 +1,8 @@
 "use strict";
 exports.__esModule = true;
-var Evt_1 = require("../Evt");
+var Evt_2 = require("../Evt");
 function mergeImpl(ctx, evts) {
-    var evtUnion = new Evt_1.Evt();
+    var evtUnion = new Evt_2.Evt();
     var callback = function (data) { return evtUnion.post(data); };
     evts
         .forEach(function (evt) {
