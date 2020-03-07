@@ -16,9 +16,9 @@ var __read = (this && this.__read) || function (o, n) {
     return ar;
 };
 exports.__esModule = true;
-var composeOperators_1 = require("../composeOperators");
+var compose_1 = require("../compose");
 function scan(accumulator, seed) {
-    return composeOperators_1.composeOperators([
+    return compose_1.compose([
         function (data, _a) {
             var _b = __read(_a, 3), acc = _b[1], index = _b[2];
             return [[data, accumulator(acc, data, index), index + 1]];

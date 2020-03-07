@@ -1,7 +1,7 @@
-import { composeOperators } from "../composeOperators";
+import { compose } from "../compose";
 
 export function throttleTime<T>(duration: number) {
-    return composeOperators<T, { data: T; lastClick: number; }, T>(
+    return compose<T, { data: T; lastClick: number; }, T>(
         [
             (data, { lastClick }) => {
 

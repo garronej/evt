@@ -1,8 +1,8 @@
 "use strict";
 exports.__esModule = true;
-var composeOperators_1 = require("../composeOperators");
+var compose_1 = require("../compose");
 function throttleTime(duration) {
-    return composeOperators_1.composeOperators([
+    return compose_1.compose([
         function (data, _a) {
             var lastClick = _a.lastClick;
             var now = Date.now();

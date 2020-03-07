@@ -129,7 +129,7 @@ import { fromEvent } from 'rxjs';
 
 fromEvent(document, 'click').subscribe(() => console.log('Clicked!'));
 
-/* ---------------------------------------------------------------- */
+/* ------------------------------ */
 
 import { Evt } from "ts-evt";
 
@@ -150,7 +150,7 @@ fromEvent(document, 'click')
   )
   .subscribe(count => console.log(count));
 
-/* ---------------------------------------------------------------- */
+/* ------------------------------ */
 
 import { Evt, throttleTime, scan } from "ts-evt";
 
@@ -166,8 +166,7 @@ Evt.fromEvent(document, "click")
 
 ## Transcription of examples that where not specifically designed to make ``RxJS`` looks good.
 
-Instead of providing a ton of elementary operator for the user to combine 
-
+Instead of providing a ton of elementary operator
 ``ts-evt`` provide a way to define custom operator on the fly.
 
 Introducing __fλ__ operators.  
@@ -305,7 +304,7 @@ Exposed api use typescript keywords that were added in this version.
       - [fλ Returns](#fλ-returns)
       - [Stateless fλ](#stateless-fλ)
       - [Stateful fλ](#stateful-fλ)
-    - [``composeOperator(op1, op2, ...)``](#composeoperatorop1-op2-)
+    - [``compose(op1, op2, ...)``](#composeop1-op2-)
   - [``Evt<T>``](#evtt)
     - [``evt.[$]attach*(...)`` methods](#evtattach-methods)
       - [Arguments](#arguments)
@@ -640,20 +639,19 @@ if( evtText.isHandled(text) ){
 
 [__Run example__](https://stackblitz.com/edit/ts-evt-demo-stateful?embed=1&file=index.ts)
 
-### ``composeOperator(op1, op2, ...)``
+### ``compose(op1, op2, ...)``
 
 Operators can be composed to achieve more complex behavior.
-Note that all the type are inferred on the fly.  
 
-Example composing Type guard with  fλ:
+Example composing Type guard with fλ:
 
 ```typescript
-import { Evt, composeOperators } from "ts-evt";
+import { Evt, compose } from "ts-evt";
 
 const evtShape= new Evt<Shape>();
 
 evtShape.$attach(
-    composeOperators(
+    compose(
         matchCircle,
         ({ radius })=> [ radius ]
     ),
@@ -664,15 +662,36 @@ evtShape.post({ "type": "SQUARE", "sideLength": 10 }); //Prints nothing, Square 
 evtShape.post({ "type": "CIRCLE", "radius": 12 }); //Prints "12"
 ```
 
+Example with the "on" opérator.
+
+```typescript
+import { Evt, to, compose } from "../lib";
+
+const evt = new Evt<
+    ["text", string] |
+    ["time", number]
+>();
+
+evt.$attach(
+    compose(
+        to("text"), 
+        text => [ text.toUpperCase() ]
+    )
+    text => console.log(text)
+);
+
+evt.post(["text", "hi!"]); //Prints "HI!"
+```
+
 Example composing tre fλ to count the number of different word in a sentence:
 
 ```typescript
-import { Evt, composeOperators } from "ts-evt";
+import { Evt, compose } from "ts-evt";
 
 const evtSentence = new Evt<string>();
 
 evtSentence.$attach(
-    composeOperators(
+    compose(
         str=> [ str.toLowerCase().split(" ") ],
         arr=> [ new Set(arr) ],
         set=> [ set.size ]
@@ -688,39 +707,31 @@ Using stateful fλ operators to implement ``throttleTime(duration)``,
 an operator that let through at most one event every [duration] milliseconds.
 
 ```typescript
+const throttleTime = <T>(duration: number) =>
+    compose<T, { data: T; lastClick: number; }, T>(
+        [
+            (data, { lastClick }) => 
+                 Date.now() - lastClick < duration ?
+                    null :
+                    [{ data, "lastClick": Date.now() }],
+            { "lastClick": 0, "data": null as any }
+        ],
+        ({ data }) => [data]
+    )
+    ;
 
-    const throttleTime = <T>(duration: number) =>
-        composeOperators<T, { data: T; lastClick: number; }, T>(
-            [
-                (data, { lastClick }) => {
+const evtText = new Evt<string>();
 
-                    const now = Date.now();
+evtText.$attach(
+    throttleTime(1000), //<= At most one event per second is handled.
+    text => console.log(text)
+);
 
-                    return now - lastClick < duration ?
-                        null :
-                        [{ data, "lastClick": now }]
-                        ;
-
-                },
-                { "lastClick": 0, "data": null as any }
-            ],
-            ({ data }) => [data]
-        )
-        ;
-
-    const evtText = new Evt<string>();
-
-    evtText.$attach(
-        throttleTime(1000), //<= At most one event per second is handled.
-        text => console.log(text)
-    );
-
-    setTimeout(()=>evtText.post("A"), 0); //Prints "A"
-    setTimeout(()=>evtText.post("B"), 500); //Prints nothing, the previous event was handled less than 1 second ago.
-    setTimeout(()=>evtText.post("B"), 750); //Prints nothing, the previous event was handled less than 1 second ago.
-    setTimeout(()=>evtText.post("C"), 1001); //Prints "C"
-    setTimeout(()=>evtText.post("D"), 2500); //Prints "D"
-
+setTimeout(()=>evtText.post("A"), 0); //Prints "A"
+setTimeout(()=>evtText.post("B"), 500); //Prints nothing, the previous event was handled less than 1 second ago.
+setTimeout(()=>evtText.post("B"), 750); //Prints nothing, the previous event was handled less than 1 second ago.
+setTimeout(()=>evtText.post("C"), 1001); //Prints "C"
+setTimeout(()=>evtText.post("D"), 2500); //Prints "D"
 ```
 [__Run the example__](https://stackblitz.com/edit/ts-evt-demo-compose?embed=1&file=index.ts)
 

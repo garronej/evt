@@ -1,5 +1,5 @@
 
-import { Evt, to } from "../lib";
+import { Evt, to, compose } from "../lib";
 
 //import { Operator } from "../lib/types/Operator";
 
@@ -13,6 +13,32 @@ import { Evt, to } from "../lib";
     evt.$attach(to("text"), text => console.log(text));
 
     evt.$attachOnce(to("time"), time => console.log(time));
+
+    evt.post(["text", "hi!"]);
+    evt.post(["time", 123]);
+    evt.post(["time", 1234]);
+
+}
+
+{
+
+    const evt = new Evt<
+        ["text", string] |
+        ["time", number]
+    >();
+
+    evt.$attach(
+        compose(
+            to("text"),
+            text => [text.toUpperCase()]
+        ),
+        text => console.log(text)
+    );
+
+    evt.$attachOnce(
+        to("time"),
+        time => console.log(time)
+    );
 
     evt.post(["text", "hi!"]);
     evt.post(["time", 123]);
@@ -251,8 +277,6 @@ result$.subscribe(console.log);
 
 console.log("=======");
 
-import { composeOperators } from "../lib";
-
 //Composing type guard with fλ
 {
 
@@ -260,7 +284,7 @@ import { composeOperators } from "../lib";
 
 
     evtShape.$attach(
-        composeOperators(
+        compose(
             matchCircle,
             ({ radius }) => [radius]
         ),
@@ -281,7 +305,7 @@ import { composeOperators } from "../lib";
     const evtSentence = new Evt<string>();
 
     evtSentence.$attach(
-        composeOperators(
+        compose(
             str => [str.toLowerCase().split(" ")],
             arr => [new Set(arr)],
             set => [set.size]
@@ -301,7 +325,7 @@ import { composeOperators } from "../lib";
 {
 
     const throttleTime = <T>(duration: number) =>
-        composeOperators<T, { data: T; lastClick: number; }, T>(
+        compose<T, { data: T; lastClick: number; }, T>(
             [
                 (data, { lastClick }) => {
 

@@ -155,11 +155,11 @@ type Data = {
 
         //...But you could define it yourself
         /*
-        const { composeOperators } = await import("../lib");
+        const { compose } = await import("../lib");
         const myScan = <T, U>(
             accumulator: (acc: U, value: T, index: number) => U, 
             seed: U
-        ) => composeOperators<T, [T, U, number], U>(
+        ) => compose<T, [T, U, number], U>(
             [
                 (data, [, acc, index]) =>
                     [[data, accumulator(acc, data, index), index + 1]],

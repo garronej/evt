@@ -33,7 +33,7 @@ var __spread = (this && this.__spread) || function () {
 exports.__esModule = true;
 var isCallableFunction_1 = require("../../tools/isCallableFunction");
 var typeSafety_1 = require("../../tools/typeSafety");
-var composeOperators_1 = require("./composeOperators");
+var compose_1 = require("./compose");
 exports.parseOverloadParamsFactory = (function () {
     function matchAll() { return true; }
     return function parseOverloadParamsFactory(_a) {
@@ -60,7 +60,7 @@ exports.parseOverloadParamsFactory = (function () {
                             return ops.length === 0 ?
                                 {}
                                 :
-                                    { "op": ops.length === 1 ? ops[0] : composeOperators_1.composeOperators.apply(void 0, __spread(ops)) };
+                                    { "op": ops.length === 1 ? ops[0] : compose_1.compose.apply(void 0, __spread(ops)) };
                         };
                         if (canBeMatcher(inputs[0])) {
                             //[ ...op[] ]

@@ -4,8 +4,8 @@ function __export(m) {
 }
 exports.__esModule = true;
 __export(require("./genericOperators"));
-__export(require("./composeOperators"));
+__export(require("./compose"));
 __export(require("./encapsulateOpState"));
-__export(require("./composeOperators"));
+__export(require("./compose"));
 __export(require("./invokeOperator"));
 //# sourceMappingURL=index.js.map

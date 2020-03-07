@@ -3,7 +3,7 @@ import { Handler } from "../types/Handler"
 import { Operator } from "../types/Operator"
 import { isCallableFunction } from "../../tools/isCallableFunction";
 import { id } from "../../tools/typeSafety";
-import { composeOperators } from "./composeOperators";
+import { compose } from "./compose";
 
 export const parseOverloadParamsFactory = (() => {
 
@@ -46,7 +46,7 @@ export const parseOverloadParamsFactory = (() => {
                         ops.length === 0 ?
                             {} 
                             : 
-                            { "op": ops.length === 1 ? ops[0]: composeOperators(...ops) }
+                            { "op": ops.length === 1 ? ops[0]: compose(...ops) }
                         ;
 
                     if (canBeMatcher(inputs[0])) {

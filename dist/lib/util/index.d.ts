@@ -1,5 +1,5 @@
 export * from "./genericOperators";
-export * from "./composeOperators";
+export * from "./compose";
 export * from "./encapsulateOpState";
-export * from "./composeOperators";
+export * from "./compose";
 export * from "./invokeOperator";
