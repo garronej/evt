@@ -8,8 +8,8 @@ let evtProxy= new VoidEvt();
 
 evt.attach(()=>{
 
-    if( !evtProxy.evtAttach.postCount )
-        evtProxy.evtAttach.attachOnce(()=> evtProxy.post());
+    if( !evtProxy.getEvtAttach().postCount )
+        evtProxy.getEvtAttach().attachOnce(()=> evtProxy.post());
     else
         evtProxy.post();
 

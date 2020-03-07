@@ -1,10 +1,8 @@
-import {
-    Evt
-} from "../lib/index";
+import { Evt } from "../lib";
 
 let evt = new Evt<{ init: boolean}>();
 
-evt.evtAttach.attachOnce(handler=> console.assert( !handler.once && handler.boundTo ==="foo"));
+evt.getEvtAttach().attachOnce(handler=> console.assert( !handler.once && handler.boundTo ==="foo"));
 
 
 evt.attach("foo",({ init })=> {
@@ -15,7 +13,7 @@ evt.attach("foo",({ init })=> {
 
 })
 
-evt.evtAttach.attachOnce(handler=> console.assert( handler.once && handler.prepend && !!handler.callback ));
+evt.getEvtAttach().attachOnce(handler=> console.assert( handler.once && handler.prepend && !!handler.callback ));
 
 evt.attachOncePrepend( wrap => wrap.init = true );
 

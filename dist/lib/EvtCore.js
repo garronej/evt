@@ -52,15 +52,17 @@ var overwriteReadonlyProp_1 = require("../tools/overwriteReadonlyProp");
 var invokeOperator_1 = require("./util/invokeOperator");
 var encapsulateOpState_1 = require("./util/encapsulateOpState");
 var CtxCore_1 = require("./CtxCore");
+exports.setPostCount = function (evt, value) {
+    return overwriteReadonlyProp_1.overwriteReadonlyProp(evt, "postCount", value);
+};
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 var EvtCore = /** @class */ (function () {
     function EvtCore() {
         var _this_1 = this;
-        this.incrementPostCount = (function () {
-            var setPostCount = function (value) { return overwriteReadonlyProp_1.overwriteReadonlyProp(_this_1, "postCount", value); };
-            setPostCount(0);
-            return function () { return setPostCount(_this_1.postCount + 1); };
-        })();
+        //NOTE: Not really readonly but we want to prevent user from setting the value
+        //manually and we cant user accessor because we target es3.
+        /** https://garronej.github.io/ts-evt/#evtpostcount */
+        this.postCount = 0;
         this.traceId = null;
         this.handlers = [];
         this.handlerTriggers = new Map_1.Polyfill();
@@ -195,13 +197,8 @@ var EvtCore = /** @class */ (function () {
     EvtCore.prototype.disableTrace = function () {
         this.traceId = null;
     };
-    EvtCore.prototype.onHandlerAdded = function () {
-        var _a = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            _a[_i] = arguments[_i];
-        }
-        var _b = __read(_a, 0);
-        //NOTE: Overwritten by Evt for post detach.
+    EvtCore.prototype.onHandler = function (target, handler) {
+        //NOTE: Overwritten by Evt
     };
     EvtCore.prototype.addHandler = function (propsFromArgs, propsFromMethodName) {
         var _this_1 = this;
@@ -235,7 +232,7 @@ var EvtCore = /** @class */ (function () {
                     clearTimeout(timer);
                     reject(new EvtError_1.EvtError.Detached());
                 }
-                _this_1.onHandlerDetached(handler);
+                _this_1.onHandler("evtDetach", handler);
                 return true;
             };
             _this_1.handlerTriggers.set(handler, function (opResult) {
@@ -274,7 +271,7 @@ var EvtCore = /** @class */ (function () {
         if (CtxCore_1.CtxCore.matchHandler(handler)) {
             CtxCore_1.CtxCore.__addHandlerToCtxCore(handler, this);
         }
-        this.onHandlerAdded(handler);
+        this.onHandler("evtAttach", handler);
         return handler;
     };
     EvtCore.prototype.getStatelessOp = function (op) {
@@ -314,7 +311,7 @@ var EvtCore = /** @class */ (function () {
      * */
     EvtCore.prototype.post = function (data) {
         this.trace(data);
-        this.incrementPostCount();
+        exports.setPostCount(this, this.postCount + 1);
         //NOTE: Must be before postSync.
         var postChronologyMark = this.getChronologyMark();
         var isExtracted = this.postSync(data);
@@ -444,9 +441,6 @@ var EvtCore = /** @class */ (function () {
     /** https://garronej.github.io/ts-evt/#evtgethandlers */
     EvtCore.prototype.getHandlers = function () {
         return __spread(this.handlers);
-    };
-    EvtCore.prototype.onHandlerDetached = function (handler) {
-        //NOTE: Overwritten by Evt for post detach.
     };
     /** Detach every handler bound to a given object or all handlers, return the detached handlers */
     EvtCore.prototype.detach = function (boundTo) {

@@ -12,8 +12,8 @@ let evtProxy= new Evt<T>();
 
 evt.attach(data=>{
 
-    if( !evtProxy.evtAttach.postCount ){
-        evtProxy.evtAttach.attachOnce(data,()=> evtProxy.post(data));
+    if( !evtProxy.getEvtAttach().postCount ){
+        evtProxy.getEvtAttach().attachOnce(data,()=> evtProxy.post(data));
     }else{
         evtProxy.post(data);
     }

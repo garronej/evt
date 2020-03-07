@@ -2,11 +2,11 @@ import "minimal-polyfills/dist/lib/Array.prototype.find";
 import { Bindable } from "./types/Bindable";
 import { Handler } from "./types/Handler";
 import { Operator } from "./types/Operator";
+export declare const setPostCount: (evt: EvtCore<any>, value: number) => void;
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 export declare class EvtCore<T> {
     /** https://garronej.github.io/ts-evt/#evtpostcount */
     readonly postCount: number;
-    private incrementPostCount;
     private traceId;
     private traceFormatter;
     private log;
@@ -20,7 +20,7 @@ export declare class EvtCore<T> {
     private readonly asyncHandlerChronologyExceptionRange;
     private readonly getChronologyMark;
     private readonly statelessByStatefulOp;
-    protected onHandlerAdded(...[]: [Handler<T, any>]): void;
+    protected onHandler(target: "evtAttach" | "evtDetach", handler: Handler<T, any>): void;
     private addHandler;
     getStatelessOp(op: Operator<T, any>): Operator.Stateless<T, any>;
     private trace;
@@ -56,7 +56,6 @@ export declare class EvtCore<T> {
     isHandled(data: T): boolean;
     /** https://garronej.github.io/ts-evt/#evtgethandlers */
     getHandlers(): Handler<T, any>[];
-    protected onHandlerDetached(handler: Handler<T, any>): void;
     /** Detach every handler bound to a given object or all handlers, return the detached handlers */
     detach(boundTo?: Bindable): Handler<T, any>[];
 }

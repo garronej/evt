@@ -40,7 +40,7 @@ function fromEventImpl(ctx, target, eventName, options) {
     }
     var evt = new Evt_1.Evt();
     var listener = function (data) { return evt.post(data); };
-    ctx === null || ctx === void 0 ? void 0 : ctx.evtDetached.attachOnce(function () { return proxy.off(listener, eventName, options); });
+    ctx === null || ctx === void 0 ? void 0 : ctx.getEvtDetach().attachOnce(function () { return proxy.off(listener, eventName, options); });
     proxy.on(listener, eventName, options);
     return evt;
 }

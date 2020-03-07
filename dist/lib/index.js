@@ -4,6 +4,7 @@ function __export(m) {
 }
 exports.__esModule = true;
 __export(require("./Evt"));
+__export(require("./VoidEvt"));
 __export(require("./types"));
 __export(require("./Observable"));
 __export(require("./util"));

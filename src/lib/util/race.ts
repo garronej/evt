@@ -6,7 +6,7 @@ import { id } from "../../tools/typeSafety";
 import { Deferred } from "../../tools/Deferred";
 import { invokeOperator } from "./invokeOperator";
 import { Operator } from "../types/Operator";
-import { parseOverloadParamsFactory } from "../EvtOverloaded";
+import { parseOverloadParamsFactory } from "./parseOverloadParams";
 
 export type OneShotEvt<T> = OneShot<Evt<T>>;
 
@@ -90,7 +90,7 @@ const raceUnsafe = (() => {
                 raceContext.evtRaceFinished.attachOnce(() => evtWeak = undefined);
 
                 const post = (raceCoupleResult: UnpackEvt<typeof evt>) => {
-                    evt.evtAttach.detach(raceContext);
+                    evt.getEvtAttach().detach(raceContext);
                     evt.post(raceCoupleResult);
                 };
 
@@ -101,7 +101,7 @@ const raceUnsafe = (() => {
                         i
                     };
 
-                    evt.evtAttach.attach(
+                    evt.getEvtAttach().attach(
                         raceContext,
                         ({ op }) => {
 
@@ -134,7 +134,7 @@ const raceUnsafe = (() => {
                             return;
                         }
 
-                        evtWeak.evtAttach.attach(
+                        evtWeak.getEvtAttach().attach(
                             raceContext,
                             ({ op }) => {
 
@@ -160,7 +160,7 @@ const raceUnsafe = (() => {
                         i
                     });
 
-                    evt.evtAttach.attach(
+                    evt.getEvtAttach().attach(
                         raceContext,
                         ({ op }) =>
                             racer.attachOnce(
@@ -204,7 +204,7 @@ const raceUnsafe = (() => {
 
             const evt = new Evt<RaceRecResult<RacerUnion, T>>();
             const post = (raceRecResult: UnpackEvt<typeof evt>) => {
-                evt.evtAttach.detach(raceContext);
+                evt.getEvtAttach().detach(raceContext);
                 evt.post(raceRecResult);
             };
 
@@ -219,7 +219,7 @@ const raceUnsafe = (() => {
 
                 const evtRaceCoupleResult = raceCouple<T, never>(raceContext, racerLast, prNever);
 
-                evt.evtAttach.attach(
+                evt.getEvtAttach().attach(
                     raceContext,
                     ({ op }) =>
                         evtRaceCoupleResult.attachOnce(
@@ -259,7 +259,7 @@ const raceUnsafe = (() => {
                     return raceCoupleResult.data;
                 }
 
-                evtData.evtAttach.attach(
+                evtData.getEvtAttach().attach(
                     raceContext,
                     ({ op }) =>
                         evtRaceCoupleResult.attachOnce(
@@ -268,7 +268,7 @@ const raceUnsafe = (() => {
                                 return !!op(toData(raceCoupleResult));
                             },
                             raceCoupleResult => {
-                                evtData.evtAttach.detach(raceContext);
+                                evtData.getEvtAttach().detach(raceContext);
                                 evtData.post(toData(raceCoupleResult));
                             }
                         )
@@ -298,7 +298,7 @@ const raceUnsafe = (() => {
                         raceRecResult.i
                 });
 
-                evt.evtAttach.attach(
+                evt.getEvtAttach().attach(
                     raceContext,
                     ({ op }) =>
                         evtRaceRecResult.attachOnce(
@@ -366,7 +366,7 @@ const raceUnsafe = (() => {
 
 
 
-        evt.evtAttach.attach(
+        evt.getEvtAttach().attach(
             raceContext,
             ({ op, promise }) => {
 
@@ -387,7 +387,7 @@ const raceUnsafe = (() => {
                     },
                     raceContext,
                     raceRecResult => {
-                        evt.evtAttach.detach(raceContext);
+                        evt.getEvtAttach().detach(raceContext);
                         detachAllEvtRacers();
                         evt.post(toRaceResult(raceRecResult));
                     }

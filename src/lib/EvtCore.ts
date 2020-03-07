@@ -11,25 +11,16 @@ import { invokeOperator } from "./util/invokeOperator";
 import { encapsulateOpState } from "./util/encapsulateOpState";
 import { CtxCore } from "./CtxCore";
 
+export const setPostCount = (evt: EvtCore<any>, value: number) => 
+    overwriteReadonlyProp(evt, "postCount", value);
+
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 export class EvtCore<T> {
 
     //NOTE: Not really readonly but we want to prevent user from setting the value
     //manually and we cant user accessor because we target es3.
     /** https://garronej.github.io/ts-evt/#evtpostcount */
-    public readonly postCount!: number;
-
-    private incrementPostCount = (() => {
-
-        const setPostCount = (value: number) => overwriteReadonlyProp(this, "postCount", value);
-
-        setPostCount(0);
-
-        return () => setPostCount(this.postCount + 1);
-
-    })();
-
-
+    public readonly postCount: number=0;
 
     private traceId: string | null = null;
     private traceFormatter!: (data: T) => string;
@@ -103,8 +94,12 @@ export class EvtCore<T> {
         Operator.fλ.Stateless<T, any>
     >();
 
-    protected onHandlerAdded(...[]: [Handler<T, any>]): void {
-        //NOTE: Overwritten by Evt for post detach.
+
+    protected onHandler(
+        target: "evtAttach" | "evtDetach", 
+        handler: Handler<T, any>
+    ): void {
+        //NOTE: Overwritten by Evt
     }
 
     private addHandler<U>(
@@ -181,7 +176,7 @@ export class EvtCore<T> {
 
                     }
 
-                    this.onHandlerDetached(handler);
+                    this.onHandler("evtDetach", handler);
 
                     return true;
 
@@ -250,7 +245,7 @@ export class EvtCore<T> {
             CtxCore.__addHandlerToCtxCore(handler, this);
         }
 
-        this.onHandlerAdded(handler);
+        this.onHandler("evtAttach",handler);
 
         return handler;
 
@@ -309,8 +304,8 @@ export class EvtCore<T> {
     public post(data: T): number {
 
         this.trace(data);
-
-        this.incrementPostCount();
+        
+        setPostCount(this, this.postCount+1);
 
         //NOTE: Must be before postSync.
         const postChronologyMark = this.getChronologyMark();
@@ -626,10 +621,6 @@ export class EvtCore<T> {
     /** https://garronej.github.io/ts-evt/#evtgethandlers */
     public getHandlers(): Handler<T, any>[] {
         return [...this.handlers];
-    }
-
-    protected onHandlerDetached(handler: Handler<T, any>): void {
-        //NOTE: Overwritten by Evt for post detach.
     }
 
     /** Detach every handler bound to a given object or all handlers, return the detached handlers */

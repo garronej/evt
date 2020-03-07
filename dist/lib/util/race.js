@@ -38,7 +38,7 @@ var typeSafety_2 = require("../../tools/typeSafety");
 var Deferred_1 = require("../../tools/Deferred");
 var invokeOperator_1 = require("./invokeOperator");
 var Operator_1 = require("../types/Operator");
-var EvtOverloaded_2 = require("../EvtOverloaded");
+var parseOverloadParams_1 = require("./parseOverloadParams");
 var prNever = new Promise(function () { });
 var matchOnceEvt = function (o) {
     typeSafety_1.assert(typeSafety_1.typeGuard.dry(o));
@@ -63,7 +63,7 @@ var raceUnsafe = (function () {
                 var evtWeak = evt;
                 raceContext.evtRaceFinished.attachOnce(function () { return evtWeak = undefined; });
                 var post = function (raceCoupleResult) {
-                    evt.evtAttach.detach(raceContext);
+                    evt.getEvtAttach().detach(raceContext);
                     evt.post(raceCoupleResult);
                 };
                 if (matchDirectValue(racer)) {
@@ -71,7 +71,7 @@ var raceUnsafe = (function () {
                         "data": racer,
                         i: i
                     };
-                    evt.evtAttach.attach(raceContext, function (_a) {
+                    evt.getEvtAttach().attach(raceContext, function (_a) {
                         var op = _a.op;
                         typeSafety_1.assert(!Operator_1.Operator.fλ.Stateful.match(op));
                         if (!op(raceCoupleResult_1)) {
@@ -93,7 +93,7 @@ var raceUnsafe = (function () {
                             post(raceCoupleResult);
                             return;
                         }
-                        evtWeak.evtAttach.attach(raceContext, function (_a) {
+                        evtWeak.getEvtAttach().attach(raceContext, function (_a) {
                             var op = _a.op;
                             typeSafety_1.assert(!Operator_1.Operator.fλ.Stateful.match(op));
                             if (!op(raceCoupleResult)) {
@@ -108,7 +108,7 @@ var raceUnsafe = (function () {
                         data: data,
                         i: i
                     }); };
-                    evt.evtAttach.attach(raceContext, function (_a) {
+                    evt.getEvtAttach().attach(raceContext, function (_a) {
                         var op = _a.op;
                         return racer.attachOnce(function (data) {
                             typeSafety_1.assert(!Operator_1.Operator.fλ.Stateful.match(op));
@@ -127,13 +127,13 @@ var raceUnsafe = (function () {
         return function raceUnsafeRec(raceContext, racersRest, racerLast) {
             var evt = new index_1.Evt();
             var post = function (raceRecResult) {
-                evt.evtAttach.detach(raceContext);
+                evt.getEvtAttach().detach(raceContext);
                 evt.post(raceRecResult);
             };
             if (racersRest.length === 0) {
                 var toRaceRecResult_1 = function (raceCoupleResult) { return (__assign(__assign({}, raceCoupleResult), { "i": null })); };
                 var evtRaceCoupleResult_1 = raceCouple(raceContext, racerLast, prNever);
-                evt.evtAttach.attach(raceContext, function (_a) {
+                evt.getEvtAttach().attach(raceContext, function (_a) {
                     var op = _a.op;
                     return evtRaceCoupleResult_1.attachOnce(function (raceCoupleResult) {
                         typeSafety_1.assert(!Operator_1.Operator.fλ.Stateful.match(op));
@@ -152,13 +152,13 @@ var raceUnsafe = (function () {
                     raceCoupleResult_i = raceCoupleResult.i;
                     return raceCoupleResult.data;
                 };
-                evtData.evtAttach.attach(raceContext, function (_a) {
+                evtData.getEvtAttach().attach(raceContext, function (_a) {
                     var op = _a.op;
                     return evtRaceCoupleResult_2.attachOnce(function (raceCoupleResult) {
                         typeSafety_1.assert(!Operator_1.Operator.fλ.Stateful.match(op));
                         return !!op(toData_1(raceCoupleResult));
                     }, function (raceCoupleResult) {
-                        evtData.evtAttach.detach(raceContext);
+                        evtData.getEvtAttach().detach(raceContext);
                         evtData.post(toData_1(raceCoupleResult));
                     });
                 });
@@ -175,7 +175,7 @@ var raceUnsafe = (function () {
                         :
                             raceRecResult.i
                 }); };
-                evt.evtAttach.attach(raceContext, function (_a) {
+                evt.getEvtAttach().attach(raceContext, function (_a) {
                     var op = _a.op;
                     return evtRaceRecResult_1.attachOnce(function (raceRecResult) {
                         typeSafety_1.assert(!Operator_1.Operator.fλ.Stateful.match(op));
@@ -205,7 +205,7 @@ var raceUnsafe = (function () {
                 racer.detach(raceContext);
             });
         };
-        evt.evtAttach.attach(raceContext, function (_a) {
+        evt.getEvtAttach().attach(raceContext, function (_a) {
             var op = _a.op, promise = _a.promise;
             promise["catch"](function () {
                 if (evt.getHandlers().length !== 0) {
@@ -217,7 +217,7 @@ var raceUnsafe = (function () {
                 typeSafety_1.assert(!Operator_1.Operator.fλ.Stateful.match(op));
                 return !!op(toRaceResult(raceRecResult));
             }, raceContext, function (raceRecResult) {
-                evt.evtAttach.detach(raceContext);
+                evt.getEvtAttach().detach(raceContext);
                 detachAllEvtRacers();
                 evt.post(toRaceResult(raceRecResult));
             });
@@ -238,7 +238,7 @@ function wrapRejection(promise) {
     }); });
 }
 function generateProxyFunctionFactory(oneShotEvt) {
-    var parseOverloadParams = EvtOverloaded_2.parseOverloadParamsFactory({ "defaultBoundTo": oneShotEvt });
+    var parseOverloadParams = parseOverloadParams_1.parseOverloadParamsFactory({ "defaultBoundTo": oneShotEvt });
     return function generateProxyFunction(methodName) {
         var methodBackup = typeSafety_2.id(oneShotEvt[methodName]).bind(oneShotEvt);
         Object.defineProperty(oneShotEvt, methodName, {

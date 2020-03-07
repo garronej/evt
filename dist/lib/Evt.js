@@ -59,29 +59,63 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
+};
 exports.__esModule = true;
-var EvtOverloaded_2 = require("./EvtOverloaded");
+var EvtCore_1 = require("./EvtCore");
 var Ctx_1 = require("./Ctx");
 var invokeOperator_1 = require("./util/invokeOperator");
 var merge_1 = require("./util/merge");
 var fromEvent_1 = require("./util/fromEvent");
+var parseOverloadParams_1 = require("./util/parseOverloadParams");
 var Evt = /** @class */ (function (_super) {
     __extends(Evt, _super);
     function Evt() {
         var _this_1 = _super !== null && _super.apply(this, arguments) || this;
-        /** https://garronej.github.io/ts-evt/#evtevtattach */
-        _this_1.evtAttach = new EvtOverloaded_2.EvtOverloaded();
-        _this_1.evtDetach = new EvtOverloaded_2.EvtOverloaded();
+        _this_1.evtAttach = undefined;
+        _this_1.evtDetach = undefined;
+        _this_1.initialPostCount = {
+            "evtAttach": 0,
+            "evtDetach": 0
+        };
+        _this_1.__parseOverloadParams = parseOverloadParams_1.parseOverloadParamsFactory({ "defaultBoundTo": _this_1 });
         return _this_1;
     }
     Evt.newCtx = function () { return new Ctx_1.Ctx(); };
-    Evt.prototype.onHandlerAdded = function (handler) {
-        _super.prototype.onHandlerDetached.call(this, handler);
-        this.evtAttach.post(handler);
+    Evt.prototype.__getEvtHandler = function (target) {
+        if (this[target] === undefined) {
+            this[target] = new Evt();
+            EvtCore_1.setPostCount(this[target], this.initialPostCount[target]);
+        }
+        return this[target];
     };
-    Evt.prototype.onHandlerDetached = function (handler) {
-        _super.prototype.onHandlerDetached.call(this, handler);
-        this.evtDetach.post(handler);
+    Evt.prototype.getEvtAttach = function () { return this.__getEvtHandler("evtAttach"); };
+    Evt.prototype.getEvtDetach = function () { return this.__getEvtHandler("evtDetach"); };
+    Evt.prototype.onHandler = function (target, handler) {
+        _super.prototype.onHandler.call(this, target, handler);
+        if (this[target] === undefined) {
+            this.initialPostCount[target]++;
+            return;
+        }
+        this[target].post(handler);
     };
     Evt.prototype.postAsyncOnceHandled = function (data) {
         return __awaiter(this, void 0, void 0, function () {
@@ -106,7 +140,7 @@ var Evt = /** @class */ (function (_super) {
         var resolvePr;
         var pr = new Promise(function (resolve) { return resolvePr = resolve; });
         var resolvePrAndPost = function (data) { return resolvePr(_this_1.post(data)); };
-        this.evtAttach.attachOnce(function (_a) {
+        this.getEvtAttach().attachOnce(function (_a) {
             var op = _a.op;
             return !!invokeOperator_1.invokeOperator(_this_1.getStatelessOp(op), data);
         }, function () { return isSync ?
@@ -120,38 +154,103 @@ var Evt = /** @class */ (function (_super) {
             inputs[_i] = arguments[_i];
         }
         var evtDelegate = new Evt();
-        this.__attach(__assign(__assign({}, this.parseOverloadParams(inputs, "pipe")), { "callback": function (transformedData) { return evtDelegate.post(transformedData); } }));
+        this.__attach(__assign(__assign({}, this.__parseOverloadParams(inputs, "pipe")), { "callback": function (transformedData) { return evtDelegate.post(transformedData); } }));
         return evtDelegate;
+    };
+    Evt.prototype.waitFor = function () {
+        var inputs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            inputs[_i] = arguments[_i];
+        }
+        return _super.prototype.__waitFor.call(this, this.__parseOverloadParams(inputs, "waitFor"));
+    };
+    Evt.prototype.$attach = function () {
+        var inputs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            inputs[_i] = arguments[_i];
+        }
+        return this.attach.apply(this, __spread(inputs));
+    };
+    Evt.prototype.attach = function () {
+        var inputs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            inputs[_i] = arguments[_i];
+        }
+        return this.__attach(this.__parseOverloadParams(inputs, "attach*"));
+    };
+    Evt.prototype.$attachOnce = function () {
+        var inputs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            inputs[_i] = arguments[_i];
+        }
+        return this.attachOnce.apply(this, __spread(inputs));
+    };
+    Evt.prototype.attachOnce = function () {
+        var inputs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            inputs[_i] = arguments[_i];
+        }
+        return this.__attachOnce(this.__parseOverloadParams(inputs, "attach*"));
+    };
+    Evt.prototype.$attachExtract = function () {
+        var inputs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            inputs[_i] = arguments[_i];
+        }
+        return this.attachOnceExtract.apply(this, __spread(inputs));
+    };
+    Evt.prototype.attachExtract = function () {
+        var inputs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            inputs[_i] = arguments[_i];
+        }
+        return this.__attachExtract(this.__parseOverloadParams(inputs, "attach*"));
+    };
+    Evt.prototype.$attachPrepend = function () {
+        var inputs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            inputs[_i] = arguments[_i];
+        }
+        return this.attachPrepend.apply(this, __spread(inputs));
+    };
+    Evt.prototype.attachPrepend = function () {
+        var inputs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            inputs[_i] = arguments[_i];
+        }
+        return this.__attachPrepend(this.__parseOverloadParams(inputs, "attach*"));
+    };
+    Evt.prototype.$attachOncePrepend = function () {
+        var inputs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            inputs[_i] = arguments[_i];
+        }
+        return this.attachOncePrepend.apply(this, __spread(inputs));
+    };
+    Evt.prototype.attachOncePrepend = function () {
+        var inputs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            inputs[_i] = arguments[_i];
+        }
+        return this.__attachOncePrepend(this.__parseOverloadParams(inputs, "attach*"));
+    };
+    Evt.prototype.$attachOnceExtract = function () {
+        var inputs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            inputs[_i] = arguments[_i];
+        }
+        return this.attachOnceExtract.apply(this, __spread(inputs));
+    };
+    Evt.prototype.attachOnceExtract = function () {
+        var inputs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            inputs[_i] = arguments[_i];
+        }
+        return this.__attachOnceExtract(this.__parseOverloadParams(inputs, "attach*"));
     };
     Evt.merge = merge_1.merge;
     Evt.fromEvent = fromEvent_1.fromEvent;
     return Evt;
-}(EvtOverloaded_2.EvtOverloaded));
+}(EvtCore_1.EvtCore));
 exports.Evt = Evt;
-/** https://garronej.github.io/ts-evt/#voidevt */
-var VoidEvt = /** @class */ (function (_super) {
-    __extends(VoidEvt, _super);
-    function VoidEvt() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    VoidEvt.prototype.post = function () {
-        return _super.prototype.post.call(this, undefined);
-    };
-    VoidEvt.prototype.postAsyncOnceHandled = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, _super.prototype.postAsyncOnceHandled.call(this, undefined)];
-            });
-        });
-    };
-    VoidEvt.prototype.postSyncOnceHandled = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, _super.prototype.postSyncOnceHandled.call(this, undefined)];
-            });
-        });
-    };
-    return VoidEvt;
-}(Evt));
-exports.VoidEvt = VoidEvt;
 //# sourceMappingURL=Evt.js.map

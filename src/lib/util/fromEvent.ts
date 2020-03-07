@@ -70,7 +70,7 @@ function fromEventImpl<T>(
 
     const listener = (data: T) => evt.post(data);
 
-    ctx?.evtDetached.attachOnce(
+    ctx?.getEvtDetach().attachOnce(
         () => proxy.off(
             listener,
             eventName!,

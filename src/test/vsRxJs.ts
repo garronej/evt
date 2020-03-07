@@ -146,11 +146,11 @@ type Data = {
 
         const evtData = new Evt<Data>();
 
-        //Operators does not have to be anonymous...
+        //Operators does not HAVE to be anonymous...
         const takeWhileNot = (stopStr: string): import("../lib").Operator.fλ<string, string> =>
             text => text !== stopStr ? [text] : "DETACH";
 
-        //...Some standard ones are provided in utils...
+        //...Some standard ones are provided...
         const { scan } = await import("../lib");
 
         //...But you could define it yourself

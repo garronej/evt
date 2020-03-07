@@ -15,15 +15,29 @@ var __extends = (this && this.__extends) || (function () {
 exports.__esModule = true;
 var CtxCore_1 = require("./CtxCore");
 var Evt_1 = require("./Evt");
+var EvtCore_1 = require("./EvtCore");
 var Ctx = /** @class */ (function (_super) {
     __extends(Ctx, _super);
     function Ctx() {
         var _this_1 = _super.call(this) || this;
-        var evtDetached = new Evt_1.Evt();
-        _this_1.onDetach = function (handlers) { return evtDetached.post(handlers); };
-        _this_1.evtDetached = evtDetached;
+        _this_1.evtDetachedInitialPostCount = 0;
+        _this_1.evtDetach = undefined;
+        _this_1.onDetach = function (handlers) {
+            if (_this_1.evtDetach === undefined) {
+                _this_1.evtDetachedInitialPostCount++;
+                return;
+            }
+            _this_1.evtDetach.post(handlers);
+        };
         return _this_1;
     }
+    Ctx.prototype.getEvtDetach = function () {
+        if (this.evtDetach === undefined) {
+            this.evtDetach = new Evt_1.Evt();
+            EvtCore_1.setPostCount(this.evtDetach, this.evtDetachedInitialPostCount);
+        }
+        return this.evtDetach;
+    };
     Ctx.__CtxForEvtBrand = true;
     return Ctx;
 }(CtxCore_1.CtxCore));
