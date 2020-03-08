@@ -14,16 +14,19 @@
 
 ---
 
-``ts-evt`` is intended to be a replacement for Node's ``events`` and ``RxJS``.  
+__WARNING__: If you happen to read this message note that the doc is in a temporary state as it is being migrated to git book. Everything will be fixed soon. ( Sun 8 march 2020 )
+
+``ts-evt`` is intended to be a replacement for Node's ``events`` and alternative to ``RxJS``.  
 It enable and encourage __functional programming__ and makes heavy use of __typescript__'s 
 type inference features to provide __type safety__ while keeping things __concise and elegant__ 🍸.
 
+TS-EVT run everywhere Node, __Deno__(*soon), React Native and the web browser of your grand mother.
 
  <b>Browserify friendly:</b>
 
 - No polyfills needed ✅  
 - Transpiled down to ES3 ✅  
-- Light-weight compared to RxJS, no third party dependencies ✅   
+- Light-weight, no third party dependencies ✅   
 
 ...Will be cross compatible with __Deno__ very soon.
 
@@ -105,7 +108,7 @@ const evt = new Evt<
     [ "time",  number ]
 >();
 
-evt.$attach(to("text") text => console.log(text));
+evt.$attach(to("text"), text => console.log(text));
 
 evt.$attachOnce(to("time"), time => console.log(time));
 
@@ -139,16 +142,17 @@ Evt.fromEvent(document, "click").attach(()=> console.log("Clicked!"));
 ### Values
 
 ```typescript
-import { fromEvent } from 'rxjs';
-import { throttleTime, map, scan } from 'rxjs/operators';
+import { fromEvent } from "rxjs";
+import { throttleTime, map, scan } from "rxjs/operators"j;
 
-fromEvent(document, 'click')
+fromEvent(document, "click")
   .pipe(
-    throttleTime(1000),
-    map(event => event.clientX),
-    scan((count, clientX) => count + clientX, 0)
+      throttleTime(1000),
+      map(event => event.clientX),
+      scan((count, clientX) => count + clientX, 0)
   )
-  .subscribe(count => console.log(count));
+  .subscribe(count => console.log(count))
+  ;
 
 /* ------------------------------ */
 
