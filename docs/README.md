@@ -256,7 +256,9 @@ evtData.$attach(
 
  [**Run the examples**](https://stackblitz.com/edit/ts-evt-vs-rxjs?embed=1&file=index.ts)  
   
- ![](https://user-images.githubusercontent.com/6702424/76122716-01cd1600-5ff7-11ea-8751-daf7b689e1b7.gif)
+ 
+
+![](https://user-images.githubusercontent.com/6702424/76122716-01cd1600-5ff7-11ea-8751-daf7b689e1b7.gif)
 
 ## Dependency requirement
 
