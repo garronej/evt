@@ -1,1 +1,2 @@
-docs/introduction.md
+# Initial page
+
