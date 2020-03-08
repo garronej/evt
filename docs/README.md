@@ -1,68 +1,58 @@
+# Introduction
 
-<p align="center">
-    <img src="https://user-images.githubusercontent.com/6702424/74597663-160a9c80-5063-11ea-9542-4437de0b7c66.png">  
-</p>
-<p align="center">
-    💧<i>Type safe replacement for Node's EventEmitter embracing functional programming</i>💧
-    <br>
-    <br>
-    <img src="https://img.shields.io/bundlephobia/min/ts-evt">
-    <img src="https://img.shields.io/bundlephobia/minzip/ts-evt">
-    <img src="https://img.shields.io/david/garronej/ts-evt">
-    <img src="https://img.shields.io/npm/l/ts-evt">
-</p>
+![](https://user-images.githubusercontent.com/6702424/74597663-160a9c80-5063-11ea-9542-4437de0b7c66.png)
 
----
+ 💧Type safe replacement for Node's EventEmitter embracing functional programming💧  
+  
+ ![](https://img.shields.io/bundlephobia/min/ts-evt) ![](https://img.shields.io/bundlephobia/minzip/ts-evt) ![](https://img.shields.io/david/garronej/ts-evt) ![](https://img.shields.io/npm/l/ts-evt)
 
-__WARNING__: If you happen to read this message note that the doc is in a temporary state as it is being migrated to git book. Everything will be fixed soon. ( Sun 8 march 2020 )
+**WARNING**: If you happen to read this message note that the doc is in a temporary state as it is being migrated to git book. Everything will be fixed soon. \( Sun 8 march 2020 \)
 
-``ts-evt`` is intended to be a replacement for Node's ``events`` and alternative to ``RxJS``.  
-It enable and encourage __functional programming__ and makes heavy use of __typescript__'s 
-type inference features to provide __type safety__ while keeping things __concise and elegant__ 🍸.
+`ts-evt` is intended to be a replacement for Node's `events` and alternative to `RxJS`.  
+It enable and encourage **functional programming** and makes heavy use of **typescript**'s type inference features to provide **type safety** while keeping things **concise and elegant** 🍸.
 
-TS-EVT run everywhere Node, __Deno__(*soon), React Native and the web browser of your grand mother.
+TS-EVT run everywhere Node, **Deno**\(\*soon\), React Native and the web browser of your grand mother.
 
- <b>Browserify friendly:</b>
+**Browserify friendly:**
 
-- No polyfills needed ✅  
-- Transpiled down to ES3 ✅  
-- Light-weight, no third party dependencies ✅   
+* No polyfills needed ✅  
+* Transpiled down to ES3 ✅  
+* Light-weight, no third party dependencies ✅   
 
-...Will be cross compatible with __Deno__ very soon.
+...Will be cross compatible with **Deno** very soon.
 
-# Motivation
+## Motivation
 
-There is a lot of things that can't easily be done with ``EventEmitter``: 
-- Enforcing type safety.
-- Removing a particular listener when the callback is an anonymous function.
-- Adding a one-time listener for the next event that meet a condition.
-- Waiting (via a Promise) for one thing or another to happen.  
-  <i>Example: waiting at most one second for the next message, stop waiting if the socket disconnects.</i>
+There is a lot of things that can't easily be done with `EventEmitter`:
 
-``RxJS`` have it's issues as well:
-- When chaining operators the type is often lost along the way as
+* Enforcing type safety.
+* Removing a particular listener when the callback is an anonymous function.
+* Adding a one-time listener for the next event that meet a condition.
+* Waiting \(via a Promise\) for one thing or another to happen.  
+
+  Example: waiting at most one second for the next message, stop waiting if the socket disconnects.
+
+`RxJS` have it's issues as well:
+
+* When chaining operators the type is often lost along the way as
+
   Typescript struggle to keep track of the mutation / filtering being applied
+
   to the event flow.
-- Combining the right abstractions/operators can be challenging, even for  seemingly straights forward control flows.
 
+* Combining the right abstractions/operators can be challenging, even for  seemingly straights forward control flows.
 
-# Try it
+## Try it
 
-<p align="center">
-    <img src="https://ts-evt.dev/assets/img/try-in-browser.gif">  
-</p>
+![](https://ts-evt.dev/assets/img/try-in-browser.gif)
 
-<p align="center">
-<b><a href="https://stackblitz.com/edit/ts-evt-demo-hello-world?embed=1&file=index.ts">Run hello world</a></b>
-</p>
+ [**Run hello world**](https://stackblitz.com/edit/ts-evt-demo-hello-world?embed=1&file=index.ts)
 
-# Side by side comparison with ``EventEmitter``
+## Side by side comparison with `EventEmitter`
 
+### Reference example
 
-
-## Reference example
-
-````typescript
+```typescript
 import { EventEmitter } from "events";
 
 const eventEmitter = new EventEmitter();
@@ -73,11 +63,11 @@ eventEmitter.once("time", time => console.log(time));
 eventEmitter.emit("text", "hi!"); //Prints "hi!"
 eventEmitter.emit("time", 123); //Prints "123"
 eventEmitter.emit("time", 1234); //Prints nothing ( once )
-````
+```
 
-## Equivalent, the recommended approach:
+### Equivalent, the recommended approach:
 
-In ``ts-evt`` the recommended approach is to have a different ``Evt`` for each event type.
+In `ts-evt` the recommended approach is to have a different `Evt` for each event type.
 
 ```typescript
 import { Evt } from "ts-evt";
@@ -93,12 +83,12 @@ evtTime.post(123);
 evtTime.post(1234);
 ```
 
-## Equivalent, traditional approach:
+### Equivalent, traditional approach:
 
-But the traditional approach of gathering all the events in a single bus is still an option.  
+But the traditional approach of gathering all the events in a single bus is still an option.
 
 ```typescript
-import { evt, to } from "ts-evt";
+import { evt, to } from "ts-evt";
 
 const evt = new Evt<
     [ "text",  string ] | 
@@ -114,15 +104,15 @@ evt.post(["time", 123]);
 evt.post(["time", 1234]);
 ```
 
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-compared-with-events?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-compared-with-events?embed=1&file=index.ts)
 
-# Side by side comparison with ``RxJS``
+## Side by side comparison with `RxJS`
 
-## Transcription of the *"get started"* examples from the ``RxJS`` documentation.
+### Transcription of the _"get started"_ examples from the `RxJS` documentation.
 
 You will have to put on you 👓 to notice any difference...
 
-### First example
+#### First example
 
 ```typescript
 import { fromEvent } from 'rxjs';
@@ -136,7 +126,7 @@ import { Evt } from "ts-evt";
 Evt.fromEvent(document, "click").attach(()=> console.log("Clicked!"));
 ```
 
-### Values
+#### Values
 
 ```typescript
 import { fromEvent } from "rxjs";
@@ -158,28 +148,27 @@ import { Evt, throttleTime, scan } from "ts-evt";
 Evt.fromEvent(document, "click")
     .pipe(
         throttleTime(1000),
-        event => [ event.clientX ],
+        event => [ event.clientX ],
         scan((count, clientX) => count + clientX, 0)
     )
     .attach(count => console.log(count))
     ;
 ```
 
-## Transcription of examples that where not specifically designed to make ``RxJS`` looks good.
+### Transcription of examples that where not specifically designed to make `RxJS` looks good.
 
-Instead of providing a ton of elementary operator
-``ts-evt`` provide a way to define custom operator on the fly.
+Instead of providing a ton of elementary operator `ts-evt` provide a way to define custom operator on the fly.
 
-Introducing __fλ__ operators.  
-__fλ__ are functions that are meant to be __anonymous__. 
-They are designed in such a way that make them:  
-+ Easy to write.  
-+ Easy to reason about for __humans__, they are self explanatory.
-+ Easy to reason about for the compiler, no type annotation are needed TypeScript can infer what they are doing.
-+ Very concise, a single __fλ__ operator can replace the combination of multiple elementary operators such as ``map()``, ``filter()``, ``takeWhile()``, ``scan()``...
-+ Modular, if a single operator is not enough they can be composed to achieve more complex behavior.
+Introducing **fλ** operators.  
+**fλ** are functions that are meant to be **anonymous**. They are designed in such a way that make them:
 
-### Waiting for the next event of a certain type
+* Easy to write.  
+* Easy to reason about for **humans**, they are self explanatory.
+* Easy to reason about for the compiler, no type annotation are needed TypeScript can infer what they are doing.
+* Very concise, a single **fλ** operator can replace the combination of multiple elementary operators such as `map()`, `filter()`, `takeWhile()`, `scan()`...
+* Modular, if a single operator is not enough they can be composed to achieve more complex behavior.
+
+#### Waiting for the next event of a certain type
 
 Consider that we have an emitter for this data type:
 
@@ -193,11 +182,11 @@ type Data = {
 };
 ```
 
-We want to get a ``Promise<string>`` that resolves with the next text event.
+We want to get a `Promise<string>` that resolves with the next text event.
 
 ```typescript
 import { Subject } from "rxjs";
-import { filter, first, map } from "rxjs/operators";
+import { filter, first, map } from "rxjs/operators";
 
 const subject = new Subject<Data>();
 
@@ -224,13 +213,13 @@ const prText = evt.waitFor(
 );
 ```
 
-## Example involving states encapsulation
+### Example involving states encapsulation
 
-We want to accumulate all texts event until ``"STOP"``.
+We want to accumulate all texts event until `"STOP"`.
 
 ```typescript
 import { Subject } from "rxjs";
-import { map, filter, takeWhile, scan } from "rxjs/operators";
+import { map, filter, takeWhile, scan } from "rxjs/operators";
 
 const subject = new Subject<Data>();
 
@@ -265,141 +254,146 @@ evtData.$attach(
 );
 ```
 
-<p align="center">
-<b><a href="https://stackblitz.com/edit/ts-evt-vs-rxjs?embed=1&file=index.ts">Run the examples</a></b>
-</br>
-</br>
-    <img src="https://user-images.githubusercontent.com/6702424/76122716-01cd1600-5ff7-11ea-8751-daf7b689e1b7.gif">  
-</p>
+ [**Run the examples**](https://stackblitz.com/edit/ts-evt-vs-rxjs?embed=1&file=index.ts)  
+  
+ ![](https://user-images.githubusercontent.com/6702424/76122716-01cd1600-5ff7-11ea-8751-daf7b689e1b7.gif)
 
-# Dependency requirement
+## Dependency requirement
 
 Minimum version of typescript your project needs to be using is:
 
-typescript >= __2.8__ ( Mar 2018 )
+typescript &gt;= **2.8** \( Mar 2018 \)
 
 Exposed api use typescript keywords that were added in this version.
 
-# Table of content
+## Table of content
 
-- [Motivation](#motivation)
-- [Try it](#try-it)
-- [Side by side comparison with ``EventEmitter``](#side-by-side-comparison-with-eventemitter)
-  - [Reference example](#reference-example)
-  - [Equivalent, the recommended approach:](#equivalent-the-recommended-approach)
-  - [Equivalent, traditional approach:](#equivalent-traditional-approach)
-- [Side by side comparison with ``RxJS``](#side-by-side-comparison-with-rxjs)
-  - [Transcription of the *"get started"* examples from the ``RxJS`` documentation.](#transcription-of-the-get-started-examples-from-the-rxjs-documentation)
-    - [First example](#first-example)
-    - [Values](#values)
-  - [Transcription of examples that where not specifically designed to make ``RxJS`` looks good.](#transcription-of-examples-that-where-not-specifically-designed-to-make-rxjs-looks-good)
-    - [Waiting for the next event of a certain type](#waiting-for-the-next-event-of-a-certain-type)
-  - [Example involving states encapsulation](#example-involving-states-encapsulation)
-- [Dependency requirement](#dependency-requirement)
-- [Table of content](#table-of-content)
-- [Api Documentation](#api-documentation)
-  - [Operator](#operator)
-    - [Operator - Filter](#operator---filter)
-    - [Operator - Type guard](#operator---type-guard)
-    - [Operator - fλ](#operator---fλ)
-      - [fλ Returns](#fλ-returns)
-      - [Stateless fλ](#stateless-fλ)
-      - [Stateful fλ](#stateful-fλ)
-    - [``compose(op1, op2, ...)``](#composeop1-op2-)
-  - [``Evt<T>``](#evtt)
-    - [``evt.[$]attach*(...)`` methods](#evtattach-methods)
-      - [Arguments](#arguments)
-        - [Operator](#operator-1)
-        - [Timeout](#timeout)
-        - [BoundTo ( context )](#boundto--context-)
-        - [Callback](#callback)
-      - [Returned value](#returned-value)
-      - [The ``$`` prefix](#the--prefix)
-      - [``evt.[$]attach(...)``](#evtattach)
-      - [``evt.[$]attachOnce*(...)``](#evtattachonce)
-      - [``evt.[$]attach[Once]Prepend(...)``](#evtattachonceprepend)
-      - [``evt.[$]attach[Once]Extract(...)``](#evtattachonceextract)
-    - [``evt.post*(data)`` methods](#evtpostdata-methods)
-      - [``evt.post(data)``](#evtpostdata)
-      - [``evtPostCount: number``](#evtpostcount-number)
-      - [``evt.postAsyncOnceMatched(data)``](#evtpostasynconcematcheddata)
-      - [``evt.postSyncOnceMatched(data)``](#evtpostsynconcematcheddata)
-    - [The ``Handler<T,U>`` type](#the-handlertu-type)
-    - [``evt.getHandlers()``](#evtgethandlers)
-    - [``evt.evt[Attach|Detach]: Evt<Handler>`` properties](#evtevtattachdetach-evthandler-properties)
-    - [``evt.isHandled(data)``](#evtishandleddata)
-    - [``evt.waitFor(...)``](#evtwaitfor)
-    - [``evt.pipe(...)``](#evtpipe)
-    - [``Evt.merge([evt1, evt2, ...])``](#evtmergeevt1-evt2-)
-    - [Detaching handlers.](#detaching-handlers)
-      - [``evt.detach([boundTo])``](#evtdetachboundto)
-      - [``handler.detach()``](#handlerdetach)
-      - [``ctx.detach([evt])``](#ctxdetachevt)
-  - [``Ctx``](#ctx)
-    - [``ctx.getHandlers()``](#ctxgethandlers)
-    - [``ctx.evtDetach: Evt<Handler[]>``](#ctxevtdetach-evthandler)
-    - [``ctx.detach([evt])](#ctxdetachevt-1)
-  - [``VoidEvt``](#voidevt)
-  - [``Observable<T>``](#observablet)
-- [Difference between ``evt.waitFor(...)`` and ``evt.attachOnce(...)``](#difference-between-evtwaitfor-and-evtattachonce)
-- [Credits](#credits)
-  - [Operators](#operators)
-    - [Operator - Filter](#operator---filter-1)
-    - [Operator - Type guard](#operator---type-guard-1)
-    - [Operator - fλ](#operator---fλ-1)
-      - [fλ returns](#fλ-returns-1)
-      - [Operator - Stateless fλ](#operator---stateless-fλ)
-      - [Operator - Stateful fλ](#operator---stateful-fλ)
-    - [Operator - Composition](#operator---composition)
-    - [Matcher - Compatible methods](#matcher---compatible-methods)
-  - [``evt.waitFor(...)``](#evtwaitfor-1)
-    - [Without timeout](#without-timeout)
-    - [With timeout](#with-timeout)
-  - [``VoidEvt``](#voidevt-1)
-  - [``evt.attachPrepend(...)`` and  ``evt.attachOncePrepend(...)``](#evtattachprepend-and-evtattachonceprepend)
-  - [``evt.attachExtract(...)`` and ``evt.attachOnceExtract(...)``](#evtattachextract-and-evtattachonceextract)
-  - [``evt.detach(...)``](#evtdetach)
-    - [``evt.detach()`` all handlers.](#evtdetach-all-handlers)
-    - [``evt.handler(boundTo)`` - bound to a given context](#evthandlerboundto---bound-to-a-given-context)
-    - [``handler.detach(callback)``](#handlerdetachcallback)
-  - [``evt.getHandlers()``](#evtgethandlers-1)
-  - [Combining Once, Prepend, matcher, timeout and boundTo](#combining-once-prepend-matcher-timeout-and-boundto)
-  - [``evt.createDelegate(...)``](#evtcreatedelegate)
-  - [``evt.postCount``](#evtpostcount)
-  - [``evt.evtAttach`` and ``evt.evtDetach``](#evtevtattach-and-evtevtdetach)
-  - [``evt.isHandled(data)``](#evtishandleddata-1)
-  - [``evt.postAsyncOnceHandled(data)`` and ``evt.postSyncOnceHandled(data)``](#evtpostasynconcehandleddata-and-evtpostsynconcehandleddata)
-  - [``evtUtil.race([...])``](#evtutilrace)
-  - [``NonPostable<Evt<T>>``](#nonpostableevtt)
-  - [``UnpackEvt<typeof evt>``.](#unpackevttypeof-evt)
-  - [``evt.enableTrace(...)``](#evtenabletrace)
-- [``Observable<T>`` documentation](#observablet-documentation)
-- [Appendix: ``evt.waitFor(...)`` used in ``async`` procedure or loop](#appendix-evtwaitfor-used-in-async-procedure-or-loop)
-- [History of the project](#history-of-the-project)
+* [Motivation](./#motivation)
+* [Try it](./#try-it)
+* [Side by side comparison with `EventEmitter`](./#side-by-side-comparison-with-eventemitter)
+  * [Reference example](./#reference-example)
+  * [Equivalent, the recommended approach:](./#equivalent-the-recommended-approach)
+  * [Equivalent, traditional approach:](./#equivalent-traditional-approach)
+* [Side by side comparison with `RxJS`](./#side-by-side-comparison-with-rxjs)
+  * [Transcription of the _"get started"_ examples from the `RxJS` documentation.](./#transcription-of-the-get-started-examples-from-the-rxjs-documentation)
+    * [First example](./#first-example)
+    * [Values](./#values)
+  * [Transcription of examples that where not specifically designed to make `RxJS` looks good.](./#transcription-of-examples-that-where-not-specifically-designed-to-make-rxjs-looks-good)
+    * [Waiting for the next event of a certain type](./#waiting-for-the-next-event-of-a-certain-type)
+  * [Example involving states encapsulation](./#example-involving-states-encapsulation)
+* [Dependency requirement](./#dependency-requirement)
+* [Table of content](./#table-of-content)
+* [Api Documentation](./#api-documentation)
+  * [Operator](./#operator)
+    * [Operator - Filter](./#operator---filter)
+    * [Operator - Type guard](./#operator---type-guard)
+    * [Operator - fλ](./#operator---fλ)
+      * [fλ Returns](./#fλ-returns)
+      * [Stateless fλ](./#stateless-fλ)
+      * [Stateful fλ](./#stateful-fλ)
+    * [`compose(op1, op2, ...)`](./#composeop1-op2-)
+  * [`Evt<T>`](./#evtt)
+    * [`evt.[$]attach*(...)` methods](./#evtattach-methods)
+      * [Arguments](./#arguments)
+        * [Operator](./#operator-1)
+        * [Timeout](./#timeout)
+        * [BoundTo \( context \)](./#boundto--context-)
+        * [Callback](./#callback)
+      * [Returned value](./#returned-value)
+      * [The `$` prefix](./#the--prefix)
+      * [`evt.[$]attach(...)`](./#evtattach)
+      * [`evt.[$]attachOnce*(...)`](./#evtattachonce)
+      * [`evt.[$]attach[Once]Prepend(...)`](./#evtattachonceprepend)
+      * [`evt.[$]attach[Once]Extract(...)`](./#evtattachonceextract)
+    * [`evt.post*(data)` methods](./#evtpostdata-methods)
+      * [`evt.post(data)`](./#evtpostdata)
+      * [`evtPostCount: number`](./#evtpostcount-number)
+      * [`evt.postAsyncOnceMatched(data)`](./#evtpostasynconcematcheddata)
+      * [`evt.postSyncOnceMatched(data)`](./#evtpostsynconcematcheddata)
+    * [The `Handler<T,U>` type](./#the-handlertu-type)
+    * [`evt.getHandlers()`](./#evtgethandlers)
+    * [`evt.evt[Attach|Detach]: Evt<Handler>` properties](./#evtevtattachdetach-evthandler-properties)
+    * [`evt.isHandled(data)`](./#evtishandleddata)
+    * [`evt.waitFor(...)`](./#evtwaitfor)
+    * [`evt.pipe(...)`](./#evtpipe)
+    * [`Evt.merge([evt1, evt2, ...])`](./#evtmergeevt1-evt2-)
+    * [Detaching handlers.](./#detaching-handlers)
+      * [`evt.detach([boundTo])`](./#evtdetachboundto)
+      * [`handler.detach()`](./#handlerdetach)
+      * [`ctx.detach([evt])`](./#ctxdetachevt)
+  * [`Ctx`](./#ctx)
+    * [`ctx.getHandlers()`](./#ctxgethandlers)
+    * [`ctx.evtDetach: Evt<Handler[]>`](./#ctxevtdetach-evthandler)
+    * [\`\`ctx.detach\(\[evt\]\)](./#ctxdetachevt-1)
+  * [`VoidEvt`](./#voidevt)
+  * [`Observable<T>`](./#observablet)
+* [Difference between `evt.waitFor(...)` and `evt.attachOnce(...)`](./#difference-between-evtwaitfor-and-evtattachonce)
+* [Credits](./#credits)
+  * [Operators](./#operators)
+    * [Operator - Filter](./#operator---filter-1)
+    * [Operator - Type guard](./#operator---type-guard-1)
+    * [Operator - fλ](./#operator---fλ-1)
+      * [fλ returns](./#fλ-returns-1)
+      * [Operator - Stateless fλ](./#operator---stateless-fλ)
+      * [Operator - Stateful fλ](./#operator---stateful-fλ)
+    * [Operator - Composition](./#operator---composition)
+    * [Matcher - Compatible methods](./#matcher---compatible-methods)
+  * [`evt.waitFor(...)`](./#evtwaitfor-1)
+    * [Without timeout](./#without-timeout)
+    * [With timeout](./#with-timeout)
+  * [`VoidEvt`](./#voidevt-1)
+  * [`evt.attachPrepend(...)` and  `evt.attachOncePrepend(...)`](./#evtattachprepend-and-evtattachonceprepend)
+  * [`evt.attachExtract(...)` and `evt.attachOnceExtract(...)`](./#evtattachextract-and-evtattachonceextract)
+  * [`evt.detach(...)`](./#evtdetach)
+    * [`evt.detach()` all handlers.](./#evtdetach-all-handlers)
+    * [`evt.handler(boundTo)` - bound to a given context](./#evthandlerboundto---bound-to-a-given-context)
+    * [`handler.detach(callback)`](./#handlerdetachcallback)
+  * [`evt.getHandlers()`](./#evtgethandlers-1)
+  * [Combining Once, Prepend, matcher, timeout and boundTo](./#combining-once-prepend-matcher-timeout-and-boundto)
+  * [`evt.createDelegate(...)`](./#evtcreatedelegate)
+  * [`evt.postCount`](./#evtpostcount)
+  * [`evt.evtAttach` and `evt.evtDetach`](./#evtevtattach-and-evtevtdetach)
+  * [`evt.isHandled(data)`](./#evtishandleddata-1)
+  * [`evt.postAsyncOnceHandled(data)` and `evt.postSyncOnceHandled(data)`](./#evtpostasynconcehandleddata-and-evtpostsynconcehandleddata)
+  * [`evtUtil.race([...])`](./#evtutilrace)
+  * [`NonPostable<Evt<T>>`](./#nonpostableevtt)
+  * [`UnpackEvt<typeof evt>`.](./#unpackevttypeof-evt)
+  * [`evt.enableTrace(...)`](./#evtenabletrace)
+* [`Observable<T>` documentation](./#observablet-documentation)
+* [Appendix: `evt.waitFor(...)` used in `async` procedure or loop](./#appendix-evtwaitfor-used-in-async-procedure-or-loop)
+* [History of the project](./#history-of-the-project)
 
-# Api Documentation
+## Api Documentation
 
-## Operator
+### Operator
 
 Operator provide a way to transform events data before they are passed to the callback.
 
-Operators can be of three types:  
-+ __Filter__: ``(data: T)=> boolean``.  
+Operators can be of three types:
+
+* **Filter**: `(data: T)=> boolean`.  
+
   Only the matched event data will be passed to the callback.
-+ __Type guard__: ``<Q extends T>(data: T)=> data is Q``  
+
+* **Type guard**: `<Q extends T>(data: T)=> data is Q`  
+
   Functionally equivalent to filter but restrict the event data type.  
-+ __fλ__  
-  Filter / transform / stipulate when to detach the handler ( or a group of handler )
-  + __Stateless fλ__: ``<U>(data: T)=> [U]|null|"DETACH"|{DETACH:Ref}|...``  
-  + __Stateful fλ__: ``[ <U>(data:T,prev:U)=> ..., U(initial value) ]``  
-  Uses the previous result to perform the computation
+
+* **fλ**  
+
+  Filter / transform / stipulate when to detach the handler \( or a group of handler \)
+
+  * **Stateless fλ**: `<U>(data: T)=> [U]|null|"DETACH"|{DETACH:Ref}|...`  
+  * **Stateful fλ**: `[ <U>(data:T,prev:U)=> ..., U(initial value) ]`  
+
+    Uses the previous result to perform the computation
 
 Operators should not produce any side effect.
 
-### Operator - Filter
+#### Operator - Filter
 
 ```typescript
-import { Evt } from "ts-evt";
+import { Evt } from "ts-evt";
 
 const evtText= new Evt<string>();
 
@@ -418,15 +412,15 @@ evtText.post("Bonjour");
 evtText.post("Hi!");
 ```
 
-NOTE: Make sure that your filters always returns a ``boolean`` at runtime.  
-If in doubts use 'bang bang' ( ``!!returnedValue`` ).  
+NOTE: Make sure that your filters always returns a `boolean` at runtime.  
+If in doubts use 'bang bang' \( `!!returnedValue` \).  
 True as well for type guard operators.
 
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-matcher-return-boolean?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-matcher-return-boolean?embed=1&file=index.ts)
 
-### Operator - Type guard
+#### Operator - Type guard
 
-If the operator is a type guard, the type of the callback argument will be narrowed down.  
+If the operator is a type guard, the type of the callback argument will be narrowed down.
 
 Let us define a straight forward type hierarchy to illustrate this feature.
 
@@ -447,7 +441,7 @@ const matchCircle = (shape: Shape): shape is Circle =>
     shape.type === "CIRCLE";
 ```
 
-The ``matchCircle`` type guard enables to attach a callback to an ``Evt<Shape>`` that will only be called against circles.
+The `matchCircle` type guard enables to attach a callback to an `Evt<Shape>` that will only be called against circles.
 
 ```typescript
 import { Evt } from "ts-evt";
@@ -466,28 +460,28 @@ evtShape.post({ "type": "SQUARE", "sideLength": 3 });
 evtShape.post({ "type": "CIRCLE", "radius": 33 });
 ```
 
-The type of the Shape object is narrowed down to ``Circle``  
+The type of the Shape object is narrowed down to `Circle`  
 ![Screenshot 2020-02-08 at 19 17 46](https://user-images.githubusercontent.com/6702424/74090059-baab3e00-4aa7-11ea-9c75-97f1fb99666d.png)
 
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-matcher-type-guard?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-matcher-type-guard?embed=1&file=index.ts)
 
-### Operator - fλ
+#### Operator - fλ
 
-Filter - Transform - Detach.  
+Filter - Transform - Detach.
 
-#### fλ Returns
+**fλ Returns**
 
-The value that a fλ operator can return are: 
+The value that a fλ operator can return are:
 
-+ ``null`` If the event should be ignored and nothing passed to the callback.
-+ ``[ U ]`` or ``[ U, null ]`` When the event should be handled, wrapped into a singleton is the value to pass to the callback.
-+ ``"DETACH"`` When the event should be ignored and the handler detached from the ``Evt``
-+ ``{ DETACH: Ctx }`` When the event should be ignored and a group of handler bound to a certain context must be detached. See [``Ctx``](#Ctx)
-+ ``[ U, "DETACH" ]`` / ``[ U, {DETACH:Ref} ]`` To handle the event AND detach.
+* `null` If the event should be ignored and nothing passed to the callback.
+* `[ U ]` or `[ U, null ]` When the event should be handled, wrapped into a singleton is the value to pass to the callback.
+* `"DETACH"` When the event should be ignored and the handler detached from the `Evt`
+* `{ DETACH: Ctx }` When the event should be ignored and a group of handler bound to a certain context must be detached. See [`Ctx`](./#Ctx)
+* `[ U, "DETACH" ]` / `[ U, {DETACH:Ref} ]` To handle the event AND detach.
 
-#### Stateless fλ 
+**Stateless fλ**
 
-Stateless fλ operator only takes the event data as argument.  
+Stateless fλ operator only takes the event data as argument.
 
 ```typescript
 import { Evt } from "ts-evt";
@@ -515,10 +509,10 @@ evtShape.post({ "type": "CIRCLE", "radius": 3 }); //Nothing will be printed to t
 evtShape.post({ "type": "CIRCLE", "radius": 200 }); //"radius 200" Will be printed to the console.
 ```
 
-Other example using ``"DETACH"``
+Other example using `"DETACH"`
 
 ```typescript
-import { Evt } from "ts-evt";
+import { Evt } from "ts-evt";
 
 const evtText= new Evt<"TICK" | "END">();
 
@@ -537,7 +531,7 @@ evtText.post("END"); //Nothing is printed to the console, the handler is detache
 evtText.post("TICK"); //Nothing is printed to the console the handler have been detached.
 ```
 
-Example use of ``[U,null|"DETACH"]``, handling the event that cause the handler to be detached.
+Example use of `[U,null|"DETACH"]`, handling the event that cause the handler to be detached.
 
 ```typescript
 const evtText= new Evt<"TICK" | "END">();
@@ -552,7 +546,7 @@ evtText.post("END"); //"END" is printed to the console, the handler is detached.
 evtText.post("TICK"); //Nothing is printed to the console the handler have been detached.
 ```
 
-Example use of ``{ DETACH: Ctx }``, detaching a group of handler bound to a given context.
+Example use of `{ DETACH: Ctx }`, detaching a group of handler bound to a given context.
 
 ```typescript
 const evtBtnClick = new Evt<"OK" | "QUIT">();
@@ -589,14 +583,14 @@ evtNotification.post("Poke 2"); //Prints nothing
 evtBtnClick.post("OK"); //Prints "OK", evtBtnClick handler hasn't been detached as it was not bound to ctx.
 ```
 
-[__Run examples__](https://stackblitz.com/edit/ts-evt-demo-transformative-matcher?embed=1&file=index.ts)
+[**Run examples**](https://stackblitz.com/edit/ts-evt-demo-transformative-matcher?embed=1&file=index.ts)
 
-#### Stateful fλ 
+**Stateful fλ**
 
 The result of the previously matched event is passed as argument to the operator.
 
 ```typescript
-import { Evt } from "ts-evt";
+import { Evt } from "ts-evt";
 
 const evtText= new Evt<string>();
 
@@ -638,16 +632,16 @@ if( evtText.isHandled(text) ){
 }
 ```
 
-[__Run example__](https://stackblitz.com/edit/ts-evt-demo-stateful?embed=1&file=index.ts)
+[**Run example**](https://stackblitz.com/edit/ts-evt-demo-stateful?embed=1&file=index.ts)
 
-### ``compose(op1, op2, ...)``
+#### `compose(op1, op2, ...)`
 
 Operators can be composed to achieve more complex behavior.
 
 Example composing Type guard with fλ:
 
 ```typescript
-import { Evt, compose } from "ts-evt";
+import { Evt, compose } from "ts-evt";
 
 const evtShape= new Evt<Shape>();
 
@@ -687,7 +681,7 @@ evt.post(["text", "hi!"]); //Prints "HI!"
 Example composing tre fλ to count the number of different word in a sentence:
 
 ```typescript
-import { Evt, compose } from "ts-evt";
+import { Evt, compose } from "ts-evt";
 
 const evtSentence = new Evt<string>();
 
@@ -704,8 +698,7 @@ evtSentence.post("Hello World"); //Prints "2"
 evtSentence.post("Boys will be boys"); //Prints "3", "boys" appears two times.
 ```
 
-Using stateful fλ operators to implement ``throttleTime(duration)``, 
-an operator that let through at most one event every [duration] milliseconds.
+Using stateful fλ operators to implement `throttleTime(duration)`, an operator that let through at most one event every \[duration\] milliseconds.
 
 ```typescript
 const throttleTime = <T>(duration: number) =>
@@ -734,104 +727,116 @@ setTimeout(()=>evtText.post("B"), 750); //Prints nothing, the previous event was
 setTimeout(()=>evtText.post("C"), 1001); //Prints "C"
 setTimeout(()=>evtText.post("D"), 2500); //Prints "D"
 ```
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-compose?embed=1&file=index.ts)
 
-## ``Evt<T>`` 
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-compose?embed=1&file=index.ts)
 
-Class that is the equivalent of ``EventEmitter`` in ``"events"`` and ``Subject<T>`` in ``"rxjs"``
+### `Evt<T>`
 
-### ``evt.[$]attach*(...)`` methods
-#### Arguments
-##### Operator
-##### Timeout
-##### BoundTo ( context )
-##### Callback
-#### Returned value
-#### The ``$`` prefix
-#### ``evt.[$]attach(...)``
-#### ``evt.[$]attachOnce*(...)``
-#### ``evt.[$]attach[Once]Prepend(...)``
-#### ``evt.[$]attach[Once]Extract(...)``
+Class that is the equivalent of `EventEmitter` in `"events"` and `Subject<T>` in `"rxjs"`
 
-### ``evt.post*(data)`` methods  
-#### ``evt.post(data)``
-#### ``evtPostCount: number``
-#### ``evt.postAsyncOnceMatched(data)``
-#### ``evt.postSyncOnceMatched(data)``
+#### `evt.[$]attach*(...)` methods
 
+**Arguments**
 
-### The ``Handler<T,U>`` type
-### ``evt.getHandlers()``
-### ``evt.evt[Attach|Detach]: Evt<Handler>`` properties
-### ``evt.isHandled(data)``
+**Operator**
 
-### ``evt.waitFor(...)``
-### ``evt.pipe(...)``
-### ``Evt.merge([evt1, evt2, ...])``
-### Detaching handlers.
-#### ``evt.detach([boundTo])``
-#### ``handler.detach()``
-#### ``ctx.detach([evt])``
+**Timeout**
 
-## ``Ctx``
-### ``ctx.getHandlers()``
-### ``ctx.evtDetach: Evt<Handler[]>``
-### ``ctx.detach([evt])
+**BoundTo \( context \)**
 
-## ``VoidEvt``
+**Callback**
 
-## ``Observable<T>``
+**Returned value**
 
-# Difference between ``evt.waitFor(...)`` and ``evt.attachOnce(...)``
+**The $ prefix**
 
-# Credits
+**evt.\[$\]attach\(...\)**
 
+**evt.\[$\]attachOnce\*\(...\)**
 
-## Operators
+**evt.\[$\]attach\[Once\]Prepend\(...\)**
 
+**evt.\[$\]attach\[Once\]Extract\(...\)**
 
-### Operator - Filter
+#### `evt.post*(data)` methods
 
+**evt.post\(data\)**
 
-### Operator - Type guard
+**evtPostCount: number**
 
+**evt.postAsyncOnceMatched\(data\)**
 
-### Operator - fλ
+**evt.postSyncOnceMatched\(data\)**
 
+#### The `Handler<T,U>` type
 
+#### `evt.getHandlers()`
 
-#### fλ returns 
+#### `evt.evt[Attach|Detach]: Evt<Handler>` properties
 
+#### `evt.isHandled(data)`
 
+#### `evt.waitFor(...)`
 
-#### Operator - Stateless fλ
+#### `evt.pipe(...)`
 
+#### `Evt.merge([evt1, evt2, ...])`
 
-#### Operator - Stateful fλ
+#### Detaching handlers.
 
+**evt.detach\(\[boundTo\]\)**
 
-### Operator - Composition
+**handler.detach\(\)**
 
-### Matcher - Compatible methods
+**ctx.detach\(\[evt\]\)**
 
-Operators functions can be used with:  
-+ All the ``attach*(...)`` methods  
-+ ``waitFor(...)``   
-+ ``pipe(...)``   
+### `Ctx`
 
-Due to current [TypeScript limitation](https://github.com/microsoft/TypeScript/issues/36735)
-the ``.attach*()`` methods need to be prefixed with ``$`` when used with ``fλ`` operator.  
-``evt.$attach*()`` are actually just aliases to the corresponding ``evt.attach*()`` methods but the ``$`` is currently required for the type inference to work.
+#### `ctx.getHandlers()`
 
+#### `ctx.evtDetach: Evt<Handler[]>`
 
+#### \`\`ctx.detach\(\[evt\]\)
 
+### `VoidEvt`
 
+### `Observable<T>`
 
-``waitFor(...)`` and ``attachOnce(...)`` combined with matcher address the main shortcoming of EventEmitter
-allowing us to asynchronously wait for the next shape that is a circle, for example.
+## Difference between `evt.waitFor(...)` and `evt.attachOnce(...)`
+
+## Credits
+
+### Operators
+
+#### Operator - Filter
+
+#### Operator - Type guard
+
+#### Operator - fλ
+
+**fλ returns**
+
+**Operator - Stateless fλ**
+
+**Operator - Stateful fλ**
+
+#### Operator - Composition
+
+#### Matcher - Compatible methods
+
+Operators functions can be used with:
+
+* All the `attach*(...)` methods  
+* `waitFor(...)`   
+* `pipe(...)`   
+
+Due to current [TypeScript limitation](https://github.com/microsoft/TypeScript/issues/36735) the `.attach*()` methods need to be prefixed with `$` when used with `fλ` operator.  
+`evt.$attach*()` are actually just aliases to the corresponding `evt.attach*()` methods but the `$` is currently required for the type inference to work.
+
+`waitFor(...)` and `attachOnce(...)` combined with matcher address the main shortcoming of EventEmitter allowing us to asynchronously wait for the next shape that is a circle, for example.
 
 ```typescript
-import { Evt } from "ts-evt";
+import { Evt } from "ts-evt";
 
 const evtShape = new Evt<Shape>();
 
@@ -844,7 +849,7 @@ evtShape.$attachOnce(
         [ shape.sideLength ] : null,
     sideLength => console.log(`length: ${sideLength}`)
 );
-    
+
 
 const circle: Circle = {
     "type": "CIRCLE",
@@ -874,20 +879,19 @@ evtShape.post({
     "type": "SQUARE",
     "sideLength": 44
 });
-
 ```
 
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-matcher-and-waitfor?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-matcher-and-waitfor?embed=1&file=index.ts)
 
-## ``evt.waitFor(...)``
+### `evt.waitFor(...)`
 
 Method that returns a promise that will resolve when the next event is posted.
 
-### Without timeout
+#### Without timeout
 
-By default the promise returned by ``waitFor`` will never reject.
+By default the promise returned by `waitFor` will never reject.
 
-````typescript
+```typescript
 import { Evt } from "ts-evt";
 
 const evtText = new Evt<string>();
@@ -903,16 +907,15 @@ setTimeout(()=> evtText.post("Hi!"), 1500);
     console.log(text);
 
 })();
-````
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-waitfor?embed=1&file=index.ts)
+```
 
-### With timeout
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-waitfor?embed=1&file=index.ts)
 
-It is possible to set what is the maximum amount of time we are willing
-to wait for the event before the promise rejects.
+#### With timeout
+
+It is possible to set what is the maximum amount of time we are willing to wait for the event before the promise rejects.
 
 ```typescript
-
 import { Evt, EvtError } from "ts-evt";
 
 const evtText = new Evt<string>();
@@ -920,7 +923,7 @@ const evtText = new Evt<string>();
 (async ()=>{
 
     try{
-    
+
         const text = await evtText.waitFor(500);
 
         console.log(text);
@@ -949,13 +952,12 @@ setTimeout(
 );
 ```
 
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-waitfor-timeout?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-waitfor-timeout?embed=1&file=index.ts)
 
+### `VoidEvt`
 
-## ``VoidEvt``
-
-When you create an Evt with a void argument, TypeScript forces you to pass ``undefined`` to ``post()``.  
-Instead use ``VoidEvt``
+When you create an Evt with a void argument, TypeScript forces you to pass `undefined` to `post()`.  
+Instead use `VoidEvt`
 
 ```typescript
 import { VoidEvt } from "ts-evt";
@@ -968,11 +970,11 @@ evtSocketConnect.post();
 //"SOCKET CONNECTED" have been printed to the console.
 ```
 
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-voidevt?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-voidevt?embed=1&file=index.ts)
 
-## ``evt.attachPrepend(...)`` and  ``evt.attachOncePrepend(...)``
+### `evt.attachPrepend(...)` and  `evt.attachOncePrepend(...)`
 
-Similar to Node's ``emitter.prependListener(...)`` and ``emitter.prependOnceListener(...)``
+Similar to Node's `emitter.prependListener(...)` and `emitter.prependOnceListener(...)`
 
 ```typescript
 import { VoidEvt } from "ts-evt";
@@ -986,19 +988,15 @@ evtConnect.attachPrepend(() => console.log("A"));
 
 evtConnect.post();
 //"A", "B", "C" is printed to the console.
-
 ```
 
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-prepend?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-prepend?embed=1&file=index.ts)
 
+### `evt.attachExtract(...)` and `evt.attachOnceExtract(...)`
 
-## ``evt.attachExtract(...)`` and ``evt.attachOnceExtract(...)``
-
-To handle edge cases that haven't been anticipated without having to rethink the model as a whole
-we provide a way to extract particular types of events.
+To handle edge cases that haven't been anticipated without having to rethink the model as a whole we provide a way to extract particular types of events.
 
 ```typescript
-
 import { Evt } from "ts-evt";
 
 const evtCircle = new Evt<Circle>();
@@ -1023,13 +1021,13 @@ evtCircle.attachPrepend(
 );
 ```
 
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-extract?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-extract?embed=1&file=index.ts)
 
-## ``evt.detach(...)``
+### `evt.detach(...)`
 
-Multiple ways of detaching handlers are provided. 
+Multiple ways of detaching handlers are provided.
 
-### ``evt.detach()`` all handlers.
+#### `evt.detach()` all handlers.
 
 To detach all handlers at once:
 
@@ -1039,7 +1037,7 @@ const evtText = new Evt<string>();
 evtText.detach();
 ```
 
-### ``evt.handler(boundTo)`` - bound to a given context
+#### `evt.handler(boundTo)` - bound to a given context
 
 The preferred way of detaching an handler is by using "boundTo" context.
 
@@ -1070,11 +1068,11 @@ evtText.detach(boundTo);
 evtText.post("World");
 ```
 
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-detach-with-contex?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-detach-with-contex?embed=1&file=index.ts)
 
-### ``handler.detach(callback)``
+#### `handler.detach(callback)`
 
-To detach all the handlers using a given callback function as we do with EventEmitter: 
+To detach all the handlers using a given callback function as we do with EventEmitter:
 
 ```typescript
 const evtText = new Evt<string>();
@@ -1089,14 +1087,13 @@ evtText.getHandlers()
     ;
 ```
 
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-detach-classic?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-detach-classic?embed=1&file=index.ts)
 
-## ``evt.getHandlers()``
+### `evt.getHandlers()`
 
-List all handlers attached to the ``Evt``.   
-Returns an array of ``Handler<T>``.  
-A ``Handler[]`` is an object that contains all the information
-needed to identify a handler and a ``detach()`` method.
+List all handlers attached to the `Evt`.  
+Returns an array of `Handler<T>`.  
+A `Handler[]` is an object that contains all the information needed to identify a handler and a `detach()` method.
 
 Here a use case detaching all handlers that uses a given matcher:
 
@@ -1125,27 +1122,23 @@ evtShape.getHandlers()
     ;
 ```
 
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-detach-matcher?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-detach-matcher?embed=1&file=index.ts)
 
-## Combining Once, Prepend, matcher, timeout and boundTo
+### Combining Once, Prepend, matcher, timeout and boundTo
 
 Large number of methods combining Once, Prepend are exposed.
 
 ![Screenshot 2020-02-08 at 19 25 44](https://user-images.githubusercontent.com/6702424/74090178-d4995080-4aa8-11ea-815f-5ae66a761812.png)
 
-For each of those methods a large number of overload are defined
-so that you can combine matchers, timeout or boundTo.
+For each of those methods a large number of overload are defined so that you can combine matchers, timeout or boundTo.
 
-![Screenshot 2020-02-08 at 19 27 56](https://user-images.githubusercontent.com/6702424/74090245-6c973a00-4aa9-11ea-8e48-90d49a0ed20b.png)  
+![Screenshot 2020-02-08 at 19 27 56](https://user-images.githubusercontent.com/6702424/74090245-6c973a00-4aa9-11ea-8e48-90d49a0ed20b.png)
 
-All the attach methods returns Promises that resolve when an event is matched for the first time and reject in the same way ``waitFor``
-does. This explains why it is possible to combine ``attach`` ``attachOnce``, ``attachPrepend`` ect... with the timeout parameter. 
+All the attach methods returns Promises that resolve when an event is matched for the first time and reject in the same way `waitFor` does. This explains why it is possible to combine `attach` `attachOnce`, `attachPrepend` ect... with the timeout parameter.
 
+### `evt.createDelegate(...)`
 
-## ``evt.createDelegate(...)``
-
-Create a new instance of Evt toward which will be forwarded
-all the events matched by the matcher function.
+Create a new instance of Evt toward which will be forwarded all the events matched by the matcher function.
 
 ```typescript
 import { Evt } from "ts-evt";
@@ -1198,14 +1191,14 @@ evtShape.post({
 });
 ```
 
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-delegate?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-delegate?embed=1&file=index.ts)
 
-## ``evt.postCount``
+### `evt.postCount`
 
-The number of times ``post()`` has been called can be tracked by the ``postCount`` property.
+The number of times `post()` has been called can be tracked by the `postCount` property.
 
 ```typescript
-import { Evt } from "ts-evt";
+import { Evt } from "ts-evt";
 
 const evtText= new Evt<string>();
 
@@ -1218,14 +1211,13 @@ evtText.post("baz");
 
 //prints 3
 console.log(evtText.postCount);
-
 ```
 
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-postcount?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-postcount?embed=1&file=index.ts)
 
-## ``evt.evtAttach`` and ``evt.evtDetach``
+### `evt.evtAttach` and `evt.evtDetach`
 
-``.evtAttach`` and ``.evtDetach`` are ``Evt<Handler<T, any>>``that track in the handler as they are being attached/detached from the ``evt``.
+`.evtAttach` and `.evtDetach` are `Evt<Handler<T, any>>`that track in the handler as they are being attached/detached from the `evt`.
 
 ```typescript
 import * as console from "./consoleToPage";
@@ -1244,22 +1236,19 @@ evtText.attach(callback);
 //"true" is printed to the console.
 ```
 
-TODO: Update the example to includes ``evtDetach``
+TODO: Update the example to includes `evtDetach`
 
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-evtattach?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-evtattach?embed=1&file=index.ts)
 
-## ``evt.isHandled(data)``
-    
+### `evt.isHandled(data)`
+
 Test if posting event data will have an effect.
 
-Return true if:  
+Return true if:
 
--There is at least one handler matching this event data 
-( at least one handler's callback function
-will be invoked if the data is posted. )  
+-There is at least one handler matching this event data \( at least one handler's callback function will be invoked if the data is posted. \)
 
--There is at least one handler that will be detached
-if the event data is posted.
+-There is at least one handler that will be detached if the event data is posted.
 
 ```typescript
 const evtText = new Evt<string>();
@@ -1291,27 +1280,22 @@ console.log(
     evtText.isHandled("goodby world")
 );
 ```
-[__Run the example__](https://stackblitz.com/edit/ts-evt-is-hadled?embed=1&file=index.ts)
 
-## ``evt.postAsyncOnceHandled(data)`` and ``evt.postSyncOnceHandled(data)``
+[**Run the example**](https://stackblitz.com/edit/ts-evt-is-hadled?embed=1&file=index.ts)
 
+### `evt.postAsyncOnceHandled(data)` and `evt.postSyncOnceHandled(data)`
 
+When `isHandled(data)` return `true`, `postAsyncOnceHandled(data)` is a proxy for `post(data)`.
 
-When ``isHandled(data)`` return ``true``, ``postAsyncOnceHandled(data)`` is a proxy for ``post(data)``.
+When `postAsyncOnceHandled(data)` is invoked at a time where `isHandled(data)` returns `false`, the `data` will be hold and posted only once `isHandler(data)` would return `true`.  
+`post(data)` is scheduled to be invoked in a micro task once a candidate handler is attached \(not synchronously\).
 
-When ``postAsyncOnceHandled(data)`` is invoked at a time where ``isHandled(data)`` returns ``false``,
-the ``data`` will be hold and posted only once ``isHandler(data)`` would return ``true``.  
-``post(data)`` is scheduled to be invoked in a micro task once a candidate handler is attached (not synchronously).
+When the call to post is delayed `postAsyncOnceHandled(data)` returns a promise that resolve with the new post count when `post(data)` is invoked. Else returns the new post count synchronously.
 
-When the call to post is delayed ``postAsyncOnceHandled(data)`` returns a promise
-that resolve with the new post count when ``post(data)`` is invoked. Else returns the new post count synchronously.
-
-``postSyncOnceHandled(data)`` on the other hand will post synchronously as soon
-as a candidate handler is attached.
-
+`postSyncOnceHandled(data)` on the other hand will post synchronously as soon as a candidate handler is attached.
 
 ```typescript
-import { Evt } from "ts-evt";
+import { Evt } from "ts-evt";
 
 function createPreloadedEvtText(): Evt<string>{
 
@@ -1321,8 +1305,8 @@ function createPreloadedEvtText(): Evt<string>{
 
         await evtText.postAsyncOnceHandled("Foo");
         evtText.post("bar");
-        
-        
+
+
     })();
 
 
@@ -1339,32 +1323,28 @@ console.log("BEFORE");
 
 //"BEFORE" then (next micro task) "1 foo" "2 foo" "1 bar" "2 bar"
 //If we use postSyncOnceHandled in place of postAsyncOnceHandled
-//we get "1 Foo" "BEFORE" "1 Bar" "2 Bar" 
+//we get "1 Foo" "BEFORE" "1 Bar" "2 Bar"
 ```
 
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-postoncematched?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-postoncematched?embed=1&file=index.ts)
 
-## ``evtUtil.race([...])``
+### `evtUtil.race([...])`
 
-``evtUtil.race([...])`` is a generalization of ``Promise.race([...])`` that
-accept ``Evt`` as well as ``Promise`` and direct value.
+`evtUtil.race([...])` is a generalization of `Promise.race([...])` that accept `Evt` as well as `Promise` and direct value.
 
-The ``evtUtil.race([...])`` function returns an ``OneShot<Evt>`` that post or as soon as one of the evt/promises in the array post/fulfill.
+The `evtUtil.race([...])` function returns an `OneShot<Evt>` that post or as soon as one of the evt/promises in the array post/fulfill.
 
 TODO: Provide real documentation and usecase.
 
-## ``NonPostable<Evt<T>>``  
+### `NonPostable<Evt<T>>`
 
-A non postable ``Evt`` is an ``Evt`` that does not expose the methods ``post()``, ``postAsyncOnceHandled()`` and ``postSyncOnceHandled()``.
-It is useful for exposing ``Evt``s to parts of the code that are in charge 
-of reacting to the events but are not supposed to post.
+A non postable `Evt` is an `Evt` that does not expose the methods `post()`, `postAsyncOnceHandled()` and `postSyncOnceHandled()`. It is useful for exposing `Evt`s to parts of the code that are in charge of reacting to the events but are not supposed to post.
 
-Note that ``NonPostable<>`` is not a class or an interface it's just an helper
-type that says: "You are not allowed to post with this ``Evt``"
+Note that `NonPostable<>` is not a class or an interface it's just an helper type that says: "You are not allowed to post with this `Evt`"
 
 ```typescript
 import { Evt } from "ts-evt";
-import { NonPostable } from "ts-evt/dist/lib/helperTypes";
+import { NonPostable } from "ts-evt/dist/lib/helperTypes";
 
 const evtText= new Evt<string>();
 
@@ -1378,11 +1358,12 @@ api.evtText.postOnceMatched //<===== TS error
 //But we can post internally.
 evtText.post("good");
 ```
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-non-postable?embed=1&file=index.ts)
 
-## ``UnpackEvt<typeof evt>``.
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-non-postable?embed=1&file=index.ts)
 
-UnpackEvt is a helper type to infer the type argument of an Evt instance.  
+### `UnpackEvt<typeof evt>`.
+
+UnpackEvt is a helper type to infer the type argument of an Evt instance.
 
 ```typescript
 import { Evt } from "ts-evt";
@@ -1391,7 +1372,7 @@ import { UnpackEvt, NonPostable } from "ts-evt/dist/lib/helperTypes";
 const evtHuman = new Evt<{
     name: string;
     age: number;
-    gender: "MALE" | "FEMALE"
+    gender: "MALE" | "FEMALE"
 }>();
 
 {
@@ -1425,21 +1406,18 @@ const evtHuman = new Evt<{
 
 }
 ```
-Note that if you try unpacking the type of an evt instantiated
-by a module that use a different version of ``ts-evt`` that the one you 
-included in the your project the inference will fail.
 
-Note also that the ``UnpackEvt<>`` is not included in the default export
-of the module because doing so would restrict ``ts-evt`` to be used in projects  
-using typescript version before 2.8 ( version when the infer keyword was introduced ).
+Note that if you try unpacking the type of an evt instantiated by a module that use a different version of `ts-evt` that the one you included in the your project the inference will fail.
 
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-unpack-type-argument?embed=1&file=index.ts)
+Note also that the `UnpackEvt<>` is not included in the default export of the module because doing so would restrict `ts-evt` to be used in projects  
+using typescript version before 2.8 \( version when the infer keyword was introduced \).
 
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-unpack-type-argument?embed=1&file=index.ts)
 
-## ``evt.enableTrace(...)``
+### `evt.enableTrace(...)`
 
-If you need help to track down a bug, you can use ``enableTrace`` to log what's going on with an Evt.  
-Use ``evt.disableTrace()`` to stop logging.
+If you need help to track down a bug, you can use `enableTrace` to log what's going on with an Evt.  
+Use `evt.disableTrace()` to stop logging.
 
 ```typescript
 import { Evt } from "ts-evt";
@@ -1481,9 +1459,9 @@ console.log("\n");
 }
 ```
 
-This will print: 
+This will print:
 
-```log
+```text
 (evtCircle n°1) 0 handler => { "type": "CIRCLE", "radius": 12 }
 (evtCircle n°1) 1 handler => { "type": "CIRCLE", "radius": 33 }
 
@@ -1491,21 +1469,17 @@ This will print:
 [myPrefix] (evtCircle n°2) 1 handler => CIRCLE(33)
 ```
 
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-trace?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-trace?embed=1&file=index.ts)
 
+## `Observable<T>` documentation
 
-# ``Observable<T>`` documentation
+`Observable` in `RxJS` and `ts-evt` are **not** the same abstraction.
 
-``Observable`` in ``RxJS`` and ``ts-evt`` are **not** the same abstraction.
+`Observable<T>` in `ts-evt` provide a way to react to an object mutation.
 
-``Observable<T>`` in ``ts-evt`` provide a way to react to an object mutation.
-
- A ``Observable<T>`` encapsulate a value of type ``T`` when this value get 
- changed ``.evtChange`` is posted.
-
+A `Observable<T>` encapsulate a value of type `T` when this value get changed `.evtChange` is posted.
 
 ```typescript
-
 import { Observable, IObservable } from "ts-evt";
 import { assert } from "ts-evt/dist/tools/typeSafety";
 
@@ -1586,16 +1560,15 @@ const updatedUsers = [
 obsUsers.onPotentialChange(updatedUsers);
 ```
 
-[__Run the example__](https://stackblitz.com/edit/ts-evt-demo-observable-change-condition?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-observable-change-condition?embed=1&file=index.ts)
 
-# Appendix: ``evt.waitFor(...)`` used in ``async`` procedure or loop
+## Appendix: `evt.waitFor(...)` used in `async` procedure or loop
 
-``evt.waitFor()`` is <b>NOT</b> equivalent to ``new Promise(resolve=> evt.attachOnce(resolve))``
+`evt.waitFor()` is **NOT** equivalent to `new Promise(resolve=> evt.attachOnce(resolve))`
 
-``.waitFor()`` is designed in a way that makes it safe to use ``async`` procedures.  
+`.waitFor()` is designed in a way that makes it safe to use `async` procedures.
 
-Basically it means that the following example prints `A B` on the console instead
-of waiting forever for the secondLetter.
+Basically it means that the following example prints `A B` on the console instead of waiting forever for the secondLetter.
 
 ```typescript
 import { Evt } from "ts-evt";
@@ -1617,16 +1590,13 @@ evtText.post("B");
 //"A B" is printed to the console.
 ```
 
-Run this [__more practical example__](https://stackblitz.com/edit/ts-evt-demo-edge-case?embed=1&file=index.ts)
-to understand how this behavior prevent from some hard to figure out bugs.
+Run this [**more practical example**](https://stackblitz.com/edit/ts-evt-demo-edge-case?embed=1&file=index.ts) to understand how this behavior prevent from some hard to figure out bugs.
 
-Enforcing this behavior does involve some voodoo. This is the explanation as to why the
-source code of ``ts-evt`` appears very cryptic for an event bus implementation.
+Enforcing this behavior does involve some voodoo. This is the explanation as to why the source code of `ts-evt` appears very cryptic for an event bus implementation.
 
-# History of the project
+## History of the project
 
-This project was originally a fork aimed to add features to ``rogierschouten/ts-events``.  
-Along the way it has been re-implemented from scratch keeping only the 
-core API design.   
-AsyncEvent and QueuedEvent have been scraped out 
-focusing only on the SyncEvent class.
+This project was originally a fork aimed to add features to `rogierschouten/ts-events`.  
+Along the way it has been re-implemented from scratch keeping only the core API design.  
+AsyncEvent and QueuedEvent have been scraped out focusing only on the SyncEvent class.
+
