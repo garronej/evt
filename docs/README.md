@@ -2,9 +2,9 @@
 
 ![](https://user-images.githubusercontent.com/6702424/74597663-160a9c80-5063-11ea-9542-4437de0b7c66.png)
 
- 💧Type safe replacement for Node's EventEmitter embracing functional programming💧  
-  
- ![](https://img.shields.io/bundlephobia/min/ts-evt) ![](https://img.shields.io/bundlephobia/minzip/ts-evt) ![](https://img.shields.io/david/garronej/ts-evt) ![](https://img.shields.io/npm/l/ts-evt)
+💧Type safe replacement for Node's EventEmitter embracing functional programming💧
+
+![](https://img.shields.io/bundlephobia/min/ts-evt) ![](https://img.shields.io/bundlephobia/minzip/ts-evt) ![](https://img.shields.io/david/garronej/ts-evt) ![](https://img.shields.io/npm/l/ts-evt)
 
 **WARNING**: If you happen to read this message note that the doc is in a temporary state as it is being migrated to git book. Everything will be fixed soon. \( Sun 8 march 2020 \)
 
@@ -28,7 +28,7 @@ There is a lot of things that can't easily be done with `EventEmitter`:
 * Enforcing type safety.
 * Removing a particular listener when the callback is an anonymous function.
 * Adding a one-time listener for the next event that meet a condition.
-* Waiting \(via a Promise\) for one thing or another to happen.  
+* Waiting \(via a Promise\) for one thing or another to happen.
 
   Example: waiting at most one second for the next message, stop waiting if the socket disconnects.
 
@@ -40,13 +40,13 @@ There is a lot of things that can't easily be done with `EventEmitter`:
 
   to the event flow.
 
-* Combining the right abstractions/operators can be challenging, even for  seemingly straights forward control flows.
+* Combining the right abstractions/operators can be challenging, even for seemingly straights forward control flows.
 
 ## Try it
 
 ![](https://ts-evt.dev/assets/img/try-in-browser.gif)
 
- [**Run hello world**](https://stackblitz.com/edit/ts-evt-demo-hello-world?embed=1&file=index.ts)
+[**Run hello world**](https://stackblitz.com/edit/ts-evt-demo-hello-world?embed=1&file=index.ts)
 
 ## Side by side comparison with `EventEmitter`
 
@@ -254,7 +254,7 @@ evtData.$attach(
 );
 ```
 
- [**Run the examples**](https://stackblitz.com/edit/ts-evt-vs-rxjs?embed=1&file=index.ts)  
+[**Run the examples**](https://stackblitz.com/edit/ts-evt-vs-rxjs?embed=1&file=index.ts)
 
 ![](https://user-images.githubusercontent.com/6702424/76122716-01cd1600-5ff7-11ea-8751-daf7b689e1b7.gif)
 
@@ -268,8 +268,13 @@ Exposed api use typescript keywords that were added in this version.
 
 ## CONTRIBUTORS
 
-+ [``u/rogierschouten``](https://github.com/rogierschouten) Creator of ``ts-events``, library form which ``ts-evt`` was heavily inspired.
-Infarct ``ts-evt`` was originally a fork aimed to add features to ``rogierschouten/ts-events``.  
-Along the way it has been re-implemented from scratch keeping only the core API design.  
-AsyncEvent and QueuedEvent have been scraped out focusing only on the SyncEvent class.  
-+ [``u/garronej``](https://github.com/garronej) Creator of ``ts-evt``.  
+* [`u/rogierschouten`](https://github.com/rogierschouten) Creator of `ts-events`, library form which `ts-evt` was heavily inspired.
+
+  Infarct `ts-evt` was originally a fork aimed to add features to `rogierschouten/ts-events`.  
+
+  Along the way it has been re-implemented from scratch keeping only the core API design.  
+
+  AsyncEvent and QueuedEvent have been scraped out focusing only on the SyncEvent class.  
+
+* [`u/garronej`](https://github.com/garronej) Creator of `ts-evt`.  
+
