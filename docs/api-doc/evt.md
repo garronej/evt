@@ -1,6 +1,6 @@
-# Evt&lt;T&gt;
+# Evt&lt;T&gt; \(class\)
 
-``Evt<T>`` is the Class that is the equivalent of `EventEmitter` in `"events"` and `Subject<T>` in `"rxjs"`
+`Evt<T>` is the Class that is the equivalent of `EventEmitter` in `"events"` and `Subject<T>` in `"rxjs"`
 
 //Combining Once, Prepend, matcher, timeout and boundTo
 
@@ -13,9 +13,6 @@ For each of those methods a large number of overload are defined so that you can
 ![Screenshot 2020-02-08 at 19 27 56](https://user-images.githubusercontent.com/6702424/74090245-6c973a00-4aa9-11ea-8e48-90d49a0ed20b.png)
 
 All the attach methods returns Promises that resolve when an event is matched for the first time and reject in the same way `waitFor` does. This explains why it is possible to combine `attach` `attachOnce`, `attachPrepend` ect... with the timeout parameter.
-
-
-
 
 ## `evt.[$]attach*(...)` methods
 
@@ -39,7 +36,7 @@ All the attach methods returns Promises that resolve when an event is matched fo
 
 **evt.\[$\]attach\[Once\]Prepend\(...\)**
 
-`evt.attachPrepend(...)` and  `evt.attachOncePrepend(...)`
+`evt.attachPrepend(...)` and `evt.attachOncePrepend(...)`
 
 Similar to Node's `emitter.prependListener(...)` and `emitter.prependOnceListener(...)`
 
@@ -59,9 +56,7 @@ evtConnect.post();
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-prepend?embed=1&file=index.ts)
 
-
 **evt.\[$\]attach\[Once\]Extract\(...\)**
-
 
 `evt.attachExtract(...)` and `evt.attachOnceExtract(...)`
 
@@ -93,8 +88,6 @@ evtCircle.attachPrepend(
 ```
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-extract?embed=1&file=index.ts)
-
-
 
 #### `evt.post*(data)` methods
 
@@ -173,12 +166,6 @@ console.log("BEFORE");
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-postoncematched?embed=1&file=index.ts)
 
-
-
-
-
-
-
 ## The `Handler<T,U>` type
 
 ## `evt.getHandlers()`
@@ -218,9 +205,7 @@ evtShape.getHandlers()
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-detach-matcher?embed=1&file=index.ts)
 
-
-
-## `evt.getEvt[Attach|Detach]()` 
+## `evt.getEvt[Attach|Detach]()`
 
 //`evt.evtAttach` and `evt.evtDetach`
 
@@ -247,10 +232,7 @@ TODO: Update the example to includes `evtDetach`
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-evtattach?embed=1&file=index.ts)
 
-
 ## `evt.isHandled(data)`
-
-
 
 Test if posting event data will have an effect.
 
@@ -293,13 +275,7 @@ console.log(
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-is-hadled?embed=1&file=index.ts)
 
-
 ## `evt.waitFor(...)`
-
-
-
-
-
 
 Method that returns a promise that will resolve when the next event is posted.
 
@@ -372,8 +348,6 @@ setTimeout(
 
 ### Difference between `evt.waitFor(...)` and `evt.attachOnce(...)`
 
-
-
 `evt.waitFor()` is **NOT** equivalent to `new Promise(resolve=> evt.attachOnce(resolve))`
 
 `.waitFor()` is designed in a way that makes it safe to use `async` procedures.
@@ -404,11 +378,7 @@ Run this [**more practical example**](https://stackblitz.com/edit/ts-evt-demo-ed
 
 Enforcing this behavior does involve some voodoo. This is the explanation as to why the source code of `ts-evt` appears very cryptic for an event bus implementation.
 
-
-
-
 ## `evt.pipe(...)`
-
 
 Create a new instance of Evt toward which will be forwarded all the events matched by the matcher function.
 
@@ -465,7 +435,6 @@ evtShape.post({
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-delegate?embed=1&file=index.ts)
 
-
 ## `Evt.merge([evt1, evt2, ...])`
 
 ## Detaching handlers.
@@ -475,7 +444,6 @@ evtShape.post({
 **handler.detach\(\)**
 
 **ctx.detach\(\[evt\]\)**
-
 
 `evt.detach(...)`
 
@@ -543,10 +511,6 @@ evtText.getHandlers()
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-detach-classic?embed=1&file=index.ts)
 
-
-
-
-
 ## `evt.enableTrace(...)`
 
 If you need help to track down a bug, you can use `enableTrace` to log what's going on with an Evt.  
@@ -603,3 +567,4 @@ This will print:
 ```
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-trace?embed=1&file=index.ts)
+

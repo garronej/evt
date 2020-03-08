@@ -1,23 +1,23 @@
-# Operator
+# Operator \(type\)
 
 Operator provide a way to transform events data before they are passed to the callback.
 
 Operators can be of three types:
 
-* **Filter**: `(data: T)=> boolean`.  
+* **Filter**: `(data: T)=> boolean`.
 
   Only the matched event data will be passed to the callback.
 
-* **Type guard**: `<Q extends T>(data: T)=> data is Q`  
+* **Type guard**: `<Q extends T>(data: T)=> data is Q`
 
-  Functionally equivalent to filter but restrict the event data type.  
+  Functionally equivalent to filter but restrict the event data type.
 
-* **fλ**  
+* **fλ**
 
   Filter / transform / stipulate when to detach the handler \( or a group of handler \)
 
   * **Stateless fλ**: `<U>(data: T)=> [U]|null|"DETACH"|{DETACH:Ref}|...`  
-  * **Stateful fλ**: `[ <U>(data:T,prev:U)=> ..., U(initial value) ]`  
+  * **Stateful fλ**: `[ <U>(data:T,prev:U)=> ..., U(initial value) ]`
 
     Uses the previous result to perform the computation
 
@@ -363,9 +363,7 @@ setTimeout(()=>evtText.post("D"), 2500); //Prints "D"
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-compose?embed=1&file=index.ts)
 
-
-============================================================== Where to put ? 
-
+============================================================== Where to put ?
 
 Operators functions can be used with:
 
@@ -425,3 +423,4 @@ evtShape.post({
 ```
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-matcher-and-waitfor?embed=1&file=index.ts)
+

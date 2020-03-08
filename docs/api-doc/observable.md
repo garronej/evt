@@ -1,5 +1,4 @@
-
-# `Observable<T>`
+# Observable&lt;T&gt; \(class\)
 
 `Observable` in `RxJS` and `ts-evt` are **not** the same abstraction.
 
@@ -89,3 +88,4 @@ obsUsers.onPotentialChange(updatedUsers);
 ```
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-observable-change-condition?embed=1&file=index.ts)
+
