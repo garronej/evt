@@ -49,11 +49,8 @@ There is a lot of things that can't easily be done with ``EventEmitter``:
 # Try it
 
 <p align="center">
-    <img src="
-    https://user-images.githubusercontent.com/6702424/74102835-7a9b9800-4b47-11ea-854d-062fe1f42bba.gif
-    ">  
+    <img src="https://ts-evt.dev/assets/img/try-in-browser.gif">  
 </p>
-
 
 <p align="center">
 <b><a href="https://stackblitz.com/edit/ts-evt-demo-hello-world?embed=1&file=index.ts">Run hello world</a></b>
