@@ -30,5 +30,3 @@ evtShape.getHandlers()
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-detach-matcher?embed=1&file=index.ts)
 
-## \`\`
-
