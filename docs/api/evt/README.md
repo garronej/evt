@@ -6,43 +6,6 @@ description: >-
 
 # Evt&lt;T&gt; \(class\)
 
-## `evt.getHandlers()`
-
-`evt.getHandlers()`
-
-List all handlers attached to the `Evt`.  
-Returns an array of `Handler<T>`.  
-A `Handler[]` is an object that contains all the information needed to identify a handler and a `detach()` method.
-
-Here a use case detaching all handlers that uses a given matcher:
-
-```typescript
-import { Evt } from "ts-evt";
-
-const evtShape = new Evt<Shape>();
-
-evtShape.attach(
-    matchCircle,
-    _circle => { }
-);
-evtShape.attachOnce(
-    matchCircle,
-    _circle => { }
-);
-
-evtShape.waitFor(matchCircle)
-    .then(_circle => { })
-    ;
-
-//waitFor will not reject once detached as no timeout have been specified.
-evtShape.getHandlers()
-    .filter(({ matcher }) => matcher === matchCircle)
-    .forEach(({ detach }) => detach())
-    ;
-```
-
-[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-detach-matcher?embed=1&file=index.ts)
-
 ## `evt.getEvt[Attach|Detach]()`
 
 //`evt.evtAttach` and `evt.evtDetach`
