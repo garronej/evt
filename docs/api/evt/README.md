@@ -6,10 +6,6 @@ description: >-
 
 # Evt&lt;T&gt; \(class\)
 
-#### \`\`
-
-## The `Handler<T,U>` type
-
 ## `evt.getHandlers()`
 
 `evt.getHandlers()`

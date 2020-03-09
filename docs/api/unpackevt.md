@@ -3,8 +3,7 @@
 UnpackEvt is a helper type to infer the type argument of an Evt instance.
 
 ```typescript
-import { Evt } from "ts-evt";
-import { UnpackEvt, NonPostable } from "ts-evt/dist/lib/helperTypes";
+import { Evt, UnpackEvt, NonPostable } from "ts-evt";
 
 const evtHuman = new Evt<{
     name: string;
