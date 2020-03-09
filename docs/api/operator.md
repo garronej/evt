@@ -23,7 +23,7 @@ Operators can be of three types:
   * **Stateless fλ**: `<U>(data: T)=> [U]|null|"DETACH"|{DETACH:Ref}|...`  
   * **Stateful fλ**: `[ <U>(data: T, prev: U)=> ..., U(initial value) ]`
 
-    Uses the previous result to perform the computation
+    Uses the previous matched event data transformation as input.
 
 In any case, operators should not produce any side effects.
 
@@ -118,7 +118,7 @@ The value that a fλ operator can return are:
 * `{ DETACH: Ctx }` If the event should be ignored and a group of handler bound to a certain context must be detached. See [`Ctx`](https://docs.ts-evt.dev/api-doc/ctx)
 * `[ U, "DETACH" ]` / `[ U, {DETACH:Ref} ]` If the event should be handler AND the handler detached.
 
-**Stateless fλ**
+### **Stateless fλ**
 
 Stateless fλ operator only takes the event data as argument.
 
@@ -230,7 +230,7 @@ evtBtnClick.post("OK"); //Prints "OK", evtBtnClick handler hasn't been detached 
 
 [**Run examples**](https://stackblitz.com/edit/ts-evt-demo-transformative-matcher?embed=1&file=index.ts)
 
-**Stateful fλ**
+### **Stateful fλ**
 
 The result of the previously matched event is passed as argument to the operator.
 
@@ -379,6 +379,41 @@ setTimeout(()=>evtText.post("D"), 2500); //Prints "D"
 ```
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-compose?embed=1&file=index.ts)
+
+## Explicitly using the type alias
+
+In `Operator<T, U>` `T` design the type of the event data and `U` design the type of the data spitted out by the operator to be passed to the callback. For filters operator `U=T`.
+
+```typescript
+import { Operator } from "ts-evt";
+
+const myFilterOp: Operator<string,string> = 
+    data => data.startsWith("H");
+
+const myTypeGuardOp: Operator<Shape,Circle> = 
+    (data): data is Circle => data.type ==="CIRCLE";
+    
+const myStatelessFλOp: Operator.fλ.Stateless<Shape, number> = 
+    shape => shape.type !== "CIRCLE" ? null : [ circle.radius ];
+  
+const myStatefulFλOp: Operator.fλ.Stateful<string, number> =
+    [
+        (data, prev)=> [ prev + data.length ],
+        0 
+    ];
+ 
+//Operator.fλ.Stateless<T, U> and Operator.fλ.Stateful<T, U>
+//are a subtypes of Operator.fλ<T,U> which is in turn subtype
+//of Operator<T,U>
+
+declare function f1<T,U>(op: Operator.fλ<T,U>): void;
+declare function f2<T,U>(op: Operator<T,U>): void;
+
+f1(myStatelessFλOp); //OK
+f1(myStatefulFλOp);  //OK
+f2(myStatelessFλOp); //OK
+f2(myStatefulFλOp);  //OK
+```
 
 ## Where to use operators
 
