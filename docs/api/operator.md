@@ -4,7 +4,7 @@ description: >-
   callback.
 ---
 
-# Operator&lt;T,U&gt; \(type\)
+# Operator&lt;T, U&gt; \(type\)
 
 Operators can be of three types:
 
