@@ -23,8 +23,11 @@ export declare namespace Handler {
     type PropsFromMethodName = PropsFromMethodName.Sync | PropsFromMethodName.Async;
     namespace PropsFromMethodName {
         type Common = Readonly<{
+            prepend: true;
+            extract: true;
+        } | {
             prepend: boolean;
-            extract: boolean;
+            extract: false;
         }>;
         export type Sync = Common & Readonly<{
             async: false;
