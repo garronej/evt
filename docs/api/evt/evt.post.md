@@ -28,7 +28,7 @@ console.log(evtText.postCount);
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-postcount?embed=1&file=index.ts)
 
-## `evt.postAsyncOnceMatched(data)`
+## `evt.postAsyncOnceHandled(data)`
 
 Post the event data only once there is at least one  handler candidate to handle it.
 
@@ -70,9 +70,9 @@ console.log("BEFORE");
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-postoncematched?embed=1&file=index.ts)
 
-## **`evt.postSyncOnceMatched(data)`**
+## **`evt.postSyncOnceHandled(data)`**
 
-The same thing that `evt.postAsyncOnceMatched(data)` but the data is posted synchronously as soon as a candidate handler is attached.
+The same thing that `evt.postAsyncOnceHandled(data)` but the data is posted synchronously as soon as a candidate handler is attached.
 
 Not that it has less practical value than it's async counterpart as you likely want to leave an event loop "tick" for all handlers to be attached before posting the event.
 
