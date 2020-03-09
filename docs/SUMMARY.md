@@ -8,6 +8,7 @@
     * [evt.post\*\(data\)](api/evt/evt.post.md)
     * [evt.getEvt\[Attach\|Detach\]\(\)](api/evt/evt.getevtattachdetach.md)
     * [evt.getHandler\(\)](api/evt/evt.gethandler.md)
+    * [isHandled\(data\)](api/evt/evt.ishandled.md)
   * [Ctx \(class\)](api/ctx.md)
   * [Handler&lt;T, U&gt; \(type\)](api/handler.md)
   * [VoidEvt \(class\)](api/voidevt.md)
