@@ -4,6 +4,7 @@
 * [API Documentation](api/README.md)
   * [Operator&lt;T, U&gt; \(type\)](api/operator.md)
   * [Evt&lt;T&gt; \(class\)](api/evt/README.md)
+    * [evt.post\*\(data\)](api/evt/evt.post.md)
     * [evt.\[$\]attach\*\(...\)](api/evt/evt.attach.md)
   * [Ctx \(class\)](api/ctx.md)
   * [Handler&lt;T, U&gt; \(type\)](api/handler.md)

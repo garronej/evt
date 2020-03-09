@@ -1,10 +1,10 @@
 ---
-description: Attach an Handler provided with a callback function to the Evt
+description: 'Attach an Handler<T,U> provided with a callback function to the Evt<T>'
 ---
 
-# evt.\[$\]attach\*\(...\)
+# evt.attach\(...\) \(\[$\]attach\*\)
 
-There is multiple flavor of the attach method: attachOnce, atachPrepend, attachExtract... All this methods have in common to accept the same parameters and to return the same type of value.
+Every `attach*` method have in commun to accept the same parameters and to return the same type of value.
 
 ## Returned value
 
@@ -33,21 +33,21 @@ Examples:
 * Specifying an operato and a context: `evt.attach(op, boundTo, callback)`
 * ...
 
-## The `$` prefix
+## The $ prefix
 
 Due to a current [TypeScript limitation](https://github.com/microsoft/TypeScript/issues/36735) the `.attach*()` methods need to be prefixed with `$` when used with fλ operators but `evt.$attach*()` are actually just aliases to the corresponding `evt.attach*()` methods.
 
-## **`evt.[$]attach(...)`**
+**evt.\[$\]attach\(...\)**
 
-Adds the a new [Handler](https://docs.ts-evt.dev/api/handler) to the end of the handlers array. No checks are made to see if the hanlder has already been added. Multiple calls passing the same combination of parameters will result in the `handler` being added, and called, multiple times.
+\*\*\*\*
 
-## **`evt.[$]attachOnce*(...)`**
+**evt.\[$\]attachOnce\*\(...\)**
 
-When the  method contains the keyword "**once**": Adds a **one-time** [Handler](https://docs.ts-evt.dev/api/handler). The next time an event is matched this handler is detached and then it's callback is invoked.
+**evt.\[$\]attach\[Once\]Prepend\(...\)**
 
-## `evt.[$]attach[Once]Prepend(...)`
+`evt.attachPrepend(...)` and `evt.attachOncePrepend(...)`
 
-When the method contain the keyword "**prepend**":  Same as .attach\(\) but the [`Handler`](https://docs.ts-evt.dev/api/handler) is added to the _beginning_ of the handler array. 
+Similar to Node's `emitter.prependListener(...)` and `emitter.prependOnceListener(...)`
 
 ```typescript
 import { VoidEvt } from "ts-evt";
@@ -65,13 +65,11 @@ evtConnect.post();
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-prepend?embed=1&file=index.ts)
 
-## **`evt.[$]attach[Once]Extract(...)`**
+**evt.\[$\]attach\[Once\]Extract\(...\)**
 
-When the method contains the  "**extract**" keyword every event that the [`handler`](https://docs.ts-evt.dev/api/handler) matches will be swallowed and no other handler will be have the opportunity to handle it, even the other "extract"' handlers. It behave like a trap.
+`evt.attachExtract(...)` and `evt.attachOnceExtract(...)`
 
-"**extract**" handler have priority even over "**prepend**" [`Handler`](https://docs.ts-evt.dev/api/handler)s. 
-
-If multiples "extractes" handlers are candidate to extract an event the handler that have been added first have the priority. 
+To handle edge cases that haven't been anticipated without having to rethink the model as a whole we provide a way to extract particular types of events.
 
 ```typescript
 import { Evt } from "ts-evt";
@@ -80,7 +78,7 @@ const evtCircle = new Evt<Circle>();
 
 evtCircle.attachExtract(
     ({ radius }) => radius <= 0,
-    ({ radius }) => console.log(`Circle with radius: ${radius} extracted`)
+    ({ radius }) => console.log(`malformed circle with radius: ${radius} extracted`)
 );
 
 evtCircle.attach(
