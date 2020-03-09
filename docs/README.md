@@ -6,20 +6,16 @@
 
 ![](https://img.shields.io/bundlephobia/min/ts-evt) ![](https://img.shields.io/bundlephobia/minzip/ts-evt) ![](https://img.shields.io/david/garronej/ts-evt) ![](https://img.shields.io/npm/l/ts-evt)
 
-**WARNING**: If you happen to read this message note that the doc is in a temporary state as it is being migrated to git book. Everything will be fixed soon. \( Sun 8 march 2020 \)
-
 `ts-evt` is intended to be a replacement for Node's `events` and alternative to `RxJS`.  
 It enable and encourage **functional programming** and makes heavy use of **typescript**'s type inference features to provide **type safety** while keeping things **concise and elegant** 🍸.
 
-TS-EVT run everywhere Node, **Deno**\(\*soon\), React Native and the web browser of your grand mother.
+TS-EVT runs everywhere, Node, **Deno**\(\*soon\), React Native and the web browser of your grand mother.
 
 **Browserify friendly:**
 
 * No polyfills needed ✅  
 * Transpiled down to ES3 ✅  
 * Light-weight, no third party dependencies ✅   
-
-...Will be cross compatible with **Deno** very soon.
 
 ## Motivation
 
@@ -34,12 +30,7 @@ There is a lot of things that can't easily be done with `EventEmitter`:
 
 `RxJS` have it's issues as well:
 
-* When chaining operators the type is often lost along the way as
-
-  Typescript struggle to keep track of the mutation / filtering being applied
-
-  to the event flow.
-
+* When chaining operators the type is often lost along the way as Typescript struggle to keep track of the mutation / filtering being applied to the event flow.
 * Combining the right abstractions/operators can be challenging, even for seemingly straights forward control flows.
 
 ## Try it
