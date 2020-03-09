@@ -4,6 +4,7 @@
 * [API Documentation](api/README.md)
   * [Operator&lt;T, U&gt; \(type\)](api/operator.md)
   * [Evt&lt;T&gt; \(class\)](api/evt/README.md)
+    * [evt.waitFor\(...\)](api/evt/evt.waitfor-....md)
     * [evt.\[$\]attach\*\(...\)](api/evt/evt.attach.md)
     * [evt.post\*\(data\)](api/evt/evt.post.md)
     * [evt.getEvt\[Attach\|Detach\]\(\)](api/evt/evt.getevtattachdetach.md)
