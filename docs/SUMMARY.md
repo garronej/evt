@@ -10,4 +10,5 @@
   * [UnpackEvt&lt;typeof evt&gt; \(type\)](api-doc/unpackevt.md)
   * [NonPostable&lt;Evt&lt;T&gt;&gt; \(type\)](api-doc/nonpostable.md)
   * [Observable&lt;T&gt; \(class\)](api-doc/observable.md)
+  * [\_\_TMP](api-doc/__tmp.md)
 

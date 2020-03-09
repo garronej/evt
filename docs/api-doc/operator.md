@@ -1,6 +1,10 @@
-# Operator \(type\)
+---
+description: >-
+  Operator provide a way to transform events data before they are passed to the
+  callback.
+---
 
-Operator provide a way to transform events data before they are passed to the callback.
+# Operator \(type\)
 
 Operators can be of three types:
 
@@ -17,13 +21,15 @@ Operators can be of three types:
   Filter / transform / stipulate when to detach the handler \( or a group of handler \)
 
   * **Stateless fλ**: `<U>(data: T)=> [U]|null|"DETACH"|{DETACH:Ref}|...`  
-  * **Stateful fλ**: `[ <U>(data:T,prev:U)=> ..., U(initial value) ]`
+  * **Stateful fλ**: `[ <U>(data: T, prev: U)=> ..., U(initial value) ]`
 
     Uses the previous result to perform the computation
 
-Operators should not produce any side effect.
+In any case, operators should not produce any side effects.
 
 ## Operator - Filter
+
+Iet us consider the example use of a matcher that filter out everey word that does not start with the letter 'H'.
 
 ```typescript
 import { Evt } from "ts-evt";
@@ -45,15 +51,14 @@ evtText.post("Bonjour");
 evtText.post("Hi!");
 ```
 
-NOTE: Make sure that your filters always returns a `boolean` at runtime.  
-If in doubts use 'bang bang' \( `!!returnedValue` \).  
-True as well for type guard operators.
+It is important that you makes sure that your filters always returns a `boolean` at runtime.  
+If in doubts use 'bang bang' \( `!!returnedValue` \). This note also apply for Type Gard operators.
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-matcher-return-boolean?embed=1&file=index.ts)
 
 ## Operator - Type guard
 
-If the operator is a type guard, the type of the callback argument will be narrowed down.
+If you use a filter that is also a [type guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards), the type of the callback argument will be narrowed down to the matched type.
 
 Let us define a straight forward type hierarchy to illustrate this feature.
 
@@ -70,11 +75,12 @@ type Square = {
 
 type Shape = Circle | Square;
 
+//Type Guard for Circle:
 const matchCircle = (shape: Shape): shape is Circle =>
     shape.type === "CIRCLE";
 ```
 
-The `matchCircle` type guard enables to attach a callback to an `Evt<Shape>` that will only be called against circles.
+The `matchCircle` type guard can be used to attach a callback to an `Evt<Shape>` that will only be called against circles.
 
 ```typescript
 import { Evt } from "ts-evt";
@@ -100,17 +106,17 @@ The type of the Shape object is narrowed down to `Circle`
 
 ## Operator - fλ
 
-Filter - Transform - Detach.
+Anonymous functions to simultaniously filter, transform the data and control the event flow.
 
 **fλ Returns**
 
 The value that a fλ operator can return are:
 
 * `null` If the event should be ignored and nothing passed to the callback.
-* `[ U ]` or `[ U, null ]` When the event should be handled, wrapped into a singleton is the value to pass to the callback.
-* `"DETACH"` When the event should be ignored and the handler detached from the `Evt`
-* `{ DETACH: Ctx }` When the event should be ignored and a group of handler bound to a certain context must be detached. See [`Ctx`](./#Ctx)
-* `[ U, "DETACH" ]` / `[ U, {DETACH:Ref} ]` To handle the event AND detach.
+* `[ U ]` or `[ U, null ]` When the event should be handled, wrapped into the singleton is the value will be passed to the callback.
+* `"DETACH"` If the event should be ignored and the handler detached from the `Evt`
+* `{ DETACH: Ctx }` If the event should be ignored and a group of handler bound to a certain context must be detached. See [`Ctx`](https://docs.ts-evt.dev/api-doc/ctx)
+* `[ U, "DETACH" ]` / `[ U, {DETACH:Ref} ]` If the event should be handler AND the handler detached.
 
 **Stateless fλ**
 
@@ -133,13 +139,19 @@ const evtShape = new Evt<Shape>();
 evtShape.$attach(
     shape => shape.type === "CIRCLE" && shape.radius > 100 ? 
         [ shape.radius ] : null,
-    radius => console.log(`radius: ${radius}`) 
+    radiusOfBigCircle => console.log(`radius: ${radius}`) 
     //NOTE: The radius argument is inferred as being of type number!
 );
 
-evtShape.post({ "type": "SQUARE", "sideLength": 3 }); //Nothing will be printed to the console, it's not a circle
-evtShape.post({ "type": "CIRCLE", "radius": 3 }); //Nothing will be printed to the console, The circle is too small.
-evtShape.post({ "type": "CIRCLE", "radius": 200 }); //"radius 200" Will be printed to the console.
+//Nothing will be printed to the console, it's not a circle
+evtShape.post({ "type": "SQUARE", "sideLength": 3 }); 
+
+//Nothing will be printed to the console, The circle is too small.
+evtShape.post({ "type": "CIRCLE", "radius": 3 }); 
+
+//"radius 200" Will be printed to the console.
+evtShape.post({ "type": "CIRCLE", "radius": 200 }); 
+
 ```
 
 Other example using `"DETACH"`
@@ -161,7 +173,7 @@ evtText.$attach(
 
 evtText.post("TICK"); //"tick" is printed to the console
 evtText.post("END"); //Nothing is printed to the console, the handler is detached
-evtText.post("TICK"); //Nothing is printed to the console the handler have been detached.
+evtText.post("TICK"); //Nothing is printed to the console.
 ```
 
 Example use of `[U,null|"DETACH"]`, handling the event that cause the handler to be detached.
@@ -179,7 +191,7 @@ evtText.post("END"); //"END" is printed to the console, the handler is detached.
 evtText.post("TICK"); //Nothing is printed to the console the handler have been detached.
 ```
 
-Example use of `{ DETACH: Ctx }`, detaching a group of handler bound to a given context.
+Example use of `{ DETACH:`[`Ctx`](https://docs.ts-evt.dev/api-doc/ctx)`}`, detaching a group of handler bound to a given context.
 
 ```typescript
 const evtBtnClick = new Evt<"OK" | "QUIT">();
@@ -261,7 +273,8 @@ evtText.$attach(
 const text= "Foo bar";
 
 if( evtText.isHandled(text) ){
-    evtText.post(text); //Prints "START: Foo Bar Foo bar", probably not what you wanted.
+    //Prints "START: Foo Bar Foo bar", probably not what you wanted...
+    evtText.post(text); 
 }
 ```
 
@@ -286,11 +299,13 @@ evtShape.$attach(
     radius => console.log(radius)
 );
 
-evtShape.post({ "type": "SQUARE", "sideLength": 10 }); //Prints nothing, Square does not matchCircle
-evtShape.post({ "type": "CIRCLE", "radius": 12 }); //Prints "12"
+//Prints nothing, Square does not matchCircle
+evtShape.post({ "type": "SQUARE", "sideLength": 10 }); 
+//Prints "12"
+evtShape.post({ "type": "CIRCLE", "radius": 12 });
 ```
 
-Example with the "on" opérator.
+Example with the "on" operator used to use `Evt`s as `EventEmitter`s.
 
 ```typescript
 import { Evt, to, compose } from "../lib";
@@ -308,7 +323,7 @@ evt.$attach(
     text => console.log(text)
 );
 
-evt.post(["text", "hi!"]); //Prints "HI!"
+evt.post(["text", "hi!"]); //Prints "HI!" ( uppercase )
 ```
 
 Example composing tre fλ to count the number of different word in a sentence:
@@ -355,72 +370,25 @@ evtText.$attach(
 );
 
 setTimeout(()=>evtText.post("A"), 0); //Prints "A"
-setTimeout(()=>evtText.post("B"), 500); //Prints nothing, the previous event was handled less than 1 second ago.
-setTimeout(()=>evtText.post("B"), 750); //Prints nothing, the previous event was handled less than 1 second ago.
+//Prints nothing, the previous event was handled less than 1 second ago.
+setTimeout(()=>evtText.post("B"), 500);
+//Prints nothing, the previous event was handled less than 1 second ago.
+setTimeout(()=>evtText.post("B"), 750); 
 setTimeout(()=>evtText.post("C"), 1001); //Prints "C"
 setTimeout(()=>evtText.post("D"), 2500); //Prints "D"
 ```
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-compose?embed=1&file=index.ts)
 
-============================================================== Where to put ?
+## Where to use operators
 
 Operators functions can be used with:
 
-* All the `attach*(...)` methods  
-* `waitFor(...)`   
-* `pipe(...)`   
+* All the [`evt.attach*(...)`](https://docs.ts-evt.dev/api-doc/evt#evt-usd-attach-methods) methods  
+* The [`evt.waitFor(...)`](https://docs.ts-evt.dev/api-doc/evt#evt-waitfor)   method
+* The [`evt.pipe(...)`](https://docs.ts-evt.dev/api-doc/evt#evt-pipe) method.
 
-Due to current [TypeScript limitation](https://github.com/microsoft/TypeScript/issues/36735) the `.attach*()` methods need to be prefixed with `$` when used with `fλ` operator.  
-`evt.$attach*()` are actually just aliases to the corresponding `evt.attach*()` methods but the `$` is currently required for the type inference to work.
+However due to current [TypeScript limitation](https://github.com/microsoft/TypeScript/issues/36735) the `.attach*()` methods need to be prefixed with `$` when used with `fλ` operator.`evt.$attach*()` are actually just aliases to the corresponding `evt.attach*()` methods but the `$` is currently required for the type inference to work.
 
-`waitFor(...)` and `attachOnce(...)` combined with matcher address the main shortcoming of EventEmitter allowing us to asynchronously wait for the next shape that is a circle, for example.
-
-```typescript
-import { Evt } from "ts-evt";
-
-const evtShape = new Evt<Shape>();
-
-evtShape.waitFor(matchCircle)
-    .then(circle => console.log(`radius: ${circle.radius}`))
-    ;
-
-evtShape.$attachOnce(
-    shape => shape.type === "SQUARE" && shape.sideLength > 100 ? 
-        [ shape.sideLength ] : null,
-    sideLength => console.log(`length: ${sideLength}`)
-);
-
-
-const circle: Circle = {
-    "type": "CIRCLE",
-    "radius": 33
-};
-
-//"radius: 33" will be printed to the console.
-evtShape.post(circle);
-
-//Nothing will be printed on the console, the promise returned by waitFor has already resolved.
-evtShape.post(circle);
-
-//Nothing will be printed, the side length is too short
-evtShape.post({
-    "type": "SQUARE",
-    "sideLength": 12
-});
-
-evtShape.post({
-    "type": "SQUARE",
-    "sideLength": 21
-});
-//"length: 21" have been  printed to the console.
-
-//Noting will be printed, attachOnce's callback function has already been invoked.
-evtShape.post({
-    "type": "SQUARE",
-    "sideLength": 44
-});
-```
-
-[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-matcher-and-waitfor?embed=1&file=index.ts)
+\`\`
 
