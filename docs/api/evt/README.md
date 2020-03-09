@@ -8,31 +8,6 @@ description: >-
 
 ## `evt.getEvt[Attach|Detach]()`
 
-//`evt.evtAttach` and `evt.evtDetach`
-
-`.evtAttach` and `.evtDetach` are `Evt<Handler<T, any>>`that track in the handler as they are being attached/detached from the `evt`.
-
-```typescript
-import * as console from "./consoleToPage";
-
-import { Evt } from "ts-evt";
-
-const evtText= new Evt<string>();
-
-const callback = (text: string)=> {};
-
-evtText.evtAttach.attachOnce(handler => 
-  console.log(handler.callback === callback)
-);
-
-evtText.attach(callback);
-//"true" is printed to the console.
-```
-
-TODO: Update the example to includes `evtDetach`
-
-[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-evtattach?embed=1&file=index.ts)
-
 ## `evt.isHandled(data)`
 
 Test if posting event data will have an effect.
