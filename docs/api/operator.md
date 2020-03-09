@@ -12,7 +12,7 @@ Operators can be of three types:
 
   Only the matched event data will be passed to the callback.
 
-* **Type guard**: `<Q extends T>(data: T)=> data is Q`
+* **Type guard**: `<U extends T>(data: T)=> data is U`
 
   Functionally equivalent to filter but restrict the event data type.
 
