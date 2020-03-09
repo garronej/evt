@@ -6,9 +6,8 @@ description: Test if posting event data will have an effect.
 
 Return true if:
 
--There is at least one handler matching this event data \( at least one handler's callback function will be invoked if the data is posted. \)
-
--There is at least one handler that will be detached if the event data is posted.
+* There is at least one handler matching this event data \( at least one handler's callback function will be invoked if the data is posted. \)
+* There is at least one handler that will be detached if the event data is posted.
 
 ```typescript
 const evtText = new Evt<string>();
