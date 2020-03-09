@@ -99,7 +99,7 @@ evt.post(["time", 1234]);
 
 ### "get started" examples.
 
-Here are direct translations of examples [provided as overview on the RxJS website](https://rxjs-dev.firebaseapp.com/guide/overview). You will have to put on you 👓 to notice the differences, on surface the API of the two library are very simillar. 
+Here are direct translations of examples [provided as overview on the RxJS website](https://rxjs-dev.firebaseapp.com/guide/overview). You will have to put on you 👓 to notice the differences, on surface the API of the two library are very simillar.
 
 #### First example
 
@@ -153,7 +153,7 @@ TS-EVT distant itself from this approach for two reasons:
 * This approach make it hard to enforce seamless type safety.
 * Every new elementary operator constitute a new abstraction, there is 103 operators availible in RxJS, a lot of concept to digest before beeing able to use the library at it's full potential. 
 
-The approach of `ts-evt` is to provide a way to define custom, functional, operator on the fly. 
+The approach of `ts-evt` is to provide a way to define custom, functional, operator on the fly.
 
 Introducing **fλ** operators one abstraction to remove the need of countless others.  
 **fλ** operators are **functions \(f\)** that are meant to be **anonymous \(**[**λ**](https://en.wikipedia.org/wiki/Anonymous_function)**\)**. They are designed in such a way that make them:
@@ -246,29 +246,26 @@ evtData.$attach(
         "=>"
     ], //<= Stateful fλ operator 
     str => console.log(str)
-); 
+);
 ```
 
-It's important to note that on both of this examples **fλ** operator are enforcing type safery without the need of any type annotation by levraging TypeScript type inference features . It is almost imposible to make a mistake writing a **fλ** operator as the code will either not compile or you will get a type that is not the one that you expected. 
+It's important to note that on both of this examples **fλ** operator are enforcing type safery without the need of any type annotation by levraging TypeScript type inference features . It is almost imposible to make a mistake writing a **fλ** operator as the code will either not compile or you will get a type that is not the one that you expected.
 
 [Run thoses examples and others](https://stackblitz.com/edit/ts-evt-vs-rxjs?embed=1&file=index.ts) in your browser, see for yourself the full extends of the type inference.
 
 ![](https://ts-evt.dev/assets/img/gun-vs-sword.gif)
 
-
 ## CONTRIBUTORS
 
 * [`u/rogierschouten`](https://github.com/rogierschouten) Creator of `ts-events`, library form which `ts-evt` was heavily inspired.
 
-  Infarct `ts-evt` was originally a fork aimed to add features to `rogierschouten/ts-events`.  
+  Infarct `ts-evt` was originally a fork aimed to add features to `rogierschouten/ts-events`.
 
-  Along the way it has been re-implemented from scratch keeping only the core API design.  
+  Along the way it has been re-implemented from scratch keeping only the core API design.
 
-  AsyncEvent and QueuedEvent have been scraped out focusing only on the SyncEvent class.  
+  AsyncEvent and QueuedEvent have been scraped out focusing only on the SyncEvent class.
 
-* [`u/garronej`](https://github.com/garronej) Creator of `ts-evt`.  
-
-
+* [`u/garronej`](https://github.com/garronej) Creator of `ts-evt`.
 
 ## Where do I start ?
 
