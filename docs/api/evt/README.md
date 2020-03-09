@@ -6,7 +6,152 @@ description: >-
 
 # Evt&lt;T&gt; \(class\)
 
+
+
+## \`\`
+
+#### `evt.post*(data)` methods
+
+**evt.post\(data\)**
+
+**evtPostCount: number**
+
+//`evt.postCount`
+
+The number of times `post()` has been called can be tracked by the `postCount` property.
+
+```typescript
+import { Evt } from "ts-evt";
+
+const evtText= new Evt<string>();
+
+//prints 0
+console.log(evtText.postCount);
+
+evtText.post("foo");
+evtText.post("bar");
+evtText.post("baz");
+
+//prints 3
+console.log(evtText.postCount);
+```
+
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-postcount?embed=1&file=index.ts)
+
+**evt.postAsyncOnceMatched\(data\)**
+
+**evt.postSyncOnceMatched\(data\)**
+
+`evt.postAsyncOnceHandled(data)` and `evt.postSyncOnceHandled(data)`
+
+When `isHandled(data)` return `true`, `postAsyncOnceHandled(data)` is a proxy for `post(data)`.
+
+When `postAsyncOnceHandled(data)` is invoked at a time where `isHandled(data)` returns `false`, the `data` will be hold and posted only once `isHandler(data)` would return `true`.  
+`post(data)` is scheduled to be invoked in a micro task once a candidate handler is attached \(not synchronously\).
+
+When the call to post is delayed `postAsyncOnceHandled(data)` returns a promise that resolve with the new post count when `post(data)` is invoked. Else returns the new post count synchronously.
+
+`postSyncOnceHandled(data)` on the other hand will post synchronously as soon as a candidate handler is attached.
+
+```typescript
+import { Evt } from "ts-evt";
+
+function createPreloadedEvtText(): Evt<string>{
+
+    const evtText = new Evt<string>();
+
+    (async ()=>{
+
+        await evtText.postAsyncOnceHandled("Foo");
+        evtText.post("bar");
+
+
+    })();
+
+
+    return evtText;
+
+}
+
+const evtText = createPreloadedEvtText();
+
+evtText.attach(text => console.log("1 " + text));
+evtText.attach(text => console.log("2 " + text));
+
+console.log("BEFORE");
+
+//"BEFORE" then (next micro task) "1 foo" "2 foo" "1 bar" "2 bar"
+//If we use postSyncOnceHandled in place of postAsyncOnceHandled
+//we get "1 Foo" "BEFORE" "1 Bar" "2 Bar"
+```
+
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-postoncematched?embed=1&file=index.ts)
+
+## The `Handler<T,U>` type
+
+## `evt.getHandlers()`
+
+`evt.getHandlers()`
+
+List all handlers attached to the `Evt`.  
+Returns an array of `Handler<T>`.  
+A `Handler[]` is an object that contains all the information needed to identify a handler and a `detach()` method.
+
+Here a use case detaching all handlers that uses a given matcher:
+
+```typescript
+import { Evt } from "ts-evt";
+
+const evtShape = new Evt<Shape>();
+
+evtShape.attach(
+    matchCircle,
+    _circle => { }
+);
+evtShape.attachOnce(
+    matchCircle,
+    _circle => { }
+);
+
+evtShape.waitFor(matchCircle)
+    .then(_circle => { })
+    ;
+
+//waitFor will not reject once detached as no timeout have been specified.
+evtShape.getHandlers()
+    .filter(({ matcher }) => matcher === matchCircle)
+    .forEach(({ detach }) => detach())
+    ;
+```
+
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-detach-matcher?embed=1&file=index.ts)
+
 ## `evt.getEvt[Attach|Detach]()`
+
+//`evt.evtAttach` and `evt.evtDetach`
+
+`.evtAttach` and `.evtDetach` are `Evt<Handler<T, any>>`that track in the handler as they are being attached/detached from the `evt`.
+
+```typescript
+import * as console from "./consoleToPage";
+
+import { Evt } from "ts-evt";
+
+const evtText= new Evt<string>();
+
+const callback = (text: string)=> {};
+
+evtText.evtAttach.attachOnce(handler => 
+  console.log(handler.callback === callback)
+);
+
+evtText.attach(callback);
+//"true" is printed to the console.
+```
+
+TODO: Update the example to includes `evtDetach`
+
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-evtattach?embed=1&file=index.ts)
 
 ## `evt.isHandled(data)`
 

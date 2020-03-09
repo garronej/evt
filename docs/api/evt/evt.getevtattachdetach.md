@@ -39,5 +39,5 @@ evtText.attach(()=> {});
 console.log(evtText.getEvtAttach().postCount);
 ```
 
-## \`\`
+
 
