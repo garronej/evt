@@ -4,7 +4,7 @@ Method that returns a promise that will resolve when the next matched event is p
 
 waitFor is essentially evt.attachOnce\(...\) but you dont have to provide a callback. It accept the same arguments and return the same promise. 
 
-_Essentialy_ the same but not exactly the same, there is a key difference between an handler attached via waitFor and a handler attached with attach\* \( see later
+_Essentialy_ the same but [not exactly the same](https://docs.ts-evt.dev/api/evt/evt.waitfor-...#difference-between-evt-waitfor-and-evt-attachonce), there is a key difference between an handler attached via waitFor and a handler attached with `attach*`
 
 ## Without timeout
 
