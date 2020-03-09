@@ -2,7 +2,7 @@
 
 * [Introduction](README.md)
 * [API Documentation](api/README.md)
-  * [Operator \(type\)](api/operator.md)
+  * [Operator&lt;T,U&gt; \(type\)](api/operator.md)
   * [Evt&lt;T&gt; \(class\)](api/evt/README.md)
     * [evt.\[$\]attach\*\(...\) methods](api/evt/evt.-usd-attach-...-methods.md)
   * [Ctx \(class\)](api/ctx.md)
