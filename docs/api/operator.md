@@ -384,11 +384,11 @@ setTimeout(()=>evtText.post("D"), 2500); //Prints "D"
 
 Operators functions can be used with:
 
-* All the [`evt.attach*(...)`](https://docs.ts-evt.dev/api-doc/evt#evt-usd-attach-methods) methods  
+* All the [`evt.attach*(...)`](https://docs.ts-evt.dev/api-doc/evt#evt-usd-attach-methods) methods, to prefix with `$` when used with fλ.
 * The [`evt.waitFor(...)`](https://docs.ts-evt.dev/api-doc/evt#evt-waitfor)   method
 * The [`evt.pipe(...)`](https://docs.ts-evt.dev/api-doc/evt#evt-pipe) method.
 
-However due to current [TypeScript limitation](https://github.com/microsoft/TypeScript/issues/36735) the `.attach*()` methods need to be prefixed with `$` when used with `fλ` operator.`evt.$attach*()` are actually just aliases to the corresponding `evt.attach*()` methods but the `$` is currently required for the type inference to work.
+However due to current [TypeScript limitation](https://github.com/microsoft/TypeScript/issues/36735) the `.attach*()` methods need to be prefixed with `$` when used with fλ operator.`evt.$attach*()` are actually just aliases to the corresponding `evt.attach*()` methods but the `$` is currently required for the type inference to work.
 
 \`\`
 
