@@ -4,7 +4,7 @@
 * [API Documentation](api/README.md)
   * [Operator&lt;T,U&gt; \(type\)](api/operator.md)
   * [Evt&lt;T&gt; \(class\)](api/evt/README.md)
-    * [evt.\[$\]attach\*\(...\) methods](api/evt/evt.-usd-attach-...-methods.md)
+    * [evt.attach\(...\) \(\[$\]attach\*\)](api/evt/evt.attach.md)
   * [Ctx \(class\)](api/ctx.md)
   * [Handler&lt;T, U&gt; \(type\)](api/handler.md)
   * [VoidEvt \(class\)](api/voidevt.md)
