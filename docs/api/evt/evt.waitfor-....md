@@ -73,7 +73,7 @@ setTimeout(
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-waitfor-timeout?embed=1&file=index.ts)
 
-### Difference between `evt.waitFor(...)` and `evt.attachOnce(...)`
+## Difference between `evt.waitFor(...)` and `evt.attachOnce(...)`
 
 `const pr= evt.waitFor()` is **NOT** equivalent to const `pr= evt.attachOnce(()=>{})` 
 

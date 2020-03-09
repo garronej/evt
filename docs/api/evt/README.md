@@ -6,7 +6,298 @@ description: >-
 
 # Evt&lt;T&gt; \(class\)
 
+
+
 ## \`\`
+
+#### `evt.post*(data)` methods
+
+**evt.post\(data\)**
+
+**evtPostCount: number**
+
+//`evt.postCount`
+
+The number of times `post()` has been called can be tracked by the `postCount` property.
+
+```typescript
+import { Evt } from "ts-evt";
+
+const evtText= new Evt<string>();
+
+//prints 0
+console.log(evtText.postCount);
+
+evtText.post("foo");
+evtText.post("bar");
+evtText.post("baz");
+
+//prints 3
+console.log(evtText.postCount);
+```
+
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-postcount?embed=1&file=index.ts)
+
+**evt.postAsyncOnceMatched\(data\)**
+
+**evt.postSyncOnceMatched\(data\)**
+
+`evt.postAsyncOnceHandled(data)` and `evt.postSyncOnceHandled(data)`
+
+When `isHandled(data)` return `true`, `postAsyncOnceHandled(data)` is a proxy for `post(data)`.
+
+When `postAsyncOnceHandled(data)` is invoked at a time where `isHandled(data)` returns `false`, the `data` will be hold and posted only once `isHandler(data)` would return `true`.  
+`post(data)` is scheduled to be invoked in a micro task once a candidate handler is attached \(not synchronously\).
+
+When the call to post is delayed `postAsyncOnceHandled(data)` returns a promise that resolve with the new post count when `post(data)` is invoked. Else returns the new post count synchronously.
+
+`postSyncOnceHandled(data)` on the other hand will post synchronously as soon as a candidate handler is attached.
+
+```typescript
+import { Evt } from "ts-evt";
+
+function createPreloadedEvtText(): Evt<string>{
+
+    const evtText = new Evt<string>();
+
+    (async ()=>{
+
+        await evtText.postAsyncOnceHandled("Foo");
+        evtText.post("bar");
+
+
+    })();
+
+
+    return evtText;
+
+}
+
+const evtText = createPreloadedEvtText();
+
+evtText.attach(text => console.log("1 " + text));
+evtText.attach(text => console.log("2 " + text));
+
+console.log("BEFORE");
+
+//"BEFORE" then (next micro task) "1 foo" "2 foo" "1 bar" "2 bar"
+//If we use postSyncOnceHandled in place of postAsyncOnceHandled
+//we get "1 Foo" "BEFORE" "1 Bar" "2 Bar"
+```
+
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-postoncematched?embed=1&file=index.ts)
+
+## The `Handler<T,U>` type
+
+## `evt.getHandlers()`
+
+`evt.getHandlers()`
+
+List all handlers attached to the `Evt`.  
+Returns an array of `Handler<T>`.  
+A `Handler[]` is an object that contains all the information needed to identify a handler and a `detach()` method.
+
+Here a use case detaching all handlers that uses a given matcher:
+
+```typescript
+import { Evt } from "ts-evt";
+
+const evtShape = new Evt<Shape>();
+
+evtShape.attach(
+    matchCircle,
+    _circle => { }
+);
+evtShape.attachOnce(
+    matchCircle,
+    _circle => { }
+);
+
+evtShape.waitFor(matchCircle)
+    .then(_circle => { })
+    ;
+
+//waitFor will not reject once detached as no timeout have been specified.
+evtShape.getHandlers()
+    .filter(({ matcher }) => matcher === matchCircle)
+    .forEach(({ detach }) => detach())
+    ;
+```
+
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-detach-matcher?embed=1&file=index.ts)
+
+## `evt.getEvt[Attach|Detach]()`
+
+//`evt.evtAttach` and `evt.evtDetach`
+
+`.evtAttach` and `.evtDetach` are `Evt<Handler<T, any>>`that track in the handler as they are being attached/detached from the `evt`.
+
+```typescript
+import * as console from "./consoleToPage";
+
+import { Evt } from "ts-evt";
+
+const evtText= new Evt<string>();
+
+const callback = (text: string)=> {};
+
+evtText.evtAttach.attachOnce(handler => 
+  console.log(handler.callback === callback)
+);
+
+evtText.attach(callback);
+//"true" is printed to the console.
+```
+
+TODO: Update the example to includes `evtDetach`
+
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-evtattach?embed=1&file=index.ts)
+
+## `evt.isHandled(data)`
+
+Test if posting event data will have an effect.
+
+Return true if:
+
+-There is at least one handler matching this event data \( at least one handler's callback function will be invoked if the data is posted. \)
+
+-There is at least one handler that will be detached if the event data is posted.
+
+```typescript
+const evtText = new Evt<string>();
+
+/*
+Handle the text starting with 'h'.
+Ignore all other text, when a text starting with 'g'
+is posted the handler is detached
+*/
+evtText.$attach(
+    text=> text.startsWith("h") ? 
+        [ text ] : 
+        text.startsWith("g") ? "DETACH" : null
+    text=> {/* do something with the text */}
+);
+
+//"true", start with 'h'
+console.log(
+    evtText.isHandled("hello world")
+);
+
+//"false", do not start with 'h' or 'g'
+console.log(
+    evtText.isHandled("hello world")
+);
+
+//"true", not matched but will cause the handler to be detached if posted
+console.log(
+    evtText.isHandled("goodby world")
+);
+```
+
+[**Run the example**](https://stackblitz.com/edit/ts-evt-is-hadled?embed=1&file=index.ts)
+
+## `evt.waitFor(...)`
+
+Method that returns a promise that will resolve when the next event is posted.
+
+### Without timeout
+
+By default the promise returned by `waitFor` will never reject.
+
+```typescript
+import { Evt } from "ts-evt";
+
+const evtText = new Evt<string>();
+
+setTimeout(()=> evtText.post("Hi!"), 1500);
+
+(async ()=>{
+
+    //waitFor return a promise that will resolve next time 
+    //post() is invoked on evtText.
+    const text = await evtText.waitFor();
+
+    console.log(text);
+
+})();
+```
+
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-waitfor?embed=1&file=index.ts)
+
+### With timeout
+
+It is possible to set what is the maximum amount of time we are willing to wait for the event before the promise rejects.
+
+```typescript
+import { Evt, EvtError } from "ts-evt";
+
+const evtText = new Evt<string>();
+
+(async ()=>{
+
+    try{
+
+        const text = await evtText.waitFor(500);
+
+        console.log(text);
+
+    }catch(error){
+
+        console.assert(error instanceof EvtError.Timeout);
+        //Error can be of two type:
+        //  -EvtError.Timeout if the timeout delay was reached.
+        //  -EvtError.Detached if the handler was detached before 
+        //  the promise returned by waitFor have resolved. 
+
+        console.log("TIMEOUT!");
+
+    }
+
+})();
+
+//A random integer between 0 and 1000
+const timeout= ~~(Math.random() * 1000);
+
+//There is a fifty-fifty chance "Hi!" is printed else it will be "TIMEOUT!".
+setTimeout(
+    ()=> evtText.post("Hi!"), 
+    timeout
+);
+```
+
+[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-waitfor-timeout?embed=1&file=index.ts)
+
+### Difference between `evt.waitFor(...)` and `evt.attachOnce(...)`
+
+`evt.waitFor()` is **NOT** equivalent to `new Promise(resolve=> evt.attachOnce(resolve))`
+
+`.waitFor()` is designed in a way that makes it safe to use `async` procedures.
+
+Basically it means that the following example prints `A B` on the console instead of waiting forever for the secondLetter.
+
+```typescript
+import { Evt } from "ts-evt";
+
+const evtText = new Evt<string>();
+
+(async ()=>{
+
+    const firstLetter = await evtText.waitFor();
+    const secondLetter = await evtText.waitFor();
+
+    console.log(`${firstLetter} ${secondLetter}`);
+
+})();
+
+evtText.post("A");
+evtText.post("B");
+
+//"A B" is printed to the console.
+```
+
+Run this [**more practical example**](https://stackblitz.com/edit/ts-evt-demo-edge-case?embed=1&file=index.ts) to understand how this behavior prevent from some hard to figure out bugs.
+
+Enforcing this behavior does involve some voodoo. This is the explanation as to why the source code of `ts-evt` appears very cryptic for an event bus implementation.
 
 ## `evt.pipe(...)`
 
