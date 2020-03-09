@@ -253,7 +253,8 @@ It's important to note that on both of this examples **fλ** operator are enforc
 
 [Run thoses examples and others](https://stackblitz.com/edit/ts-evt-vs-rxjs?embed=1&file=index.ts) in your browser, see for yourself the full extends of the type inference.
 
-![](https://user-images.githubusercontent.com/6702424/76122716-01cd1600-5ff7-11ea-8751-daf7b689e1b7.gif)
+![](https://ts-evt.dev/assets/img/gun-vs-sword.gif)
+
 
 ## CONTRIBUTORS
 
