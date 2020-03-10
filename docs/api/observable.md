@@ -1,8 +1,8 @@
 # Observable&lt;T&gt; \(class\)
 
-`Observable` in `RxJS` and `ts-evt` are **not** the same abstraction.
+`Observable` in RcJS and in TS-EVT are **not** the same abstraction.
 
-`Observable<T>` in `ts-evt` provide a way to react to an object mutation.
+`Observable<T>` in TS-EVT provide a way to react to an object mutation.
 
 A `Observable<T>` encapsulate a value of type `T` when this value get changed `.evtChange` is posted.
 
@@ -50,7 +50,7 @@ assert(obsText.value === "bar");
 const exposedObsText: IObservable<string> = obsText;
 ```
 
-Is is possible to define what qualify as a change.
+Is is possible to define what qualify as a change. Here for example we observe an array of names to see what values are beeing added and removed in real time.
 
 ```typescript
 import { Observable } from "ts-evt";
