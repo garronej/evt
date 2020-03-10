@@ -30,17 +30,6 @@ export class Ctx {
 
     }
 
-    constructor() {
-
-        this.onDetach = handlers => {
-            if (this.evtDetach === undefined) {
-                this.evtDetachedInitialPostCount++
-                return;
-            }
-            this.evtDetach.post(handlers);
-        };
-    }
-
     public detach(attachedTo?: EvtCore<any>): Handler.WithEvt<any>[] {
 
         const out: Handler.WithEvt<any>[] = [];
@@ -65,13 +54,18 @@ export class Ctx {
             out.push({ handler, evt });
         }
 
-        this.onDetach?.(out);
+
+        if (this.evtDetach === undefined) {
+            this.evtDetachedInitialPostCount++
+            return out;
+        }
+        this.evtDetach.post(out);
 
         return out;
 
     }
 
-    private readonly onDetach: ((detachedHandlers: Handler.WithEvt<any>[]) => void);
+
 
     private handlers = new Set<
         Handler<any, any, Ctx>

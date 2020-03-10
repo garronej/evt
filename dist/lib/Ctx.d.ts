@@ -7,9 +7,7 @@ export declare class Ctx {
     private evtDetachedInitialPostCount;
     private evtDetach;
     getEvtDetach(): NonNullable<typeof Ctx.prototype.evtDetach>;
-    constructor();
     detach(attachedTo?: EvtCore<any>): Handler.WithEvt<any>[];
-    private readonly onDetach;
     private handlers;
     private evtByHandler;
     getHandlers(): Handler.WithEvt<any>[];

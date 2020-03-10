@@ -19,18 +19,10 @@ var WeakMap_1 = require("minimal-polyfills/dist/lib/WeakMap");
 var id_1 = require("../tools/typeSafety/id");
 var Ctx = /** @class */ (function () {
     function Ctx() {
-        var _this_1 = this;
         this.evtDetachedInitialPostCount = 0;
         this.evtDetach = undefined;
         this.handlers = new Set_1.Polyfill();
         this.evtByHandler = new WeakMap_1.Polyfill();
-        this.onDetach = function (handlers) {
-            if (_this_1.evtDetach === undefined) {
-                _this_1.evtDetachedInitialPostCount++;
-                return;
-            }
-            _this_1.evtDetach.post(handlers);
-        };
     }
     Ctx.prototype.getEvtDetach = function () {
         if (this.evtDetach === undefined) {
@@ -41,11 +33,10 @@ var Ctx = /** @class */ (function () {
     };
     Ctx.prototype.detach = function (attachedTo) {
         var e_1, _a;
-        var _b;
         var out = [];
         try {
-            for (var _c = __values(this.handlers.values()), _d = _c.next(); !_d.done; _d = _c.next()) {
-                var handler = _d.value;
+            for (var _b = __values(this.handlers.values()), _c = _b.next(); !_c.done; _c = _b.next()) {
+                var handler = _c.value;
                 var evt = this.evtByHandler.get(handler);
                 if (attachedTo !== undefined &&
                     evt !== attachedTo) {
@@ -61,11 +52,15 @@ var Ctx = /** @class */ (function () {
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (_d && !_d.done && (_a = _c["return"])) _a.call(_c);
+                if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
             }
             finally { if (e_1) throw e_1.error; }
         }
-        (_b = this.onDetach) === null || _b === void 0 ? void 0 : _b.call(this, out);
+        if (this.evtDetach === undefined) {
+            this.evtDetachedInitialPostCount++;
+            return out;
+        }
+        this.evtDetach.post(out);
         return out;
     };
     Ctx.prototype.getHandlers = function () {
