@@ -214,7 +214,7 @@ var EvtCore = /** @class */ (function () {
             clearTimeout(wTimer[0]);
             rejectPr(new EvtError_1.EvtError.Detached());
         }
-        (_a = this.onHandler) === null || _a === void 0 ? void 0 : _a.call(this, "evtDetach", handler);
+        (_a = this.onHandler) === null || _a === void 0 ? void 0 : _a.call(this, false, handler);
         return true;
     };
     EvtCore.prototype.triggerHandler = function (handler, wTimer, resolvePr, opResult) {
@@ -275,7 +275,7 @@ var EvtCore = /** @class */ (function () {
         if (Ctx_1.Ctx.__matchHandlerBoundToCtx(handler)) {
             Ctx_1.Ctx.__addHandlerToCtxCore(handler, this);
         }
-        (_a = this.onHandler) === null || _a === void 0 ? void 0 : _a.call(this, "evtAttach", handler);
+        (_a = this.onHandler) === null || _a === void 0 ? void 0 : _a.call(this, true, handler);
         return handler;
     };
     EvtCore.prototype.getStatelessOp = function (op) {

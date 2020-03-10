@@ -95,7 +95,7 @@ export class EvtCore<T> {
 
 
     //NOTE: Implemented by Evt
-    protected onHandler: ((target: "evtAttach" | "evtDetach", handler: Handler<T, any>)=> void) | undefined = undefined;
+    protected onHandler: ((isAttach: boolean, handler: Handler<T, any>)=> void) | undefined = undefined;
 
     private detachHandler(
         handler: Handler<T, any>,
@@ -126,7 +126,7 @@ export class EvtCore<T> {
 
         }
 
-        this.onHandler?.("evtDetach", handler);
+        this.onHandler?.(false, handler);
 
         return true;
 
@@ -262,7 +262,7 @@ export class EvtCore<T> {
             Ctx.__addHandlerToCtxCore(handler, this);
         }
 
-        this.onHandler?.("evtAttach", handler);
+        this.onHandler?.(true, handler);
 
         return handler;
 

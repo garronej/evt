@@ -20,7 +20,7 @@ export declare class EvtCore<T> {
     private readonly asyncHandlerChronologyExceptionRange;
     private readonly getChronologyMark;
     private readonly statelessByStatefulOp;
-    protected onHandler: ((target: "evtAttach" | "evtDetach", handler: Handler<T, any>) => void) | undefined;
+    protected onHandler: ((isAttach: boolean, handler: Handler<T, any>) => void) | undefined;
     private detachHandler;
     private triggerHandler;
     private addHandler;

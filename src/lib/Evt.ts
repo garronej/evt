@@ -6,8 +6,7 @@ import { invokeOperator } from "./util/invokeOperator";
 import { merge } from "./util/merge";
 import { fromEvent } from "./util/fromEvent";
 import { parseOverloadParamsFactory } from "./util/parseOverloadParams";
-import { getLazyEvtHandlerFactory } from "./util/getLazyEvtHandlerFactory";
-
+import { getLazyEvtFactory } from "./util/getLazyEvtFactory";
 
 export class Evt<T> extends EvtCore<T> {
 
@@ -15,53 +14,6 @@ export class Evt<T> extends EvtCore<T> {
     public static merge = merge;
     public static fromEvent = fromEvent;
 
-    /*
-    private evtAttach: Evt<Handler<T, any>> | undefined = undefined;
-    private evtDetach: Evt<Handler<T, any>> | undefined = undefined;
-
-    private readonly initialPostCount = {
-        "evtAttach": 0,
-        "evtDetach": 0
-    }
-
-    private __getEvtHandler(target: "evtAttach"): NonNullable<typeof Evt.prototype.evtAttach>;
-    private __getEvtHandler(target: "evtDetach"): NonNullable<typeof Evt.prototype.evtDetach>;
-    private __getEvtHandler(target: "evtAttach" | "evtDetach"): NonNullable<
-        typeof Evt.prototype.evtAttach | 
-        typeof Evt.prototype.evtDetach 
-    >  {
-
-        if( this[target] === undefined ){
-            this[target] = new Evt();
-            setPostCount(
-                this[target]!,
-                this.initialPostCount[target]
-            );
-        }
-
-        return this[target]!;
-
-    }
-
-    public getEvtAttach(){ return this.__getEvtHandler("evtAttach"); }
-
-    public getEvtDetach(){ return this.__getEvtHandler("evtDetach"); }
-
-    protected onHandler(
-        target: "evtAttach" | "evtDetach", 
-        handler: Handler<T, any>
-    ): void {
-        super.onHandler(target, handler);
-
-        if( this[target] === undefined ){
-            this.initialPostCount[target]++;
-            return;
-        }
-
-        this[target]!.post(handler);
-
-    }
-    */
 
     public readonly getEvtAttach: () => Evt<Handler<T, any>>;
     public readonly getEvtDetach: () => Evt<Handler<T, any>>;
@@ -69,34 +21,27 @@ export class Evt<T> extends EvtCore<T> {
     constructor() {
         super();
 
-        const { getLazyEvtHandler, onHandler } = getLazyEvtHandlerFactory<T>();
+        const { getEvt: getEvtAttach, post: postEvtAttach } = getLazyEvtFactory<Handler<T, any>>();
+        const { getEvt: getEvtDetach, post: postEvtDetach } = getLazyEvtFactory<Handler<T, any>>();
 
-        this.onHandler = onHandler;
+        this.onHandler = (isAttach, handler) =>
+            (isAttach ? postEvtAttach : postEvtDetach)(handler)
+            ;
 
-        this.getEvtAttach = () => getLazyEvtHandler("evtAttach");
-        this.getEvtDetach = () => getLazyEvtHandler("evtDetach");
+        this.getEvtAttach = getEvtAttach;
+        this.getEvtDetach = getEvtDetach;
 
     }
 
+    public async postAsyncOnceHandled(data: T) { return this.__postOnceHandled(data, false); }
 
+    public async postSyncOnceHandled(data: T) { return this.__postOnceHandled(data, true); }
 
-
-    public async postAsyncOnceHandled(data: T) {
-        return this.__postOnceHandled({ data, "isSync": false });
-    }
-
-    public async postSyncOnceHandled(data: T) {
-        return this.__postOnceHandled({ data, "isSync": true });
-    }
-
-    private __postOnceHandled(
-        { data, isSync }: { data: T; isSync: boolean; }
-    ): number | Promise<number> {
+    private __postOnceHandled(data: T, isSync: boolean): number | Promise<number> {
 
         if (this.isHandled(data)) {
             return this.post(data);
         }
-
 
         let resolvePr: (postCount: number) => void;
         const pr = new Promise<number>(resolve => resolvePr = resolve);
@@ -111,7 +56,6 @@ export class Evt<T> extends EvtCore<T> {
         );
 
         return pr;
-
 
     }
 

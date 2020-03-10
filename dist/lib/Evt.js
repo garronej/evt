@@ -86,36 +86,34 @@ var invokeOperator_1 = require("./util/invokeOperator");
 var merge_1 = require("./util/merge");
 var fromEvent_1 = require("./util/fromEvent");
 var parseOverloadParams_1 = require("./util/parseOverloadParams");
-var getLazyEvtHandlerFactory_1 = require("./util/getLazyEvtHandlerFactory");
+var getLazyEvtFactory_1 = require("./util/getLazyEvtFactory");
 var Evt = /** @class */ (function (_super) {
     __extends(Evt, _super);
     function Evt() {
         var _this_1 = _super.call(this) || this;
         _this_1.__parseOverloadParams = parseOverloadParams_1.parseOverloadParamsFactory();
-        var _a = getLazyEvtHandlerFactory_1.getLazyEvtHandlerFactory(), getLazyEvtHandler = _a.getLazyEvtHandler, onHandler = _a.onHandler;
-        _this_1.onHandler = onHandler;
-        _this_1.getEvtAttach = function () { return getLazyEvtHandler("evtAttach"); };
-        _this_1.getEvtDetach = function () { return getLazyEvtHandler("evtDetach"); };
+        var _a = getLazyEvtFactory_1.getLazyEvtFactory(), getEvtAttach = _a.getEvt, postEvtAttach = _a.post;
+        var _b = getLazyEvtFactory_1.getLazyEvtFactory(), getEvtDetach = _b.getEvt, postEvtDetach = _b.post;
+        _this_1.onHandler = function (isAttach, handler) {
+            return (isAttach ? postEvtAttach : postEvtDetach)(handler);
+        };
+        _this_1.getEvtAttach = getEvtAttach;
+        _this_1.getEvtDetach = getEvtDetach;
         return _this_1;
     }
     Evt.newCtx = function () { return new Ctx_1.Ctx(); };
     Evt.prototype.postAsyncOnceHandled = function (data) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, this.__postOnceHandled({ data: data, "isSync": false })];
-            });
-        });
+        return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/, this.__postOnceHandled(data, false)];
+        }); });
     };
     Evt.prototype.postSyncOnceHandled = function (data) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, this.__postOnceHandled({ data: data, "isSync": true })];
-            });
-        });
+        return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/, this.__postOnceHandled(data, true)];
+        }); });
     };
-    Evt.prototype.__postOnceHandled = function (_a) {
+    Evt.prototype.__postOnceHandled = function (data, isSync) {
         var _this_1 = this;
-        var data = _a.data, isSync = _a.isSync;
         if (this.isHandled(data)) {
             return this.post(data);
         }
