@@ -1,34 +1,60 @@
 import { Handler } from "./types/Handler";
 import { Evt } from "./Evt";
-import { setPostCount } from "./EvtCore";
 import { Polyfill as Set } from "minimal-polyfills/dist/lib/Set";
 import { Polyfill as WeakMap } from "minimal-polyfills/dist/lib/WeakMap";
+import { getLazyEvtFactory } from "./util/getLazyEvtFactory";
 type EvtCore<T> = import("./EvtCore").EvtCore<T>;
 
 export class Ctx {
 
-    private evtDetachedInitialPostCount = 0;
+    /** Posted each time ctx.done() is invoked, post the detached handler ( return value of evt.done()) */
+    public readonly getEvtDone: () => Evt<Handler.WithEvt<any>[]>;
 
-    
-    private evtCtxDetach: Evt<Handler.WithEvt<any>[]> | undefined = undefined;
+    /** Posted every time a handler is bound to this context */
+    public readonly getEvtAttach: () => Evt<Handler.WithEvt<any>>;
 
-    /** returns an Evt that is posted when ctx.detach is invoked. */
-    public getEvtCtxDetach(): NonNullable<typeof Ctx.prototype.evtCtxDetach> {
+    /** Posted every time a handler bound to this context is detached from it's Evt */
+    public readonly getEvtDetach: () => Evt<Handler.WithEvt<any>>;
 
-        if (this.evtCtxDetach === undefined) {
-            this.evtCtxDetach = new Evt();
-            setPostCount(
-                this.evtCtxDetach,
-                this.evtDetachedInitialPostCount
-            );
+    private readonly onDone: (handlers: Handler.WithEvt<any>[]) => void;
+    private readonly onAttach: (handler: Handler.WithEvt<any>) => void;
+    private readonly onDetach: (handler: Handler.WithEvt<any>) => void;
+
+    constructor() {
+
+        {
+
+            const { getEvt, post } = getLazyEvtFactory<Handler.WithEvt<any>[]>();
+
+            this.onDone = post;
+            this.getEvtDone = getEvt;
+
         }
 
-        return this.evtCtxDetach;
+        {
+
+            const { getEvt, post } = getLazyEvtFactory<Handler.WithEvt<any>>();
+
+            this.getEvtAttach = getEvt;
+            this.onAttach = post;
+
+        }
+
+        {
+
+            const { getEvt, post } = getLazyEvtFactory<Handler.WithEvt<any>>();
+
+            this.getEvtDetach = getEvt;
+            this.onDetach = post;
+
+        }
+
 
     }
 
-    /** Detach all handlers from their respective evt and post getEvtCtxDetach(). */
-    public detach(): Handler.WithEvt<any>[] {
+
+    /** Detach all handler bound to this context from theirs respective Evt and post getEvtDone() */
+    public done(): Handler.WithEvt<any>[] {
 
         const handlers: Handler.WithEvt<any>[] = [];
 
@@ -45,12 +71,7 @@ export class Ctx {
             handlers.push({ handler, evt });
         }
 
-
-        if (this.evtCtxDetach === undefined) {
-            this.evtDetachedInitialPostCount++
-            return handlers;
-        }
-        this.evtCtxDetach.post(handlers);
+        this.onDone(handlers);
 
         return handlers;
 
@@ -77,12 +98,14 @@ export class Ctx {
         const { ctx } = handler;
         ctx.handlers.add(handler);
         ctx.evtByHandler.set(handler, evt);
+        ctx.onAttach({ handler, evt });
     }
 
     public static __removeHandlerFromCtxCore(
         handler: Handler<any, any, Ctx>
     ) {
         const { ctx } = handler;
+        ctx.onDetach({ handler, "evt": ctx.evtByHandler.get(handler)! });
         ctx.handlers.delete(handler);
     }
 
@@ -90,6 +113,6 @@ export class Ctx {
         return handler.ctx !== undefined;
     }
 
-    
+
 
 }

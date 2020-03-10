@@ -99,7 +99,7 @@ var EvtCore = /** @class */ (function () {
                 if (Operator_1.Operator.fλ.Result.NotMatched.match(opResult)) {
                     var detach = Operator_1.Operator.fλ.Result.getDetachArg(opResult);
                     if (typeof detach !== "boolean") {
-                        detach.detach();
+                        detach.done();
                     }
                     else if (detach) {
                         handler.detach();
@@ -226,7 +226,7 @@ var EvtCore = /** @class */ (function () {
         {
             var detach = Operator_1.Operator.fλ.Result.getDetachArg(opResult);
             if (typeof detach !== "boolean") {
-                detach.detach();
+                detach.done();
             }
             else if (detach || once) {
                 handler.detach();
@@ -338,7 +338,7 @@ var EvtCore = /** @class */ (function () {
                 if (Operator_1.Operator.fλ.Result.NotMatched.match(opResult)) {
                     var detach = Operator_1.Operator.fλ.Result.getDetachArg(opResult);
                     if (typeof detach !== "boolean") {
-                        detach.detach();
+                        detach.done();
                     }
                     else if (detach) {
                         handler.detach();

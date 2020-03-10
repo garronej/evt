@@ -69,7 +69,7 @@ function fromEventImpl<T>(
 
     const listener = (data: T) => evt.post(data);
 
-    ctx?.getEvtCtxDetach().attachOnce(
+    ctx?.getEvtDone().attachOnce(
         () => proxy.off(
             listener,
             eventName!,
@@ -129,7 +129,7 @@ export function fromEvent<T>(
     options?: EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<T> {
 
-    if ("getEvtCtxDetach" in ctxOrTarget) {
+    if ("getEvtDone" in ctxOrTarget) {
 
         assert(
             typeGuard.dry<OneOrMany<EventTargetLike<T>>>(targetOrEventName) &&

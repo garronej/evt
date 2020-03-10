@@ -11,27 +11,31 @@ var __values = (this && this.__values) || function(o) {
     throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
 exports.__esModule = true;
-var Evt_2 = require("./Evt");
-var EvtCore_1 = require("./EvtCore");
 var Set_1 = require("minimal-polyfills/dist/lib/Set");
 var WeakMap_1 = require("minimal-polyfills/dist/lib/WeakMap");
+var getLazyEvtFactory_1 = require("./util/getLazyEvtFactory");
 var Ctx = /** @class */ (function () {
     function Ctx() {
-        this.evtDetachedInitialPostCount = 0;
-        this.evtCtxDetach = undefined;
         this.handlers = new Set_1.Polyfill();
         this.evtByHandler = new WeakMap_1.Polyfill();
-    }
-    /** returns an Evt that is posted when ctx.detach is invoked. */
-    Ctx.prototype.getEvtCtxDetach = function () {
-        if (this.evtCtxDetach === undefined) {
-            this.evtCtxDetach = new Evt_2.Evt();
-            EvtCore_1.setPostCount(this.evtCtxDetach, this.evtDetachedInitialPostCount);
+        {
+            var _a = getLazyEvtFactory_1.getLazyEvtFactory(), getEvt = _a.getEvt, post = _a.post;
+            this.onDone = post;
+            this.getEvtDone = getEvt;
         }
-        return this.evtCtxDetach;
-    };
-    /** Detach all handlers from their respective evt and post getEvtCtxDetach(). */
-    Ctx.prototype.detach = function () {
+        {
+            var _b = getLazyEvtFactory_1.getLazyEvtFactory(), getEvt = _b.getEvt, post = _b.post;
+            this.getEvtAttach = getEvt;
+            this.onAttach = post;
+        }
+        {
+            var _c = getLazyEvtFactory_1.getLazyEvtFactory(), getEvt = _c.getEvt, post = _c.post;
+            this.getEvtDetach = getEvt;
+            this.onDetach = post;
+        }
+    }
+    /** Detach all handler bound to this context from theirs respective Evt and post getEvtDone() */
+    Ctx.prototype.done = function () {
         var e_1, _a;
         var handlers = [];
         try {
@@ -52,11 +56,7 @@ var Ctx = /** @class */ (function () {
             }
             finally { if (e_1) throw e_1.error; }
         }
-        if (this.evtCtxDetach === undefined) {
-            this.evtDetachedInitialPostCount++;
-            return handlers;
-        }
-        this.evtCtxDetach.post(handlers);
+        this.onDone(handlers);
         return handlers;
     };
     Ctx.prototype.getHandlers = function () {
@@ -68,9 +68,11 @@ var Ctx = /** @class */ (function () {
         var ctx = handler.ctx;
         ctx.handlers.add(handler);
         ctx.evtByHandler.set(handler, evt);
+        ctx.onAttach({ handler: handler, evt: evt });
     };
     Ctx.__removeHandlerFromCtxCore = function (handler) {
         var ctx = handler.ctx;
+        ctx.onDetach({ handler: handler, "evt": ctx.evtByHandler.get(handler) });
         ctx.handlers["delete"](handler);
     };
     Ctx.__matchHandlerBoundToCtx = function (handler) {

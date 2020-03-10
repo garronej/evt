@@ -31,9 +31,11 @@ import { assert } from "../tools/typeSafety";
 
         }
 
+        assert(ctx.getHandlers().length === 0 );
+
         assert(ee.listenerCount("text") === 1);
 
-        ctx.detach();
+        ctx.done();
 
         assert(ee.listenerCount("text") === 0);
 

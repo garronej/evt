@@ -1,12 +1,19 @@
 import { Handler } from "./types/Handler";
+import { Evt } from "./Evt";
 declare type EvtCore<T> = import("./EvtCore").EvtCore<T>;
 export declare class Ctx {
-    private evtDetachedInitialPostCount;
-    private evtCtxDetach;
-    /** returns an Evt that is posted when ctx.detach is invoked. */
-    getEvtCtxDetach(): NonNullable<typeof Ctx.prototype.evtCtxDetach>;
-    /** Detach all handlers from their respective evt and post getEvtCtxDetach(). */
-    detach(): Handler.WithEvt<any>[];
+    /** Posted each time ctx.done() is invoked, post the detached handler ( return value of evt.done()) */
+    readonly getEvtDone: () => Evt<Handler.WithEvt<any>[]>;
+    /** Posted every time a handler is bound to this context */
+    readonly getEvtAttach: () => Evt<Handler.WithEvt<any>>;
+    /** Posted every time a handler bound to this context is detached from it's Evt */
+    readonly getEvtDetach: () => Evt<Handler.WithEvt<any>>;
+    private readonly onDone;
+    private readonly onAttach;
+    private readonly onDetach;
+    constructor();
+    /** Detach all handler bound to this context from theirs respective Evt and post getEvtDone() */
+    done(): Handler.WithEvt<any>[];
     private handlers;
     private evtByHandler;
     getHandlers(): Handler.WithEvt<any>[];

@@ -17,8 +17,8 @@ const evtAge = new Evt<number>();
 
 const ctx = Evt.newCtx();
 
-evtText.attach(ctx, () => assert(false));
-evtAge.attach(ctx, () => assert(false));
+const prText = evtText.attach(ctx, () => assert(false));
+const prAge = evtAge.attach(ctx, () => assert(false));
 
 const handlers_ = [
     ...(evtText.getHandlers() as Handler<string, any, Ctx>[]).map(handler => ({ handler, "evt": evtText })),
@@ -26,7 +26,7 @@ const handlers_ = [
 ];
 
 mustResolve({
-    "promise": ctx.getEvtCtxDetach().attachOnce(
+    "promise": ctx.getEvtDone().attachOnce(
         handlers => assertRepresentsSameData({
             "got": handlers,
             "expected": handlers_
@@ -39,8 +39,31 @@ mustResolve({
     "delay": 0
 });
 
+const prTest= Promise.all([
+    mustResolve({
+        "promise": ctx.getEvtDetach().waitFor(
+            ({ handler, evt }) => (
+                evt === evtText &&
+                handler.ctx === ctx &&
+                handler.timeout === undefined &&
+                handler.promise === prText
+            )
+        )
+    }),
+    mustResolve({
+        "promise": ctx.getEvtDetach().waitFor(
+            ({ handler, evt }) => (
+                evt === evtAge &&
+                handler.ctx === ctx &&
+                handler.timeout === undefined &&
+                handler.promise === prAge
+            )
+        )
+    })
+]);
 
-ctx.detach();
+
+ctx.done();
 
 assert(evtText.getHandlers().length === 0);
 assert(evtAge.getHandlers().length === 0);
@@ -48,7 +71,5 @@ assert(evtAge.getHandlers().length === 0);
 evtText.post("nothing");
 evtAge.post(0);
 
-
-console.log("PASS".green);
-
+prTest.then(()=> console.log("PASS".green));
 

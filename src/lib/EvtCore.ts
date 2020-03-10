@@ -151,7 +151,7 @@ export class EvtCore<T> {
             const detach = Operator.fλ.Result.getDetachArg(opResult);
 
             if (typeof detach !== "boolean") {
-                detach.detach();
+                detach.done();
             } else if (detach || once) {
                 handler.detach();
             }
@@ -182,7 +182,6 @@ export class EvtCore<T> {
             );
 
         }
-
 
         const handler: Handler<T, U> = {
             ...propsFromArgs,
@@ -364,7 +363,7 @@ export class EvtCore<T> {
                 const detach = Operator.fλ.Result.getDetachArg(opResult);
 
                 if (typeof detach !== "boolean") {
-                    detach.detach();
+                    detach.done();
                 } else if (detach) {
                     handler.detach();
                 }
@@ -417,7 +416,7 @@ export class EvtCore<T> {
                     const detach = Operator.fλ.Result.getDetachArg(opResult);
 
                     if (typeof detach !== "boolean") {
-                        detach.detach();
+                        detach.done();
                     } else if (detach) {
                         handler.detach();
                     }

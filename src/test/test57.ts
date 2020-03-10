@@ -1,6 +1,7 @@
 import { Evt } from "../lib";
 import { Subject } from "rxjs";
 import { getPromiseAssertionApi } from "../tools/testing";
+import { assert } from "../tools/typeSafety";
 
 (async () => {
 
@@ -12,11 +13,12 @@ import { getPromiseAssertionApi } from "../tools/testing";
 
         const ctx = Evt.newCtx();
 
-        const evtText = Evt.fromEvent<string>(ctx, subject);
+        const evtText = Evt.fromEvent(ctx, subject);
 
         const text = "ok";
 
         for (const _ of [0, 1, 2]) {
+
 
             const pr = mustResolve({
                 "promise": evtText.waitFor(),
@@ -29,12 +31,13 @@ import { getPromiseAssertionApi } from "../tools/testing";
 
         }
 
-        ctx.detach();
+        assert(ctx.getHandlers().length === 0);
+
+        ctx.done();
 
         mustStayPending(evtText.waitFor());
 
         subject.next(text);
-
 
     }
 
