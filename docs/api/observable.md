@@ -1,6 +1,6 @@
 # Observable&lt;T&gt; \(class\)
 
-`Observable` in RcJS and in TS-EVT are **not** the same abstraction.
+`Observable` in RxJS and in TS-EVT are **not** the same abstraction.
 
 `Observable<T>` in TS-EVT provide a way to react to an object mutation.
 
