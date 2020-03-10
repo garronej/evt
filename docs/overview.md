@@ -125,7 +125,7 @@ fλ operators are **functions \(f\)** that are meant to be **anonymous \(**[**λ
 * Easy to reason about for **humans**, they are self explanatory for anyone familiar with how they works.
 * Easy to reason about for the compiler, no type annotation have to be introduced, TypeScript can infer what they are doing.
 * Very concise, a single fλ operator can replace the combination of multiple elementary operators such as `map()`, `filter()`, `takeWhile()`, `scan()`...
-* Modular, if a single operator is not enough they can be composed to achieve more complex behavior.
+* Modular, if, yet, a single operator is not enough they can be composed to achieve more complex behavior.
 
 ### Composition vs **fλ**
 
@@ -173,11 +173,11 @@ const prText = evt.waitFor(
 );
 ```
 
-By gathering the `filter` and `map` operation into a single function we enable TypeScript to infer that `data` has a `text` property because `data.type` is `"TEXT"`. Using filter we have to explicitly tell typescript that we filter out `Shapes` that are not `Circle` using a [type guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards). Type guards are great but they increase verbosity and it's possible to get them wrong, TypeScript trust you to perform the right checks.
+By gathering the `filter` and `map` operation into a single function we enable TypeScript to infer that `data` has a `text` property because `data.type` is `"TEXT"`. Using `filter` we have to explicitly tell typescript that we filter out `Shapes` that are not `Circle` using a [type guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards). Type guards are great but they increase verbosity and it's possible to get them wrong, TypeScript trust you to perform the right checks.
 
-Note also that for the sake of not misrepresenting RxJS we make use of advanced TypeScript features to enforce type safety,`Extract` and type guard, but is is common for programers not to bother and just use `as Foo` witch is a severe liability as it cause the code to silently break on refactor.
+Note also that for the sake of not misrepresenting RxJS we make use of advanced TypeScript features to enforce type safety, `Extract` and type guard, but is is common for programers not to bother and just use `as Foo` witch is a severe liability as it cause the code to silently break on refactor.
 
-An other example involving state encaptulation, here we want to accumulate all texts events until `"STOP"`
+Let us consider an other example involving state encaptulation, here we want to accumulate all texts events until `"STOP"`
 
 ```typescript
 import { Subject } from "rxjs";
@@ -219,7 +219,7 @@ evtData.$attach(
 );
 ```
 
-Here, on top of the improved type safety we remove the need of the `takeWhile` abstraction by simply returning `"DETACH"` and the need of scan, fλ working as the arguments of `Array.prototype.reduce`.
+Here, on top of the improved type safety we remove the need of the `takeWhile` abstraction by simply returning `"DETACH"` once we no longer need to listen and the need of `scan`, fλ working as the arguments of `Array.prototype.reduce`.
 
 It is almost imposible to make a mistake writing a fλ operator as the code will either not compile or you will get a type that is not the one that you expected.
 
@@ -227,5 +227,5 @@ It is almost imposible to make a mistake writing a fλ operator as the code will
 
 ## Where do I start ?
 
-The API reference documentation is full of interactive examples that should get you started in no time.
+The API reference documentation is full of runable examples that should get you started in no time.
 
