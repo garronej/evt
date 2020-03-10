@@ -4,7 +4,7 @@ description: Attach an Handler provided with a callback function to the Evt
 
 # evt.\[$\]attach\*\(...\)
 
-There is multiple flavor of the attach method: attachOnce, atachPrepend, attachExtract... All this methods have in common to accept the same parameters and to return the same type of value.
+There is multiple flavor of the attach method: `attachOnce`, `atachPrepend`, `attachExtract`... All this methods have in common to accept the same parameters and to return the same promise.
 
 ## Returned value
 
@@ -20,7 +20,7 @@ If you have no use of the callback function and just want the promise, [`evt.wai
 
 1. `operator:` [`Operator`](https://docs.ts-evt.dev/api-doc/operator)`<T,U>`
 2. `timeout: number` Amount of time, in milliseconds before the returned promise rejects if no event have been matched within the specified dellay.
-3. `boundTo: Bindable` A context that can be used as a reference to detach the handler later on. A Bindable is anything, but a function, an array, `undefined` or `null`. The boundTo object is generaly an instance of [`Ctx`](https://docs.ts-evt.dev/api-doc/ctx).
+3. `ctx:` [`Ctx`](https://docs.ts-evt.dev/api/ctx)A context that can be used as a reference to detach the handler later on. 
 4. `callback: (data: U)=> void` Function that will be invoked every time the matcher match an event emited by the `Evt`.
 
 A large number or overloard are provided to cover all the possible combinaison of arguments. The ordering in which the params are listed above must be respected but every parameter other than the callback can be omited.

@@ -1,6 +1,6 @@
 # Handler&lt;T, U&gt; \(type\)
 
-Every time attach\*, waitFor or pipe is invoked a new Handler&lt;T, U&gt; is attached to the Evt&lt;T&gt;.
+Every time [`attach*`](https://docs.ts-evt.dev/api/evt/evt.attach), `waitFor` or `pipe` is invoked a new `Handler<T, U>` is attached to the `Evt<T>`.
 
 The list of the handler can be accesed using the evt.getHandler\(\) method. 
 
