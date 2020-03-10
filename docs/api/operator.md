@@ -23,13 +23,13 @@ Operators can be of three types:
   * **Stateless fλ**: `<U>(data: T)=> [U]|null|"DETACH"|{DETACH:Ref}|...`  
   * **Stateful fλ**: `[ <U>(data: T, prev: U)=> ..., U(initial value) ]`
 
-    Uses the previous matched event data transformation as input.
+    Uses the previous matched event data transformation as input à la `Array.prototype.reduce`
 
-In any case, operators should not produce any side effects.
+Operators do not have to be pure, but they **must not have any side effect**.
 
 ## Operator - Filter
 
-Iet us consider the example use of a matcher that filter out everey word that does not start with the letter 'H'.
+Let us consider the example use of an operator that filter out everey word that does not start with the letter 'H'.
 
 ```typescript
 import { Evt } from "ts-evt";
@@ -51,7 +51,7 @@ evtText.post("Bonjour");
 evtText.post("Hi!");
 ```
 
-It is important that you makes sure that your filters always returns a `boolean` at runtime.  
+It is important to be sure that your filters always returns a `boolean`, typewise you will be warned it it is not the case but you must be sure that it is actually the case at runtime.  
 If in doubts use 'bang bang' \( `!!returnedValue` \). This note also apply for Type Gard operators.
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-matcher-return-boolean?embed=1&file=index.ts)

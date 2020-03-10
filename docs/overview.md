@@ -115,7 +115,7 @@ The approach of RxJS is to provide a large library of elementary operator that c
 
 TS-EVT distant itself from this approach for two reasons:
 
-* Composition is had to consil with seamless type safety.
+* Composition is hard to consil with seamless type safety.
 * Every new elementary operator constitute a new abstraction, there is [more than 100 operators](https://rxjs-dev.firebaseapp.com/api?query=operators) availible in RxJS, a lot of concept to digest before beeing able to use the library at it's full potential. 
 
 The approach of TS-EVT is to provide a way to define **powerful**  operators on the fly using only **native language features**. 
@@ -224,7 +224,7 @@ evtData.$attach(
 );
 ```
 
-On top of the improved type safety we remove the need of the `takeWhile` abstraction by simply returning `"DETACH"` once we no longer need to listen we also get rid of of `scan`, fλ working as the arguments of `Array.prototype.reduce`.
+On top of the improved type safety we remove the need of the `takeWhile` abstraction by simply returning `"DETACH"` once we no longer need to listen. We also get rid of of `scan`, fλ working as the callback of `Array.prototype.reduce`.
 
 It is almost imposible to make a mistake writing a fλ operator as the code will either not compile or the output type will make it obvious that something is wrong.
 
