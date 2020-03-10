@@ -115,7 +115,7 @@ The approach of RxJS is to provide a large library of elementary operator that c
 
 TS-EVT distant itself from this approach for two reasons:
 
-* Composition is had to consil with seamless type safety.
+* Composition is hard to consil with seamless type safety.
 * Every new elementary operator constitute a new abstraction, there is [more than 100 operators](https://rxjs-dev.firebaseapp.com/api?query=operators) availible in RxJS, a lot of concept to digest before beeing able to use the library at it's full potential. 
 
 The approach of TS-EVT is to provide a way to define **powerful**  operators on the fly using only **native language features**. 
