@@ -113,10 +113,12 @@ The approach of RxJS is to provide a large library of elementary operator that c
 
 TS-EVT distant itself from this approach for two reasons:
 
-* This approach make it hard to enforce seamless type safety.
+* Composition is had to consil with seamless type safety.
 * Every new elementary operator constitute a new abstraction, there is [more than 100 operators](https://rxjs-dev.firebaseapp.com/api?query=operators) availible in RxJS, a lot of concept to digest before beeing able to use the library at it's full potential. 
 
-The approach of `ts-evt` is to provide a way to define custom operators on the fly.
+The approach of TS-EVT is to provide a way to define **powerful**  operators on the fly using only **native language features**. 
+
+Unlike RxJS operators that returns Observable TS-EVT operator are fully define by a type alias, they depends on nothing.
 
 Introducing fλ operators one abstraction to remove the need of countless others.  
 fλ operators are **functions \(f\)** that are meant to be **anonymous \(**[**λ**](https://en.wikipedia.org/wiki/Anonymous_function)**\)**. They are designed in such a way that make them:
