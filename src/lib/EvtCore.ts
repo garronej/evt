@@ -639,7 +639,10 @@ export class EvtCore<T> {
         return [...this.handlers];
     }
 
-    /** Detach every handler bound to a given object or all handlers, return the detached handlers */
+    /** Detach every handlers of the Evt that are bound to the provided context */
+    public detach(ctx: Ctx): Handler<T, any, Ctx>[];
+    /** (unsafe) Detach every handlers from the Evt */
+    public detach(): Handler<T, any>[];
     public detach(ctx?: Ctx): Handler<T, any>[] {
 
         const detachedHandlers: Handler<T, any>[] = [];

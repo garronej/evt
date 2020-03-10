@@ -446,7 +446,6 @@ var EvtCore = /** @class */ (function () {
     EvtCore.prototype.getHandlers = function () {
         return __spread(this.handlers);
     };
-    /** Detach every handler bound to a given object or all handlers, return the detached handlers */
     EvtCore.prototype.detach = function (ctx) {
         var e_4, _a;
         var detachedHandlers = [];

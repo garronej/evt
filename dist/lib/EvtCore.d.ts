@@ -58,6 +58,8 @@ export declare class EvtCore<T> {
     isHandled(data: T): boolean;
     /** https://garronej.github.io/ts-evt/#evtgethandlers */
     getHandlers(): Handler<T, any>[];
-    /** Detach every handler bound to a given object or all handlers, return the detached handlers */
-    detach(ctx?: Ctx): Handler<T, any>[];
+    /** Detach every handlers of the Evt that are bound to the provided context */
+    detach(ctx: Ctx): Handler<T, any, Ctx>[];
+    /** (unsafe) Detach every handlers from the Evt */
+    detach(): Handler<T, any>[];
 }
