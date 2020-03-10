@@ -8,7 +8,7 @@ Returns evt.postCount
 
 ## **`evt.postCount: number`**
 
-The number of times `evt.post()` has been called can. It's a readonly property.
+The number of times `evt.post()` has been called. It's a readonly property.
 
 ```typescript
 import { Evt } from "ts-evt";
@@ -74,5 +74,5 @@ console.log("BEFORE");
 
 The same thing that `evt.postAsyncOnceHandled(data)` but the data is posted synchronously as soon as a candidate handler is attached.
 
-Not that it has less practical value than it's async counterpart as you likely want to leave an event loop "tick" for all handlers to be attached before posting the event.
+It has less practical value than it's async counterpart as you likely want to leave an event loop "tick" for all handlers to be attached before posting the event.
 
