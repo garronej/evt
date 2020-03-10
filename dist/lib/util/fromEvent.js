@@ -40,22 +40,19 @@ function fromEventImpl(ctx, target, eventName, options) {
     }
     var evt = new Evt_2.Evt();
     var listener = function (data) { return evt.post(data); };
-    ctx === null || ctx === void 0 ? void 0 : ctx.getEvtDetach().attachOnce(function () { return proxy.off(listener, eventName, options); });
+    ctx === null || ctx === void 0 ? void 0 : ctx.getEvtCtxDetach().attachOnce(function () { return proxy.off(listener, eventName, options); });
     proxy.on(listener, eventName, options);
     return evt;
 }
 function fromEvent(ctxOrTarget, targetOrEventName, eventNameOrOptions, options) {
-    if (typeSafety_1.id(Object.getPrototypeOf(ctxOrTarget)
-        .constructor).__CtxForEvtBrand === true) {
-        typeSafety_1.assert(typeSafety_1.typeGuard.dry(ctxOrTarget) &&
-            typeSafety_1.typeGuard.dry(targetOrEventName) &&
+    if ("getEvtCtxDetach" in ctxOrTarget) {
+        typeSafety_1.assert(typeSafety_1.typeGuard.dry(targetOrEventName) &&
             typeSafety_1.typeGuard.dry(eventNameOrOptions) &&
             typeSafety_1.typeGuard.dry(options));
         return fromEventImpl(ctxOrTarget, targetOrEventName, eventNameOrOptions, options);
     }
     else {
-        typeSafety_1.assert(typeSafety_1.typeGuard.dry(ctxOrTarget) &&
-            typeSafety_1.typeGuard.dry(targetOrEventName) &&
+        typeSafety_1.assert(typeSafety_1.typeGuard.dry(targetOrEventName) &&
             typeSafety_1.typeGuard.dry(eventNameOrOptions));
         return fromEventImpl(undefined, ctxOrTarget, targetOrEventName, eventNameOrOptions);
     }

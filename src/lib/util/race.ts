@@ -1,12 +1,13 @@
 import { Evt, VoidEvt } from "../index";
 import { assert, typeGuard } from "../../tools/typeSafety";
-import { Bindable, EvtError } from "../types";
+import { EvtError } from "../types/EvtError";
 import { UnpackEvt, NonPostable, OneShot } from "../types/helper";
 import { id } from "../../tools/typeSafety";
 import { Deferred } from "../../tools/Deferred";
 import { invokeOperator } from "./invokeOperator";
 import { Operator } from "../types/Operator";
 import { parseOverloadParamsFactory } from "./parseOverloadParams";
+import { Ctx } from "../Ctx";
 
 export type OneShotEvt<T> = OneShot<Evt<T>>;
 
@@ -60,7 +61,7 @@ const matchPromiseLike = <T>(o: any): o is PromiseLike<T> => {
 /** If promise racer rejection unhandled */
 const raceUnsafe = (() => {
 
-    type RaceContext = Bindable & {
+    type RaceContext = Ctx & {
         evtRaceFinished: NonPostable<VoidEvt>;
     };
 
@@ -331,7 +332,7 @@ const raceUnsafe = (() => {
 
         const evtRaceFinished = new VoidEvt();
 
-        const raceContext: RaceContext = { evtRaceFinished };
+        const raceContext: RaceContext = Object.assign(Evt.newCtx(), { evtRaceFinished });
 
         const evtRaceRecResult = raceUnsafeRec<RacerUnion, UnpackRacer<RacerUnion>>(
             raceContext,
@@ -448,9 +449,7 @@ function wrapRejection<T>(promise: PromiseLike<T>): PromiseLike<PrResultWrap<T>>
 
 function generateProxyFunctionFactory(oneShotEvt: OneShotEvt<RaceResult<Racer<any>>>) {
 
-    const parseOverloadParams =
-        parseOverloadParamsFactory<any>({ "defaultBoundTo": oneShotEvt })
-        ;
+    const parseOverloadParams = parseOverloadParamsFactory<any>();
 
     return function generateProxyFunction(methodName: "waitFor" | "attachOnce") {
 

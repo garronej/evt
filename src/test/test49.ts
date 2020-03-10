@@ -26,7 +26,7 @@ const handlers_ = [
 ];
 
 mustResolve({
-    "promise": ctx.getEvtDetach().attachOnce(
+    "promise": ctx.getEvtCtxDetach().attachOnce(
         handlers => assertRepresentsSameData({
             "got": handlers,
             "expected": handlers_
@@ -35,7 +35,7 @@ mustResolve({
 });
 
 mustResolve({
-    "promise": evtAge.getEvtDetach().attachOnce(handler => assert(handler.boundTo === ctx)),
+    "promise": evtAge.getEvtDetach().attachOnce(handler => assert(handler.ctx === ctx)),
     "delay": 0
 });
 

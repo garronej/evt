@@ -34,14 +34,16 @@ evtAnimal.attach(
     animal => console.assert(spiders.shift() === animal)
 );
 
+const ctx= Evt.newCtx();
+
 evtAnimal.attachExtract(
     (animal: Animal): animal is Cat => animal.type === "CAT",
-    "extractCats",
+    ctx,
     cat => {
 
         console.assert(cats.shift() === cat);
 
-        if (!cats.length) evtAnimal.detach("extractCats");
+        if (!cats.length) evtAnimal.detach(ctx);
 
         console.log("PASS".green);
 

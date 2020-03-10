@@ -1,7 +1,6 @@
 "use strict";
 exports.__esModule = true;
 var typeSafety_1 = require("../../tools/typeSafety");
-var id_1 = require("../../tools/typeSafety/id");
 var Operator;
 (function (Operator) {
     var fλ;
@@ -64,9 +63,7 @@ var Operator;
                     function match(detach) {
                         return (typeSafety_1.typeGuard.dry(detach) &&
                             detach instanceof Object &&
-                            detach.DETACH instanceof Object &&
-                            id_1.id(Object.getPrototypeOf(detach.DETACH)
-                                .constructor).__CtxForEvtBrand === true);
+                            detach.DETACH instanceof Object);
                     }
                     WithCtxArg.match = match;
                 })(WithCtxArg = Detach.WithCtxArg || (Detach.WithCtxArg = {}));

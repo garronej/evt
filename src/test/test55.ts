@@ -52,12 +52,20 @@ import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi"
         assert(evtAge.getHandlers().length === 1);
 
 
-        ctx.detach(evtText);
+
+        ctx.getHandlers()
+            .filter(({ evt }) => evt === evtText)
+            .forEach(({ handler }) => handler.detach())
+            ;
 
         assert(evtText.getHandlers().length === 0);
         assert(evtAge.getHandlers().length === 1);
 
-        ctx.detach(evtAge);
+
+        ctx.getHandlers()
+            .filter(({ evt }) => evt === evtAge)
+            .forEach(({ handler }) => handler.detach())
+            ;
 
         assert(evtAge.getHandlers().length === 0);
 

@@ -1,49 +1,40 @@
 import { Handler } from "./types/Handler";
 import { Evt } from "./Evt";
 import { setPostCount } from "./EvtCore";
-import { Bindable } from "./types/Bindable";
-import { assert } from "../tools/typeSafety/assert";
 import { Polyfill as Set } from "minimal-polyfills/dist/lib/Set";
 import { Polyfill as WeakMap } from "minimal-polyfills/dist/lib/WeakMap";
-import { id } from "../tools/typeSafety/id";
 type EvtCore<T> = import("./EvtCore").EvtCore<T>;
 
 export class Ctx {
 
-    public static __CtxForEvtBrand = true;
-    private static readonly __CTX_FOR_EVT_VERSION = 1;
-
     private evtDetachedInitialPostCount = 0;
-    private evtDetach: Evt<Handler.WithEvt<any>[]> | undefined = undefined;
 
-    public getEvtDetach(): NonNullable<typeof Ctx.prototype.evtDetach> {
+    
+    private evtCtxDetach: Evt<Handler.WithEvt<any>[]> | undefined = undefined;
 
-        if (this.evtDetach === undefined) {
-            this.evtDetach = new Evt();
+    /** returns an Evt that is posted when ctx.detach is invoked. */
+    public getEvtCtxDetach(): NonNullable<typeof Ctx.prototype.evtCtxDetach> {
+
+        if (this.evtCtxDetach === undefined) {
+            this.evtCtxDetach = new Evt();
             setPostCount(
-                this.evtDetach,
+                this.evtCtxDetach,
                 this.evtDetachedInitialPostCount
             );
         }
 
-        return this.evtDetach;
+        return this.evtCtxDetach;
 
     }
 
-    public detach(attachedTo?: EvtCore<any>): Handler.WithEvt<any>[] {
+    /** Detach all handlers from their respective evt and post getEvtCtxDetach(). */
+    public detach(): Handler.WithEvt<any>[] {
 
-        const out: Handler.WithEvt<any>[] = [];
+        const handlers: Handler.WithEvt<any>[] = [];
 
         for (const handler of this.handlers.values()) {
 
             const evt = this.evtByHandler.get(handler)!;
-
-            if (
-                attachedTo !== undefined &&
-                evt !== attachedTo
-            ) {
-                continue;
-            }
 
             const wasStillAttached = handler.detach();
 
@@ -51,21 +42,19 @@ export class Ctx {
                 continue;
             }
 
-            out.push({ handler, evt });
+            handlers.push({ handler, evt });
         }
 
 
-        if (this.evtDetach === undefined) {
+        if (this.evtCtxDetach === undefined) {
             this.evtDetachedInitialPostCount++
-            return out;
+            return handlers;
         }
-        this.evtDetach.post(out);
+        this.evtCtxDetach.post(handlers);
 
-        return out;
+        return handlers;
 
     }
-
-
 
     private handlers = new Set<
         Handler<any, any, Ctx>
@@ -81,12 +70,11 @@ export class Ctx {
             ;
     }
 
-
     public static __addHandlerToCtxCore<T>(
         handler: Handler<T, any, Ctx>,
         evt: EvtCore<T>
     ) {
-        const ctx = handler.boundTo;
+        const { ctx } = handler;
         ctx.handlers.add(handler);
         ctx.evtByHandler.set(handler, evt);
     }
@@ -94,37 +82,14 @@ export class Ctx {
     public static __removeHandlerFromCtxCore(
         handler: Handler<any, any, Ctx>
     ) {
-        const ctx = handler.boundTo;
+        const { ctx } = handler;
         ctx.handlers.delete(handler);
     }
 
-
-
-    //NOTE: Use this instead of instanceof for interoperability between versions.
-    private static match(boundTo: Bindable): boundTo is Ctx {
-
-        if (typeof boundTo !== "object") {
-            return false;
-        }
-
-        const { __CTX_FOR_EVT_VERSION: REF_CORE_VERSION } = id<typeof Ctx>(Object.getPrototypeOf(boundTo).constructor);
-
-        if (typeof REF_CORE_VERSION !== "number") {
-            return false;
-        }
-
-        assert(
-            REF_CORE_VERSION === Ctx.__CTX_FOR_EVT_VERSION,
-            "Compatibility issues between different version of ts-evt"
-        );
-
-        return true;
-
+    public static __matchHandlerBoundToCtx<T>(handler: Handler<T, any>): handler is Handler<T, any, Ctx> {
+        return handler.ctx !== undefined;
     }
 
-    public static matchHandler<T>(handler: Handler<T, any, Bindable>): handler is Handler<T, any, Ctx> {
-        return Ctx.match(handler.boundTo);
-    }
-
+    
 
 }

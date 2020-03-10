@@ -218,7 +218,7 @@ console.log("============");
 
     const evtText = new Evt<"TICK" | "END">();
 
-    evtText.attach(
+    evtText.$attach(
         text => [text, text === "END" ? "DETACH" : null],
         text => console.log(text)
     );

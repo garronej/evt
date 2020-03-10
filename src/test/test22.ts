@@ -5,7 +5,7 @@ const { mustResolve, mustReject } = getPromiseAssertionApi();
 
 let op = (object: Object): object is Array<any> => object instanceof Array;
 
-let boundTo = {};
+let boundTo = Evt.newCtx();
 
 let timeout = 10;
 

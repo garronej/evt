@@ -19,7 +19,7 @@ mustResolve({
 
 });
 
-evt.attach("foo", () => { });
+evt.attach(() => { });
 
 evt.detach();
 

@@ -8,7 +8,7 @@ evt.attachOnce(()=>{});
 
 evt.waitFor();
 
-evt.attachPrepend({},()=>{});
+evt.attachPrepend(Evt.newCtx(), ()=>{});
 
 let detachedHandlers= evt.detach();
 

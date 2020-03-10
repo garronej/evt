@@ -1,42 +1,52 @@
-import { Evt } from "../lib/index";
+import { Evt, Ctx } from "../lib/index";
 
-type T= string;
+type T = string;
 
 let evt = new Evt<T>();
 
 //evt.enableTrace("evt");
 
-let evtProxy= new Evt<T>();
+let evtProxy = new Evt<T>();
 
 //evtProxy.enableTrace("evtProxy");
 
-evt.attach(data=>{
+{
 
-    if( !evtProxy.getEvtAttach().postCount ){
-        evtProxy.getEvtAttach().attachOnce(data,()=> evtProxy.post(data));
-    }else{
-        evtProxy.post(data);
-    }
+    const map = new Map<string, Ctx>();
 
-});
+    evt.attach(data => {
 
-for( let char of [ "a", "b", "c", "d", "e" ])
+        if (!map.has(data)) {
+            map.set(data, Evt.newCtx());
+        }
+
+        if (!evtProxy.getEvtAttach().postCount) {
+            evtProxy.getEvtAttach().attachOnce(map.get(data)!, () => evtProxy.post(data));
+        } else {
+            evtProxy.post(data);
+        }
+
+    });
+
+}
+
+for (let char of ["a", "b", "c", "d", "e"])
     evt.post(char);
 
-let alphabet= "";
+let alphabet = "";
 
 evtProxy.attach(data => {
 
-    alphabet+= data;
+    alphabet += data;
 
 });
 
 
-for( let char of [ "f", "g", "h" ])
+for (let char of ["f", "g", "h"])
     evt.post(char);
 
 //cSpell: disable
-console.assert(alphabet=== "abcdefgh");
+console.assert(alphabet === "abcdefgh");
 //cSpell: enable
 
 console.log("PASS".green);

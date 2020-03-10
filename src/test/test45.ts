@@ -17,7 +17,7 @@ mustReject({
         prMessage,
         new Promise<string>(resolve => setTimeout(() => resolve("OK"), 100))
     ]).attachOnce(
-        () => assert(false),
+        (): boolean => { assert(false); },
         () => assert(false)
     ),
     "expectedRejectedValue": new EvtError.RacePromiseRejection(error, 0, prMessage),

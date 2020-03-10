@@ -13,40 +13,36 @@ var __values = (this && this.__values) || function(o) {
 exports.__esModule = true;
 var Evt_2 = require("./Evt");
 var EvtCore_1 = require("./EvtCore");
-var assert_1 = require("../tools/typeSafety/assert");
 var Set_1 = require("minimal-polyfills/dist/lib/Set");
 var WeakMap_1 = require("minimal-polyfills/dist/lib/WeakMap");
-var id_1 = require("../tools/typeSafety/id");
 var Ctx = /** @class */ (function () {
     function Ctx() {
         this.evtDetachedInitialPostCount = 0;
-        this.evtDetach = undefined;
+        this.evtCtxDetach = undefined;
         this.handlers = new Set_1.Polyfill();
         this.evtByHandler = new WeakMap_1.Polyfill();
     }
-    Ctx.prototype.getEvtDetach = function () {
-        if (this.evtDetach === undefined) {
-            this.evtDetach = new Evt_2.Evt();
-            EvtCore_1.setPostCount(this.evtDetach, this.evtDetachedInitialPostCount);
+    /** returns an Evt that is posted when ctx.detach is invoked. */
+    Ctx.prototype.getEvtCtxDetach = function () {
+        if (this.evtCtxDetach === undefined) {
+            this.evtCtxDetach = new Evt_2.Evt();
+            EvtCore_1.setPostCount(this.evtCtxDetach, this.evtDetachedInitialPostCount);
         }
-        return this.evtDetach;
+        return this.evtCtxDetach;
     };
-    Ctx.prototype.detach = function (attachedTo) {
+    /** Detach all handlers from their respective evt and post getEvtCtxDetach(). */
+    Ctx.prototype.detach = function () {
         var e_1, _a;
-        var out = [];
+        var handlers = [];
         try {
             for (var _b = __values(this.handlers.values()), _c = _b.next(); !_c.done; _c = _b.next()) {
                 var handler = _c.value;
                 var evt = this.evtByHandler.get(handler);
-                if (attachedTo !== undefined &&
-                    evt !== attachedTo) {
-                    continue;
-                }
                 var wasStillAttached = handler.detach();
                 if (!wasStillAttached) {
                     continue;
                 }
-                out.push({ handler: handler, evt: evt });
+                handlers.push({ handler: handler, evt: evt });
             }
         }
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
@@ -56,12 +52,12 @@ var Ctx = /** @class */ (function () {
             }
             finally { if (e_1) throw e_1.error; }
         }
-        if (this.evtDetach === undefined) {
+        if (this.evtCtxDetach === undefined) {
             this.evtDetachedInitialPostCount++;
-            return out;
+            return handlers;
         }
-        this.evtDetach.post(out);
-        return out;
+        this.evtCtxDetach.post(handlers);
+        return handlers;
     };
     Ctx.prototype.getHandlers = function () {
         var _this_1 = this;
@@ -69,31 +65,17 @@ var Ctx = /** @class */ (function () {
             .map(function (handler) { return ({ handler: handler, "evt": _this_1.evtByHandler.get(handler) }); });
     };
     Ctx.__addHandlerToCtxCore = function (handler, evt) {
-        var ctx = handler.boundTo;
+        var ctx = handler.ctx;
         ctx.handlers.add(handler);
         ctx.evtByHandler.set(handler, evt);
     };
     Ctx.__removeHandlerFromCtxCore = function (handler) {
-        var ctx = handler.boundTo;
+        var ctx = handler.ctx;
         ctx.handlers["delete"](handler);
     };
-    //NOTE: Use this instead of instanceof for interoperability between versions.
-    Ctx.match = function (boundTo) {
-        if (typeof boundTo !== "object") {
-            return false;
-        }
-        var REF_CORE_VERSION = id_1.id(Object.getPrototypeOf(boundTo).constructor).__CTX_FOR_EVT_VERSION;
-        if (typeof REF_CORE_VERSION !== "number") {
-            return false;
-        }
-        assert_1.assert(REF_CORE_VERSION === Ctx.__CTX_FOR_EVT_VERSION, "Compatibility issues between different version of ts-evt");
-        return true;
+    Ctx.__matchHandlerBoundToCtx = function (handler) {
+        return handler.ctx !== undefined;
     };
-    Ctx.matchHandler = function (handler) {
-        return Ctx.match(handler.boundTo);
-    };
-    Ctx.__CtxForEvtBrand = true;
-    Ctx.__CTX_FOR_EVT_VERSION = 1;
     return Ctx;
 }());
 exports.Ctx = Ctx;

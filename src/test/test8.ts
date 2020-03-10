@@ -31,12 +31,13 @@ export class TypedPersonIntro {
     }
 }
 
+const ctxTpi= Evt.newCtx();
 let tpi= new TypedPersonIntro();
 
 
 let evt = new Evt<Person>();
 
-evt.attach(isTyped, tpi, tpi.introduce);
+evt.attach(isTyped, ctxTpi, person=> tpi.introduce(person));
 
 console.assert(evt.getHandlers().length === 1,"m2");
 
@@ -46,7 +47,7 @@ evt.post({
     "sex": "female"
 });
 
-evt.detach(tpi);
+evt.detach(ctxTpi);
 
 console.assert( evt.getHandlers().length === 0, "m3");
 
@@ -57,7 +58,7 @@ evt.post({
 });
 
 
-evt.attach(isTyped, tpi, tpi.introduce);
+evt.attach(isTyped, ctxTpi, person => tpi.introduce(person));
 
 console.assert(evt.getHandlers().length === 1,"m4");
 
@@ -79,7 +80,7 @@ evt.post({
 });
 
 
-evt.attach(isTyped, tpi, tpi.introduce);
+evt.attach(isTyped, ctxTpi, person=> tpi.introduce(person));
 
 console.assert(evt.getHandlers().length === 1, "m6");
 
@@ -89,7 +90,7 @@ evt.post({
     "sex": "female"
 });
 
-evt.getHandlers().find(({ callback })=> callback === tpi.introduce )!.detach();
+evt.getHandlers().find(({ ctx })=> ctx === ctxTpi )!.detach();
 
 console.assert( evt.getHandlers().length === 0, "m7");
 

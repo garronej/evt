@@ -86,37 +86,19 @@ var invokeOperator_1 = require("./util/invokeOperator");
 var merge_1 = require("./util/merge");
 var fromEvent_1 = require("./util/fromEvent");
 var parseOverloadParams_1 = require("./util/parseOverloadParams");
+var getLazyEvtHandlerFactory_1 = require("./util/getLazyEvtHandlerFactory");
 var Evt = /** @class */ (function (_super) {
     __extends(Evt, _super);
     function Evt() {
-        var _this_1 = _super !== null && _super.apply(this, arguments) || this;
-        _this_1.evtAttach = undefined;
-        _this_1.evtDetach = undefined;
-        _this_1.initialPostCount = {
-            "evtAttach": 0,
-            "evtDetach": 0
-        };
-        _this_1.__parseOverloadParams = parseOverloadParams_1.parseOverloadParamsFactory({ "defaultBoundTo": _this_1 });
+        var _this_1 = _super.call(this) || this;
+        _this_1.__parseOverloadParams = parseOverloadParams_1.parseOverloadParamsFactory();
+        var _a = getLazyEvtHandlerFactory_1.getLazyEvtHandlerFactory(), getLazyEvtHandler = _a.getLazyEvtHandler, onHandler = _a.onHandler;
+        _this_1.onHandler = onHandler;
+        _this_1.getEvtAttach = function () { return getLazyEvtHandler("evtAttach"); };
+        _this_1.getEvtDetach = function () { return getLazyEvtHandler("evtDetach"); };
         return _this_1;
     }
     Evt.newCtx = function () { return new Ctx_1.Ctx(); };
-    Evt.prototype.__getEvtHandler = function (target) {
-        if (this[target] === undefined) {
-            this[target] = new Evt();
-            EvtCore_1.setPostCount(this[target], this.initialPostCount[target]);
-        }
-        return this[target];
-    };
-    Evt.prototype.getEvtAttach = function () { return this.__getEvtHandler("evtAttach"); };
-    Evt.prototype.getEvtDetach = function () { return this.__getEvtHandler("evtDetach"); };
-    Evt.prototype.onHandler = function (target, handler) {
-        _super.prototype.onHandler.call(this, target, handler);
-        if (this[target] === undefined) {
-            this.initialPostCount[target]++;
-            return;
-        }
-        this[target].post(handler);
-    };
     Evt.prototype.postAsyncOnceHandled = function (data) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {

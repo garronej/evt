@@ -13,7 +13,7 @@ const { mustResolve } = getPromiseAssertionApi();
     const evtText = new Evt<string>();
 
     mustResolve({
-        "promise": ctx.getEvtDetach().attach(() => { }).then(handlers => handlers.length),
+        "promise": ctx.getEvtCtxDetach().attach(() => { }).then(handlers => handlers.length),
         "expectedData": 1
     });
 
@@ -58,7 +58,7 @@ const { mustResolve } = getPromiseAssertionApi();
     const evtText = new Evt<string>();
 
     mustResolve({
-        "promise": ctx.getEvtDetach().attach(() => { }).then(handlers => handlers.length),
+        "promise": ctx.getEvtCtxDetach().attach(() => { }).then(handlers => handlers.length),
         "expectedData": 1
     });
 

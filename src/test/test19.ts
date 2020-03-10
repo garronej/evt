@@ -2,10 +2,12 @@ import { Evt } from "../lib";
 
 let evt = new Evt<{ init: boolean}>();
 
-evt.getEvtAttach().attachOnce(handler=> console.assert( !handler.once && handler.boundTo ==="foo"));
+const ctx= Evt.newCtx();
+
+evt.getEvtAttach().attachOnce(handler=> console.assert( !handler.once && handler.ctx === ctx));
 
 
-evt.attach("foo",({ init })=> {
+evt.attach(ctx,({ init })=> {
 
     console.assert(init);
 

@@ -1,12 +1,13 @@
-import { EvtCore, setPostCount } from "./EvtCore";
+import { EvtCore } from "./EvtCore";
 import { Handler } from "./types/Handler";
-import { Bindable } from "./types/Bindable";
 import { Operator } from "./types/Operator";
 import { Ctx } from "./Ctx";
 import { invokeOperator } from "./util/invokeOperator";
 import { merge } from "./util/merge";
 import { fromEvent } from "./util/fromEvent";
 import { parseOverloadParamsFactory } from "./util/parseOverloadParams";
+import { getLazyEvtHandlerFactory } from "./util/getLazyEvtHandlerFactory";
+
 
 export class Evt<T> extends EvtCore<T> {
 
@@ -14,6 +15,7 @@ export class Evt<T> extends EvtCore<T> {
     public static merge = merge;
     public static fromEvent = fromEvent;
 
+    /*
     private evtAttach: Evt<Handler<T, any>> | undefined = undefined;
     private evtDetach: Evt<Handler<T, any>> | undefined = undefined;
 
@@ -59,6 +61,24 @@ export class Evt<T> extends EvtCore<T> {
         this[target]!.post(handler);
 
     }
+    */
+
+    public readonly getEvtAttach: () => Evt<Handler<T, any>>;
+    public readonly getEvtDetach: () => Evt<Handler<T, any>>;
+
+    constructor() {
+        super();
+
+        const { getLazyEvtHandler, onHandler } = getLazyEvtHandlerFactory<T>();
+
+        this.onHandler = onHandler;
+
+        this.getEvtAttach = () => getLazyEvtHandler("evtAttach");
+        this.getEvtDetach = () => getLazyEvtHandler("evtDetach");
+
+    }
+
+
 
 
     public async postAsyncOnceHandled(data: T) {
@@ -95,7 +115,7 @@ export class Evt<T> extends EvtCore<T> {
 
     }
 
-    private __parseOverloadParams = parseOverloadParamsFactory<T>({ "defaultBoundTo": this });
+    private __parseOverloadParams = parseOverloadParamsFactory<T>();
 
     public pipe(): Evt<T>;
 
@@ -302,7 +322,7 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - fλ
      * 
-     * boundTo
+     * ctx
      * 
      * timeout
      * 
@@ -310,7 +330,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public $attach<U>(
         op: Operator.fλ<T, U>,
-        boundTo: Bindable,
+        ctx: Ctx,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -319,13 +339,13 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - fλ
      * 
-     * boundTo
+     * ctx
      * 
      * callback
      */
     public $attach<U>(
         op: Operator.fλ<T, U>,
-        boundTo: Bindable,
+        ctx: Ctx,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
@@ -368,7 +388,7 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - Type guard
      * 
-     * boundTo
+     * ctx
      * 
      * timeout
      * 
@@ -376,7 +396,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attach<Q extends T>(
         op: (data: T) => data is Q,
-        boundTo: Bindable,
+        ctx: Ctx,
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
@@ -385,7 +405,7 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - Filter
      * 
-     * boundTo
+     * ctx
      * 
      * timeout
      * 
@@ -393,7 +413,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attach(
         op: (data: T) => boolean,
-        boundTo: Bindable,
+        ctx: Ctx,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -402,13 +422,13 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - Type guard
      * 
-     * boundTo
+     * ctx
      * 
      * callback
      */
     public attach<Q extends T>(
         op: (data: T) => data is Q,
-        boundTo: Bindable,
+        ctx: Ctx,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
@@ -416,13 +436,13 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - Filter
      * 
-     * boundTo
+     * ctx
      * 
      * callback
      */
     public attach(
         op: (data: T) => boolean,
-        boundTo: Bindable,
+        ctx: Ctx,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -456,14 +476,14 @@ export class Evt<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
-     * boundTo
+     * ctx
      * 
      * timeout
      * 
      * callback
      */
     public attach(
-        boundTo: Bindable,
+        ctx: Ctx,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -492,12 +512,12 @@ export class Evt<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
-     * boundTo
+     * ctx
      * 
      * callback
      */
     public attach(
-        boundTo: Bindable,
+        ctx: Ctx,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -531,7 +551,7 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - fλ
      * 
-     * boundTo
+     * ctx
      * 
      * timeout
      * 
@@ -539,7 +559,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public $attachOnce<U>(
         op: Operator.fλ.Stateless<T, U>,
-        boundTo: Bindable,
+        ctx: Ctx,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -548,13 +568,13 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - fλ
      * 
-     * boundTo
+     * ctx
      * 
      * callback
      */
     public $attachOnce<U>(
         op: Operator.fλ.Stateless<T, U>,
-        boundTo: Bindable,
+        ctx: Ctx,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
@@ -596,7 +616,7 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - Type guard
      * 
-     * boundTo
+     * ctx
      * 
      * timeout
      * 
@@ -604,7 +624,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachOnce<Q extends T>(
         op: (data: T) => data is Q,
-        boundTo: Bindable,
+        ctx: Ctx,
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
@@ -613,7 +633,7 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - Filter
      * 
-     * boundTo
+     * ctx
      * 
      * timeout
      * 
@@ -621,7 +641,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachOnce(
         op: (data: T) => boolean,
-        boundTo: Bindable,
+        ctx: Ctx,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -630,13 +650,13 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - Type guard
      * 
-     * boundTo
+     * ctx
      * 
      * callback
      */
     public attachOnce<Q extends T>(
         op: (data: T) => data is Q,
-        boundTo: Bindable,
+        ctx: Ctx,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
@@ -644,13 +664,13 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - Filter
      * 
-     * boundTo
+     * ctx
      * 
      * callback
      */
     public attachOnce(
         op: (data: T) => boolean,
-        boundTo: Bindable,
+        ctx: Ctx,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -684,14 +704,14 @@ export class Evt<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
-     * boundTo
+     * ctx
      * 
      * timeout
      * 
      * callback
      */
     public attachOnce(
-        boundTo: Bindable,
+        ctx: Ctx,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -720,12 +740,12 @@ export class Evt<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
      * 
-     * boundTo
+     * ctx
      * 
      * callback
      */
     public attachOnce(
-        boundTo: Bindable,
+        ctx: Ctx,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -760,7 +780,7 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - fλ
      * 
-     * boundTo
+     * ctx
      * 
      * timeout
      * 
@@ -768,7 +788,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public $attachExtract<U>(
         op: Operator.fλ<T, U>,
-        boundTo: Bindable,
+        ctx: Ctx,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -777,13 +797,13 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - fλ
      * 
-     * boundTo
+     * ctx
      * 
      * callback
      */
     public $attachExtract<U>(
         op: Operator.fλ<T, U>,
-        boundTo: Bindable,
+        ctx: Ctx,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
@@ -827,7 +847,7 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - Type guard
      * 
-     * boundTo
+     * ctx
      * 
      * timeout
      * 
@@ -835,7 +855,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachExtract<Q extends T>(
         op: (data: T) => data is Q,
-        boundTo: Bindable,
+        ctx: Ctx,
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
@@ -844,7 +864,7 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - fλ
      * 
-     * boundTo
+     * ctx
      * 
      * timeout
      * 
@@ -852,7 +872,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachExtract(
         op: (data: T) => boolean,
-        boundTo: Bindable,
+        ctx: Ctx,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -861,13 +881,13 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - Type guard
      * 
-     * boundTo
+     * ctx
      * 
      * callback
      */
     public attachExtract<Q extends T>(
         op: (data: T) => data is Q,
-        boundTo: Bindable,
+        ctx: Ctx,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
@@ -875,13 +895,13 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - Filter
      * 
-     * boundTo
+     * ctx
      * 
      * callback
      */
     public attachExtract(
         op: (data: T) => boolean,
-        boundTo: Bindable,
+        ctx: Ctx,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -953,7 +973,7 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - fλ
      * 
-     * boundTo
+     * ctx
      * 
      * timeout
      * 
@@ -961,7 +981,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public $attachPrepend<U>(
         op: Operator.fλ<T, U>,
-        boundTo: Bindable,
+        ctx: Ctx,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -970,13 +990,13 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - fλ
      * 
-     * boundTo
+     * ctx
      * 
      * callback
      */
     public $attachPrepend<U>(
         op: Operator.fλ<T, U>,
-        boundTo: Bindable,
+        ctx: Ctx,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
@@ -1021,7 +1041,7 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - Type guard
      * 
-     * boundTo
+     * ctx
      * 
      * timeout
      * 
@@ -1029,7 +1049,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachPrepend<Q extends T>(
         op: (data: T) => data is Q,
-        boundTo: Bindable,
+        ctx: Ctx,
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
@@ -1039,7 +1059,7 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - Filter
      * 
-     * boundTo
+     * ctx
      * 
      * timeout
      * 
@@ -1047,7 +1067,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachPrepend(
         op: (data: T) => boolean,
-        boundTo: Bindable,
+        ctx: Ctx,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -1057,13 +1077,13 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - Type guard
      * 
-     * boundTo
+     * ctx
      * 
      * callback
      */
     public attachPrepend<Q extends T>(
         op: (data: T) => data is Q,
-        boundTo: Bindable,
+        ctx: Ctx,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
@@ -1071,13 +1091,13 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - Filter
      * 
-     * boundTo
+     * ctx
      * 
      * callback
      */
     public attachPrepend(
         op: (data: T) => boolean,
-        boundTo: Bindable,
+        ctx: Ctx,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -1111,14 +1131,14 @@ export class Evt<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      * 
-     * boundTo
+     * ctx
      * 
      * timeout
      * 
      * callback
      */
     public attachPrepend(
-        boundTo: Bindable,
+        ctx: Ctx,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -1147,12 +1167,12 @@ export class Evt<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
      * 
-     * boundTo
+     * ctx
      * 
      * callback
      */
     public attachPrepend(
-        boundTo: Bindable,
+        ctx: Ctx,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -1189,7 +1209,7 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - fλ
      * 
-     * boundTo
+     * ctx
      * 
      * timeout
      * 
@@ -1197,7 +1217,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public $attachOncePrepend<U>(
         op: Operator.fλ.Stateless<T, U>,
-        boundTo: Bindable,
+        ctx: Ctx,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -1206,13 +1226,13 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - fλ
      * 
-     * boundTo
+     * ctx
      * 
      * callback
      */
     public $attachOncePrepend<U>(
         op: Operator.fλ.Stateless<T, U>,
-        boundTo: Bindable,
+        ctx: Ctx,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
@@ -1257,7 +1277,7 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - Type guard
      * 
-     * boundTo
+     * ctx
      * 
      * timeout
      * 
@@ -1265,7 +1285,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachOncePrepend<Q extends T>(
         op: (data: T) => data is Q,
-        boundTo: Bindable,
+        ctx: Ctx,
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
@@ -1274,7 +1294,7 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - Filter
      * 
-     * boundTo
+     * ctx
      * 
      * timeout
      * 
@@ -1282,7 +1302,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachOncePrepend(
         op: (data: T) => boolean,
-        boundTo: Bindable,
+        ctx: Ctx,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -1291,13 +1311,13 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - Type guard
      * 
-     * boundTo
+     * ctx
      * 
      * callback
      */
     public attachOncePrepend<Q extends T>(
         op: (data: T) => data is Q,
-        boundTo: Bindable,
+        ctx: Ctx,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
@@ -1305,13 +1325,13 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - Filter
      * 
-     * boundTo
+     * ctx
      * 
      * callback
      */
     public attachOncePrepend(
         op: (data: T) => boolean,
-        boundTo: Bindable,
+        ctx: Ctx,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -1345,14 +1365,14 @@ export class Evt<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      * 
-     * boundTo
+     * ctx
      * 
      * timeout
      * 
      * callback
      */
     public attachOncePrepend(
-        boundTo: Bindable,
+        ctx: Ctx,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -1381,12 +1401,12 @@ export class Evt<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
      * 
-     * boundTo
+     * ctx
      * 
      * callback
      */
     public attachOncePrepend(
-        boundTo: Bindable,
+        ctx: Ctx,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -1424,7 +1444,7 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - fλ
      * 
-     * boundTo
+     * ctx
      * 
      * timeout
      * 
@@ -1432,7 +1452,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public $attachOnceExtract<U>(
         op: Operator.fλ.Stateless<T, U>,
-        boundTo: Bindable,
+        ctx: Ctx,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -1441,13 +1461,13 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - fλ
      * 
-     * boundTo
+     * ctx
      * 
      * callback
      */
     public $attachOnceExtract<U>(
         op: Operator.fλ.Stateless<T, U>,
-        boundTo: Bindable,
+        ctx: Ctx,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
@@ -1491,7 +1511,7 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - Type guard
      * 
-     * boundTo
+     * ctx
      * 
      * timeout
      * 
@@ -1499,7 +1519,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachOnceExtract<Q extends T>(
         op: (data: T) => data is Q,
-        boundTo: Bindable,
+        ctx: Ctx,
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
@@ -1508,7 +1528,7 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - Filter
      * 
-     * boundTo
+     * ctx
      * 
      * timeout
      * 
@@ -1516,7 +1536,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachOnceExtract(
         op: (data: T) => boolean,
-        boundTo: Bindable,
+        ctx: Ctx,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -1525,13 +1545,13 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - Type guard
      * 
-     * boundTo
+     * ctx
      * 
      * callback
      */
     public attachOnceExtract<Q extends T>(
         op: (data: T) => data is Q,
-        boundTo: Bindable,
+        ctx: Ctx,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
@@ -1539,13 +1559,13 @@ export class Evt<T> extends EvtCore<T> {
      * 
      * op - Filter
      * 
-     * boundTo
+     * ctx
      * 
      * callback
      */
     public attachOnceExtract(
         op: (data: T) => boolean,
-        boundTo: Bindable,
+        ctx: Ctx,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -1579,12 +1599,12 @@ export class Evt<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * boundTo
+     * ctx
      * 
      * timeout
      */
     public attachOnceExtract(
-        boundTo: Bindable,
+        ctx: Ctx,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -1613,12 +1633,12 @@ export class Evt<T> extends EvtCore<T> {
     /**
      * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
      * 
-     * boundTo
+     * ctx
      * 
      * callback
      */
     public attachOnceExtract(
-        boundTo: Bindable,
+        ctx: Ctx,
         callback: (data: T) => void
     ): Promise<T>;
     /**

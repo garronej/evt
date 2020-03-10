@@ -1,6 +1,4 @@
-import {
-    Evt
-} from "../lib/index";
+import { Evt } from "../lib/index";
 
 export interface Person {
     name: string;
@@ -70,7 +68,7 @@ console.assert(evt.getHandlers().filter(({ once, async }) => once && !async).len
 console.assert(evt.getHandlers().filter(({ once }) => !once).length === 0);
 console.assert(evt.getHandlers().filter(({ async }) => async).length === 0);
 
-evt.attachOnce(isTyped, tpi, tpi.introduce);
+evt.attachOnce(isTyped, person=> tpi.introduce(person));
 
 console.assert(evt.getHandlers().length === 1);
 console.assert(evt.getHandlers().filter(({ once, async }) => once && !async).length === 1);

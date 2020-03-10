@@ -4,7 +4,6 @@ import { id, assert, typeGuard } from "../../tools/typeSafety";
 import { EventTargetLike } from "../types/EventTargetLike";
 import { mergeImpl } from "./merge";
 type Ctx = import("../Ctx").Ctx;
-type CtxConstructor = typeof import("../Ctx").Ctx;
 
 type OneOrMany<T> = T | ArrayLike<T>;
 
@@ -70,7 +69,7 @@ function fromEventImpl<T>(
 
     const listener = (data: T) => evt.post(data);
 
-    ctx?.getEvtDetach().attachOnce(
+    ctx?.getEvtCtxDetach().attachOnce(
         () => proxy.off(
             listener,
             eventName!,
@@ -130,15 +129,9 @@ export function fromEvent<T>(
     options?: EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<T> {
 
-    if (
-        id<CtxConstructor>(
-            Object.getPrototypeOf(ctxOrTarget)
-                .constructor
-        ).__CtxForEvtBrand === true
-    ) {
+    if ("getEvtCtxDetach" in ctxOrTarget) {
 
         assert(
-            typeGuard.dry<Ctx>(ctxOrTarget) &&
             typeGuard.dry<OneOrMany<EventTargetLike<T>>>(targetOrEventName) &&
             typeGuard.dry<string | undefined>(eventNameOrOptions) &&
             typeGuard.dry<EventTargetLike.HasEventTargetAddRemove.Options | undefined>(options)
@@ -154,7 +147,6 @@ export function fromEvent<T>(
     } else {
 
         assert(
-            typeGuard.dry<OneOrMany<EventTargetLike<T>>>(ctxOrTarget) &&
             typeGuard.dry<string | undefined>(targetOrEventName) &&
             typeGuard.dry<EventTargetLike.HasEventTargetAddRemove.Options | undefined>(eventNameOrOptions)
         );

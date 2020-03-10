@@ -2,7 +2,6 @@ import { Polyfill as Map, LightMap } from "minimal-polyfills/dist/lib/Map";
 import { Polyfill as WeakMap } from "minimal-polyfills/dist/lib/WeakMap";
 import "minimal-polyfills/dist/lib/Array.prototype.find";
 import * as runExclusive from "run-exclusive";
-import { Bindable } from "./types/Bindable";
 import { Handler } from "./types/Handler";
 import { EvtError } from "./types/EvtError";
 import { Operator } from "./types/Operator";
@@ -95,11 +94,79 @@ export class EvtCore<T> {
     >();
 
 
-    protected onHandler(
-        target: "evtAttach" | "evtDetach", 
-        handler: Handler<T, any>
+    //NOTE: Implemented by Evt
+    protected onHandler: ((target: "evtAttach" | "evtDetach", handler: Handler<T, any>)=> void) | undefined = undefined;
+
+    private detachHandler(
+        handler: Handler<T, any>,
+        wTimer: [ NodeJS.Timer | undefined ],
+        rejectPr: (error: EvtError.Detached) => void
+    ) {
+
+        const index = this.handlers.indexOf(handler);
+
+        if (index < 0) {
+            return false;
+        }
+
+        if (Ctx.__matchHandlerBoundToCtx(handler)) {
+            Ctx.__removeHandlerFromCtxCore(handler);
+        }
+
+
+        this.handlers.splice(index, 1);
+
+        this.handlerTriggers.delete(handler);
+
+        if (wTimer[0] !== undefined) {
+
+            clearTimeout(wTimer[0]);
+
+            rejectPr(new EvtError.Detached());
+
+        }
+
+        this.onHandler?.("evtDetach", handler);
+
+        return true;
+
+    }
+
+    private triggerHandler<U>(
+        handler: Handler<T, U>,
+        wTimer: [NodeJS.Timer | undefined],
+        resolvePr: (transformedData: any) => void,
+        opResult: Operator.fλ.Result.Matched<any>
     ): void {
-        //NOTE: Overwritten by Evt
+
+        const { callback, once } = handler;
+
+        if (wTimer[0] !== undefined) {
+            clearTimeout(wTimer[0]);
+            wTimer[0] = undefined;
+        }
+
+        {
+
+            const detach = Operator.fλ.Result.getDetachArg(opResult);
+
+            if (typeof detach !== "boolean") {
+                detach.detach();
+            } else if (detach || once) {
+                handler.detach();
+            }
+
+        }
+
+        const [transformedData] = opResult;
+
+        callback?.call(
+            this,
+            transformedData
+        );
+
+        resolvePr(transformedData);
+
     }
 
     private addHandler<U>(
@@ -115,6 +182,7 @@ export class EvtCore<T> {
             );
 
         }
+
 
         const handler: Handler<T, U> = {
             ...propsFromArgs,
@@ -135,13 +203,13 @@ export class EvtCore<T> {
         (handler.promise as (typeof handler)["promise"]) = new Promise<U>(
             (resolve, reject) => {
 
-                let timer: NodeJS.Timer | undefined = undefined;
+                const wTimer: [NodeJS.Timer | undefined] = [ undefined ];
 
                 if (typeof handler.timeout === "number") {
 
-                    timer = setTimeout(() => {
+                    wTimer[0] = setTimeout(() => {
 
-                        timer = undefined;
+                        wTimer[0] = undefined;
 
                         handler.detach();
 
@@ -151,69 +219,18 @@ export class EvtCore<T> {
 
                 }
 
-                (handler.detach as (typeof handler)["detach"]) = () => {
-
-                    const index = this.handlers.indexOf(handler);
-
-                    if (index < 0) {
-                        return false;
-                    }
-
-                    if (Ctx.matchHandler(handler)) {
-                        Ctx.__removeHandlerFromCtxCore(handler);
-                    }
-
-
-                    this.handlers.splice(index, 1);
-
-                    this.handlerTriggers.delete(handler);
-
-                    if (timer !== undefined) {
-
-                        clearTimeout(timer);
-
-                        reject(new EvtError.Detached());
-
-                    }
-
-                    this.onHandler("evtDetach", handler);
-
-                    return true;
-
-                };
+                (handler.detach as (typeof handler)["detach"]) = 
+                    () => this.detachHandler(handler, wTimer, reject)
+                    ;
 
                 this.handlerTriggers.set(
                     handler,
-                    (opResult: Operator.fλ.Result.Matched<any>) => {
-
-                        const { callback, once } = handler;
-
-                        if (timer !== undefined) {
-                            clearTimeout(timer);
-                            timer = undefined;
-                        }
-
-                        {
-                            const detach = Operator.fλ.Result.getDetachArg(opResult);
-
-                            if( typeof detach !== "boolean" ){
-                                detach.detach();
-                            }else if( detach || once ){
-                                handler.detach();
-                            }
-
-                        }
-
-                        const [transformedData] = opResult;
-
-                        callback?.call(
-                            handler.boundTo,
-                            transformedData
-                        );
-
-                        resolve(transformedData);
-
-                    }
+                    opResult=> this.triggerHandler(
+                        handler, 
+                        wTimer, 
+                        resolve, 
+                        opResult
+                    )
                 );
 
             }
@@ -241,11 +258,11 @@ export class EvtCore<T> {
 
         }
 
-        if (Ctx.matchHandler(handler)) {
+        if (Ctx.__matchHandlerBoundToCtx(handler)) {
             Ctx.__addHandlerToCtxCore(handler, this);
         }
 
-        this.onHandler("evtAttach",handler);
+        this.onHandler?.("evtAttach", handler);
 
         return handler;
 
@@ -304,8 +321,8 @@ export class EvtCore<T> {
     public post(data: T): number {
 
         this.trace(data);
-        
-        setPostCount(this, this.postCount+1);
+
+        setPostCount(this, this.postCount + 1);
 
         //NOTE: Must be before postSync.
         const postChronologyMark = this.getChronologyMark();
@@ -346,9 +363,9 @@ export class EvtCore<T> {
 
                 const detach = Operator.fλ.Result.getDetachArg(opResult);
 
-                if( typeof detach !== "boolean" ){
+                if (typeof detach !== "boolean") {
                     detach.detach();
-                }else if( detach ){
+                } else if (detach) {
                     handler.detach();
                 }
 
@@ -624,22 +641,23 @@ export class EvtCore<T> {
     }
 
     /** Detach every handler bound to a given object or all handlers, return the detached handlers */
-    public detach(boundTo?: Bindable): Handler<T, any>[] {
+    public detach(ctx?: Ctx): Handler<T, any>[] {
 
         const detachedHandlers: Handler<T, any>[] = [];
 
         for (const handler of this.getHandlers()) {
 
-            if (boundTo === undefined || handler.boundTo === boundTo) {
-                const wasStillAttached = handler.detach();
-
-                if (!wasStillAttached) {
-                    continue;
-                }
-
-                detachedHandlers.push(handler);
-
+            if (ctx !== undefined && handler.ctx !== ctx) {
+                continue;
             }
+
+            const wasStillAttached = handler.detach();
+
+            if (!wasStillAttached) {
+                continue;
+            }
+
+            detachedHandlers.push(handler);
 
         }
 

@@ -1,7 +1,5 @@
 type Ctx = import("../Ctx").Ctx;
-type CtxConstructor = typeof import("../Ctx").Ctx;
 import { typeGuard } from "../../tools/typeSafety";
-import { id } from "../../tools/typeSafety/id";
 
 export type Operator<T, U> =
     Operator.fλ<T, U> |
@@ -120,11 +118,7 @@ export namespace Operator {
                         return (
                             typeGuard.dry<Detach>(detach) &&
                             detach instanceof Object &&
-                            detach.DETACH instanceof Object &&
-                            id<CtxConstructor>(
-                                Object.getPrototypeOf(detach.DETACH)
-                                    .constructor
-                            ).__CtxForEvtBrand === true
+                            detach.DETACH instanceof Object
                         );
                     }
                 }

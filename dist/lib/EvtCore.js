@@ -83,6 +83,8 @@ var EvtCore = /** @class */ (function () {
             return function () { return currentChronologyMark++; };
         })();
         this.statelessByStatefulOp = new WeakMap_1.Polyfill();
+        //NOTE: Implemented by Evt
+        this.onHandler = undefined;
         this.postAsync = runExclusive.buildMethodCb(function (data, postChronologyMark, releaseLock) {
             var e_1, _a;
             var promises = [];
@@ -197,11 +199,46 @@ var EvtCore = /** @class */ (function () {
     EvtCore.prototype.disableTrace = function () {
         this.traceId = null;
     };
-    EvtCore.prototype.onHandler = function (target, handler) {
-        //NOTE: Overwritten by Evt
+    EvtCore.prototype.detachHandler = function (handler, wTimer, rejectPr) {
+        var _a;
+        var index = this.handlers.indexOf(handler);
+        if (index < 0) {
+            return false;
+        }
+        if (Ctx_1.Ctx.__matchHandlerBoundToCtx(handler)) {
+            Ctx_1.Ctx.__removeHandlerFromCtxCore(handler);
+        }
+        this.handlers.splice(index, 1);
+        this.handlerTriggers["delete"](handler);
+        if (wTimer[0] !== undefined) {
+            clearTimeout(wTimer[0]);
+            rejectPr(new EvtError_1.EvtError.Detached());
+        }
+        (_a = this.onHandler) === null || _a === void 0 ? void 0 : _a.call(this, "evtDetach", handler);
+        return true;
+    };
+    EvtCore.prototype.triggerHandler = function (handler, wTimer, resolvePr, opResult) {
+        var callback = handler.callback, once = handler.once;
+        if (wTimer[0] !== undefined) {
+            clearTimeout(wTimer[0]);
+            wTimer[0] = undefined;
+        }
+        {
+            var detach = Operator_1.Operator.fλ.Result.getDetachArg(opResult);
+            if (typeof detach !== "boolean") {
+                detach.detach();
+            }
+            else if (detach || once) {
+                handler.detach();
+            }
+        }
+        var _a = __read(opResult, 1), transformedData = _a[0];
+        callback === null || callback === void 0 ? void 0 : callback.call(this, transformedData);
+        resolvePr(transformedData);
     };
     EvtCore.prototype.addHandler = function (propsFromArgs, propsFromMethodName) {
         var _this_1 = this;
+        var _a;
         if (Operator_1.Operator.fλ.Stateful.match(propsFromArgs.op)) {
             this.statelessByStatefulOp.set(propsFromArgs.op, encapsulateOpState_1.encapsulateOpState(propsFromArgs.op));
         }
@@ -210,50 +247,17 @@ var EvtCore = /** @class */ (function () {
             this.asyncHandlerChronologyMark.set(handler, this.getChronologyMark());
         }
         handler.promise = new Promise(function (resolve, reject) {
-            var timer = undefined;
+            var wTimer = [undefined];
             if (typeof handler.timeout === "number") {
-                timer = setTimeout(function () {
-                    timer = undefined;
+                wTimer[0] = setTimeout(function () {
+                    wTimer[0] = undefined;
                     handler.detach();
                     reject(new EvtError_1.EvtError.Timeout(handler.timeout));
                 }, handler.timeout);
             }
-            handler.detach = function () {
-                var index = _this_1.handlers.indexOf(handler);
-                if (index < 0) {
-                    return false;
-                }
-                if (Ctx_1.Ctx.matchHandler(handler)) {
-                    Ctx_1.Ctx.__removeHandlerFromCtxCore(handler);
-                }
-                _this_1.handlers.splice(index, 1);
-                _this_1.handlerTriggers["delete"](handler);
-                if (timer !== undefined) {
-                    clearTimeout(timer);
-                    reject(new EvtError_1.EvtError.Detached());
-                }
-                _this_1.onHandler("evtDetach", handler);
-                return true;
-            };
-            _this_1.handlerTriggers.set(handler, function (opResult) {
-                var callback = handler.callback, once = handler.once;
-                if (timer !== undefined) {
-                    clearTimeout(timer);
-                    timer = undefined;
-                }
-                {
-                    var detach = Operator_1.Operator.fλ.Result.getDetachArg(opResult);
-                    if (typeof detach !== "boolean") {
-                        detach.detach();
-                    }
-                    else if (detach || once) {
-                        handler.detach();
-                    }
-                }
-                var _a = __read(opResult, 1), transformedData = _a[0];
-                callback === null || callback === void 0 ? void 0 : callback.call(handler.boundTo, transformedData);
-                resolve(transformedData);
-            });
+            handler.detach =
+                function () { return _this_1.detachHandler(handler, wTimer, reject); };
+            _this_1.handlerTriggers.set(handler, function (opResult) { return _this_1.triggerHandler(handler, wTimer, resolve, opResult); });
         });
         if (handler.prepend) {
             var i = void 0;
@@ -268,10 +272,10 @@ var EvtCore = /** @class */ (function () {
         else {
             this.handlers.push(handler);
         }
-        if (Ctx_1.Ctx.matchHandler(handler)) {
+        if (Ctx_1.Ctx.__matchHandlerBoundToCtx(handler)) {
             Ctx_1.Ctx.__addHandlerToCtxCore(handler, this);
         }
-        this.onHandler("evtAttach", handler);
+        (_a = this.onHandler) === null || _a === void 0 ? void 0 : _a.call(this, "evtAttach", handler);
         return handler;
     };
     EvtCore.prototype.getStatelessOp = function (op) {
@@ -443,19 +447,20 @@ var EvtCore = /** @class */ (function () {
         return __spread(this.handlers);
     };
     /** Detach every handler bound to a given object or all handlers, return the detached handlers */
-    EvtCore.prototype.detach = function (boundTo) {
+    EvtCore.prototype.detach = function (ctx) {
         var e_4, _a;
         var detachedHandlers = [];
         try {
             for (var _b = __values(this.getHandlers()), _c = _b.next(); !_c.done; _c = _b.next()) {
                 var handler = _c.value;
-                if (boundTo === undefined || handler.boundTo === boundTo) {
-                    var wasStillAttached = handler.detach();
-                    if (!wasStillAttached) {
-                        continue;
-                    }
-                    detachedHandlers.push(handler);
+                if (ctx !== undefined && handler.ctx !== ctx) {
+                    continue;
                 }
+                var wasStillAttached = handler.detach();
+                if (!wasStillAttached) {
+                    continue;
+                }
+                detachedHandlers.push(handler);
             }
         }
         catch (e_4_1) { e_4 = { error: e_4_1 }; }

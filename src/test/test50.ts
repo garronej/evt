@@ -9,7 +9,7 @@ let p_: number;
 
 evtAge.$attach(
     [(...[, prev]) => [prev + 1], 0],
-    {},
+    Evt.newCtx(),
     p => p_ = p
 );
 

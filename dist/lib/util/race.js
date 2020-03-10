@@ -33,7 +33,7 @@ var __spread = (this && this.__spread) || function () {
 exports.__esModule = true;
 var index_1 = require("../index");
 var typeSafety_1 = require("../../tools/typeSafety");
-var types_1 = require("../types");
+var EvtError_1 = require("../types/EvtError");
 var typeSafety_2 = require("../../tools/typeSafety");
 var Deferred_1 = require("../../tools/Deferred");
 var invokeOperator_1 = require("./invokeOperator");
@@ -189,7 +189,7 @@ var raceUnsafe = (function () {
     return function raceUnsafe(racers) {
         var evt = new index_1.Evt();
         var evtRaceFinished = new index_1.VoidEvt();
-        var raceContext = { evtRaceFinished: evtRaceFinished };
+        var raceContext = Object.assign(index_1.Evt.newCtx(), { evtRaceFinished: evtRaceFinished });
         var evtRaceRecResult = raceUnsafeRec(raceContext, racers, prNever);
         var toRaceResult = function (raceRecResult) {
             typeSafety_1.assert(!typeSafety_1.typeGuard.dry(raceRecResult.i, false));
@@ -238,7 +238,7 @@ function wrapRejection(promise) {
     }); });
 }
 function generateProxyFunctionFactory(oneShotEvt) {
-    var parseOverloadParams = parseOverloadParams_1.parseOverloadParamsFactory({ "defaultBoundTo": oneShotEvt });
+    var parseOverloadParams = parseOverloadParams_1.parseOverloadParamsFactory();
     return function generateProxyFunction(methodName) {
         var methodBackup = typeSafety_2.id(oneShotEvt[methodName]).bind(oneShotEvt);
         Object.defineProperty(oneShotEvt, methodName, {
@@ -262,7 +262,7 @@ function generateProxyFunctionFactory(oneShotEvt) {
                     }
                     var prResultWrap = raceResult.data;
                     if (!prResultWrap.isFulfilled) {
-                        dOut.reject(new types_1.EvtError.RacePromiseRejection(prResultWrap.error, raceResult.i, raceResult.racer));
+                        dOut.reject(new EvtError_1.EvtError.RacePromiseRejection(prResultWrap.error, raceResult.i, raceResult.racer));
                         return "DETACH";
                     }
                     typeSafety_1.assert(!Operator_1.Operator.fλ.Stateful.match(op));

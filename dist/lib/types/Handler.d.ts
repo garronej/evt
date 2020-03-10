@@ -1,15 +1,14 @@
-import { Bindable } from "./Bindable";
 import { Operator } from "./Operator";
 declare type EvtCore<T> = import("../EvtCore").EvtCore<T>;
 declare type Ctx = import("../Ctx").Ctx;
-export declare type Handler<T, U, BoundTo extends Bindable = Bindable> = Handler.PropsFromArgs<T, U, BoundTo> & Handler.PropsFromMethodName & Readonly<{
+export declare type Handler<T, U, CtxProp extends Ctx | undefined = Ctx | undefined> = Handler.PropsFromArgs<T, U, CtxProp> & Handler.PropsFromMethodName & Readonly<{
     detach(): boolean;
     promise: Promise<U>;
 }>;
 export declare namespace Handler {
     /** Handlers params that come from the arguments passed to the method invoked */
-    type PropsFromArgs<T, U, BoundTo extends Bindable = Bindable> = {
-        boundTo: BoundTo;
+    type PropsFromArgs<T, U, CtxProp extends Ctx | undefined = Ctx | undefined> = {
+        ctx: CtxProp;
         timeout: number | undefined;
         op: Operator<T, U>;
         callback: ((transformedData: U) => void) | undefined;
