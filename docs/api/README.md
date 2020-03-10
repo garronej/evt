@@ -1,7 +1,7 @@
 ---
 description: >-
-  The API reference documentation of the library and t step by step guide for
-  new users.
+  The API reference documentation of the library and step by step guide for new
+  users.
 ---
 
 # API Documentation
