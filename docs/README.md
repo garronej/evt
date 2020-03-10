@@ -35,7 +35,7 @@ RxJS have it's issues as well:
 
 TS-EVT is an attempt to solve all this issues while trying to remain as traight forward in as `EventEmitter`.
 
-Let's jump right in by considering side by side examples comparing TS-EVT with it's peers
+Let's jump right in by considering [side by side examples comparing TS-EVT with it's peers](https://docs.ts-evt.dev/overview).
 
 ![](https://ts-evt.dev/assets/img/gun-vs-sword.gif)
 
