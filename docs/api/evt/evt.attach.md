@@ -47,7 +47,7 @@ When the  method contains the keyword "**once**": Adds a **one-time** [Handler](
 
 ## `evt.[$]attach[Once]Prepend(...)`
 
-When the method contain the keyword "**prepend**":  Same as .attach\(\) but the [`Handler`](https://docs.ts-evt.dev/api/handler) is added to the _beginning_ of the handler array. 
+When the method contain the keyword "**prepend**":  Same as .attach\(\) but the [`Handler`](https://docs.ts-evt.dev/api/handler) is added at the _beginning_ of the handler array. 
 
 ```typescript
 import { VoidEvt } from "ts-evt";
@@ -67,7 +67,7 @@ evtConnect.post();
 
 ## **`evt.[$]attach[Once]Extract(...)`**
 
-When the method contains the  "**extract**" keyword every event that the [`handler`](https://docs.ts-evt.dev/api/handler) matches will be swallowed and no other handler will be have the opportunity to handle it, even the other "extract"' handlers. It behave like a trap.
+When the method contains the  "**extract**" keyword every event that the [`handler`](https://docs.ts-evt.dev/api/handler) matches will be swallowed and no other handler will have the opportunity to handle it, even the other "extract"' handlers. It behave like a trap.
 
 "**extract**" handler have priority even over "**prepend**" [`Handler`](https://docs.ts-evt.dev/api/handler)s. 
 
@@ -92,9 +92,7 @@ evtCircle.attach(
 
 //Extract have priority over prepend
 evtCircle.attachPrepend(
-    circle => {
-        console.assert(circle.radius > 0);
-    }
+    circle => console.assert(circle.radius > 0)
 );
 ```
 
