@@ -118,9 +118,10 @@ TS-EVT distant itself from this approach for two reasons:
 
 The approach of TS-EVT is to provide a way to define **powerful**  operators on the fly using only **native language features**. 
 
-Unlike RxJS operators that returns Observable TS-EVT operator are fully define by a type alias, they depends on nothing.
+Introducing fλ operators one abstraction to remove the need of countless others.
 
-Introducing fλ operators one abstraction to remove the need of countless others.  
+Unlike [RxJS operators](https://rxjs-dev.firebaseapp.com/guide/operators) that return `Observable` TS-EVT operators do not depends on anything, they are not constructed by composing other pre existing operator or instantating any perticular class.
+
 fλ operators are **functions \(f\)** that are meant to be **anonymous \(**[**λ**](https://en.wikipedia.org/wiki/Anonymous_function)**\)**. They are designed in such a way that make them:
 
 * Easy to write.  
