@@ -20,8 +20,8 @@ Operators can be of three types:
 
   Filter / transform / stipulate when to detach the handler \( or a group of handler \)
 
-  * **Stateless fλ**: `<U>(data: T)=> [U]|null|"DETACH"|{DETACH:Ref}|...`  
-  * **Stateful fλ**: `[ <U>(data: T, prev: U)=> ..., U(initial value) ]`
+  * **Stateless fλ**: `<U>(data: T)=> [U]|null|"DETACH"|{DETACH:`[`Ctx`](https://docs.ts-evt.dev/api/ctx)`}|...`  
+  * **Stateful fλ**: `[ <U>(data: T, prev: U)=> ..., U ]`
 
     Uses the previous matched event data transformation as input à la `Array.prototype.reduce`
 
@@ -282,7 +282,7 @@ if( evtText.isHandled(text) ){
 
 ## `compose(op1, op2, ...)`
 
-Operators can be composed to achieve more complex behavior.
+Operators can be composed \( aka piped \) to achieve more complex behavior.
 
 Example composing Type guard with fλ:
 

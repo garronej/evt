@@ -1,20 +1,34 @@
-# evt.detach\(\[boundTo\]\)
+---
+description: Similar to EventEmitter.prototype.removeListener()
+---
 
-See getHandler\(\) for mor ways to detach...
+# evt.detach\(\[ctx\]\)
 
-Detaching handlers.
+Detach all handlers from the Evt or all Evt's handler that are bound to a given context.
 
-**evt.detach\(\[boundTo\]\)**
+{% hint style="info" %}
+The prefered way of detaching handler in TS-EVT is using the `ctx.done()`.
+{% endhint %}
 
-**handler.detach\(\)**
+{% hint style="warning" %}
+Calling this method without passing a context argument is almost never what you want to do. An Evt instance should be sharable by modules that are isolated one another. If a module take the liberty to call evt.detach\(\) it can brek the code elswhere.
+{% endhint %}
 
-**ctx.detach\(\[evt\]\)**
+{% hint style="info" %}
+To chery pick the handlers to detach use `evt.getHandlers()` or `ctx.getHandlers()`
+{% endhint %}
 
-`evt.detach(...)`
+## Returns
 
-Multiple ways of detaching handlers are provided.
+`Handler<T,any>[]` array of Handler that have been detached.
 
-`evt.detach()` all handlers.
+## Parameters
+
+`ctx?: Ctx` If `Ctx` is provided only Handler bound to the given context will be removed.
+
+
+
+## Examples
 
 To detach all handlers at once:
 
@@ -24,9 +38,7 @@ const evtText = new Evt<string>();
 evtText.detach();
 ```
 
-#### `evt.handler(boundTo)` - bound to a given context
-
-The preferred way of detaching an handler is by using "boundTo" context.
+Using a context argument
 
 ```typescript
 import { Evt } from "ts-evt";
@@ -35,17 +47,15 @@ const evtText = new Evt<string>();
 
 evtText.attachOnce(text=> console.log(`Hello ${text}`));
 
-//boundTo can be anything but a number undefined, null or
-//a callable function (you can't use a constructor).
-const boundTo = [];
+const ctx = Evt.newCtx();
 
 evtText.attach(
-    boundTo,
+    ctx,
     _text => console.assert(false,"never")
 );
 
 evtText.attachOnce(
-    boundTo,
+    ctx,
     _text => console.assert(false,"never")
 );
 
@@ -56,23 +66,4 @@ evtText.post("World");
 ```
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-detach-with-contex?embed=1&file=index.ts)
-
-`handler.detach(callback)`
-
-To detach all the handlers using a given callback function as we do with EventEmitter:
-
-```typescript
-const evtText = new Evt<string>();
-
-const callback = (_text: string) => { };
-
-evtText.attach(callback);
-
-evtText.getHandlers()
-    .filter(handler => handler.callback === callback)
-    .forEach(({detach})=> detach())
-    ;
-```
-
-[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-detach-classic?embed=1&file=index.ts)
 
