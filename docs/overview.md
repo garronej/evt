@@ -132,7 +132,7 @@ fλ operators are **functions \(f\)** that are meant to be **anonymous \(**[**λ
 * Very concise, a single fλ operator can replace the combination of multiple elementary operators such as `map()`, `filter()`, `takeWhile()`, `scan()`...
 * Modular: If, yet, a single operator is not enough they can be composed \(aka piped\) to achieve more complex behavior.
 
-### Composition vs **fλ**
+### RxJS operators vs **fλ**
 
 Consider that we have an emitter for this data type:
 
