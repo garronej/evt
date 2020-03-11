@@ -14,7 +14,7 @@ To test if ctx.done\(\) have been invoked already you can use:`ctx.getEvtDone().
 
 ### Returns 
 
-`ReturnType<ctx.GetHandlers()>` All the handler that where bound to the context. They are now detached, calling `ctx.getHandler()` just after ctx.done\(\) will return an empty array.
+`ReturnType<ctx.getHandlers()>` All the [Handler](https://docs.ts-evt.dev/api/handler)s that where bound to the context. They are now detached, calling `ctx.getHandler()` just after `ctx.done()` returns an empty array.
 
 ### Example
 
@@ -99,7 +99,7 @@ ee.emit("text", "bar"); //Prints nothing
 
 ### Returns
 
-`{ handlers: Handler<any,any>; evt: Evt<any>; }[]` The handlers that are bount to the context alongside with the Evt instance each one is attached to to. The Handlers that are bound to the context but no longer attached to an Evt are not listed.
+`{ handlers: Handler<any,any>; evt: Evt<any>; }[]` The [`Handler`](https://docs.ts-evt.dev/api/handler)s that are bount to the context alongside with the `Evt` instance each one is attached to to. The Handlers that are bound to the context but no longer attached to an Evt are not listed.
 
 ### Example
 

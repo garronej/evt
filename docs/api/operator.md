@@ -20,8 +20,8 @@ Operators can be of three types:
 
   Filter / transform / stipulate when to detach the handler \( or a group of handler \)
 
-  * **Stateless fλ**: `<U>(data: T)=> [U]|null|"DETACH"|{DETACH:Ref}|...`  
-  * **Stateful fλ**: `[ <U>(data: T, prev: U)=> ..., U(initial value) ]`
+  * **Stateless fλ**: `<U>(data: T)=> [U]|null|"DETACH"|{DETACH:`[`Ctx`](https://docs.ts-evt.dev/api/ctx)`}|...`  
+  * **Stateful fλ**: `[ <U>(data: T, prev: U)=> ..., U ]`
 
     Uses the previous matched event data transformation as input à la `Array.prototype.reduce`
 
@@ -120,7 +120,7 @@ The value that a fλ operator can return are:
 
 ### **Stateless fλ**
 
-Stateless fλ operator only takes the event data as argument.
+#### Stateless fλ operator only takes the event data as argument.
 
 ```typescript
 import { Evt } from "ts-evt";
@@ -154,7 +154,7 @@ evtShape.post({ "type": "CIRCLE", "radius": 200 });
 
 ```
 
-Other example using `"DETACH"`
+#### Other example using `"DETACH"`
 
 ```typescript
 import { Evt } from "ts-evt";
@@ -176,7 +176,7 @@ evtText.post("END"); //Nothing is printed to the console, the handler is detache
 evtText.post("TICK"); //Nothing is printed to the console.
 ```
 
-Example use of `[U,null|"DETACH"]`, handling the event that cause the handler to be detached.
+#### Example use of `[U,null|"DETACH"]`, handling the event that cause the handler to be detached.
 
 ```typescript
 const evtText= new Evt<"TICK" | "END">();
@@ -191,7 +191,7 @@ evtText.post("END"); //"END" is printed to the console, the handler is detached.
 evtText.post("TICK"); //Nothing is printed to the console the handler have been detached.
 ```
 
-Example use of `{ DETACH:`[`Ctx`](https://docs.ts-evt.dev/api-doc/ctx)`}`, detaching a group of handler bound to a given context.
+#### Example use of `{ DETACH:`[`Ctx`](https://docs.ts-evt.dev/api-doc/ctx)`}`, detaching a group of handler bound to a given context.
 
 ```typescript
 const evtBtnClick = new Evt<"OK" | "QUIT">();
