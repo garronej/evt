@@ -41,13 +41,13 @@ export function getPromiseAssertionApi(
         params: {
             promise: Promise<any>,
             expectedRejectedValue?: any,
-            delay: number
+            delay?: number
         }
     ) {
 
-        const timer = setTimeout(() => assert(false, "did not reject in time"), params.delay);
+        const timer = setTimeout(() => assert(false, "did not reject in time"), params.delay ?? 0);
 
-        params.promise.then(
+        return params.promise.then(
             () => assert(false, "resolved"),
             error => {
 
@@ -79,8 +79,6 @@ export function getPromiseAssertionApi(
             ;
 
     }
-
-
 
     return { mustResolve, mustReject, mustStayPending };
 

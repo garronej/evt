@@ -20,7 +20,7 @@ if (n) {
 
 } else {
 
-    const n = 60;
+    const n = 61;
 
     console.log(`Running ${n} tests`);
 
