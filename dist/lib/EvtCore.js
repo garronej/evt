@@ -456,6 +456,7 @@ var EvtCore = /** @class */ (function () {
                     continue;
                 }
                 var wasStillAttached = handler.detach();
+                //NOTE: It should not be possible.
                 if (!wasStillAttached) {
                     continue;
                 }

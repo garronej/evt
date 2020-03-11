@@ -31,13 +31,12 @@ export class TypedPersonIntro {
     }
 }
 
-const ctxTpi= Evt.newCtx();
 let tpi= new TypedPersonIntro();
 
 
 let evt = new Evt<Person>();
 
-evt.attach(isTyped, ctxTpi, person=> tpi.introduce(person));
+evt.attach(isTyped, Evt.getCtx(tpi), person=> tpi.introduce(person));
 
 console.assert(evt.getHandlers().length === 1,"m2");
 
@@ -47,7 +46,7 @@ evt.post({
     "sex": "female"
 });
 
-evt.detach(ctxTpi);
+evt.detach(Evt.getCtx(tpi));
 
 console.assert( evt.getHandlers().length === 0, "m3");
 
@@ -58,7 +57,7 @@ evt.post({
 });
 
 
-evt.attach(isTyped, ctxTpi, person => tpi.introduce(person));
+evt.attach(isTyped, Evt.getCtx(tpi), person => tpi.introduce(person));
 
 console.assert(evt.getHandlers().length === 1,"m4");
 
@@ -80,7 +79,7 @@ evt.post({
 });
 
 
-evt.attach(isTyped, ctxTpi, person=> tpi.introduce(person));
+evt.attach(isTyped, Evt.getCtx(tpi), person=> tpi.introduce(person));
 
 console.assert(evt.getHandlers().length === 1, "m6");
 
@@ -90,7 +89,7 @@ evt.post({
     "sex": "female"
 });
 
-evt.getHandlers().find(({ ctx })=> ctx === ctxTpi )!.detach();
+evt.getHandlers().find(({ ctx })=> ctx === Evt.getCtx(tpi) )!.detach();
 
 console.assert( evt.getHandlers().length === 0, "m7");
 

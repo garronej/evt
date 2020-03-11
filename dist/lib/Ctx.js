@@ -43,6 +43,7 @@ var Ctx = /** @class */ (function () {
                 var handler = _c.value;
                 var evt = this.evtByHandler.get(handler);
                 var wasStillAttached = handler.detach();
+                //NOTE: It should not be possible
                 if (!wasStillAttached) {
                     continue;
                 }

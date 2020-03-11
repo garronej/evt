@@ -7,10 +7,22 @@ import { merge } from "./util/merge";
 import { fromEvent } from "./util/fromEvent";
 import { parseOverloadParamsFactory } from "./util/parseOverloadParams";
 import { getLazyEvtFactory } from "./util/getLazyEvtFactory";
+import { getCtxFactory } from "./util/getCtxFactory";
 
 export class Evt<T> extends EvtCore<T> {
 
+    /** 
+     * Evt.weakCtx(obj) always return the same instance of ctx for a given object.
+     * No strong reference to the object is created
+     * when the object is no longer referenced it's associated
+     * Ctx will be freed from memory along with it.
+     */
+    public static readonly getCtx = getCtxFactory();
+
+    /** return a new Ctx instance */
     public static newCtx() { return new Ctx(); }
+
+
     public static merge = merge;
     public static fromEvent = fromEvent;
 
@@ -94,11 +106,11 @@ export class Evt<T> extends EvtCore<T> {
     ): Evt<C>;
     public pipe<B, C extends B>(
         op1: Operator.fλ<T, B>,
-        op2: (data: B) => data is C,
+        op2: (data: B) => data is C
     ): Evt<C>;
     public pipe<B>(
         op1: Operator.fλ<T, B>,
-        op2: (data: B) => boolean,
+        op2: (data: B) => boolean
     ): Evt<B>;
     public pipe<B extends T, C>(
         op1: (data: T) => data is B,
@@ -110,11 +122,11 @@ export class Evt<T> extends EvtCore<T> {
     ): Evt<B>;
     public pipe<B extends T, C extends B>(
         op1: (data: T) => data is B,
-        op2: (data: B) => data is C,
+        op2: (data: B) => data is C
     ): Evt<C>;
     public pipe<B extends T>(
         op1: (data: T) => data is B,
-        op2: (data: B) => boolean,
+        op2: (data: B) => boolean
     ): Evt<B>;
     public pipe<B extends T>(
         op1: (data: T) => boolean,
@@ -122,7 +134,7 @@ export class Evt<T> extends EvtCore<T> {
     ): Evt<B>;
     public pipe<T>(
         op1: (data: T) => boolean,
-        op2: (data: T) => boolean,
+        op2: (data: T) => boolean
     ): Evt<T>;
 
 
@@ -151,7 +163,7 @@ export class Evt<T> extends EvtCore<T> {
         op2: Operator.fλ<B, C>,
         op3: Operator.fλ<C, D>,
         op4: Operator.fλ<D, E>,
-        op5: Operator.fλ<E, F>,
+        op5: Operator.fλ<E, F>
     ): Evt<F>;
 
 
@@ -170,7 +182,7 @@ export class Evt<T> extends EvtCore<T> {
         op1: Operator<T, B>,
         op2: Operator<B, C>,
         op3: Operator<C, D>,
-        op4: Operator<D, E>,
+        op4: Operator<D, E>
     ): Evt<E>;
 
     public pipe<B, C, D, E, F>(

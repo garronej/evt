@@ -655,6 +655,7 @@ export class EvtCore<T> {
 
             const wasStillAttached = handler.detach();
 
+            //NOTE: It should not be possible.
             if (!wasStillAttached) {
                 continue;
             }

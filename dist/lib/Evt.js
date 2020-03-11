@@ -87,6 +87,7 @@ var merge_1 = require("./util/merge");
 var fromEvent_1 = require("./util/fromEvent");
 var parseOverloadParams_1 = require("./util/parseOverloadParams");
 var getLazyEvtFactory_1 = require("./util/getLazyEvtFactory");
+var getCtxFactory_1 = require("./util/getCtxFactory");
 var Evt = /** @class */ (function (_super) {
     __extends(Evt, _super);
     function Evt() {
@@ -101,6 +102,7 @@ var Evt = /** @class */ (function (_super) {
         _this_1.getEvtDetach = getEvtDetach;
         return _this_1;
     }
+    /** return a new Ctx instance */
     Evt.newCtx = function () { return new Ctx_1.Ctx(); };
     Evt.prototype.postAsyncOnceHandled = function (data) {
         return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
@@ -228,6 +230,13 @@ var Evt = /** @class */ (function (_super) {
         }
         return this.__attachOnceExtract(this.__parseOverloadParams(inputs, "attach*"));
     };
+    /**
+     * Evt.weakCtx(obj) always return the same instance of ctx for a given object.
+     * No strong reference to the object is created
+     * when the object is no longer referenced it's associated
+     * Ctx will be freed from memory along with it.
+     */
+    Evt.getCtx = getCtxFactory_1.getCtxFactory();
     Evt.merge = merge_1.merge;
     Evt.fromEvent = fromEvent_1.fromEvent;
     return Evt;

@@ -5,6 +5,14 @@ import { Ctx } from "./Ctx";
 import { merge } from "./util/merge";
 import { fromEvent } from "./util/fromEvent";
 export declare class Evt<T> extends EvtCore<T> {
+    /**
+     * Evt.weakCtx(obj) always return the same instance of ctx for a given object.
+     * No strong reference to the object is created
+     * when the object is no longer referenced it's associated
+     * Ctx will be freed from memory along with it.
+     */
+    static readonly getCtx: (obj: object) => Ctx;
+    /** return a new Ctx instance */
     static newCtx(): Ctx;
     static merge: typeof merge;
     static fromEvent: typeof fromEvent;
