@@ -1,54 +1,14 @@
-# Ctx \(class\)
+# Ctx&lt;T&gt; \(class\)
 
-Help detaching a group of handler that have been attached for a certain pupose / in a certain context.
+Ctx helps you detach all the Handles that where attached for a certain pupose once the task is done or aborted.
 
-Let us say for example that the task is to download a file, you have an evtPacket that post every time a packet is received, an evtSocketError that post if there is a connection problem and a evtBtnCancelClick that post when the user click cancel.
 
-```typescript
-import { Evt, VoidEvt } from "ts-evt";
-
-const evtPacket<Uint8tArray>();
-const evtBtnCancelClick= new VoidEvt();
-const evtSocketError= new Evt<Error>();
-
-const FILE_SIZE= 300 000;
-
-const ctxFileDownload= Evt.newCtx();
-
-evtPacket
-    .pipe(ctxFileDownload)
-    .pipe([
-        (data,prev)=> [prev.concat(data)], 
-        new Uint8Array(FILE_SIZE)
-    ])
-    .$attachOnce(
-        data => data.lengh !== FILE_SIZE ? 
-            null: 
-            [ data, {"DETACH": ctxFileDownload}],
-        data => console.log(`File downloaded: ${data.toString()}`);
-    )
-    ;
-    
-evtSocketError.$attachOnce(
-    ()=> { "DETACH": ctxFileDownlad },
-    error=> console.log(`Dowload error: ${error.message}`)
-);
-
-evtBtnCancelClick.attachOnce(
-    ()=> {
-        ctx.done(); //Calling done manually or via { "DETACH": ctx } is the same
-        console.log(`Download canceled`);
-    }
-);
-```
-
-When the task is complete, no matter the reason we detach all the handler that have been attached to accomplish the task. It is much safer and much more convienient than individually detaching every Haldlers as we do wi EventEmitter.prototypr.removeListener\(...\)
 
 {% hint style="info" %}
-Get Ctx instance using `Evt.newCtx()` or `Evt.getCtx(obj)`
+Get Ctx instance using `Evt.newCtx<T>()` or `Evt.getCtx(obj)`
 {% endhint %}
 
-## `ctx.done()`
+## `ctx.done(result)`
 
 Detach all Handlers bound to the context from the Evt instances they are attached to then post the done event.
 
@@ -197,4 +157,74 @@ evtText.attach(43, ()=>{}); //Prints "43"
 ## `ctx.getEvtDetach()`
 
 Same as `ctx.getEvtAttach()` but post when handler are detached. Note that an handler beeing detached does not mean that it has been explicitely detached. Once Handlers and Handler that have timed out are automatically detached.
+
+
+
+## Comprehensive example
+
+
+
+Let us consider a practical usecase of Ctx. The task is to download a file, we know the size of the file to download, we have an Evt&lt;Uint8Array&gt; that emmits chuncks of data, we want to accumulate them util we reach the expected file size. Multiple things can go wrong during the download:
+
+* The user cancel the download.
+* The download take too much time.
+* We run through a socket error.
+* We receive more bytes than expected
+
+Our expected output is a Promise&lt;Uint8Array&gt; that resolve with the downloaded file data or reject if anything went wrong. 
+
+This is how you can use Cxt to implement this task: 
+
+```typescript
+import { Evt, VoidEvt } from "ts-evt";
+
+function downloadFile(
+    { fileSize, evtChunk, evtBtnCancelClick, evtSocketError, timeout }: {
+        fileSize: number;
+        evtChunk: Evt<Uint8Array>;
+        evtBtnCancelClick: VoidEvt;
+        evtSocketError: Evt<Error>;
+        timeout: number;
+    }
+): Promise<Uint8Array> {
+
+    const ctxDl = Evt.newCtx<Uint8Array>();
+
+    evtSocketError.attachOnce(
+        ctxDl,
+        error => ctxDl.abort(error)
+    );
+
+    evtBtnCancelClick.attachOnce(
+        ctxDl,
+        () => ctxDl.abort(new Error(MESSAGE_CANCEL))
+    );
+
+    evtChunk
+        .pipe(ctxDl)
+        .pipe([
+            (chunk, { byteLength, chunks }) => [{
+                "byteLength": byteLength + chunk.length,
+                "chunks": [...chunks, chunk]
+            }],
+            {
+                "byteLength": 0,
+                "chunks": id<Uint8Array[]>([])
+            }
+        ])
+        .pipe(({ byteLength }) => byteLength >= fileSize)
+        .pipe(({ byteLength, chunks }) => byteLength > fileSize ?
+            { "DETACH": ctxDl, "err": new Error(MESSAGE_TOO_MUCH_BYTES) } :
+            [chunks]
+        )
+        .pipe(chunks => [concatTypedArray(chunks, fileSize)])
+        .attach(rawFile => ctxDl.done(rawFile))
+        ;
+
+    return ctxDl.getPrDone(timeout);
+
+}
+```
+
+Run the example
 
