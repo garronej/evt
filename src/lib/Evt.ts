@@ -8,19 +8,23 @@ import { fromEvent } from "./util/fromEvent";
 import { parseOverloadParamsFactory } from "./util/parseOverloadParams";
 import { getLazyEvtFactory } from "./util/getLazyEvtFactory";
 import { getCtxFactory } from "./util/getCtxFactory";
+type VoidCtx = import("./Ctx").VoidCtx;
 
 export class Evt<T> extends EvtCore<T> {
 
+    /** return a new Ctx instance */
+    public static newCtx(): VoidCtx;
+    public static newCtx<T>(): Ctx<T>;
+    public static newCtx(): Ctx {
+        return new Ctx();
+    }
+
     /** 
-     * Evt.weakCtx(obj) always return the same instance of ctx for a given object.
+     * Evt.weakCtx(obj) always return the same instance of VoidCtx for a given object.
      * No strong reference to the object is created
-     * when the object is no longer referenced it's associated
-     * Ctx will be freed from memory along with it.
+     * when the object is no longer referenced it's associated Ctx will be freed from memory.
      */
     public static readonly getCtx = getCtxFactory();
-
-    /** return a new Ctx instance */
-    public static newCtx() { return new Ctx(); }
 
 
     public static merge = merge;

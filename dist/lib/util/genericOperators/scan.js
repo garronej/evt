@@ -17,17 +17,14 @@ var __read = (this && this.__read) || function (o, n) {
 };
 exports.__esModule = true;
 var compose_1 = require("../compose");
-function scan(accumulator, seed) {
-    return compose_1.compose([
-        function (data, _a) {
-            var _b = __read(_a, 3), acc = _b[1], index = _b[2];
-            return [[data, accumulator(acc, data, index), index + 1]];
-        },
-        [null, seed, 0]
-    ], function (_a) {
-        var _b = __read(_a, 2), acc = _b[1];
-        return [acc];
-    });
-}
-exports.scan = scan;
+exports.scan = function (accumulator, seed) { return compose_1.compose([
+    function (data, _a) {
+        var _b = __read(_a, 3), acc = _b[1], index = _b[2];
+        return [[data, accumulator(acc, data, index), index + 1]];
+    },
+    [null, seed, 0]
+], function (_a) {
+    var _b = __read(_a, 2), acc = _b[1];
+    return [acc];
+}); };
 //# sourceMappingURL=scan.js.map

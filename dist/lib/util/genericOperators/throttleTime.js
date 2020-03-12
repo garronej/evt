@@ -1,7 +1,7 @@
 "use strict";
 exports.__esModule = true;
 var compose_1 = require("../compose");
-function throttleTime(duration) {
+exports.throttleTime = function (duration) {
     return compose_1.compose([
         function (data, _a) {
             var lastClick = _a.lastClick;
@@ -15,6 +15,5 @@ function throttleTime(duration) {
         var data = _a.data;
         return [data];
     });
-}
-exports.throttleTime = throttleTime;
+};
 //# sourceMappingURL=throttleTime.js.map

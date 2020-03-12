@@ -1,7 +1,7 @@
 import { Operator } from "./Operator";
 declare type EvtCore<T> = import("../EvtCore").EvtCore<T>;
-declare type Ctx = import("../Ctx").Ctx;
-export declare type Handler<T, U, CtxProp extends Ctx | undefined = Ctx | undefined> = Handler.PropsFromArgs<T, U, CtxProp> & Handler.PropsFromMethodName & Readonly<{
+declare type Ctx<T = any> = import("../Ctx").Ctx<T>;
+export declare type Handler<T, U, CtxProp extends Ctx<any> | undefined = Ctx | undefined> = Handler.PropsFromArgs<T, U, CtxProp> & Handler.PropsFromMethodName & Readonly<{
     detach(): boolean;
     promise: Promise<U>;
 }>;

@@ -1,7 +1,7 @@
 import { compose } from "../compose";
 
-export function throttleTime<T>(duration: number) {
-    return compose<T, { data: T; lastClick: number; }, T>(
+export const throttleTime = <T>(duration: number) =>
+    compose<T, { data: T; lastClick: number; }, T>(
         [
             (data, { lastClick }) => {
 
@@ -17,4 +17,3 @@ export function throttleTime<T>(duration: number) {
         ],
         ({ data }) => [data]
     );
-}

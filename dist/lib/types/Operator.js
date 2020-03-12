@@ -24,7 +24,11 @@ var Operator;
                     return true;
                 }
                 if (Detach.WithCtxArg.match(detach)) {
-                    return detach.DETACH;
+                    return [
+                        detach.DETACH,
+                        detach.err,
+                        detach.res
+                    ];
                 }
                 return false;
             }

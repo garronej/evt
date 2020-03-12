@@ -22,6 +22,7 @@ export declare class EvtCore<T> {
     private readonly statelessByStatefulOp;
     protected onHandler: ((isAttach: boolean, handler: Handler<T, any>) => void) | undefined;
     private detachHandler;
+    private static doDetachIfNeeded;
     private triggerHandler;
     private addHandler;
     getStatelessOp(op: Operator<T, any>): Operator.Stateless<T, any>;

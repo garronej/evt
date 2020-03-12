@@ -97,13 +97,7 @@ var EvtCore = /** @class */ (function () {
                 }
                 var opResult = invokeOperator_1.invokeOperator(_this_1.getStatelessOp(handler.op), data);
                 if (Operator_1.Operator.fλ.Result.NotMatched.match(opResult)) {
-                    var detach = Operator_1.Operator.fλ.Result.getDetachArg(opResult);
-                    if (typeof detach !== "boolean") {
-                        detach.done();
-                    }
-                    else if (detach) {
-                        handler.detach();
-                    }
+                    EvtCore.doDetachIfNeeded(handler, opResult);
                     return "continue";
                 }
                 var handlerTrigger = _this_1.handlerTriggers.get(handler);
@@ -217,21 +211,28 @@ var EvtCore = /** @class */ (function () {
         (_a = this.onHandler) === null || _a === void 0 ? void 0 : _a.call(this, false, handler);
         return true;
     };
+    EvtCore.doDetachIfNeeded = function (handler, opResult, once) {
+        var detach = Operator_1.Operator.fλ.Result.getDetachArg(opResult);
+        if (typeof detach !== "boolean") {
+            var _a = __read(detach, 3), ctx = _a[0], error = _a[1], res = _a[2];
+            if (!!error) {
+                ctx.abort(error);
+            }
+            else {
+                ctx.done(res);
+            }
+        }
+        else if (detach || !!once) {
+            handler.detach();
+        }
+    };
     EvtCore.prototype.triggerHandler = function (handler, wTimer, resolvePr, opResult) {
         var callback = handler.callback, once = handler.once;
         if (wTimer[0] !== undefined) {
             clearTimeout(wTimer[0]);
             wTimer[0] = undefined;
         }
-        {
-            var detach = Operator_1.Operator.fλ.Result.getDetachArg(opResult);
-            if (typeof detach !== "boolean") {
-                detach.done();
-            }
-            else if (detach || once) {
-                handler.detach();
-            }
-        }
+        EvtCore.doDetachIfNeeded(handler, opResult, once);
         var _a = __read(opResult, 1), transformedData = _a[0];
         callback === null || callback === void 0 ? void 0 : callback.call(this, transformedData);
         resolvePr(transformedData);
@@ -336,13 +337,7 @@ var EvtCore = /** @class */ (function () {
                 }
                 var opResult = invokeOperator_1.invokeOperator(this.getStatelessOp(op), data, true);
                 if (Operator_1.Operator.fλ.Result.NotMatched.match(opResult)) {
-                    var detach = Operator_1.Operator.fλ.Result.getDetachArg(opResult);
-                    if (typeof detach !== "boolean") {
-                        detach.done();
-                    }
-                    else if (detach) {
-                        handler.detach();
-                    }
+                    EvtCore.doDetachIfNeeded(handler, opResult);
                     continue;
                 }
                 var handlerTrigger = this.handlerTriggers.get(handler);

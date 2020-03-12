@@ -102,8 +102,9 @@ var Evt = /** @class */ (function (_super) {
         _this_1.getEvtDetach = getEvtDetach;
         return _this_1;
     }
-    /** return a new Ctx instance */
-    Evt.newCtx = function () { return new Ctx_1.Ctx(); };
+    Evt.newCtx = function () {
+        return new Ctx_1.Ctx();
+    };
     Evt.prototype.postAsyncOnceHandled = function (data) {
         return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
             return [2 /*return*/, this.__postOnceHandled(data, false)];
@@ -231,10 +232,9 @@ var Evt = /** @class */ (function (_super) {
         return this.__attachOnceExtract(this.__parseOverloadParams(inputs, "attach*"));
     };
     /**
-     * Evt.weakCtx(obj) always return the same instance of ctx for a given object.
+     * Evt.weakCtx(obj) always return the same instance of VoidCtx for a given object.
      * No strong reference to the object is created
-     * when the object is no longer referenced it's associated
-     * Ctx will be freed from memory along with it.
+     * when the object is no longer referenced it's associated Ctx will be freed from memory.
      */
     Evt.getCtx = getCtxFactory_1.getCtxFactory();
     Evt.merge = merge_1.merge;

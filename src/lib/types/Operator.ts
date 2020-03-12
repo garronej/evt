@@ -1,4 +1,5 @@
-type Ctx = import("../Ctx").Ctx;
+type Ctx<T = any> = import("../Ctx").Ctx<T>;
+type VoidCtx= import("../Ctx").VoidCtx;
 import { typeGuard } from "../../tools/typeSafety";
 
 export type Operator<T, U> =
@@ -19,7 +20,7 @@ export namespace Operator {
         export type Stateless<T, U> = (data: T, prev?: undefined, cbInvokedIfMatched?: true) => Result<U>;
 
         export type Stateful<T, U> = [
-            (data: T, prev: U, cbInvokedIfMatched?: true) => Result<U>,
+            (data: T, prev: Readonly<U>, cbInvokedIfMatched?: true) => Result<U>,
             U //Initial value
         ];
 
@@ -39,7 +40,7 @@ export namespace Operator {
                 return Matched.match(result) || NotMatched.match(result);
             }
 
-            export function getDetachArg(result: Result<any>): boolean | Ctx {
+            export function getDetachArg(result: Result<any>): boolean | [Ctx, undefined | Error, any] {
 
                 const detach = Matched.match(result) ? result[1] : result;
 
@@ -48,8 +49,13 @@ export namespace Operator {
                 }
 
                 if (Detach.WithCtxArg.match(detach)) {
-                    return detach.DETACH;
+                    return [
+                        detach.DETACH,
+                        (detach as Extract<Result<any>, { err: any }>).err,
+                        (detach as Extract<Result<any>, { res: any }>).res
+                    ];
                 }
+
 
                 return false;
 
@@ -111,7 +117,12 @@ export namespace Operator {
 
                 }
 
-                export type WithCtxArg = { DETACH: Ctx; };
+                export type WithCtxArg<T = any> =
+                    { DETACH: Ctx<T>; err: Error; } |
+                    { DETACH: Ctx<T>; res: T; } |
+                    { DETACH: VoidCtx; err: Error; } |
+                    { DETACH: VoidCtx; }
+                    ;
 
                 export namespace WithCtxArg {
                     export function match(detach: any): detach is WithCtxArg {

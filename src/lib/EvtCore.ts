@@ -10,7 +10,7 @@ import { invokeOperator } from "./util/invokeOperator";
 import { encapsulateOpState } from "./util/encapsulateOpState";
 import { Ctx } from "./Ctx";
 
-export const setPostCount = (evt: EvtCore<any>, value: number) => 
+export const setPostCount = (evt: EvtCore<any>, value: number) =>
     overwriteReadonlyProp(evt, "postCount", value);
 
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
@@ -19,7 +19,7 @@ export class EvtCore<T> {
     //NOTE: Not really readonly but we want to prevent user from setting the value
     //manually and we cant user accessor because we target es3.
     /** https://garronej.github.io/ts-evt/#evtpostcount */
-    public readonly postCount: number=0;
+    public readonly postCount: number = 0;
 
     private traceId: string | null = null;
     private traceFormatter!: (data: T) => string;
@@ -95,11 +95,11 @@ export class EvtCore<T> {
 
 
     //NOTE: Implemented by Evt
-    protected onHandler: ((isAttach: boolean, handler: Handler<T, any>)=> void) | undefined = undefined;
+    protected onHandler: ((isAttach: boolean, handler: Handler<T, any>) => void) | undefined = undefined;
 
     private detachHandler(
         handler: Handler<T, any>,
-        wTimer: [ NodeJS.Timer | undefined ],
+        wTimer: [NodeJS.Timer | undefined],
         rejectPr: (error: EvtError.Detached) => void
     ) {
 
@@ -132,6 +132,37 @@ export class EvtCore<T> {
 
     }
 
+    private static doDetachIfNeeded<U = any>(
+        handler: Handler<any, U>,
+        opResult: Operator.fλ.Result.Matched<U>,
+        once: boolean
+    ): void;
+    private static doDetachIfNeeded(
+        handler: Handler<any, any>,
+        opResult: Operator.fλ.Result.NotMatched,
+    ): void;
+    private static doDetachIfNeeded<U = any>(
+        handler: Handler<any, U>,
+        opResult: Operator.fλ.Result<U>,
+        once?: boolean
+    ): void {
+
+        const detach = Operator.fλ.Result.getDetachArg(opResult);
+
+        if (typeof detach !== "boolean") {
+            const [ctx, error, res] = detach;
+
+            if (!!error) {
+                ctx.abort(error);
+            } else {
+                ctx.done(res);
+            }
+        } else if (detach || !!once) {
+            handler.detach();
+        }
+
+    }
+
     private triggerHandler<U>(
         handler: Handler<T, U>,
         wTimer: [NodeJS.Timer | undefined],
@@ -146,17 +177,7 @@ export class EvtCore<T> {
             wTimer[0] = undefined;
         }
 
-        {
-
-            const detach = Operator.fλ.Result.getDetachArg(opResult);
-
-            if (typeof detach !== "boolean") {
-                detach.done();
-            } else if (detach || once) {
-                handler.detach();
-            }
-
-        }
+        EvtCore.doDetachIfNeeded(handler, opResult, once);
 
         const [transformedData] = opResult;
 
@@ -202,7 +223,7 @@ export class EvtCore<T> {
         (handler.promise as (typeof handler)["promise"]) = new Promise<U>(
             (resolve, reject) => {
 
-                const wTimer: [NodeJS.Timer | undefined] = [ undefined ];
+                const wTimer: [NodeJS.Timer | undefined] = [undefined];
 
                 if (typeof handler.timeout === "number") {
 
@@ -218,16 +239,16 @@ export class EvtCore<T> {
 
                 }
 
-                (handler.detach as (typeof handler)["detach"]) = 
+                (handler.detach as (typeof handler)["detach"]) =
                     () => this.detachHandler(handler, wTimer, reject)
                     ;
 
                 this.handlerTriggers.set(
                     handler,
-                    opResult=> this.triggerHandler(
-                        handler, 
-                        wTimer, 
-                        resolve, 
+                    opResult => this.triggerHandler(
+                        handler,
+                        wTimer,
+                        resolve,
                         opResult
                     )
                 );
@@ -360,13 +381,7 @@ export class EvtCore<T> {
 
             if (Operator.fλ.Result.NotMatched.match(opResult)) {
 
-                const detach = Operator.fλ.Result.getDetachArg(opResult);
-
-                if (typeof detach !== "boolean") {
-                    detach.done();
-                } else if (detach) {
-                    handler.detach();
-                }
+                EvtCore.doDetachIfNeeded(handler, opResult);
 
                 continue;
 
@@ -413,13 +428,7 @@ export class EvtCore<T> {
 
                 if (Operator.fλ.Result.NotMatched.match(opResult)) {
 
-                    const detach = Operator.fλ.Result.getDetachArg(opResult);
-
-                    if (typeof detach !== "boolean") {
-                        detach.done();
-                    } else if (detach) {
-                        handler.detach();
-                    }
+                    EvtCore.doDetachIfNeeded(handler, opResult);
 
                     continue;
 

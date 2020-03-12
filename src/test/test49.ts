@@ -27,7 +27,7 @@ const handlers_ = [
 
 mustResolve({
     "promise": ctx.getEvtDone().attachOnce(
-        handlers => assertRepresentsSameData({
+        ([,,handlers]) => assertRepresentsSameData({
             "got": handlers,
             "expected": handlers_
         })

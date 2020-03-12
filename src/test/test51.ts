@@ -4,17 +4,22 @@ import { assert } from "../tools/typeSafety/assert";
 import { scan } from "../lib/util";
 import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi";
 
-const { mustResolve, mustStayPending } = getPromiseAssertionApi();
+const { mustResolve, mustStayPending } = getPromiseAssertionApi({"takeIntoAccountArraysOrdering": true});
 
 (async () => {
 
-    const ctx = Evt.newCtx();
+    const ctx = Evt.newCtx<number>();
 
     const evtText = new Evt<string>();
 
     mustResolve({
-        "promise": ctx.getEvtDone().attach(() => { }).then(handlers => handlers.length),
-        "expectedData": 1
+        "promise": ctx.getEvtDone().attach(() => { }).then(([,res,handlers]) => [res, handlers.length]),
+        "expectedData": [43, 1]
+    });
+
+    mustResolve({
+        "promise": ctx.getPrDone(),
+        "expectedData": 43,
     });
 
     const nothing = {};
@@ -55,7 +60,7 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi();
         .pipe(str => [str.toUpperCase()])
         .pipe(str => str.startsWith("H"))
         .pipe(scan((charCount, str) => charCount + str.length, 0))
-        .pipe(count => count <= 33 ? [`${count}`] : { "DETACH": ctx })
+        .pipe(count => count <= 33 ? [`${count}`] : { "DETACH": ctx, "res": 43 })
         .attach(str => last = str)
         ;
 
@@ -88,7 +93,7 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi();
     const evtText = new Evt<string>();
 
     mustResolve({
-        "promise": ctx.getEvtDone().attach(() => { }).then(handlers => handlers.length),
+        "promise": ctx.getEvtDone().attach(() => { }).then(([,,handlers])=> handlers.length),
         "expectedData": 1
     });
 

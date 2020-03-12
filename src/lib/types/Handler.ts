@@ -1,9 +1,9 @@
 import { Operator } from "./Operator";
 type EvtCore<T> = import("../EvtCore").EvtCore<T>;
-type Ctx = import("../Ctx").Ctx;
+type Ctx<T=any> = import("../Ctx").Ctx<T>;
 
 
-export type Handler<T, U, CtxProp extends Ctx | undefined = Ctx | undefined> =
+export type Handler<T, U, CtxProp extends Ctx<any> | undefined = Ctx | undefined> =
     Handler.PropsFromArgs<T, U, CtxProp> &
     Handler.PropsFromMethodName & Readonly<{
         detach(): boolean;

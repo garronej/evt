@@ -1,4 +1,33 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
 var __values = (this && this.__values) || function(o) {
     var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
     if (m) return m.call(o);
@@ -34,8 +63,46 @@ var Ctx = /** @class */ (function () {
             this.onDetach = post;
         }
     }
+    /**
+     * Return a promise that resolve next time ctx.done(result) is invoked
+     * Reject if ctx.abort(error) is invoked.
+     * Optionally a timeout can be passed, if so the returned promise will reject
+     * with EvtError.Timeout if done(result) is not called * within [timeout]ms.
+     * If the timeout is reached ctx.abort(timeoutError) will be invoked.
+     */
+    Ctx.prototype.getPrDone = function (timeout) {
+        var _this_1 = this;
+        return this.getEvtDone()
+            .waitFor(timeout)
+            .then(function (_a) {
+            var _b = __read(_a, 2), error = _b[0], result = _b[1];
+            if (!!error) {
+                throw error;
+            }
+            return result;
+        }, function (timeoutError) {
+            _this_1.abort(timeoutError);
+            throw timeoutError;
+        });
+    };
+    /**
+     * All the handler will be detached.
+     * evtDone will post [ error, undefined, handlers (detached) ]
+     * if getPrDone() was invoked the promise will reject with the error
+     */
+    Ctx.prototype.abort = function (error) {
+        return this.__done(error);
+    };
+    /**
+     * Detach all handlers.
+     * evtDone will post [ null, result, handlers (detached) ]
+     * If getPrDone() was invoked the promise will result with result
+     */
+    Ctx.prototype.done = function (result) {
+        return this.__done(undefined, result);
+    };
     /** Detach all handler bound to this context from theirs respective Evt and post getEvtDone() */
-    Ctx.prototype.done = function () {
+    Ctx.prototype.__done = function (error, result) {
         var e_1, _a;
         var handlers = [];
         try {
@@ -57,7 +124,11 @@ var Ctx = /** @class */ (function () {
             }
             finally { if (e_1) throw e_1.error; }
         }
-        this.onDone(handlers);
+        this.onDone([
+            error !== null && error !== void 0 ? error : null,
+            result,
+            handlers
+        ]);
         return handlers;
     };
     Ctx.prototype.getHandlers = function () {
@@ -82,4 +153,20 @@ var Ctx = /** @class */ (function () {
     return Ctx;
 }());
 exports.Ctx = Ctx;
+var VoidCtx = /** @class */ (function (_super) {
+    __extends(VoidCtx, _super);
+    function VoidCtx() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    /**
+     * Detach all handlers.
+     * evtDone will post [ null, undefined, handlers (detached) ]
+     * If getPrDone() was invoked the promise will resolve
+     */
+    VoidCtx.prototype.done = function () {
+        return _super.prototype.done.call(this, undefined);
+    };
+    return VoidCtx;
+}(Ctx));
+exports.VoidCtx = VoidCtx;
 //# sourceMappingURL=Ctx.js.map
