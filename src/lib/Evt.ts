@@ -13,10 +13,9 @@ type VoidCtx = import("./Ctx").VoidCtx;
 export class Evt<T> extends EvtCore<T> {
 
     /** return a new Ctx instance */
-    public static newCtx(): VoidCtx;
-    public static newCtx<T>(): Ctx<T>;
-    public static newCtx(): Ctx {
-        return new Ctx();
+    //public static newCtx(): VoidCtx;
+    public static newCtx<T = void>(): T extends void ? VoidCtx : Ctx<T>{
+        return new Ctx() as any;
     }
 
     /** 

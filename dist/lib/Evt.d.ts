@@ -7,8 +7,7 @@ import { from } from "./util/fromEvent";
 declare type VoidCtx = import("./Ctx").VoidCtx;
 export declare class Evt<T> extends EvtCore<T> {
     /** return a new Ctx instance */
-    static newCtx(): VoidCtx;
-    static newCtx<T>(): Ctx<T>;
+    static newCtx<T = void>(): T extends void ? VoidCtx : Ctx<T>;
     /**
      * Evt.weakCtx(obj) always return the same instance of VoidCtx for a given object.
      * No strong reference to the object is created

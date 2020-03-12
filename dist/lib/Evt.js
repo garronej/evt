@@ -102,6 +102,8 @@ var Evt = /** @class */ (function (_super) {
         _this_1.getEvtDetach = getEvtDetach;
         return _this_1;
     }
+    /** return a new Ctx instance */
+    //public static newCtx(): VoidCtx;
     Evt.newCtx = function () {
         return new Ctx_1.Ctx();
     };
