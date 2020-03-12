@@ -13,7 +13,7 @@ import { assert } from "../tools/typeSafety";
 
         const ctx = Evt.newCtx();
 
-        const evtText = Evt.fromEvent(ctx, subject);
+        const evtText = Evt.from(ctx, subject);
 
         const text = "ok";
 
@@ -47,7 +47,7 @@ import { assert } from "../tools/typeSafety";
 
         const subject = new Subject<string>();
 
-        const evtText = Evt.fromEvent<string>(subject);
+        const evtText = Evt.from<string>(subject);
 
         const text = "ok";
 

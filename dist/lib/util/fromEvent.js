@@ -4,9 +4,9 @@ var Evt_2 = require("../Evt");
 var typeSafety_1 = require("../../tools/typeSafety");
 var EventTargetLike_1 = require("../types/EventTargetLike");
 var merge_1 = require("./merge");
-function fromEventImpl(ctx, target, eventName, options) {
+function fromImpl(ctx, target, eventName, options) {
     if ("length" in target) {
-        return merge_1.mergeImpl(ctx, Array.from(target).map(function (target) { return fromEventImpl(ctx, target, eventName, options); }));
+        return merge_1.mergeImpl(ctx, Array.from(target).map(function (target) { return fromImpl(ctx, target, eventName, options); }));
     }
     var proxy;
     if (EventTargetLike_1.EventTargetLike.NodeStyleEventEmitter.match(target)) {
@@ -44,18 +44,18 @@ function fromEventImpl(ctx, target, eventName, options) {
     proxy.on(listener, eventName, options);
     return evt;
 }
-function fromEvent(ctxOrTarget, targetOrEventName, eventNameOrOptions, options) {
+function from(ctxOrTarget, targetOrEventName, eventNameOrOptions, options) {
     if ("getEvtDone" in ctxOrTarget) {
         typeSafety_1.assert(typeSafety_1.typeGuard.dry(targetOrEventName) &&
             typeSafety_1.typeGuard.dry(eventNameOrOptions) &&
             typeSafety_1.typeGuard.dry(options));
-        return fromEventImpl(ctxOrTarget, targetOrEventName, eventNameOrOptions, options);
+        return fromImpl(ctxOrTarget, targetOrEventName, eventNameOrOptions, options);
     }
     else {
         typeSafety_1.assert(typeSafety_1.typeGuard.dry(targetOrEventName) &&
             typeSafety_1.typeGuard.dry(eventNameOrOptions));
-        return fromEventImpl(undefined, ctxOrTarget, targetOrEventName, eventNameOrOptions);
+        return fromImpl(undefined, ctxOrTarget, targetOrEventName, eventNameOrOptions);
     }
 }
-exports.fromEvent = fromEvent;
+exports.from = from;
 //# sourceMappingURL=fromEvent.js.map

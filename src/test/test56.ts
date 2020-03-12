@@ -14,7 +14,7 @@ import { assert } from "../tools/typeSafety";
 
         const ctx = Evt.newCtx();
 
-        const evtText = Evt.fromEvent<string>(ctx, ee, "text");
+        const evtText = Evt.from<string>(ctx, ee, "text");
 
         const text = "ok";
 
@@ -47,7 +47,7 @@ import { assert } from "../tools/typeSafety";
 
         const ee = new EventEmitter();
 
-        const evtText = Evt.fromEvent<string>(ee, "text");
+        const evtText = Evt.from<string>(ee, "text");
 
         const text = "ok";
 

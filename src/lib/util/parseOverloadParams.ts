@@ -1,22 +1,25 @@
 
 import { Handler } from "../types/Handler"
 import { Operator } from "../types/Operator"
-import { isCallableFunction } from "../../tools/isCallableFunction";
-import { id } from "../../tools/typeSafety";
+import { id } from "../../tools/typeSafety/id";
 import { compose } from "./compose";
+import { typeGuard } from "../../tools/typeSafety/typeGuard"
+type Ctx = import("../Ctx").Ctx;
 
 function matchAll() { return true; }
 
-const canBeMatcher = (p: any): boolean => {
-    return isCallableFunction(p) || (
-        typeof p === "object" &&
-        p.length === 2 &&
-        isCallableFunction(p[0])
+const canBeOperator = (p: undefined | Ctx | Operator<any, any>): boolean => {
+    return (
+        p !== undefined &&
+        typeGuard.dry<Operator<any, any>>(p) &&
+        (
+            typeof p === "function" ||
+            typeof p[0] === "function"
+        )
     );
 };
 
 export function parseOverloadParamsFactory<T>() {
-
 
     const defaultParams = id<Handler.PropsFromArgs<T, any>>({
         "op": matchAll,
@@ -25,10 +28,9 @@ export function parseOverloadParamsFactory<T>() {
         "callback": undefined
     })
 
-
     return function parseOverloadParams(
         inputs: readonly any[],
-        methodName: "waitFor" | "attach*" | "createDelegate" | "pipe"
+        methodName: "waitFor" | "attach*" | "pipe"
     ): Handler.PropsFromArgs<T, any> {
 
         type Out = Handler.PropsFromArgs<T, any>;
@@ -37,6 +39,7 @@ export function parseOverloadParamsFactory<T>() {
             case "pipe": {
 
                 //[]
+                //[undefined] ( not valid but user would expect it to work )
                 //[ ctx, ...op[] ]
                 //[ ...op[] ]
 
@@ -47,7 +50,7 @@ export function parseOverloadParamsFactory<T>() {
                         { "op": ops.length === 1 ? ops[0] : compose(...ops) }
                     ;
 
-                if (canBeMatcher(inputs[0])) {
+                if (canBeOperator(inputs[0])) {
 
                     //[ ...op[] ]
 
@@ -73,87 +76,57 @@ export function parseOverloadParamsFactory<T>() {
 
 
             } break;
-            case "createDelegate": {
-
-                const n =
-                    inputs.length
-                    -
-                    (
-                        inputs.length !== 0 &&
-                            inputs[inputs.length - 1] === undefined ?
-                            1 : 0
-                    ) as 0 | 1 | 2;
-
-                switch (n) {
-                    case 0:
-                        return id<Out>({
-                            ...defaultParams
-                        });
-                    case 1:
-                        //[ op ]
-                        //[ ctx ]
-                        const [p] = inputs;
-                        return canBeMatcher(p) ? id<Out>({
-                            ...defaultParams,
-                            "op": p
-                        }) : id<Out>({
-                            ...defaultParams,
-                            "ctx": p
-                        });
-                    case 2:
-                        //[ op, ctx ]
-                        const [p1, p2] = inputs;
-                        return id<Out>({
-                            ...defaultParams,
-                            "op": p1,
-                            "ctx": p2
-                        });
-                }
-
-            } break;
 
             case "waitFor": {
 
-                const n = inputs.length;
+                //[ op, ctx, timeout ]
+                //[ op, ctx, undefined ]
+                //[ op, ctx ]
+                //[ op, timeout ]
+                //[ op, undefined ]
+                //[ ctx, timeout ]
+                //[ ctx, undefined ]
+                //[ op ]
+                //[ ctx ]
+                //[ timeout ]
+                //[ undefined ]
+                //[ callback ]
 
-                if (n === 2) {
-
-                    const [p1, p2] = inputs;
-
-                    return id<Out>({
-                        ...defaultParams,
-                        "op": p1,
-                        "timeout": p2
-                    });
-
-                } else {
-
-                    const [p] = inputs;
-
-                    return id<Out>(
-                        canBeMatcher(p) ? ({
-                            ...defaultParams,
-                            "op": p
-                        }) : ({
-                            ...defaultParams,
-                            "timeout": p
-                        })
-                    );
-
-                }
-
+                return parseOverloadParams(
+                    [
+                        //If the last element is undefined, remove it.
+                        ...inputs.filter(
+                            (value, index) => !(
+                                index === inputs.length - 1 &&
+                                value === undefined
+                            )
+                        ),
+                        defaultParams.callback
+                    ],
+                    "attach*"
+                );
 
             } break;
             case "attach*": {
 
+                //NOTE: when callback is undefined call has been forward from waitFor.
+
                 //[ op, ctx, timeout, callback ]
+                //[ op, ctx, timeout, undefined ]
                 //[ op, ctx, callback ]
+                //[ op, ctx, undefined ]
                 //[ op, timeout, callback ]
+                //[ op, timeout, undefined ]
                 //[ ctx, timeout, callback ]
+                //[ ctx, timeout, undefined ]
                 //[ op, callback ]
+                //[ op, undefined ]
                 //[ ctx, callback ]
+                //[ ctx, undefined ]
                 //[ timeout, callback ]
+                //[ timeout, undefined ]
                 //[ callback ]
+                //[ undefined ]
 
                 const n = inputs.length as 4 | 3 | 2 | 1 | 0;
 
@@ -185,7 +158,7 @@ export function parseOverloadParamsFactory<T>() {
                             const timeout: Out["timeout"] = p2;
                             const callback: Out["callback"] = p3;
 
-                            if (canBeMatcher(p1)) {
+                            if (canBeOperator(p1)) {
                                 //[ op, timeout, callback ]
                                 return id<Out>({
                                     ...defaultParams,
@@ -234,7 +207,7 @@ export function parseOverloadParamsFactory<T>() {
                             //[ op, callback ]
                             //[ ctx, callback ]
                             const callback: Out["callback"] = p2;
-                            if (canBeMatcher(p1)) {
+                            if (canBeOperator(p1)) {
 
                                 return id<Out>({
                                     ...defaultParams,

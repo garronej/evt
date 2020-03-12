@@ -7,7 +7,7 @@ type Ctx = import("../Ctx").Ctx;
 
 type OneOrMany<T> = T | ArrayLike<T>;
 
-function fromEventImpl<T>(
+function fromImpl<T>(
     ctx: Ctx | undefined,
     target: OneOrMany<EventTargetLike<T>>,
     eventName?: string,
@@ -18,7 +18,7 @@ function fromEventImpl<T>(
         return mergeImpl<Evt<T>>(
             ctx,
             Array.from(target).map(
-                target => fromEventImpl<T>(ctx, target, eventName, options)
+                target => fromImpl<T>(ctx, target, eventName, options)
             )
         );
     }
@@ -83,7 +83,7 @@ function fromEventImpl<T>(
 
 }
 
-export function fromEvent<T>(
+export function from<T>(
     ctx: Ctx,
     target: OneOrMany<
         EventTargetLike.NodeStyleEventEmitter |
@@ -91,7 +91,7 @@ export function fromEvent<T>(
     >,
     eventName: string
 ): Evt<T>;
-export function fromEvent<T>(
+export function from<T>(
     ctx: Ctx,
     target: OneOrMany<
         EventTargetLike.HasEventTargetAddRemove<T>
@@ -99,30 +99,30 @@ export function fromEvent<T>(
     eventName: string,
     options?: EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<T>;
-export function fromEvent<T>(
+export function from<T>(
     ctx: Ctx,
     target: OneOrMany<EventTargetLike.RxJSSubject<T>>
 ): Evt<T>;
 
-export function fromEvent<T>(
+export function from<T>(
     target: OneOrMany<
         EventTargetLike.NodeStyleEventEmitter |
         EventTargetLike.JQueryStyleEventEmitter
     >,
     eventName: string
 ): Evt<T>;
-export function fromEvent<T>(
+export function from<T>(
     target: OneOrMany<
         EventTargetLike.HasEventTargetAddRemove<T>
     >,
     eventName: string,
     options?: EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<T>;
-export function fromEvent<T>(
+export function from<T>(
     target: OneOrMany<EventTargetLike.RxJSSubject<T>>
 ): Evt<T>;
 
-export function fromEvent<T>(
+export function from<T>(
     ctxOrTarget: Ctx | OneOrMany<EventTargetLike<T>>,
     targetOrEventName?: OneOrMany<EventTargetLike<T>> | string,
     eventNameOrOptions?: string | EventTargetLike.HasEventTargetAddRemove.Options,
@@ -137,7 +137,7 @@ export function fromEvent<T>(
             typeGuard.dry<EventTargetLike.HasEventTargetAddRemove.Options | undefined>(options)
         );
 
-        return fromEventImpl(
+        return fromImpl(
             ctxOrTarget,
             targetOrEventName,
             eventNameOrOptions,
@@ -151,7 +151,7 @@ export function fromEvent<T>(
             typeGuard.dry<EventTargetLike.HasEventTargetAddRemove.Options | undefined>(eventNameOrOptions)
         );
 
-        return fromEventImpl(
+        return fromImpl(
             undefined,
             ctxOrTarget,
             targetOrEventName,

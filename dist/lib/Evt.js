@@ -238,7 +238,7 @@ var Evt = /** @class */ (function (_super) {
      */
     Evt.getCtx = getCtxFactory_1.getCtxFactory();
     Evt.merge = merge_1.merge;
-    Evt.fromEvent = fromEvent_1.fromEvent;
+    Evt.from = fromEvent_1.from;
     return Evt;
 }(EvtCore_1.EvtCore));
 exports.Evt = Evt;

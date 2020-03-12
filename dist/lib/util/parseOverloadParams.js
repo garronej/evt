@@ -31,17 +31,18 @@ var __spread = (this && this.__spread) || function () {
     return ar;
 };
 exports.__esModule = true;
-var isCallableFunction_1 = require("../../tools/isCallableFunction");
-var typeSafety_1 = require("../../tools/typeSafety");
+var id_1 = require("../../tools/typeSafety/id");
 var compose_1 = require("./compose");
+var typeGuard_1 = require("../../tools/typeSafety/typeGuard");
 function matchAll() { return true; }
-var canBeMatcher = function (p) {
-    return isCallableFunction_1.isCallableFunction(p) || (typeof p === "object" &&
-        p.length === 2 &&
-        isCallableFunction_1.isCallableFunction(p[0]));
+var canBeOperator = function (p) {
+    return (p !== undefined &&
+        typeGuard_1.typeGuard.dry(p) &&
+        (typeof p === "function" ||
+            typeof p[0] === "function"));
 };
 function parseOverloadParamsFactory() {
-    var defaultParams = typeSafety_1.id({
+    var defaultParams = id_1.id({
         "op": matchAll,
         "ctx": undefined,
         "timeout": undefined,
@@ -52,6 +53,7 @@ function parseOverloadParamsFactory() {
             case "pipe":
                 {
                     //[]
+                    //[undefined] ( not valid but user would expect it to work )
                     //[ ctx, ...op[] ]
                     //[ ...op[] ]
                     var getOpWrap = function (ops) {
@@ -60,124 +62,118 @@ function parseOverloadParamsFactory() {
                             :
                                 { "op": ops.length === 1 ? ops[0] : compose_1.compose.apply(void 0, __spread(ops)) };
                     };
-                    if (canBeMatcher(inputs[0])) {
+                    if (canBeOperator(inputs[0])) {
                         //[ ...op[] ]
-                        return typeSafety_1.id(__assign(__assign({}, defaultParams), getOpWrap(inputs)));
+                        return id_1.id(__assign(__assign({}, defaultParams), getOpWrap(inputs)));
                     }
                     else {
                         //[]
                         //[ ctx, ...Operator.fλ[] ]
                         var _a = __read(inputs), ctx = _a[0], rest = _a.slice(1);
-                        return typeSafety_1.id(__assign(__assign(__assign({}, defaultParams), (ctx !== undefined ? { ctx: ctx } : {})), getOpWrap(rest)));
-                    }
-                }
-                break;
-            case "createDelegate":
-                {
-                    var n = inputs.length
-                        -
-                            (inputs.length !== 0 &&
-                                inputs[inputs.length - 1] === undefined ?
-                                1 : 0);
-                    switch (n) {
-                        case 0:
-                            return typeSafety_1.id(__assign({}, defaultParams));
-                        case 1:
-                            //[ op ]
-                            //[ ctx ]
-                            var _b = __read(inputs, 1), p = _b[0];
-                            return canBeMatcher(p) ? typeSafety_1.id(__assign(__assign({}, defaultParams), { "op": p })) : typeSafety_1.id(__assign(__assign({}, defaultParams), { "ctx": p }));
-                        case 2:
-                            //[ op, ctx ]
-                            var _c = __read(inputs, 2), p1 = _c[0], p2 = _c[1];
-                            return typeSafety_1.id(__assign(__assign({}, defaultParams), { "op": p1, "ctx": p2 }));
+                        return id_1.id(__assign(__assign(__assign({}, defaultParams), (ctx !== undefined ? { ctx: ctx } : {})), getOpWrap(rest)));
                     }
                 }
                 break;
             case "waitFor":
                 {
-                    var n = inputs.length;
-                    if (n === 2) {
-                        var _d = __read(inputs, 2), p1 = _d[0], p2 = _d[1];
-                        return typeSafety_1.id(__assign(__assign({}, defaultParams), { "op": p1, "timeout": p2 }));
-                    }
-                    else {
-                        var _e = __read(inputs, 1), p = _e[0];
-                        return typeSafety_1.id(canBeMatcher(p) ? (__assign(__assign({}, defaultParams), { "op": p })) : (__assign(__assign({}, defaultParams), { "timeout": p })));
-                    }
+                    //[ op, ctx, timeout ]
+                    //[ op, ctx, undefined ]
+                    //[ op, ctx ]
+                    //[ op, timeout ]
+                    //[ op, undefined ]
+                    //[ ctx, timeout ]
+                    //[ ctx, undefined ]
+                    //[ op ]
+                    //[ ctx ]
+                    //[ timeout ]
+                    //[ undefined ]
+                    //[ callback ]
+                    return parseOverloadParams(__spread(inputs.filter(function (value, index) { return !(index === inputs.length - 1 &&
+                        value === undefined); }), [
+                        defaultParams.callback
+                    ]), "attach*");
                 }
                 break;
             case "attach*":
                 {
+                    //NOTE: when callback is undefined call has been forward from waitFor.
                     //[ op, ctx, timeout, callback ]
+                    //[ op, ctx, timeout, undefined ]
                     //[ op, ctx, callback ]
+                    //[ op, ctx, undefined ]
                     //[ op, timeout, callback ]
+                    //[ op, timeout, undefined ]
                     //[ ctx, timeout, callback ]
+                    //[ ctx, timeout, undefined ]
                     //[ op, callback ]
+                    //[ op, undefined ]
                     //[ ctx, callback ]
+                    //[ ctx, undefined ]
                     //[ timeout, callback ]
+                    //[ timeout, undefined ]
                     //[ callback ]
+                    //[ undefined ]
                     var n = inputs.length;
                     switch (n) {
                         case 4: {
                             //[ op, ctx, timeout, callback ]
-                            var _f = __read(inputs, 4), p1 = _f[0], p2 = _f[1], p3 = _f[2], p4 = _f[3];
-                            return typeSafety_1.id(__assign(__assign({}, defaultParams), { "op": p1, "ctx": p2, "timeout": p3, "callback": p4 }));
+                            var _b = __read(inputs, 4), p1 = _b[0], p2 = _b[1], p3 = _b[2], p4 = _b[3];
+                            return id_1.id(__assign(__assign({}, defaultParams), { "op": p1, "ctx": p2, "timeout": p3, "callback": p4 }));
                         }
                         case 3: {
                             //[ op, ctx, callback ]
                             //[ op, timeout, callback ]
                             //[ ctx, timeout, callback ]
-                            var _g = __read(inputs, 3), p1 = _g[0], p2 = _g[1], p3 = _g[2];
+                            var _c = __read(inputs, 3), p1 = _c[0], p2 = _c[1], p3 = _c[2];
                             if (typeof p2 === "number") {
                                 //[ op, timeout, callback ]
                                 //[ ctx, timeout, callback ]
                                 var timeout = p2;
                                 var callback = p3;
-                                if (canBeMatcher(p1)) {
+                                if (canBeOperator(p1)) {
                                     //[ op, timeout, callback ]
-                                    return typeSafety_1.id(__assign(__assign({}, defaultParams), { timeout: timeout,
+                                    return id_1.id(__assign(__assign({}, defaultParams), { timeout: timeout,
                                         callback: callback, "op": p1 }));
                                 }
                                 else {
                                     //[ ctx, timeout, callback ]
-                                    return typeSafety_1.id(__assign(__assign({}, defaultParams), { timeout: timeout,
+                                    return id_1.id(__assign(__assign({}, defaultParams), { timeout: timeout,
                                         callback: callback, "ctx": p1 }));
                                 }
                             }
                             else {
                                 //[ op, ctx, callback ]
-                                return typeSafety_1.id(__assign(__assign({}, defaultParams), { "op": p1, "ctx": p2, "callback": p3 }));
+                                return id_1.id(__assign(__assign({}, defaultParams), { "op": p1, "ctx": p2, "callback": p3 }));
                             }
                         }
                         case 2: {
                             //[ op, callback ]
                             //[ ctx, callback ]
                             //[ timeout, callback ]
-                            var _h = __read(inputs, 2), p1 = _h[0], p2 = _h[1];
+                            var _d = __read(inputs, 2), p1 = _d[0], p2 = _d[1];
                             if (typeof p1 === "number") {
                                 //[ timeout, callback ]
-                                return typeSafety_1.id(__assign(__assign({}, defaultParams), { "timeout": p1, "callback": p2 }));
+                                return id_1.id(__assign(__assign({}, defaultParams), { "timeout": p1, "callback": p2 }));
                             }
                             else {
                                 //[ op, callback ]
                                 //[ ctx, callback ]
                                 var callback = p2;
-                                if (canBeMatcher(p1)) {
-                                    return typeSafety_1.id(__assign(__assign({}, defaultParams), { callback: callback, "op": p1 }));
+                                if (canBeOperator(p1)) {
+                                    return id_1.id(__assign(__assign({}, defaultParams), { callback: callback, "op": p1 }));
                                 }
                                 else {
-                                    return typeSafety_1.id(__assign(__assign({}, defaultParams), { callback: callback, "ctx": p1 }));
+                                    return id_1.id(__assign(__assign({}, defaultParams), { callback: callback, "ctx": p1 }));
                                 }
                             }
                         }
                         case 1: {
                             //[ callback ]
-                            var _j = __read(inputs, 1), p = _j[0];
-                            return typeSafety_1.id(__assign(__assign({}, defaultParams), { "callback": p }));
+                            var _e = __read(inputs, 1), p = _e[0];
+                            return id_1.id(__assign(__assign({}, defaultParams), { "callback": p }));
                         }
                         case 0: {
-                            return typeSafety_1.id(__assign({}, defaultParams));
+                            return id_1.id(__assign({}, defaultParams));
                         }
                     }
                 }

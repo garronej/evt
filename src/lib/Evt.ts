@@ -4,7 +4,7 @@ import { Operator } from "./types/Operator";
 import { Ctx } from "./Ctx";
 import { invokeOperator } from "./util/invokeOperator";
 import { merge } from "./util/merge";
-import { fromEvent } from "./util/fromEvent";
+import { from } from "./util/fromEvent";
 import { parseOverloadParamsFactory } from "./util/parseOverloadParams";
 import { getLazyEvtFactory } from "./util/getLazyEvtFactory";
 import { getCtxFactory } from "./util/getCtxFactory";
@@ -28,7 +28,7 @@ export class Evt<T> extends EvtCore<T> {
 
 
     public static merge = merge;
-    public static fromEvent = fromEvent;
+    public static from = from;
 
 
     public readonly getEvtAttach: () => Evt<Handler<T, any>>;
@@ -228,20 +228,51 @@ export class Evt<T> extends EvtCore<T> {
 
 
     /**
-     * https://garronej.github.io/ts-evt/#evtwaitfor
+     * op - fλ
      * 
+     * ctx
+     * 
+     * timeout?
+     */
+    public waitFor<U>(
+        op: Operator.fλ.Stateless<T,U>,
+        ctx: Ctx,
+        timeout?: number
+    ): Promise<U>;
+    /**
+     * op - Type guard
+     * 
+     * ctx
+     * 
+     * timeout?
+     */
+    public waitFor<Q extends T>(
+        op: (data: T) => data is Q,
+        ctx: Ctx,
+        timeout?: number
+    ): Promise<Q>;
+    /**
+     * op - Filter
+     * 
+     * ctx
+     * 
+     * timeout?
+     */
+    public waitFor(
+        op: (data: T) => boolean,
+        ctx: Ctx,
+        timeout?: number
+    ): Promise<T>;
+    /**
      * op - fλ
      * 
      * timeout?
      */
     public waitFor<U>(
-        op: Operator.fλ.Stateless<T, U>,
+        op: Operator.fλ.Stateless<T,U>,
         timeout?: number
     ): Promise<U>;
-
     /**
-     * https://garronej.github.io/ts-evt/#evtwaitfor
-     * 
      * op - Type guard
      * 
      * timeout?
@@ -250,10 +281,7 @@ export class Evt<T> extends EvtCore<T> {
         op: (data: T) => data is Q,
         timeout?: number
     ): Promise<Q>;
-
     /**
-     * https://garronej.github.io/ts-evt/#evtwaitfor
-     * 
      * op - Filter
      * 
      * timeout?
@@ -262,19 +290,56 @@ export class Evt<T> extends EvtCore<T> {
         op: (data: T) => boolean,
         timeout?: number
     ): Promise<T>;
-
     /**
-     * https://garronej.github.io/ts-evt/#evtwaitfor
+     * ctx
      * 
+     * timeout?
+     */
+    public waitFor(
+        ctx: Ctx,
+        timeout?: number
+    ): Promise<T>;
+    /**
      * timeout?
      */
     public waitFor(
         timeout?: number
     ): Promise<T>;
-
     public waitFor(...inputs: any[]) {
         return super.__waitFor(this.__parseOverloadParams(inputs, "waitFor"));
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
 
 
     /**

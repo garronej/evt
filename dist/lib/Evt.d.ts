@@ -3,7 +3,7 @@ import { Handler } from "./types/Handler";
 import { Operator } from "./types/Operator";
 import { Ctx } from "./Ctx";
 import { merge } from "./util/merge";
-import { fromEvent } from "./util/fromEvent";
+import { from } from "./util/fromEvent";
 declare type VoidCtx = import("./Ctx").VoidCtx;
 export declare class Evt<T> extends EvtCore<T> {
     /** return a new Ctx instance */
@@ -16,7 +16,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     static readonly getCtx: (obj: object) => import("./Ctx").VoidCtx;
     static merge: typeof merge;
-    static fromEvent: typeof fromEvent;
+    static from: typeof from;
     readonly getEvtAttach: () => Evt<Handler<T, any>>;
     readonly getEvtDetach: () => Evt<Handler<T, any>>;
     constructor();
@@ -52,32 +52,54 @@ export declare class Evt<T> extends EvtCore<T> {
     pipe(...ops: [Operator<T, any>, ...Operator<any, any>[]]): Evt<any>;
     pipe<T>(...ops: [Operator<T, any>, ...Operator<any, any>[]]): Evt<any>;
     /**
-     * https://garronej.github.io/ts-evt/#evtwaitfor
+     * op - fλ
      *
+     * ctx
+     *
+     * timeout?
+     */
+    waitFor<U>(op: Operator.fλ.Stateless<T, U>, ctx: Ctx, timeout?: number): Promise<U>;
+    /**
+     * op - Type guard
+     *
+     * ctx
+     *
+     * timeout?
+     */
+    waitFor<Q extends T>(op: (data: T) => data is Q, ctx: Ctx, timeout?: number): Promise<Q>;
+    /**
+     * op - Filter
+     *
+     * ctx
+     *
+     * timeout?
+     */
+    waitFor(op: (data: T) => boolean, ctx: Ctx, timeout?: number): Promise<T>;
+    /**
      * op - fλ
      *
      * timeout?
      */
     waitFor<U>(op: Operator.fλ.Stateless<T, U>, timeout?: number): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#evtwaitfor
-     *
      * op - Type guard
      *
      * timeout?
      */
     waitFor<Q extends T>(op: (data: T) => data is Q, timeout?: number): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtwaitfor
-     *
      * op - Filter
      *
      * timeout?
      */
     waitFor(op: (data: T) => boolean, timeout?: number): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtwaitfor
+     * ctx
      *
+     * timeout?
+     */
+    waitFor(ctx: Ctx, timeout?: number): Promise<T>;
+    /**
      * timeout?
      */
     waitFor(timeout?: number): Promise<T>;
