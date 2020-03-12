@@ -27,7 +27,7 @@ To test if ctx.done\(\) have been invoked already you can use:`ctx.getEvtDone().
 ### Example
 
 ```typescript
-import { Evt } from "ts-evt";
+import { Evt } from "../lib";
 import { EventEmitter } from "events";
 
 const ctx= Evt.newCtx();
@@ -43,10 +43,11 @@ evtText.$attach(
 
 evtTime.waitFor(
     time => time < 0,
-    ctx6
+    ctx,
 ).then(time=> console.log("2: " +  time));
 
-evtText.pipe(ctx)
+evtText
+    .pipe(ctx)
     .pipe(text => [text.toUpperCase()])
     .attach(upperCaseText=> console.log("3: " + upperCaseText))
     ;
@@ -57,33 +58,34 @@ Evt.merge(ctx, [ evtText, evtTime ])
 
 const ee= new EventEmitter();
 
-Evt.fromEvent<string>(ctx, ee, "text")
+Evt.from<string>(ctx, ee, "text")
     .attach(text=> console.log("5: " + text))
     ;
 
 
-evtText.attach.post("foo"); //Prints "1: 3" "3: FOO" "4: foo"
+evtText.post("foo"); //Prints "1: 3" "3: FOO" "4: foo"
 ee.emit("text", "bar"); //Prints "5: bar"
 
 console.log(evtText.getHandlers().length); //Prints "3"
 console.log(evtTime.getHandlers().length); //Prints "2"
+
 console.log(ee.listenerCount("text")); //Print "1"
 
-ctx.getEvtDone().attahcOnce(
-    handlerEvts=> {
+ctx.getEvtDone().attachOnce(
+    ([,,handlers])=> {
     
         console.log(
-            handlerEvts.filter(({ evt })=> evt === evtString).lenght +
+            handlers.filter(({ evt })=> evt === evtText).length +
             " handlers detached from evtText"
         );
         
         console.log(
-            handlerEvts.filter(({ evt })=> evt === evtTime).lenght +
+            handlers.filter(({ evt })=> evt === evtTime).length +
             " handlers detached from evtTime"
         );
         
         console.log(
-            handlerEvts.lenght + " handlers detached total"
+            handlers.length + " handlers detached total"
         );
         
     }
@@ -99,7 +101,7 @@ console.log(evtText.getHandlers().length); //Prints "0"
 console.log(evtTime.getHandlers().length); //Prints "0"
 console.log(ee.listenerCount("text")); //Print "0"
 
-evtText.attach.post("foo"); //Prints nothing
+evtText.post("foo"); //Prints nothing
 ee.emit("text", "bar"); //Prints nothing
 ```
 
