@@ -1,5 +1,53 @@
 # Ctx \(class\)
 
+Help detaching a group of handler that have been attached for a certain pupose / in a certain context.
+
+Let us say for example that the task is to download a file, you have an evtPacket that post every time a packet is received, an evtSocketError that post if there is a connection problem and a evtBtnCancelClick that post when the user click cancel.
+
+```typescript
+import { Evt, VoidEvt } from "ts-evt";
+
+const evtPacket<Uint8tArray>();
+const evtBtnCancelClick= new VoidEvt();
+const evtSocketError= new Evt<Error>();
+
+const FILE_SIZE= 300 000;
+
+const ctxFileDownload= Evt.newCtx();
+
+evtPacket
+    .pipe(ctxFileDownload)
+    .pipe([
+        (data,prev)=> [prev.concat(data)], 
+        new Uint8Array(FILE_SIZE)
+    ])
+    .$attachOnce(
+        data => data.lengh !== FILE_SIZE ? 
+            null: 
+            [ data, {"DETACH": ctxFileDownload}],
+        data => console.log(`File downloaded: ${data.toString()}`);
+    )
+    ;
+    
+evtSocketError.$attachOnce(
+    ()=> { "DETACH": ctxFileDownlad },
+    error=> console.log(`Dowload error: ${error.message}`)
+);
+
+evtBtnCancelClick.attachOnce(
+    ()=> {
+        ctx.done(); //Calling done manually or via { "DETACH": ctx } is the same
+        console.log(`Download canceled`);
+    }
+);
+```
+
+When the task is complete, no matter the reason we detach all the handler that have been attached to accomplish the task. It is much safer and much more convienient than individually detaching every Haldlers as we do wi EventEmitter.prototypr.removeListener\(...\)
+
+{% hint style="info" %}
+Get Ctx instance using `Evt.newCtx()` or `Evt.getCtx(obj)`
+{% endhint %}
+
 ## `ctx.done()`
 
 Detach all Handlers bound to the context from the Evt instances they are attached to then post the done event.
@@ -113,11 +161,40 @@ ctx
 
 ```
 
+## `ctx.getEvtAttach()`
 
+### Returns
 
-## \`\`
+`Evt<{ handler: Handler<any, any>; evt: Evt<any> }>` An Evt that posts every time a new handler bound to the context is attached.  Every time `ctx.getEvtDetach()` is invoked it returns the same Evt instance. The Evt is lazyly initialized the first time ctx.getEvtAttach\(\) is invoked but `ctx.getEvtDetach().postCount` is not affected.
 
-## `ctx.evtDetach: Evt<Handler[]>`
+### Example
 
-## `ctx.detach([evt])`
+```typescript
+import { Evt } from "ts-evt";
+
+const evtText= new Evt<string>();
+
+const ctx = Evt.newCtx();
+
+evt.textAttach(ctx, ()=> {});
+evt.textAttach(ctx, ()=> {});
+
+console.log(ctx.getEvtAttach().postCount); //Prints "2"
+```
+
+```typescript
+import { Evt } from "ts-evt";
+
+const evtText = new Evt<string>();
+
+const ctx= Evt.newCtx();
+
+ctx.getEvtAttach.attach(handler => console.log(handler.timeout));
+
+evtText.attach(43, ()=>{}); //Prints "43"
+```
+
+## `ctx.getEvtDetach()`
+
+Same as `ctx.getEvtAttach()` but post when handler are detached. Note that an handler beeing detached does not mean that it has been explicitely detached. Once Handlers and Handler that have timed out are automatically detached.
 
