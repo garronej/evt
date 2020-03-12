@@ -15,7 +15,7 @@
     * [isHandled\(data\)](api/evt/evt.ishandled.md)
     * [Evt.merge\(\[ evt1, evt2, ... \]\)](api/evt/evt.merge-evt1-evt2-....md)
     * [evt.enableTrace\(...\)](api/evt/evt.enabletrace.md)
-  * [Ctx \(class\)](api/ctx.md)
+  * [Ctx&lt;T&gt; \(class\)](api/ctx.md)
   * [Handler&lt;T, U&gt; \(type\)](api/handler.md)
   * [VoidEvt \(class\)](api/voidevt.md)
   * [NonPostable&lt;Evt&lt;T&gt;&gt; \(type\)](api/nonpostable.md)
