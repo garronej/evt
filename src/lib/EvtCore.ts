@@ -424,7 +424,11 @@ export class EvtCore<T> {
                     continue;
                 }
 
-                const opResult = invokeOperator(this.getStatelessOp(handler.op), data);
+                const opResult = invokeOperator(
+                    this.getStatelessOp(handler.op), 
+                    data, 
+                    true
+                );
 
                 if (Operator.fλ.Result.NotMatched.match(opResult)) {
 

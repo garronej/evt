@@ -95,7 +95,7 @@ var EvtCore = /** @class */ (function () {
                 if (!handler.async) {
                     return "continue";
                 }
-                var opResult = invokeOperator_1.invokeOperator(_this_1.getStatelessOp(handler.op), data);
+                var opResult = invokeOperator_1.invokeOperator(_this_1.getStatelessOp(handler.op), data, true);
                 if (Operator_1.Operator.fλ.Result.NotMatched.match(opResult)) {
                     EvtCore.doDetachIfNeeded(handler, opResult);
                     return "continue";

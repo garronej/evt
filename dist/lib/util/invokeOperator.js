@@ -1,8 +1,8 @@
 "use strict";
 exports.__esModule = true;
 var Operator_1 = require("../types/Operator");
-function invokeOperator(op, data, cbInvokedIfMatched) {
-    var result = op(data, undefined, cbInvokedIfMatched);
+function invokeOperator(op, data, isPost) {
+    var result = op(data, undefined, isPost);
     return Operator_1.Operator.fλ.Result.match(result) ?
         result :
         !!result ? [data] : null;

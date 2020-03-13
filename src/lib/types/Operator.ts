@@ -17,10 +17,10 @@ export namespace Operator {
 
     export namespace fλ {
 
-        export type Stateless<T, U> = (data: T, prev?: undefined, cbInvokedIfMatched?: true) => Result<U>;
+        export type Stateless<T, U> = (data: T, prev?: undefined, isPost?: true) => Result<U>;
 
         export type Stateful<T, U> = [
-            (data: T, prev: Readonly<U>, cbInvokedIfMatched?: true) => Result<U>,
+            (data: T, prev: Readonly<U>, isPost?: true) => Result<U>,
             U //Initial value
         ];
 
