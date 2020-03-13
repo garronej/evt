@@ -1,6 +1,6 @@
 # Table of contents
 
-* [Why TS-EVT ?](README.md)
+* [Why EVT ?](README.md)
 * [Overview](overview.md)
 * [API Documentation](api/README.md)
   * [Operator&lt;T, U&gt; \(type\)](api/operator.md)
