@@ -58,7 +58,7 @@ type Data = {
 
     const { Evt } = await import("../lib");
 
-    //Equivalent with ts-evt
+    //Equivalent with EVT
     {
         const evtData = new Evt<Data>();
 
@@ -72,7 +72,7 @@ type Data = {
 
         evtData.post({
             type: "TEXT",
-            text: "Hello World ts-evt"
+            text: "Hello World EVT"
         });
     }
 
@@ -110,7 +110,7 @@ type Data = {
 
     console.log("===================");
 
-    //Same thing with ts-evt and a single λ function operator...
+    //Same thing with EVT and a single λ function operator...
     {
         const evtData = new Evt<Data>();
 
