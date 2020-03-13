@@ -1,13 +1,17 @@
-# Why EVT ?
+# Why TS-EVT ?
 
 ![](https://img.shields.io/bundlephobia/min/ts-evt) ![](https://img.shields.io/bundlephobia/minzip/ts-evt) ![](https://img.shields.io/david/garronej/ts-evt) ![](https://img.shields.io/npm/l/ts-evt)
 
-`'evt'` is intended to be a replacement for Node's `'events'` and  a lighter alternative to `'rxjs'`.  
+`'ts-evt'` is intended to be a replacement for Node's `'events'` and alternative to `'rxjs'`.  
 It enable and encourage **functional programming** and makes heavy use of **typescript**'s type inference features to provide **type safety** while keeping things **concise and elegant** 🍸.
 
 It's main target is [**Deno**](https://github.com/denoland/deno)**\***  but is cross compatible with **Node** and will run just about anywhere from **React Native** to the **web browser** of your grama.
 
 \*The deno package hasn't been published yet but it will be verry soon.
+
+{% hint style="warning" %}
+`"ts-evt" !== "ts-events" (`legacy project  \) 
+{% endhint %}
 
 **Browserify friendly:**
 
@@ -31,11 +35,11 @@ There is a lot of things that can't easily be done with `EventEmitter`:
 RxJS have it's issues as well:
 
 * When chaining operators the type is often lost along the way as TypeScript struggle to keep track of the mutation / filtering being applied to the event flow.
-* Introduce _\(too\)_ many abstractions/operators, combining them right can be challenging, even for seemingly straights forward control flows.
+* Introduce \(too\) many abstraction/operator, combining the right ones can be challenging, even for seemingly straights forward control flows.
 
-EVT is an attempt to solve all this issues while trying to remain as accesible as`EventEmitter`.
+TS-EVT is an attempt to solve all this issues while trying to remain as traight forward as `EventEmitter`.
 
-Let's jump right in by considering [side by side examples comparing EVT with it's peers](https://docs.ts-evt.dev/overview).
+Let's jump right in by considering [side by side examples comparing TS-EVT with it's peers](https://docs.ts-evt.dev/overview).
 
 ![](https://ts-evt.dev/assets/img/gun-vs-sword.gif)
 
