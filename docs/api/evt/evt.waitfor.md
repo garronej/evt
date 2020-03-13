@@ -2,9 +2,9 @@
 
 Method that returns a promise that will resolve when the next matched event is posted.
 
-waitFor is essentially evt.attachOnce\(...\) but you dont have to provide a callback. It accept the same arguments and return the same promise. 
+waitFor is essentially evt.attachOnce\(...\) but you dont provide a callback. It accept the same arguments and return the same promise. 
 
-_Essentialy_ the same but [not exactly the same](https://docs.ts-evt.dev/api/evt/evt.waitfor-...#difference-between-evt-waitfor-and-evt-attachonce), there is a key difference between an handler attached via waitFor and a handler attached with `attach*`
+_Essentialy_ the same but [not exactly the same](https://docs.ts-evt.dev/api/evt/evt.waitfor-...#difference-between-evt-waitfor-and-evt-attachonce), there is a key difference between an handler attached via `waitFor` and a handler attached with `attach*` as explained below.
 
 ## Without timeout
 

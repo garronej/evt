@@ -7,15 +7,15 @@ description: Similar to EventEmitter.prototype.removeListener()
 Detach all handlers from the Evt or all Evt's handler that are bound to a given context.
 
 {% hint style="info" %}
-The prefered way of detaching handler in TS-EVT is via [`Ctx<T>`](https://docs.ts-evt.dev/api/ctx) .
+The prefered way of detaching handler in TS-EVT is using the `ctx.done()`.
 {% endhint %}
 
 {% hint style="warning" %}
-Calling this method without passing a context argument is almost never a good idea. An Evt instance should be sharable by modules that are isolated one another. If a module take the liberty to call evt.detach\(\) it can brek the code elswhere.
+Calling this method without passing a context argument is almost never what you want to do. An Evt instance should be sharable by modules that are isolated one another. If a module take the liberty to call evt.detach\(\) it can brek the code elswhere.
 {% endhint %}
 
 {% hint style="info" %}
-To chery pick the handlers to detach use [`evt.getHandlers()`](https://docs.ts-evt.dev/api/evt/evt.gethandler) or [`ctx.getHandlers()`](https://docs.ts-evt.dev/api/ctx#ctx-gethandlers)\`\`
+To chery pick the handlers to detach use `evt.getHandlers()` or `ctx.getHandlers()`
 {% endhint %}
 
 ## Returns
@@ -24,7 +24,7 @@ To chery pick the handlers to detach use [`evt.getHandlers()`](https://docs.ts-e
 
 ## Parameters
 
-`ctx?: Ctx` If [`Ctx`](https://docs.ts-evt.dev/api/ctx) is provided only Handler bound to the given context will be removed.
+`ctx?: Ctx` If `Ctx` is provided only Handler bound to the given context will be removed.
 
 
 

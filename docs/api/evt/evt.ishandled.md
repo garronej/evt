@@ -2,7 +2,7 @@
 description: Test if posting event data will have an effect.
 ---
 
-# isHandled\(data\)
+# evt.isHandled\(data\)
 
 Return true if:
 
