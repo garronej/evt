@@ -172,7 +172,8 @@ import { Evt } from "ts-evt";
 const evt = new Evt<Data>();
 
 const prText = evt.waitFor(
-    data => data.type !== "TEXT" ? null : [data.text] 
+    data => data.type !== "TEXT" ? 
+        null : [data.text] 
     //^ fλ operator
 );
 ```
