@@ -6,6 +6,10 @@ Ctx helps detachs `Handler`s that where attached for a certain pupose once the t
 Do not instantiate direcly, instead use `Evt.newCtx<T>()` or `Evt.getCtx(obj)`
 {% endhint %}
 
+{% hint style="info" %}
+The only difference between `CtxVoid` and `Ctx<void>` is that  `ctxVoid.post()` can be called without argument when `ctx<void>.done`must be called with `undefined`.
+{% endhint %}
+
 ## `ctx.done([result])`
 
 Detach, from the `Evt` instances they are attached to, all Handlers bound to the context.
@@ -29,7 +33,7 @@ To test if ctx.done\(\) have been invoked already you can use:`ctx.getEvtDone().
 ### Parameter
 
 * `T` for `Ctx<T>`
-* none for `Ctx<void>`
+* none for `VoidCtx`
 
 ## `ctx.abort(error)`
 
@@ -57,7 +61,7 @@ For most usecases it is more conveignent to use ctx.getPrDone\(\[timeout\]\)
 
 ### Returns
 
-* For Ctx&lt;void&gt; an Evt that posts:
+* For VoidCtx an Evt that posts:
   *  `[ null, undefined, Handler.WithEvt[] ]` when `ctx.done()` is called.
   *  `[ error, undefined, Handler.WithEvt[] ]` when `ctx.abort(error)` is called.
 * For Ctx&lt;T&gt;, an Evt that post:
