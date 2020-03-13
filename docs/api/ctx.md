@@ -1,19 +1,21 @@
 # Ctx&lt;T&gt; \(class\)
 
-Ctx helps you detach all the Handles that where attached for a certain pupose once the task is done or aborted.
-
-
+Ctx helps detachs `Handler`s that where attached for a certain pupose once the task is done or aborted.
 
 {% hint style="info" %}
-Get Ctx instance using `Evt.newCtx<T>()` or `Evt.getCtx(obj)`
+Do not instantiate direcly, instead use `Evt.newCtx<T>()` or `Evt.getCtx(obj)`
 {% endhint %}
 
-## `ctx.done(result)`
+## `ctx.done([result])`
 
-Detach all Handlers bound to the context from the Evt instances they are attached to then post the done event.
+Detach, from the `Evt` instances they are attached to, all Handlers bound to the context.
+
+Calling this method causes the `Evt` returned by `ctx.getEvtDone()` to be posted.
 
 {% hint style="info" %}
-When an fλ operator return `{ "DETACH": ctx }`, `ctx.done()` is invoked. cf
+When an fλ operator return `{ "DETACH": ctx }`, `ctx.done()` is invoked.
+
+When it returns `{ "DETACH": ctx, "res": result }`, `ctx.done(result)` is invoked.
 {% endhint %}
 
 {% hint style="info" %}
@@ -24,10 +26,50 @@ To test if ctx.done\(\) have been invoked already you can use:`ctx.getEvtDone().
 
 `ReturnType<ctx.getHandlers()>` All the [Handler](https://docs.ts-evt.dev/api/handler)s that where bound to the context. They are now detached, calling `ctx.getHandler()` just after `ctx.done()` returns an empty array.
 
+### Parameter
+
+* `T` for `Ctx<T>`
+* none for `Ctx<void>`
+
+## `ctx.abort(error)`
+
+Equivalent of `ctx.done()` to use when the task did not go through.
+
+{% hint style="info" %}
+When a fλ operator returns `{ "DETACH": ctx, "err": error }`, `ctx.abort(error)` is invoked.
+{% endhint %}
+
+### Returns 
+
+`ReturnType<ctx.done()>` \(cf `ctx.done` \)
+
+### Parameter
+
+`Error` an error that describe what went wrong.
+
+## `ctx.getEvtDone()`
+
+Tracks when ctx.done or ctx.abort are invoked.
+
+{% hint style="info" %}
+For most usecases it is more conveignent to use ctx.getPrDone\(\[timeout\]\)
+{% endhint %}
+
+### Returns
+
+* For Ctx&lt;void&gt; an Evt that posts:
+  *  `[ null, undefined, Handler.WithEvt[] ]` when `ctx.done()` is called.
+  *  `[ error, undefined, Handler.WithEvt[] ]` when `ctx.abort(error)` is called.
+* For Ctx&lt;T&gt;, an Evt that post:
+  * `[ null, result, Handler.WithEvt[] ]` when `ctx.done(result)` is called.
+  * `[ error, undefined, Handler.WithEvt[] ]` when `ctx.abort(error)` is called.
+
+`Handler.WithEvt<T>` is just a type alias for an object that wrap an handler and the Evt it is attached to: `{ handler: Handler<T, any>, evt: Evt<T> }`
+
 ### Example
 
 ```typescript
-import { Evt } from "ts-evt";
+import { Evt } from "../lib";
 import { EventEmitter } from "events";
 
 const ctx= Evt.newCtx();
@@ -43,10 +85,11 @@ evtText.$attach(
 
 evtTime.waitFor(
     time => time < 0,
-    ctx6
+    ctx,
 ).then(time=> console.log("2: " +  time));
 
-evtText.pipe(ctx)
+evtText
+    .pipe(ctx)
     .pipe(text => [text.toUpperCase()])
     .attach(upperCaseText=> console.log("3: " + upperCaseText))
     ;
@@ -57,33 +100,34 @@ Evt.merge(ctx, [ evtText, evtTime ])
 
 const ee= new EventEmitter();
 
-Evt.fromEvent<string>(ctx, ee, "text")
+Evt.from<string>(ctx, ee, "text")
     .attach(text=> console.log("5: " + text))
     ;
 
 
-evtText.attach.post("foo"); //Prints "1: 3" "3: FOO" "4: foo"
+evtText.post("foo"); //Prints "1: 3" "3: FOO" "4: foo"
 ee.emit("text", "bar"); //Prints "5: bar"
 
 console.log(evtText.getHandlers().length); //Prints "3"
 console.log(evtTime.getHandlers().length); //Prints "2"
+
 console.log(ee.listenerCount("text")); //Print "1"
 
-ctx.getEvtDone().attahcOnce(
-    handlerEvts=> {
+ctx.getEvtDone().attachOnce(
+    ([,,handlers])=> {
     
         console.log(
-            handlerEvts.filter(({ evt })=> evt === evtString).lenght +
+            handlers.filter(({ evt })=> evt === evtText).length +
             " handlers detached from evtText"
         );
         
         console.log(
-            handlerEvts.filter(({ evt })=> evt === evtTime).lenght +
+            handlers.filter(({ evt })=> evt === evtTime).length +
             " handlers detached from evtTime"
         );
         
         console.log(
-            handlerEvts.lenght + " handlers detached total"
+            handlers.length + " handlers detached total"
         );
         
     }
@@ -99,15 +143,31 @@ console.log(evtText.getHandlers().length); //Prints "0"
 console.log(evtTime.getHandlers().length); //Prints "0"
 console.log(ee.listenerCount("text")); //Print "0"
 
-evtText.attach.post("foo"); //Prints nothing
+evtText.post("foo"); //Prints nothing
 ee.emit("text", "bar"); //Prints nothing
 ```
+
+## `ctx.getPrDone([timeout])`
+
+Tracks via a Promise when ctx.done or ctx.abort are invoked.
+
+### Returns
+
+`Promise<T>` \(T is the type argument of `Ctx<T>` \) A promise that resolve when ctx.done\(\[result\]\) is invoked. 
+
+If `ctx.abort(error)` is invoked before `ctx.done` the promise rejects with `error`.
+
+If timeout was specified the promise rejects if `ctx.done` was not invoked within `timeout` milisecond. If it happen `ctx.abort(timeoutError)` is internally invoked `timeoutError` being an instance of `EvtError.Timeout`.
+
+### Parameter
+
+`number` Optional, number of milisecond before the promise reject if it hasn't fullfiled within this delay.
 
 ## `ctx.getHandlers()`
 
 ### Returns
 
-`{ handlers: Handler<any,any>; evt: Evt<any>; }[]` The [`Handler`](https://docs.ts-evt.dev/api/handler)s that are bount to the context alongside with the `Evt` instance each one is attached to to. The Handlers that are bound to the context but no longer attached to an Evt are not listed.
+`Handler.WithEvt[]` The [`Handler`](https://docs.ts-evt.dev/api/handler)s that are bount to the context alongside with the `Evt` instance each one is attached to to. The Handlers that are bound to the context but no longer attached to an Evt are not listed.
 
 ### Example
 
@@ -125,7 +185,7 @@ ctx
 
 ### Returns
 
-`Evt<{ handler: Handler<any, any>; evt: Evt<any> }>` An Evt that posts every time a new handler bound to the context is attached.  Every time `ctx.getEvtDetach()` is invoked it returns the same Evt instance. The Evt is lazyly initialized the first time ctx.getEvtAttach\(\) is invoked but `ctx.getEvtDetach().postCount` is not affected.
+`Evt<Handler.WithEvt<any>>` An Evt that posts every time a new handler bound to the context is attached.  Every time `ctx.getEvtAttach()` is invoked it returns the same Evt instance. The fact that the returned Evt is lazyly initialized does not affect `ctx.getEvtDetach().postCount`.
 
 ### Example
 
@@ -151,29 +211,27 @@ const ctx= Evt.newCtx();
 
 ctx.getEvtAttach.attach(handler => console.log(handler.timeout));
 
-evtText.attach(43, ()=>{}); //Prints "43"
+const timeout = 43;
+
+evtText.attach(timeout, ()=>{}); //Prints "43"
 ```
 
 ## `ctx.getEvtDetach()`
 
-Same as `ctx.getEvtAttach()` but post when handler are detached. Note that an handler beeing detached does not mean that it has been explicitely detached. Once Handlers and Handler that have timed out are automatically detached.
-
-
+Same as `ctx.getEvtAttach()` but post when handler are detached. Note that an handler beeing detached does not mean that it has been explicitely detached. One-time handlers and handlers that have timed out are automatically detached.
 
 ## Comprehensive example
 
+Let us consider a practical usecase of `Ctx`. The task is to download a file, we know the size of the file to download, we have an `Evt<Uint8Array>` that emmits chuncks of data, we want to accumulate them util we reach the expected file size. Multiple things can go wrong during the download:
 
+* The user can cancel the download.
+* The download can take too long.
+* Socket may disconnect .
+* The socked may send more data than expected.
 
-Let us consider a practical usecase of Ctx. The task is to download a file, we know the size of the file to download, we have an Evt&lt;Uint8Array&gt; that emmits chuncks of data, we want to accumulate them util we reach the expected file size. Multiple things can go wrong during the download:
+Our expected output is a `Promise<Uint8Array>` that resolve with the downloaded file or reject if anything went wrong. 
 
-* The user cancel the download.
-* The download take too much time.
-* We run through a socket error.
-* We receive more bytes than expected
-
-Our expected output is a Promise&lt;Uint8Array&gt; that resolve with the downloaded file data or reject if anything went wrong. 
-
-This is how you can use Cxt to implement this task: 
+This is a possible implementation using `Ctx<Uint8Array>`: 
 
 ```typescript
 import { Evt, VoidEvt } from "ts-evt";
@@ -197,7 +255,7 @@ function downloadFile(
 
     evtBtnCancelClick.attachOnce(
         ctxDl,
-        () => ctxDl.abort(new Error(MESSAGE_CANCEL))
+        () => ctxDl.abort(new Error("Download canceled"))
     );
 
     evtChunk
@@ -213,8 +271,8 @@ function downloadFile(
             }
         ])
         .pipe(({ byteLength }) => byteLength >= fileSize)
-        .pipe(({ byteLength, chunks }) => byteLength > fileSize ?
-            { "DETACH": ctxDl, "err": new Error(MESSAGE_TOO_MUCH_BYTES) } :
+        .pipe(({ byteLength, chunks }) => byteLength !== fileSize ?
+            { "DETACH": ctxDl, "err": new Error("File is larger than expected") } :
             [chunks]
         )
         .pipe(chunks => [concatTypedArray(chunks, fileSize)])
@@ -225,6 +283,8 @@ function downloadFile(
 
 }
 ```
+
+Be the download sussesfull or not this use of Ctx enforce that there is no left over handlers on the Evt passed as input once the download attempt has completed. 
 
 Run the example
 
