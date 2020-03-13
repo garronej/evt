@@ -5,9 +5,13 @@
 `'ts-evt'` is intended to be a replacement for Node's `'events'` and alternative to `'rxjs'`.  
 It enable and encourage **functional programming** and makes heavy use of **typescript**'s type inference features to provide **type safety** while keeping things **concise and elegant** 🍸.
 
-It's main target is [**Deno**](https://github.com/denoland/deno)**\***  but is cross compatible with Node.JS and will run just about anywhere from React Native to the web browser of your grama.
+It's main target is [**Deno**](https://github.com/denoland/deno)**\***  but is cross compatible with **Node** and will run just about anywhere from **React Native** to the **web browser** of your grama.
 
 \*The deno package hasn't been published yet but it will be verry soon.
+
+{% hint style="warning" %}
+`"ts-evt" !== "ts-events" (`legacy project  \) 
+{% endhint %}
 
 **Browserify friendly:**
 
