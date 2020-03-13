@@ -25,7 +25,11 @@ Operators can be of three types:
 
     Uses the previous matched event data transformation as input à la `Array.prototype.reduce`
 
+{% hint style="warning" %}
 Operators do not have to be pure, but they **must not have any side effect**.
+
+In particular statefully can not modify the prev value and return it.
+{% endhint %}
 
 ## Operator - Filter
 
@@ -115,8 +119,10 @@ The value that a fλ operator can return are:
 * `null` If the event should be ignored and nothing passed to the callback.
 * `[ U ]` or `[ U, null ]` When the event should be handled, wrapped into the singleton is the value will be passed to the callback.
 * `"DETACH"` If the event should be ignored and the handler detached from the `Evt`
-* `{ DETACH: Ctx }` If the event should be ignored and a group of handler bound to a certain context must be detached. See [`Ctx`](https://docs.ts-evt.dev/api-doc/ctx)
-* `[ U, "DETACH" ]` / `[ U, {DETACH:Ref} ]` If the event should be handler AND the handler detached.
+* `{ DETACH: Ctx<void> }` If the event should be ignored and a group of handler bound to a certain context be detached. See [`Ctx<T>`](https://docs.ts-evt.dev/api/ctx)
+* `{ DETACH: Ctx<V>, res: V }`  See [`Ctx<T>`](https://docs.ts-evt.dev/api/ctx)\`\`
+* `{ DETACH: Ctx; err: Error }`  See [`Ctx<T>`](https://docs.ts-evt.dev/api/ctx)\`\`
+* `[ U, "DETACH" ]` / `[ U, {DETACH:Ctx, ...} ]` If the event should be handler AND some detach  be performed.
 
 ### **Stateless fλ**
 
@@ -251,9 +257,15 @@ evtText.post("Hello"); //Prints "START: Hello"
 evtText.post("World"); //Prints "START: Hello World"
 ```
 
-Keep in mind that operator are not supposed to produce side effect.  
-You should not make assumption on where and when operator are called.  
-The following example seems equivalent from the previous one but it is not.
+### Dos and don'ts
+
+Operators cannot have any side effect \(they cannot modify anything\). No assumption should be made on when and how they are called. 
+
+#### Don't encapsulate state, do use statful **fλ**
+
+First thing that you might be tempted to do to is to use a variable avalible in the operator's scope as an accumulator.  
+  
+The following example **seems equivalent from the previous one** but it is **not**.
 
 ```typescript
 const evtText= new Evt<string>();
@@ -276,6 +288,42 @@ if( evtText.isHandled(text) ){
     //Prints "START: Foo Bar Foo bar", probably not what you wanted...
     evtText.post(text); 
 }
+```
+
+When evt.isHandled\(data\) is invoked the operator of every handler is invoked. The operator is invoked again when the event is actually posted. 
+
+In the example every time the operator is invoked the encapsulated variable acc is updated. This result in "Foo bar" being accumulated two time when the event was posted only one time.
+
+`evt.postAsyncOnceHandled()` and `evt.postSyncOnceHandled()` will also cause dry invokation of the operators. If state are needed statfull fλ have to be used.
+
+#### Don't modify input, do return a copy.
+
+```typescript
+import { Evt } from "ts-evt";
+
+const evtText= new Evt<string>();
+
+//Do not modify the accumulator value.
+evtText.$attach(
+    [
+        (text, arr: string[])=> {
+            arr.push(text);
+            return [arr];
+        },
+        []
+    ],
+    arr=> { /*...*/ }
+);
+
+//Return a new array
+evtText.$attach(
+    [
+        (text, arr: string[]) => [[...arr, text]],
+        []
+    ],
+    arr=> { /*...*/ }
+);
+
 ```
 
 [**Run example**](https://stackblitz.com/edit/ts-evt-demo-stateful?embed=1&file=index.ts)
@@ -305,7 +353,7 @@ evtShape.post({ "type": "SQUARE", "sideLength": 10 });
 evtShape.post({ "type": "CIRCLE", "radius": 12 });
 ```
 
-Example with the "on" operator used to use `Evt`s as `EventEmitter`s.
+Example with the `on` \( operator used to use `Evt` as `EventEmitter`\)
 
 ```typescript
 import { Evt, to, compose } from "../lib";
@@ -403,7 +451,7 @@ const myStatefulFλOp: Operator.fλ.Stateful<string, number> =
     ];
  
 //Operator.fλ.Stateless<T, U> and Operator.fλ.Stateful<T, U>
-//are a subtypes of Operator.fλ<T,U> which is in turn subtype
+//are a subtypes of Operator.fλ<T,U> which is in turn a subtype
 //of Operator<T,U>
 
 declare function f1<T,U>(op: Operator.fλ<T,U>): void;
