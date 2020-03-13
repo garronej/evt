@@ -229,7 +229,7 @@ It is almost imposible to make a mistake writing a fλ operator as the code will
 
 [Run thoses examples and others](https://stackblitz.com/edit/ts-evt-vs-rxjs?embed=1&file=index.ts), see for yourself the full extends of the type inference.
 
-## Where do I start ?
+## Where to start
 
 The API reference documentation is full of runable examples that should get you started in no time.
 
