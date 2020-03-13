@@ -1,6 +1,6 @@
 {
   "name": "ts-evt",
-  "version": "7.0.1",
+  "version": "7.0.2",
   "description": "Type safe replacement for node's EventEmitter",
   "repository": {
     "type": "git",
