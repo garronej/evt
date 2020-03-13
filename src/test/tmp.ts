@@ -1,8 +1,31 @@
 
 import { Evt, to, compose } from "../lib";
 
+import { chunksOf } from "../lib/util/genericOperators/chunksOf";
 
 //import { Operator } from "../lib/types/Operator";
+
+{
+
+    const evt = new Evt<Uint8Array>();
+
+
+    evt.$attach(
+        chunksOf(6),
+        console.log
+    );
+
+    evt.post(new Uint8Array([1,2,3]));
+    evt.post(new Uint8Array([4,5,6,7]));
+    evt.post(new Uint8Array([0]));
+    evt.post(new Uint8Array([1,2]));
+    evt.post(new Uint8Array([3,4]));
+    evt.post(new Uint8Array([1,2,3,4,5,6]));
+
+
+}
+
+process.exit(0);
 
 {
 

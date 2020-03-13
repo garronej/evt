@@ -20,8 +20,8 @@ export namespace Operator {
         export type Stateless<T, U> = (data: T, prev?: undefined, isPost?: true) => Result<U>;
 
         export type Stateful<T, U> = [
-            (data: T, prev: Readonly<U>, isPost?: true) => Result<U>,
-            U //Initial value
+            (data: T, prev: U, isPost?: true) => Result<U>,
+            U //Seed
         ];
 
         export namespace Stateful {

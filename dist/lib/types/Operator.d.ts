@@ -6,7 +6,7 @@ export declare namespace Operator {
     type fλ<T, U> = fλ.Stateless<T, U> | fλ.Stateful<T, U>;
     namespace fλ {
         type Stateless<T, U> = (data: T, prev?: undefined, isPost?: true) => Result<U>;
-        type Stateful<T, U> = [(data: T, prev: Readonly<U>, isPost?: true) => Result<U>, U];
+        type Stateful<T, U> = [(data: T, prev: U, isPost?: true) => Result<U>, U];
         namespace Stateful {
             function match<T, U>(op: Operator<T, U>): op is Stateful<T, U>;
         }
