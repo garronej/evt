@@ -224,7 +224,7 @@ evtData.$attach(
 );
 ```
 
-On top of the improved type safety we remove the need of the `takeWhile` abstraction by simply returning `"DETACH"` once we no longer need to listen. We also get rid of of `scan`, fλ working à la `Array.prototype.reduce`.
+On top of the improved type safety we remove the need for the `takeWhile` abstraction by simply returning `"DETACH"` once we no longer need to listen. We also get rid of of `scan`, fλ working à la `Array.prototype.reduce`.
 
 It is almost imposible to make a mistake writing a fλ operator as the code will either not compile or the output type will make it obvious that something is wrong.
 
