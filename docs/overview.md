@@ -64,7 +64,7 @@ evt.post(["time", 1234]);
 
 Here are direct translations of examples provided as overview on the RxJS website. You will have to put on you 👓 to notice the differences, on surface the API of the two library are very simillar.
 
-[First examples](https://rxjs-dev.firebaseapp.com/guide/overview#first-examples):
+[First examples](https://rxjs-dev.firebaseapp.com/guide/overview#first-examples): 
 
 ```typescript
 import { fromEvent } from "rxjs";
@@ -75,7 +75,7 @@ fromEvent(document, "click").subscribe(() => console.log("Clicked!"));
 
 import { Evt } from "ts-evt";
 
-Evt.from(document, "click").attach(()=> console.log("Clicked!"));
+Evt.fromEvent(document, "click").attach(()=> console.log("Clicked!"));
 ```
 
 [Values](https://rxjs-dev.firebaseapp.com/guide/overview#values):
@@ -97,7 +97,7 @@ fromEvent(document, "click")
 
 import { Evt, throttleTime, scan } from "ts-evt";
 
-Evt.from(document, "click")
+Evt.fromEvent(document, "click")
     .pipe(
         throttleTime(1000),
         event => [ event.clientX ],
@@ -118,7 +118,7 @@ TS-EVT distant itself from this approach for two reasons:
 * Composition is hard to consil with seamless type safety.
 * Every new elementary operator constitute a new abstraction, there is [more than 100 operators](https://rxjs-dev.firebaseapp.com/api?query=operators) availible in RxJS, a lot of concept to digest before beeing able to use the library at it's full potential. 
 
-The approach of TS-EVT is to provide a way to define **powerful** operators on the fly using only **native language features**.
+The approach of TS-EVT is to provide a way to define **powerful**  operators on the fly using only **native language features**. 
 
 Introducing fλ operators, one abstraction to remove the need of countless others.
 
