@@ -3,6 +3,7 @@ import { Evt, VoidEvt, EvtError } from "../lib";
 import { id, assert } from "../tools/typeSafety";
 import { every } from "../tools/reducers";
 import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi";
+import { concatUint8Array } from "../tools/concatUint8Array";
 
 //const { mustReject, mustResolve } = getPromiseAssertionApi();
 const { mustResolve, mustReject } = getPromiseAssertionApi({ "takeIntoAccountArraysOrdering": true });
@@ -11,34 +12,6 @@ const { mustResolve, mustReject } = getPromiseAssertionApi({ "takeIntoAccountArr
 
 const MESSAGE_TOO_MUCH_BYTES = "Received to much data";
 const MESSAGE_CANCEL = "Download canceled by user";
-
-const concatTypedArray = (
-    chunks: Uint8Array[],
-    totalSize: number
-): Uint8Array => {
-
-    return chunks.reduce(
-        ({ out, n }, chunk) => {
-
-            out.set(
-                chunk.slice(
-                    0,
-                    Math.min(chunk.byteLength, totalSize - n)
-                ),
-                n
-            );
-
-            return {
-                out,
-                "n": n + chunk.length
-            };
-
-        },
-        { "out": new Uint8Array(totalSize), "n": 0 }
-    ).out
-        ;
-
-}
 
 function downloadFile(
     { fileSize, evtChunk, evtBtnCancelClick, evtSocketError, timeout }: {
@@ -79,7 +52,7 @@ function downloadFile(
             { "DETACH": ctxDl, "err": new Error(MESSAGE_TOO_MUCH_BYTES) } :
             [chunks]
         )
-        .pipe(chunks => [concatTypedArray(chunks, fileSize)])
+        .pipe(chunks => [concatUint8Array(chunks, fileSize)])
         .attach(rawFile => ctxDl.done(rawFile))
         ;
 
