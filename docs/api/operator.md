@@ -246,7 +246,7 @@ const evtText= new Evt<string>();
 evtText.$attach(
     [ 
         (str, prev)=> [`${prev} ${str}`], 
-        "START: "  //<== Initial value
+        "START: "  //<= seed
     ],
     sentence => console.log(sentence)
 );
@@ -290,9 +290,11 @@ if( evtText.isHandled(text) ){
 
 When evt.isHandled\(data\) is invoked the operator of every handler is invoked. The operator is invoked again when the event is actually posted. 
 
-In the example every time the operator is invoked the encapsulated variable acc is updated. This result in "Foo bar" being accumulated two time when the event was posted only one time.
+In the example every time the operator is invoked the encapsulated variable acc is updated. This result in "Foo bar" being accumulated two time when the event is posted only one time.
 
-`evt.postAsyncOnceHandled()` and `evt.postSyncOnceHandled()` will also cause dry invokation of the operators. If state are needed statfull fλ have to be used.
+`evt.postAsyncOnceHandled(data)` and `evt.postSyncOnceHandled(data)` will also cause dry invokations of the operators.
+
+ If state are needed statfull fλ have to be used.
 
 #### Don't modify input, do return a copy.
 
@@ -366,18 +368,17 @@ evtN.$attach(
 This is more a guideline than a requirement but you shoud favor `data => expression` over `data=> { ...return x; }` for multiple reasons:
 
 1. It is much less likely to inadvertantely produce a side effet writing a single expression function than it is writing a function whit explicit return.
-2. Operator are ment to be easily readable, if your expression become too bloated you should consider splitting you task in multiple operator and using the compose function to pipe them as shown in the next section.
-3.  It is easyer for TypeScript to infer the return type of single expression functions.
+2. Operator are ment to be easily readable, if your expression become too bloated you should consider splitting your task in multiple operator and using the compose function to pipe them as shown in the next section.
+3.  It is easyer for TypeScript to infer the return type of single expression functions
 
-Remember however that if TypeScript fail to infer what the operator is doing, it is still posible to explicitely specify it, it is more verbose but as safe. Here is the previous example using explicit return.
+Here is the previous example using explicit returns just to show you that the return type have to be explicitely specified, this code do  not copile without it.
 
 ```typescript
 import { Evt } from "evt";
 
 const evtN = new Evt<number>();
 
-//If you use expicit return, in some case you will have to 
-//explicitely define the return type of the operator.
+//🚨 This is NOT recomanded 🚨...
 evtN.$attach(
     (n): [ "TOO LARGE" | number ] => {
         if( n > 43 ){
