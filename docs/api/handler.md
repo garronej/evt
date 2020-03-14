@@ -2,7 +2,7 @@
 
 Every time [`attach*`](https://docs.ts-evt.dev/api/evt/evt.attach), `waitFor` or `pipe` is invoked a new `Handler<T, U>` is attached to the `Evt<T>`.
 
-The list of the handler can be accesed using the `evt.getHandler()` method. 
+Handlers can be listed using the [`evt.getHandler()`](https://docs.evt.land/api/evt/evt.gethandler) method. 
 
 ```typescript
 type Handler<T,U> = {
