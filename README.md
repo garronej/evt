@@ -93,5 +93,5 @@ EVT is an attempt to solve all these issues while trying to remain as accessible
 </p> 
 
 <p align="center">
-    <b><a href="www.evt.land">Get started</a></b>
+    <b><a href="https://www.evt.land">Get started</a></b>
 </p>
