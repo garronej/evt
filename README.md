@@ -89,7 +89,7 @@ RxJS have its issues as well:
 EVT is an attempt to solve all these issues while trying to remain as accessible as `EventEmitter`.
 
 <p align="center">
-    <img src="https://www.evt.land/assets/img/gun-vs-sword.gif">
+    <img src="https://user-images.githubusercontent.com/6702424/76687606-bbdf0600-6625-11ea-804b-93e6ab83907d.gif">
 </p> 
 
 <p align="center">
