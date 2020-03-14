@@ -23,5 +23,4 @@
   * [NonPostable&lt;Evt&lt;T&gt;&gt; \(type\)](api/nonpostable.md)
   * [UnpackEvt&lt;typeof evt&gt; \(type\)](api/unpackevt.md)
   * [Observable&lt;T&gt; \(class\)](api/observable.md)
-  * [\_\_TMP](api/__tmp.md)
 
