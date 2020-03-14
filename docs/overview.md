@@ -21,10 +21,10 @@ eventEmitter.emit("time", 123); //Prints "123"
 eventEmitter.emit("time", 1234); //Prints nothing ( once )
 ```
 
-In EVT the recomanded approach is to give every event it's `Evt` instance. Translation of the example:
+The recommended way to translate this in TS-EVT is the following. Every event type has it's own instance of `Evt`.
 
 ```typescript
-import { Evt } from "evt";
+import { Evt } from "ts-evt";
 
 const evtText = new Evt<string>();
 const evtTime = new Evt<number>();
@@ -48,6 +48,7 @@ const evt = new Evt<
 >();
 
 evt.$attach(to("text"), text => console.log(text));
+
 evt.$attachOnce(to("time"), time => console.log(time));
 
 evt.post(["text", "hi!"]);
@@ -57,13 +58,13 @@ evt.post(["time", 1234]);
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-compared-with-events?embed=1&file=index.ts)
 
-## RxJS comparison
+## `RxJS` comparison
 
 ### "get started" examples.
 
 Here are direct translations of examples provided as overview on the RxJS website. You will have to put on you 👓 to notice the differences, on surface the API of the two library are very simillar.
 
-[First examples](https://rxjs-dev.firebaseapp.com/guide/overview#first-examples):
+[First examples](https://rxjs-dev.firebaseapp.com/guide/overview#first-examples): 
 
 ```typescript
 import { fromEvent } from "rxjs";
@@ -72,16 +73,16 @@ fromEvent(document, "click").subscribe(() => console.log("Clicked!"));
 
 /* ------------------------------ */
 
-import { Evt } from "evt";
+import { Evt } from "ts-evt";
 
-Evt.from(document, "click").attach(()=> console.log("Clicked!"));
+Evt.fromEvent(document, "click").attach(()=> console.log("Clicked!"));
 ```
 
 [Values](https://rxjs-dev.firebaseapp.com/guide/overview#values):
 
 ```typescript
 import { fromEvent } from "rxjs";
-import { throttleTime, map, scan } from "rxjs/operators";
+import { throttleTime, map, scan } from "rxjs/operators"j;
 
 fromEvent(document, "click")
   .pipe(
@@ -94,9 +95,9 @@ fromEvent(document, "click")
 
 /* ------------------------------ */
 
-import { Evt, throttleTime, scan } from "evt";
+import { Evt, throttleTime, scan } from "ts-evt";
 
-Evt.from(document, "click")
+Evt.fromEvent(document, "click")
     .pipe(
         throttleTime(1000),
         event => [ event.clientX ],
@@ -112,24 +113,24 @@ Essentially, how they implements Operators.
 
 The approach of RxJS is to provide a large library of elementary operator that can be combined one another to cover virtually every posible use-cases.
 
-EVT distant itself from this approach for two reasons:
+TS-EVT distant itself from this approach for two reasons:
 
 * Composition is hard to consil with seamless type safety.
-* Every new elementary operator constitute a new abstraction, there is [more than 100 operators](https://rxjs-dev.firebaseapp.com/api?query=operators) availible in RxJS and it is not obvious which of them are "must know" and wich are more accesory.
+* Every new elementary operator constitute a new abstraction, there is [more than 100 operators](https://rxjs-dev.firebaseapp.com/api?query=operators) availible in RxJS, a lot of concept to digest before beeing able to use the library at it's full potential. 
 
-The approach of EVT is to provide a way to define **powerful** operators on the fly using only **native language features**.
+The approach of TS-EVT is to provide a way to define **powerful**  operators on the fly using only **native language features**. 
 
-Introducing fλ operators, one abstraction to remove the need of many others.
+Introducing fλ operators, one abstraction to remove the need of countless others.
 
-Unlike [RxJS operators](https://rxjs-dev.firebaseapp.com/guide/operators) that return `Observable` EVT operators do not depends on anything, they are not constructed by composing other pre existing operator or instantating any perticular class.
+Unlike [RxJS operators](https://rxjs-dev.firebaseapp.com/guide/operators) that return `Observable` TS-EVT operators do not depends on anything, they are not constructed by composing other pre existing operator or instantating any perticular class.
 
 fλ operators are **functions \(f\)** that are meant to be **anonymous \(**[**λ**](https://en.wikipedia.org/wiki/Anonymous_function)**\)**. They are designed in such a way that make them:
 
-* **Easy to reason about for humans**, they are self explanatory for anyone familiar with how they works.
-* **Easy to reason about for the compiler**, no type annotation have to be introduced, TypeScript can infer what they are doing.
-* **Easy to write**. You get wavy underlines until you get it right.
-* **Easy on the eye.** A single expression fλ operator can replace the combination of multiple elementary operators such as `map()`, `filter()`, `takeWhile()`, `scan()`...
-* **Easy to compose.** If, yet, a single operator is not enough they can be composed \(aka piped\) to achieve more complex behavior.
+* Easy to write.
+* Easy to reason about for **humans**, they are self explanatory for anyone familiar with how they works.
+* Easy to reason about for **the compiler**, no type annotation have to be introduced, TypeScript can infer what they are doing.
+* Very concise, a single fλ operator can replace the combination of multiple elementary operators such as `map()`, `filter()`, `takeWhile()`, `scan()`...
+* Modular: If, yet, a single operator is not enough they can be composed \(aka piped\) to achieve more complex behavior.
 
 ### RxJS operators vs **fλ**
 
@@ -172,13 +173,12 @@ import { Evt } from "ts-evt";
 const evt = new Evt<Data>();
 
 const prText = evt.waitFor(
-    data => data.type !== "TEXT" ? 
-        null : [data.text] 
+    data => data.type !== "TEXT" ? null : [data.text] 
     //^ fλ operator
 );
 ```
 
-By gathering the `filter` and `map` operation into a single function we enable TypeScript to infer that `data` has a `text` property because `data.type` is `"TEXT"`. Using `filter` on the other hand we have to explicitly tell TypeScript that we filter out `Shapes` that are not `Circle` using a [type guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards). Type guards are great but they increase verbosity and it's possible to get them wrong, TypeScript trust you to perform the right checks.
+By gathering the `filter` and `map` operation into a single function we enable TypeScript to infer that `data` has a `text` property because `data.type` is `"TEXT"`. Using `filter` we have to explicitly tell typescript that we filter out `Shapes` that are not `Circle` using a [type guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards). Type guards are great but they increase verbosity and it's possible to get them wrong, TypeScript trust you to perform the right checks.
 
 Also, for the sake of not misrepresenting RxJS we make use of advanced TypeScript features to enforce type safety but is is common for programers not to bother and just use `as Foo` witch is a severe liability as it cause the code to silently break on refactor.
 
@@ -224,13 +224,13 @@ evtData.$attach(
 );
 ```
 
-On top of the improved type safety we remove the need for the `takeWhile` abstraction by simply returning `"DETACH"` once we no longer need to listen. We also get rid of of `scan`, fλ working à la `Array.prototype.reduce`.
+On top of the improved type safety we remove the need of the `takeWhile` abstraction by simply returning `"DETACH"` once we no longer need to listen. We also get rid of of `scan`, fλ working as the callback of `Array.prototype.reduce`.
 
 It is almost imposible to make a mistake writing a fλ operator as the code will either not compile or the output type will make it obvious that something is wrong.
 
 [Run thoses examples and others](https://stackblitz.com/edit/ts-evt-vs-rxjs?embed=1&file=index.ts), see for yourself the full extends of the type inference.
 
-## Where to start
+## Where do I start ?
 
 The API reference documentation is full of runable examples that should get you started in no time.
 
