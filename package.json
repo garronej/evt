@@ -18,6 +18,12 @@
     "minimal-polyfills": "^1.0.3",
     "run-exclusive": "^2.1.4"
   },
+  "files": [
+    "/dist/lib",
+    "/src/lib",
+    "/dist/tools",
+    "/src/tools"
+  ],
   "keywords": [
     "EventEmitter",
     "typescript",
