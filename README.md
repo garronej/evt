@@ -14,7 +14,7 @@
 <p align="center">
   <a href="https://www.evt.land">Home</a>
   -
-  <a href="https://docs.evt.land">Documentation</a>
+  <a href="https://docs.evt.land/api">Documentation</a>
 </p>
 
 ---
