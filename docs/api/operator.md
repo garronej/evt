@@ -332,7 +332,7 @@ evtText.$attach(
 
 #### Do use const assertions \( `as const` \) 
 
-The TypeScript [const assertion feature](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#const-assertions) come in handy if you introduice closures. The following example do not compile without the use of `as const`.
+The TypeScript [const assertion feature](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#const-assertions) come in handy if you introduice closures for example. The following example do not compile without the use of `as const`.
 
 ```typescript
 const evtShapeOrUndefined = new Evt<Shape | undefined>();
@@ -350,7 +350,7 @@ evtShapeOrUndefined.$attach(
 );
 ```
 
-Generaly it can help you narrow down the return type of your operator. In the following example without the const assertions `data` is infered as being `string | number` , with the const assertions it is `"TOO LARGE" | number`
+Generaly const assertions can help you narrow down the return type of your operator. In the following example without the const assertions `data` is infered as being `string | number` , with the const assertions it is `"TOO LARGE" | number`
 
 ```typescript
 import { Evt } from "evt";
@@ -365,11 +365,11 @@ evtN.$attach(
 
 #### Do write single instruction function, try to avoid explicit return.
 
-This is more a guideline than a requirement but you shoud favor `data => expression` over `data=> { ...return x; }` for multiple reasons:
+This is more a guideline than a requirement but you shoud favor `data => expression` over `data=> { ...return x; }` wherever possible for multiple reasons:
 
-1. It is much less likely to inadvertantely produce a side effet writing a single expression function than it is writing a function whit explicit return.
-2. Operator are ment to be easily readable, if your expression become too bloated you should consider splitting your task in multiple operator and using the compose function to pipe them as shown in the next section.
-3.  It is easyer for TypeScript to infer the return type of single expression functions
+1. It is much less likely to inadvertantely produce a side effet writing a single expression function than it is writing a function whit explicit returns.
+2. Operator are ment to be easily readable. If you think the operator you need is too complex to be clearly expressed by a single instruction you should consider splitting it in multiple operator and using the compose function introduced in the next section.
+3.  It is easyer for TypeScript to infer the return type of single expression functions.
 
 Here is the previous example using explicit returns just to show you that the return type have to be explicitely specified, this code do  not copile without it.
 
@@ -387,18 +387,18 @@ evtN.$attach(
         return [n];
     }, 
     data=> { /* ... */ }
-);
+);.
 ```
 
-## `compose(op1, op2, ...)`
+## `compose(op1, op2, ..., opn)`
 
 $$
-... \circ op3 \circ op2 \circ op1
+op_n \circ... \circ op_2 \circ op_1
 $$
 
 Operators can be composed \( aka piped \) to achieve more complex behavior.
 
-Example composing Type guard with fλ:
+Example composing type guard with fλ:
 
 ```typescript
 import { Evt, compose } from "evt";
@@ -498,7 +498,7 @@ setTimeout(()=>evtText.post("D"), 2500); //Prints "D"
 
 ## Explicitly using the type alias
 
-The Operator type alias defines what functions qualify as a valid EVT operaor. The type can be used as a scaffolder to write fλ.
+The `Operator` type alias defines what functions qualify as a valid EVT operaor. The type can be used as a scaffolder to write fλ.
 
 In `Operator<T, U>` , `T` design the type of the event data and `U` design the type of the data spitted out by the operator. For filters operator `U=T`.
 
@@ -535,13 +535,13 @@ f2(myStatefulFλOp);  //OK
 
 ## Generic operators built in
 
-Some are provided in `"evt/dist/lib/util/genericOperators"` such as `scan`, `throttleTime` or `of` but that's about it, the idea beeing to encourage users to create the ones they need and avoid the paralisis of choice.
+Some generic operators are provided in `"evt/dist/lib/util/genericOperators"` such as `scan`, `throttleTime` or `of` but that's about it, the idea beeing to encourage users to create the ones they need and avoid the paralisis of choice.
 
 If however you think of one that you think should be included feel free to submit an [issue](https://github.com/garronej/evt/issues) or a [pull request](https://github.com/garronej/evt/pulls).
 
 ```typescript
 //Importing custom operator chunksOf that is not exported by default.
-import { chunckOf } from "evt/dist/lib/util/genericOperators";
+import { chuncksOf } from "evt/dist/lib/util/genericOperators";
 ```
 
 ## Where to use operators
