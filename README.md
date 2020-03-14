@@ -86,7 +86,9 @@ RxJS have its issues as well:
 * When chaining operators the type is often lost along the way as TypeScript struggle to keep track of the mutation / filtering being applied to the event flow.
 * Introduce _\(too\)_ many abstractions/operators, combining them right can be challenging, even for seemingly straights forward control flows.
 
-EVT is an attempt to solve all these issues while trying to remain as accessible as `EventEmitter`.
+EVT is an attempt to solve all these issues while trying to remain as accessible as `EventEmitter`.  
+  
+</br>
 
 <p align="center">
     <img src="https://user-images.githubusercontent.com/6702424/76687606-bbdf0600-6625-11ea-804b-93e6ab83907d.gif">
