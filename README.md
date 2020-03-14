@@ -91,7 +91,7 @@ EVT is an attempt to solve all these issues while trying to remain as accessible
 </br>
 
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/6702424/76687606-bbdf0600-6625-11ea-804b-93e6ab83907d.gif">
+    <img src="https://user-images.githubusercontent.com/6702424/76691034-90204800-6646-11ea-8ef9-b07db8e39ca4.gif">
 </p> 
 
 <p align="center">
