@@ -108,25 +108,25 @@ Evt.from(document, "click")
 
 ### What differentiates the two lib
 
-Essentially, how they implements Operators.
+Essentially, how they implement operators.
 
-The approach of RxJS is to provide a large library of elementary operator that can be combined one another to cover virtually every posible use-cases.
+The approach of RxJS is to provide a large library of elementary operators that can be combined with one another to cover virtually every possible use cases.
 
 EVT distant itself from this approach for two reasons:
 
-* Composition is hard to consil with seamless type safety.
-* Every new elementary operator constitute a new abstraction, there is [more than 100 operators](https://rxjs-dev.firebaseapp.com/api?query=operators) availible in RxJS and it is not obvious which of them are "must know" and wich are more accesory.
+* Composition is hard to counsel with seamless type safety.
+* Every new elementary operator constitutes a new abstraction, there are [more than 100 operators](https://rxjs-dev.firebaseapp.com/api?query=operators) available in RxJS and it is not obvious which of them are "must know" and which are more accessory.
 
 The approach of EVT is to provide a way to define **powerful** operators on the fly using only **native language features**.
 
-Introducing fλ operators, one abstraction to remove the need of many others.
+Introducing fλ operators, one abstraction to remove the need for many others.
 
-Unlike [RxJS operators](https://rxjs-dev.firebaseapp.com/guide/operators) that return `Observable` EVT operators do not depends on anything, they are not constructed by composing other pre existing operator or instantating any perticular class.
+Unlike [RxJS operators](https://rxjs-dev.firebaseapp.com/guide/operators) that return `Observable` EVT operators do not depend on anything, they are not constructed by composing other pre-existing operators or instantiating any particular class.
 
-fλ operators are **functions \(f\)** that are meant to be **anonymous \(**[**λ**](https://en.wikipedia.org/wiki/Anonymous_function)**\)**. They are designed in such a way that make them:
+fλ operators are **functions \(f\)** that are meant to be **anonymous \(**[**λ**](https://en.wikipedia.org/wiki/Anonymous_function)**\)**. They are designed in such a way that makes them:
 
-* **Easy to reason about for humans**, they are self explanatory for anyone familiar with how they works.
-* **Easy to reason about for the compiler**, no type annotation have to be introduced, TypeScript can infer what they are doing.
+* **Easy to reason about for humans**, they are self-explanatory for anyone familiar with how they work.
+* **Easy to reason about for the compiler**, no type annotation has to be introduced, TypeScript can infer what they are doing.
 * **Easy to write**. You get wavy underlines until you get it right.
 * **Easy on the eye.** A single expression fλ operator can replace the combination of multiple elementary operators such as `map()`, `filter()`, `takeWhile()`, `scan()`...
 * **Easy to compose.** If, yet, a single operator is not enough they can be composed \(aka piped\) to achieve more complex behavior.
@@ -167,7 +167,7 @@ const prText = subject
 
 /* ---------------------------------------------------------------- */
 
-import { Evt } from "ts-evt";
+import { Evt } from "evt";
 
 const evt = new Evt<Data>();
 
@@ -178,11 +178,11 @@ const prText = evt.waitFor(
 );
 ```
 
-By gathering the `filter` and `map` operation into a single function we enable TypeScript to infer that `data` has a `text` property because `data.type` is `"TEXT"`. Using `filter` on the other hand we have to explicitly tell TypeScript that we filter out `Shapes` that are not `Circle` using a [type guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards). Type guards are great but they increase verbosity and it's possible to get them wrong, TypeScript trust you to perform the right checks.
+By gathering the `filter` and `map` operation into a single function, we enable TypeScript to infer that `data` has a `text` property because `data.type` is `"TEXT"`. Using `filter`s, on the other hand, we have to explicitly tell TypeScript that we filter out all `shapes` that are not `circle` using a [type guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards). Type guards are powerful but they increase verbosity and it's possible to get them wrong, TypeScript trust you to perform the right checks.
 
-Also, for the sake of not misrepresenting RxJS we make use of advanced TypeScript features to enforce type safety but is is common for programers not to bother and just use `as Foo` witch is a severe liability as it cause the code to silently break on refactor.
+Also, for the sake of not misrepresenting RxJS, we make use of advanced TypeScript features (Extract and type guards) to enforce type safety but it is common for programmers not to bother and just use `as Foo` which is a severe liability as it cause the code to silently break on refactor.
 
-Let us consider an other example involving state encaptulation. Here we want to accumulate all texts events until `"STOP"`
+Let us consider another example involving state encapsulation. Here we want to accumulate all texts events until `"STOP"`
 
 ```typescript
 import { Subject } from "rxjs";
@@ -205,7 +205,7 @@ subject
 
 /* ---------------------------------------------------------------- */
 
-import { Evt } from "ts-evt";
+import { Evt } from "evt";
 
 const evtData = new Evt<Data>();
 
@@ -224,13 +224,13 @@ evtData.$attach(
 );
 ```
 
-On top of the improved type safety we remove the need for the `takeWhile` abstraction by simply returning `"DETACH"` once we no longer need to listen. We also get rid of of `scan`, fλ working à la `Array.prototype.reduce`.
+On top of the improved type safety, we remove the need for the `takeWhile` abstraction by simply returning `"DETACH"` once we no longer need to listen. We also get rid of `scan`, fλ working à la `Array.prototype.reduce`.
 
-It is almost imposible to make a mistake writing a fλ operator as the code will either not compile or the output type will make it obvious that something is wrong.
+It is almost impossible to make a mistake writing a fλ operator as the code will either not compile or the output type will make it obvious that something is wrong.
 
-[Run thoses examples and others](https://stackblitz.com/edit/ts-evt-vs-rxjs?embed=1&file=index.ts), see for yourself the full extends of the type inference.
+[Run these examples and others](https://stackblitz.com/edit/ts-evt-vs-rxjs?embed=1&file=index.ts), see for yourself the full extend of the type inference.
 
 ## Where to start
 
-The API reference documentation is full of runable examples that should get you started in no time.
+The API reference documentation is full of runnable examples that should get you started in no time.
 

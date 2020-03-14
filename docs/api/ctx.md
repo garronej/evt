@@ -1,13 +1,13 @@
 # Ctx&lt;T&gt; \(class\)
 
-Ctx helps detachs `Handler`s that where attached for a certain pupose once the task is done or aborted.
+Ctx helps detach `Handler`s that were attached as part of a certain process once the task is done or aborted.
 
 {% hint style="info" %}
-Do not instantiate direcly, instead use `Evt.newCtx<T>()` or `Evt.getCtx(obj)`
+Do not instantiate directly, instead use `Evt.newCtx<T>()` or `Evt.getCtx(obj)`
 {% endhint %}
 
 {% hint style="info" %}
-The only difference between `CtxVoid` and `Ctx<void>` is that  `ctxVoid.post()` can be called without argument when `ctx<void>.done`must be called with `undefined`.
+The only difference between `CtxVoid` and `Ctx<void>` is that  `ctxVoid.post()` can be called without argument when `ctx<void>.done `must be called with `undefined`.
 {% endhint %}
 
 ## `ctx.done([result])`
@@ -28,7 +28,7 @@ To test if ctx.done\(\) have been invoked already you can use:`ctx.getEvtDone().
 
 ### Returns 
 
-`ReturnType<ctx.getHandlers()>` All the [Handler](https://docs.ts-evt.dev/api/handler)s that where bound to the context. They are now detached, calling `ctx.getHandler()` just after `ctx.done()` returns an empty array.
+`ReturnType<ctx.getHandlers()>` All the [Handler](https://docs.ts-evt.dev/api/handler)s that were bound to the context. They are now detached, calling `ctx.getHandler()` just after `ctx.done()` returns an empty array.
 
 ### Parameter
 
@@ -49,14 +49,14 @@ When a fλ operator returns `{ "DETACH": ctx, "err": error }`, `ctx.abort(error)
 
 ### Parameter
 
-`Error` an error that describe what went wrong.
+`Error` an error that describes what went wrong.
 
 ## `ctx.getEvtDone()`
 
 Tracks when ctx.done or ctx.abort are invoked.
 
 {% hint style="info" %}
-For most usecases it is more conveignent to use ctx.getPrDone\(\[timeout\]\)
+For most use cases, it is more convenient to use ctx.getPrDone\(\[timeout\]\)
 {% endhint %}
 
 ### Returns
@@ -68,12 +68,12 @@ For most usecases it is more conveignent to use ctx.getPrDone\(\[timeout\]\)
   * `[ null, result, Handler.WithEvt[] ]` when `ctx.done(result)` is called.
   * `[ error, undefined, Handler.WithEvt[] ]` when `ctx.abort(error)` is called.
 
-`Handler.WithEvt<T>` is just a type alias for an object that wrap an handler and the Evt it is attached to: `{ handler: Handler<T, any>, evt: Evt<T> }`
+`Handler.WithEvt<T>` is just a type alias for an object that wraps a handler and the Evt it is attached to: `{ handler: Handler<T, any>, evt: Evt<T> }`
 
 ### Example
 
 ```typescript
-import { Evt } from "../lib";
+import { Evt } from “evt”;
 import { EventEmitter } from "events";
 
 const ctx= Evt.newCtx();
@@ -153,7 +153,7 @@ ee.emit("text", "bar"); //Prints nothing
 
 ## `ctx.getPrDone([timeout])`
 
-Tracks via a Promise when ctx.done or ctx.abort are invoked.
+Tracks via a Promise when ctx.done or ctx.abort is invoked.
 
 ### Returns
 
@@ -161,17 +161,17 @@ Tracks via a Promise when ctx.done or ctx.abort are invoked.
 
 If `ctx.abort(error)` is invoked before `ctx.done` the promise rejects with `error`.
 
-If timeout was specified the promise rejects if `ctx.done` was not invoked within `timeout` milisecond. If it happen `ctx.abort(timeoutError)` is internally invoked `timeoutError` being an instance of `EvtError.Timeout`.
+If timeout was specified the promise rejects if `ctx.done` was not invoked within `timeout` milliseconds. If it happens `ctx.abort(timeoutError)` is internally invoked `timeoutError` being an instance of `EvtError.Timeout`.
 
 ### Parameter
 
-`number` Optional, number of milisecond before the promise reject if it hasn't fullfiled within this delay.
+`number` Optional, number of milliseconds before the promise reject if it hasn't fulfilled within this delay.
 
 ## `ctx.getHandlers()`
 
 ### Returns
 
-`Handler.WithEvt[]` The [`Handler`](https://docs.ts-evt.dev/api/handler)s that are bount to the context alongside with the `Evt` instance each one is attached to to. The Handlers that are bound to the context but no longer attached to an Evt are not listed.
+`Handler.WithEvt[]` The [`Handler`](https://docs.ts-evt.dev/api/handler)s that are bound to the context alongside with the `Evt` instance each one is attached to. The Handlers that are bound to the context but no longer attached to an Evt are not listed ( they are usualy freed from memory anyway as there should be nor reference left of them as soon as they are detached ).
 
 ### Example
 
@@ -194,7 +194,7 @@ ctx
 ### Example
 
 ```typescript
-import { Evt } from "ts-evt";
+import { Evt } from "evt";
 
 const evtText= new Evt<string>();
 
