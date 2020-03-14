@@ -8,14 +8,14 @@ A new Evt that have for type argument the union of the type arguments of the inp
 
 ## Parameters
 
-Ctx&lt;any&gt; Optional,  Ctx that will be used to detach the handler that have been attached to the input Evts.
+Ctx&lt;any&gt; Optional, Ctx that will be used to detach the handler that have been attached to the input Evts.
 
 Evt&lt;any&gt;\[\] Evts to be merged.
 
 ## Example
 
 ```typescript
-import { Evt } from "ts-evt";
+import { Evt } from "ts-evt";
 
 const ctx= Evt.newCtx();
 
@@ -32,6 +32,5 @@ evtText.post("Foo bar"); //Prints "Foo bar"
 ctx.done();
 
 evtText.post("Foo bar"); //Prints nothing
-
 ```
 

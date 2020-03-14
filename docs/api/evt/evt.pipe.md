@@ -1,17 +1,80 @@
+---
+description: An alternative to compose for chaining operaors.
+---
+
 # evt.pipe\(...\)
 
-Create a new instance of Evt toward which will be forwarded all the events matched by the matcher function.
+{% hint style="warning" %}
+Being familiar with Ctx and Operator is a prerequisite  for properly using pipe.
+{% endhint %}
+
+## Returns
+
+A new Evt instance toward which are forwarded the transformed events matched by the operator\(s\).
+
+## Parameters
+
+`Ctx`: Optional, the context to which will be bound the handler responsable to forwarding event to the returned Evt.
+
+`...Operator[]`: One ore many operator composable with one another. 
+
+## Examples
+
+There is two ways of using pipe, the first is to call pipe ony once and passing it all the operators to chain, the second is to chain the `pipe` calls providing each time a single operator. Depending on the situation you should favor one aproach ovet the other.
+
+Let us consider a case where the two approach are equally valid.
+
+Using a single call to `pipe`:
 
 ```typescript
-import { Evt } from "ts-evt";
+import { Evt } from "evt";
+
+const evtShape = new Evt<Shape | undefined>();
+
+evtShape.pipe(
+    shape => !shape ? null : [ shape ], // Filter out undefined
+    shape => shape.type !== "CIRCLE" ? null : [ shape ], // Filter Circle
+    ({ radius }) => [ radius ], // Extract radius
+    radius => radius > 200 ? "DETACH": [ radius ] //Detach if radius too large 
+).attach(radius=> { /* ... */ });
+```
+
+Same thing chaining `pipe`:
+
+```typescript
+const evtShape = new Evt<Shape | undefined>();
+
+const ctx= Evt.newCtx();
+
+evtShape
+    .pipe(ctx)
+    .pipe(shape => !shape ? null : [ shape ])
+    .pipe(shape => shape.type !== "CIRCLE" ? null : [ shape ])
+    .pipe(({ radius }) => [ radius ])
+    .pipe(radius => radius > 200 ? { "DETACH": ctx } : [radius])
+    .attach(radius => { /* ... */ });
+```
+
+{% hint style="danger" %}
+When chaining pipe if one operator in the midle of the chain returns "DETACH"  all the handler upstream will stay attached, it's a memory leak and it can cause performance issues. You must always detach the first link of the chain using a [`Ctx`](https://docs.evt.land/api/ctx).
+{% endhint %}
+
+The first approach \(calling pipe only once\) is preferable as it is slightly less verbose but in some cases you will reach the limits of TypeScript inference capabilities especially if you throw filters and generic operators into the mix. Bottom point is: try the first method, see how TypeScript infer the types, if detection fails fallback to chainging `pipe()`.
+
+#### Creating delegates
+
+Pipe can also be used to create proxies to a source `Evt`.
+
+```typescript
+import { Evt } from "evt";
 
 const evtShape = new Evt<Shape>();
 
 //evtCircle is of type Evt<Circle> because matchCircle is a type guard.
-const evtCircle = evtShape.createDelegate(matchCircle);
+const evtCircle = evtShape.pipe(matchCircle);
 
 //evtLargeShape is of type Evt<Shape>
-const evtLargeShape = evtShape.createDelegate(shape => {
+const evtLargeShape = evtShape.pipe(shape => {
   switch (shape.type) {
     case "CIRCLE":
       return shape.radius > 5;
