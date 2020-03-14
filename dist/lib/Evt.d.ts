@@ -19,9 +19,7 @@ export declare class Evt<T> extends EvtCore<T> {
     readonly getEvtAttach: () => Evt<Handler<T, any>>;
     readonly getEvtDetach: () => Evt<Handler<T, any>>;
     constructor();
-    postAsyncOnceHandled(data: T): Promise<number>;
-    postSyncOnceHandled(data: T): Promise<number>;
-    private __postOnceHandled;
+    postAsyncOnceHandled(data: T): number | Promise<number>;
     private __parseOverloadParams;
     pipe(): Evt<T>;
     pipe<U>(op: Operator.fλ<T, U>): Evt<U>;

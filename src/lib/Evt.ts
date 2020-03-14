@@ -48,11 +48,7 @@ export class Evt<T> extends EvtCore<T> {
 
     }
 
-    public async postAsyncOnceHandled(data: T) { return this.__postOnceHandled(data, false); }
-
-    public async postSyncOnceHandled(data: T) { return this.__postOnceHandled(data, true); }
-
-    private __postOnceHandled(data: T, isSync: boolean): number | Promise<number> {
+    public postAsyncOnceHandled(data: T): number | Promise<number> {
 
         if (this.isHandled(data)) {
             return this.post(data);
@@ -61,18 +57,15 @@ export class Evt<T> extends EvtCore<T> {
         let resolvePr: (postCount: number) => void;
         const pr = new Promise<number>(resolve => resolvePr = resolve);
 
-        const resolvePrAndPost = (data: T) => resolvePr(this.post(data));
-
         this.getEvtAttach().attachOnce(
             ({ op }) => !!invokeOperator(this.getStatelessOp(op), data),
-            () => isSync ?
-                resolvePrAndPost(data) :
-                Promise.resolve().then(() => resolvePrAndPost(data))
+            () => Promise.resolve().then(() => resolvePr(this.post(data)))
         );
 
         return pr;
 
     }
+
 
     private __parseOverloadParams = parseOverloadParamsFactory<T>();
 
@@ -234,7 +227,7 @@ export class Evt<T> extends EvtCore<T> {
      * timeout?
      */
     public waitFor<U>(
-        op: Operator.fλ.Stateless<T,U>,
+        op: Operator.fλ.Stateless<T, U>,
         ctx: Ctx,
         timeout?: number
     ): Promise<U>;
@@ -268,7 +261,7 @@ export class Evt<T> extends EvtCore<T> {
      * timeout?
      */
     public waitFor<U>(
-        op: Operator.fλ.Stateless<T,U>,
+        op: Operator.fλ.Stateless<T, U>,
         timeout?: number
     ): Promise<U>;
     /**
@@ -338,7 +331,7 @@ export class Evt<T> extends EvtCore<T> {
 
 
 
-    
+
 
 
     /**

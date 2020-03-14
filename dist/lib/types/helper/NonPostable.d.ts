@@ -4,5 +4,5 @@ declare type EvtCore<T> = import("../../EvtCore").EvtCore<T>;
  */
 declare type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
 /** https://garronej.github.io/ts-evt/#nonpostableevtt */
-export declare type NonPostable<T extends EvtCore<any>> = Omit<T, "post" | "postAsyncOnceHandled" | "postSyncOnceHandled">;
+export declare type NonPostable<T extends EvtCore<any>> = Omit<T, "post" | "postAsyncOnceHandled">;
 export {};

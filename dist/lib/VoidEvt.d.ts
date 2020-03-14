@@ -3,5 +3,4 @@ import { Evt } from "./Evt";
 export declare class VoidEvt extends Evt<void> {
     post(): number;
     postAsyncOnceHandled(): Promise<number>;
-    postSyncOnceHandled(): Promise<number>;
 }

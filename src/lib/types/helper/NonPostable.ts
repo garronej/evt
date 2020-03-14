@@ -9,5 +9,5 @@ type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
 
 /** https://garronej.github.io/ts-evt/#nonpostableevtt */
 export type NonPostable<T extends EvtCore<any>> =
-    Omit<T, "post" | "postAsyncOnceHandled" | "postSyncOnceHandled">
+    Omit<T, "post" | "postAsyncOnceHandled">
     ;

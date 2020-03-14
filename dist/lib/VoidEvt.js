@@ -66,13 +66,6 @@ var VoidEvt = /** @class */ (function (_super) {
             });
         });
     };
-    VoidEvt.prototype.postSyncOnceHandled = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, _super.prototype.postSyncOnceHandled.call(this, undefined)];
-            });
-        });
-    };
     return VoidEvt;
 }(Evt_2.Evt));
 exports.VoidEvt = VoidEvt;

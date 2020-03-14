@@ -12,8 +12,4 @@ export class VoidEvt extends Evt<void> {
         return super.postAsyncOnceHandled(undefined);
     }
 
-    public async postSyncOnceHandled() {
-        return super.postSyncOnceHandled(undefined);
-    }
-
 }
