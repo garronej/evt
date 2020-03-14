@@ -1,12 +1,12 @@
 ---
-description: Comparison with the other library that address the same consern.
+Description: Comparison with the other library that addresses the same concern.
 ---
 
 # Overview
 
 ## `EventEmitter` comparison
 
-Let us consider this example use of `EventEmitter`:
+Let us consider this example, use of `EventEmitter`:
 
 ```typescript
 import { EventEmitter } from "events";
@@ -21,7 +21,7 @@ eventEmitter.emit("time", 123); //Prints "123"
 eventEmitter.emit("time", 1234); //Prints nothing ( once )
 ```
 
-In EVT the recomanded approach is to give every event it's `Evt` instance. Translation of the example:
+In EVT the recommended approach is to give every event it's `Evt` instance. Translation of the example:
 
 ```typescript
 import { Evt } from "evt";
@@ -37,10 +37,10 @@ evtTime.post(123);
 evtTime.post(1234);
 ```
 
-However, the traditional approach that consist in gathering all the events in a single bus is also an option.
+However, the traditional approach that consists of gathering all the events in a single bus is also an option.
 
 ```typescript
-import { evt, to } from "ts-evt";
+import { evt, to } from "evt";
 
 const evt = new Evt<
     [ "text",  string ] | 
@@ -59,9 +59,9 @@ evt.post(["time", 1234]);
 
 ## RxJS comparison
 
-### "get started" examples.
+### "Get started" examples.
 
-Here are direct translations of examples provided as overview on the RxJS website. You will have to put on you 👓 to notice the differences, on surface the API of the two library are very simillar.
+Here are direct translations of examples provided as overview on the RxJS website. You will have to put on you 👓 to notice the differences, on the surface the API of the two libraries are very similar.
 
 [First examples](https://rxjs-dev.firebaseapp.com/guide/overview#first-examples):
 
@@ -106,7 +106,7 @@ Evt.from(document, "click")
     ;
 ```
 
-### What differientiate the two lib
+### What differentiates the two lib
 
 Essentially, how they implements Operators.
 
