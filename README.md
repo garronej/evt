@@ -60,7 +60,7 @@ evt.post(["time", 123]);
 evt.post(["time", 1234]);
 ```
 
-_*Those are introductory example, EVT can do much more thant this._
+_*Those are introductory examples, EVT can do much more than this._
 
 # Try it
 
