@@ -94,19 +94,19 @@ fromEvent(document, "click")
 
 /* ------------------------------ */
 
-import { Evt, throttleTime, scan } from "evt";
+import { Evt, throttleTime } from "evt";
 
 Evt.from(document, "click")
     .pipe(
         throttleTime(1000),
         event => [ event.clientX ],
-        scan((count, clientX) => count + clientX, 0)
+        [(clientX, count) => [ count + clientX ], 0]
     )
     .attach(count => console.log(count))
     ;
 ```
 
-### What differentiates the two lib
+### What differentiates the two libs
 
 Essentially, how they implement operators.
 

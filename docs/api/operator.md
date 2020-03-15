@@ -154,8 +154,7 @@ evtShape.post({ "type": "SQUARE", "sideLength": 3 });
 evtShape.post({ "type": "CIRCLE", "radius": 3 }); 
 
 //"radius 200" Will be printed to the console.
-evtShape.post({ "type": "CIRCLE", "radius": 200 }); 
-
+evtShape.post({ "type": "CIRCLE", "radius": 200 });
 ```
 
 Other example using `"DETACH"`
@@ -257,12 +256,12 @@ evtText.post("World"); //Prints "START: Hello World"
 
 ### Dos and don'ts
 
-Operators cannot have any side effect \(they cannot modify anything\). No assumption should be made on when and how they are called. 
+Operators cannot have any side effect \(they cannot modify anything\). No assumption should be made on when and how they are called.
 
 #### Don't encapsulate state, do use stateful **fλ**
 
-The first thing that you might be tempted to do is to use a variable available in the operator's scope as an accumulator.  
-  
+The first thing that you might be tempted to do is to use a variable available in the operator's scope as an accumulator.
+
 The following example **seems equivalent from the previous one** but it is **not**.
 
 ```typescript
@@ -288,13 +287,13 @@ if( evtText.isHandled(text) ){
 }
 ```
 
-When evt.isHandled\(data\) is invoked the operator of every handler is invoked. The operator is invoked again when the event is actually posted. 
+When evt.isHandled\(data\) is invoked the operator of every handler is invoked. The operator is invoked again when the event is actually posted.
 
 In the example every time the operator is invoked the encapsulated variable acc is updated. This result in "Foo bar" being accumulated twice when the event is posted only once.
 
 `evt.postAsyncOnceHandled(data)` will also cause dry invokations of the operators.
 
- If state is needed stat full fλ have to be used.
+If state is needed stat full fλ have to be used.
 
 #### Don't modify input, do return a copy.
 
@@ -325,12 +324,11 @@ evtText.$attach(
     ],
     arr=> { /*...*/ }
 );
-
 ```
 
 [**Run example**](https://stackblitz.com/edit/ts-evt-demo-stateful?embed=1&file=index.ts)
 
-#### Do use const assertions \( `as const` \) 
+#### Do use const assertions \( `as const` \)
 
 The TypeScript [const assertion features](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#const-assertions) come in handy if you introduce closures, for example. The following example does not compile without the use of `as const`.
 
@@ -353,7 +351,7 @@ evtShapeOrUndefined.$attach(
 Generaly const assertions can help you narrow down the return type of your operator. In the following example without the const assertions `data` is infered as being `string | number` , with the const assertions it is `"TOO LARGE" | number`
 
 ```typescript
-import { Evt } from "evt";
+import { Evt } from "evt";
 
 const evtN = new Evt<number>();
 
@@ -369,12 +367,12 @@ This is more a guideline than a requirement but you should favor `data => expres
 
 1. It is much less likely to inadvertently produce a side effect writing a single expression function than it is writing a function with explicit returns.
 2. Operators are meant to be easily readable. If you think the operator you need is too complex to be clearly expressed by a single instruction, you should consider splitting it in multiple operators and using the compose function introduced in the next section.
-3.  It is easier for TypeScript to infer the return type of single expression functions.
+3. It is easier for TypeScript to infer the return type of single expression functions.
 
-Here is the previous example using explicit returns just to show you that the return type has to be explicitly specified, this code does  not copy without it.
+Here is the previous example using explicit returns just to show you that the return type has to be explicitly specified, this code does not copy without it.
 
 ```typescript
-import { Evt } from "evt";
+import { Evt } from "evt";
 
 const evtN = new Evt<number>();
 
@@ -463,7 +461,7 @@ evtSentence.post("Boys will be boys"); //Prints "3", "boys" appears twice.
 Using stateful fλ operators to implement `throttleTime(duration)`, an operator that let through at most one event every `duration` milliseconds.
 
 ```typescript
-import { Evt, compose } from "evt";
+import { Evt, compose } from "evt";
 
 const throttleTime = <T>(duration: number) =>
     compose<T, { data: T; lastClick: number; }, T>(
@@ -503,23 +501,23 @@ The `Operator` type alias defines what functions qualify as a valid EVT operaor.
 In `Operator<T, U>` , `T` design the type of the event data and `U` design the type of the data spitted out by the operator. For filters operator `U=T`.
 
 ```typescript
-import { Operator } from "evt";
+import { Operator } from "evt";
 
 const myFilterOp: Operator<string,string> = 
     data => data.startsWith("H");
 
 const myTypeGuardOp: Operator<Shape,Circle> = 
     (data): data is Circle => data.type ==="CIRCLE";
-    
+
 const myStatelessFλOp: Operator.fλ.Stateless<Shape, number> = 
     shape => shape.type !== "CIRCLE" ? null : [ circle.radius ];
-  
+
 const myStatefulFλOp: Operator.fλ.Stateful<string, number> =
     [
         (data, prev)=> [ prev + data.length ],
         0 
     ];
- 
+
 //Operator.fλ.Stateless<T, U> and Operator.fλ.Stateful<T, U>
 //are subtype of Operator.fλ<T,U> which is in turn a subtype
 //of Operator<T,U>
