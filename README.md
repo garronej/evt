@@ -64,7 +64,7 @@ _*Those are introductory examples, EVT can do much more than this._
 
 # Try it
 
-<p align="center">
+<p align="center"> 
     <img src="https://www.evt.land/assets/img/try-in-browser.gif">  
 </p>
 
@@ -92,9 +92,9 @@ EVT is an attempt to solve all these issues while trying to remain as accessible
 </br>
 
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/6702424/76691034-90204800-6646-11ea-8ef9-b07db8e39ca4.gif">
+    <img src="https://www.evt.land/assets/img/gun-vs-sword.gif">
 </p> 
 
 <p align="center">
-    <b><a href="https://www.evt.land">Get started</a></b>
+    <b><a href="https://docs.evt.land/overview#rxjs-comparison">Get started</a></b>
 </p>
