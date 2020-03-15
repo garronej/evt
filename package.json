@@ -1,6 +1,6 @@
 {
   "name": "evt",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Type safe replacement for node's EventEmitter",
   "repository": {
     "type": "git",
@@ -30,7 +30,6 @@
     "functional programming",
     "qt signal",
     "events",
-    "ts-events",
     "ts-evt",
     "async-await",
     "promise",
