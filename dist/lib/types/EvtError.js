@@ -38,19 +38,5 @@ var EvtError;
         return Detached;
     }(Error));
     EvtError.Detached = Detached;
-    var RacePromiseRejection = /** @class */ (function (_super) {
-        __extends(RacePromiseRejection, _super);
-        function RacePromiseRejection(onRejectedArgument, i, racer) {
-            var _newTarget = this.constructor;
-            var _this_1 = _super.call(this, "Evt race error: Promise at index " + i + " rejected") || this;
-            _this_1.onRejectedArgument = onRejectedArgument;
-            _this_1.i = i;
-            _this_1.racer = racer;
-            Object.setPrototypeOf(_this_1, _newTarget.prototype);
-            return _this_1;
-        }
-        return RacePromiseRejection;
-    }(Error));
-    EvtError.RacePromiseRejection = RacePromiseRejection;
 })(EvtError = exports.EvtError || (exports.EvtError = {}));
 //# sourceMappingURL=EvtError.js.map

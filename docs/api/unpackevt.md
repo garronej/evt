@@ -43,7 +43,5 @@ const evtHuman = new Evt<{
 }
 ```
 
-Note that if you try unpacking the type of an evt instantiated by a module that uses a different version of `evt` that the one you included in your project the inference will fail.
-
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-unpack-type-argument?embed=1&file=index.ts)
 

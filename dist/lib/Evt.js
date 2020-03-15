@@ -48,7 +48,7 @@ var EvtCore_1 = require("./EvtCore");
 var Ctx_1 = require("./Ctx");
 var invokeOperator_1 = require("./util/invokeOperator");
 var merge_1 = require("./util/merge");
-var fromEvent_1 = require("./util/fromEvent");
+var from_1 = require("./util/from");
 var parseOverloadParams_1 = require("./util/parseOverloadParams");
 var getLazyEvtFactory_1 = require("./util/getLazyEvtFactory");
 var getCtxFactory_1 = require("./util/getCtxFactory");
@@ -191,7 +191,7 @@ var Evt = /** @class */ (function (_super) {
      */
     Evt.getCtx = getCtxFactory_1.getCtxFactory();
     Evt.merge = merge_1.merge;
-    Evt.from = fromEvent_1.from;
+    Evt.from = from_1.from;
     return Evt;
 }(EvtCore_1.EvtCore));
 exports.Evt = Evt;

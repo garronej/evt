@@ -4,7 +4,7 @@ import { Operator } from "./types/Operator";
 import { Ctx } from "./Ctx";
 import { invokeOperator } from "./util/invokeOperator";
 import { merge } from "./util/merge";
-import { from } from "./util/fromEvent";
+import { from } from "./util/from";
 import { parseOverloadParamsFactory } from "./util/parseOverloadParams";
 import { getLazyEvtFactory } from "./util/getLazyEvtFactory";
 import { getCtxFactory } from "./util/getCtxFactory";

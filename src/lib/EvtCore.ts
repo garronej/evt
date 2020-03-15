@@ -23,7 +23,7 @@ export class EvtCore<T> {
 
     private traceId: string | null = null;
     private traceFormatter!: (data: T) => string;
-    private log!: typeof console.log;
+    private log!: NonNullable<Parameters<typeof EvtCore.prototype.enableTrace>[2]>;
 
     /** https://garronej.github.io/ts-evt/#evtenabletrace */
     public enableTrace(

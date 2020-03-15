@@ -58,4 +58,4 @@ function from(ctxOrTarget, targetOrEventName, eventNameOrOptions, options) {
     }
 }
 exports.from = from;
-//# sourceMappingURL=fromEvent.js.map
+//# sourceMappingURL=from.js.map

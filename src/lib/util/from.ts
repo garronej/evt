@@ -83,6 +83,13 @@ function fromImpl<T>(
 
 }
 
+export function from<K extends keyof DocumentEventMap>(
+    ctx: Ctx,
+    target: Document, 
+    eventName: K,
+    options?: EventTargetLike.HasEventTargetAddRemove.Options
+): Evt<DocumentEventMap[K]>;
+
 export function from<T>(
     ctx: Ctx,
     target: OneOrMany<
@@ -104,6 +111,11 @@ export function from<T>(
     target: OneOrMany<EventTargetLike.RxJSSubject<T>>
 ): Evt<T>;
 
+export function from<K extends keyof DocumentEventMap>(
+    target: Document, 
+    eventName: K,
+    options?: EventTargetLike.HasEventTargetAddRemove.Options
+): Evt<DocumentEventMap[K]>;
 export function from<T>(
     target: OneOrMany<
         EventTargetLike.NodeStyleEventEmitter |

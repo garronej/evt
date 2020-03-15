@@ -3,7 +3,7 @@ import { Handler } from "./types/Handler";
 import { Operator } from "./types/Operator";
 import { Ctx } from "./Ctx";
 import { merge } from "./util/merge";
-import { from } from "./util/fromEvent";
+import { from } from "./util/from";
 declare type VoidCtx = import("./Ctx").VoidCtx;
 export declare class Evt<T> extends EvtCore<T> {
     /** return a new Ctx instance */

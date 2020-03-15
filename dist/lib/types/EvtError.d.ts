@@ -7,10 +7,4 @@ export declare namespace EvtError {
     class Detached extends Error {
         constructor();
     }
-    class RacePromiseRejection extends Error {
-        readonly onRejectedArgument: any;
-        readonly i: number;
-        readonly racer: PromiseLike<any>;
-        constructor(onRejectedArgument: any, i: number, racer: PromiseLike<any>);
-    }
 }

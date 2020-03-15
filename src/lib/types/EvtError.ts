@@ -19,16 +19,6 @@ export namespace EvtError {
         }
     }
 
-    export class RacePromiseRejection extends Error {
-        constructor(
-            public readonly onRejectedArgument: any,
-            public readonly i: number,
-            public readonly racer: PromiseLike<any>
-        ) {
-            super(`Evt race error: Promise at index ${i} rejected`);
-            Object.setPrototypeOf(this, new.target.prototype);
-        }
-    }
 
 }
 
