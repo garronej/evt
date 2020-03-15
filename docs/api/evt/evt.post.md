@@ -46,7 +46,7 @@ function createPreloadedEvtText(): Evt<string>{
 
     (async ()=>{
 
-        await evtText.postAsyncOnceHandled("Foo");
+        await evtText.postAsyncOnceHandled("foo");
         evtText.post("bar");
 
     })();
@@ -64,15 +64,12 @@ evtText.attach(text => console.log("2 " + text));
 console.log("BEFORE");
 
 //"BEFORE" then (next micro task) "1 foo" "2 foo" "1 bar" "2 bar"
-//If we use postSyncOnceHandled in place of postAsyncOnceHandled
-//we get "1 Foo" "BEFORE" "1 Bar" "2 Bar"
+
 ```
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-postoncematched?embed=1&file=index.ts)
 
-## **`evt.postSyncOnceHandled(data)`**
-
-The same thing that `evt.postAsyncOnceHandled(data)` but the data is posted synchronously as soon as a candidate handler is attached.
-
-It has less practical value than it's async counterpart as you likely want to leave an event loop "tick" for all handlers to be attached before posting the event.
+{% hint style="info" %}
+`evt.postSyncOnceHandled()` does not exsist because it is perferable to wait the next event cicle before posting the event. For example the previous example would not print `"2 foo"` if we would have used `evt.postSyncOnceHandled()`
+{% endhint %}
 
