@@ -180,7 +180,7 @@ const prText = evt.waitFor(
 
 By gathering the `filter` and `map` operation into a single function, we enable TypeScript to infer that `data` has a `text` property because `data.type` is `"TEXT"`. Using `filter`s, on the other hand, we have to explicitly tell TypeScript that we filter out all `shapes` that are not `circle` using a [type guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards). Type guards are powerful but they increase verbosity and it's possible to get them wrong, TypeScript trust you to perform the right checks.
 
-Also, for the sake of not misrepresenting RxJS, we make use of advanced TypeScript features (Extract and type guards) to enforce type safety but it is common for programmers not to bother and just use `as Foo` which is a severe liability as it cause the code to silently break on refactor.
+Also, for the sake of not misrepresenting RxJS, we make use of advanced TypeScript features \(Extract and type guards\) to enforce type safety but it is common for programmers not to bother and just use `as Foo` which is a severe liability as it cause the code to silently break on refactor.
 
 Let us consider another example involving state encapsulation. Here we want to accumulate all texts events until `"STOP"`
 
