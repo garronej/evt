@@ -5,7 +5,7 @@
 * [API Documentation](api/README.md)
   * [Operator&lt;T, U&gt; \(type\)](api/operator.md)
   * [Evt&lt;T&gt; \(class\)](api/evt/README.md)
-    * [evt.getCtx](api/evt/getctx.md)
+    * [evt.getCtx\(object\)](api/evt/getctx.md)
     * [evt.\[$\]attach\*\(...\)](api/evt/attach.md)
     * [evt.detach\(\[ctx\]\)](api/evt/detach.md)
     * [evt.post\*\(data\)](api/evt/post.md)
