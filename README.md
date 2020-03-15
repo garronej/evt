@@ -92,7 +92,7 @@ EVT is an attempt to solve all these issues while trying to remain as accessible
 </br>
 
 <p align="center">
-    <img src="https://www.evt.land/assets/img/gun-vs-sword.gif">
+    <img src="https://user-images.githubusercontent.com/6702424/76691034-90204800-6646-11ea-8ef9-b07db8e39ca4.gif">
 </p> 
 
 <p align="center">
