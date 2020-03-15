@@ -51,6 +51,6 @@ type Handler<T,U> = {
 
 #### Glossary relative to handers: 
 
-* An event is said to be **matched** by an handler if posting the event will cause the callback to be invoked. In practice this is the case whe the handler's operator returns true or \[ value, \].
-* An event is said to be **handled** by an handler if the if the event data is matched or if posting it will cause the handler and/or potential others handler to be detached. In practice this is the case when the handler's operator returns `"DETACH"` or `{DETACH: Ctx}.` It is possible to test if a given evend data is handled by at least one of the handler attached to an Evt&lt;T&gt; by using the [`evt.isHandled(data)`](https://docs.ts-evt.dev/api/evt/evt.ishandled) method.
+* An event is said to be **matched** by a handler if posting it causes the callback to be invoked. In practice this is the case when the handler's operator returns true or \[ value, \].
+* An event is said to be **handled** by a handler if the event data is matched or if posting it causes the handler and/or other potential handlers to be detached. In practice this is the case when the handler's operator returns `"DETACH"` or `{DETACH: Ctx}.` It is possible to test if a given event data is handled by at least one of the handlers attached to an Evt&lt;T&gt; by using the [`evt.isHandled(data)`](https://docs.ts-evt.dev/api/evt/evt.ishandled) method.
 

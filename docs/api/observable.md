@@ -4,11 +4,11 @@
 
 `Observable<T>` in TS-EVT provide a way to react to an object mutation.
 
-A `Observable<T>` encapsulate a value of type `T` when this value get changed `.evtChange` is posted.
+An `Observable<T>` encapsulate a value of type `T` when this value is changed `.evtChange` is posted.
 
 ```typescript
-import { Observable, IObservable } from "ts-evt";
-import { assert } from "ts-evt/dist/tools/typeSafety";
+import { Observable, IObservable } from "evt";
+import { assert } from "evt/dist/tools/typeSafety";
 
 const obsText= new Observable<string>("foo");
 
@@ -46,14 +46,14 @@ assert(obsText.value === "bar");
 
 //Instance of Observable are assignable to IObservable but
 //the IObservable interface does not expose onPotentialChange().
-//The IObservable interface is used to expose an observable as readonly.
+//The IObservable interface is used to expose an observable as read only.
 const exposedObsText: IObservable<string> = obsText;
 ```
 
-Is is possible to define what qualify as a change. Here for example we observe an array of names to see what values are beeing added and removed in real time.
+It is possible to define what qualifies as a change. Here for example we observe an array of names to see what values are being added and removed in real time.
 
 ```typescript
-import { Observable } from "ts-evt";
+import { Observable } from "evt";
 import { representsSameDataFactory } from "ts-evt/dist/tools/inDepthObjectComparison";
 import { diff } from "ts-evt/dist/tools/reducers";
 

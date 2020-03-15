@@ -3,7 +3,7 @@
 UnpackEvt is a helper type to infer the type argument of an Evt instance.
 
 ```typescript
-import { Evt, UnpackEvt, NonPostable } from "ts-evt";
+import { Evt, UnpackEvt, NonPostable } from "evt";
 
 const evtHuman = new Evt<{
     name: string;
@@ -43,10 +43,7 @@ const evtHuman = new Evt<{
 }
 ```
 
-Note that if you try unpacking the type of an evt instantiated by a module that use a different version of `ts-evt` that the one you included in the your project the inference will fail.
-
-Note also that the `UnpackEvt<>` is not included in the default export of the module because doing so would restrict `ts-evt` to be used in projects  
-using typescript version before 2.8 \( version when the infer keyword was introduced \).
+Note that if you try unpacking the type of an evt instantiated by a module that uses a different version of `evt` that the one you included in your project the inference will fail.
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-unpack-type-argument?embed=1&file=index.ts)
 

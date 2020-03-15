@@ -1,6 +1,6 @@
 ---
 description: >-
-  The API reference documentation of the library and step by step guide for new
+  The API reference documentation of the library and step-by-step guide for new
   users.
 ---
 

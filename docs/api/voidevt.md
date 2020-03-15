@@ -4,14 +4,14 @@ When you create an Evt with a void argument, TypeScript forces you to pass `unde
 Instead use `VoidEvt`
 
 ```typescript
-import { VoidEvt } from "ts-evt";
+import { VoidEvt } from "evt";
 
 const evtSocketConnect = new VoidEvt();
 
 evtSocketConnect.attach(() => console.log("SOCKET CONNECTED"));
 
 evtSocketConnect.post();
-//"SOCKET CONNECTED" have been printed to the console.
+//"SOCKET CONNECTED" have been printed on the console.
 ```
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-voidevt?embed=1&file=index.ts)

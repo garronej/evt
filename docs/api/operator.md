@@ -26,12 +26,12 @@ EVT Operators can be of three types:
     Uses the previous matched event data transformation as input à la `Array.prototype.reduce`
 
 {% hint style="warning" %}
-Operators do not have to be [pure](https://en.wikipedia.org/wiki/Pure_function) they can use variables avalible in scope and involve time `(Date.now())`, but they **must not have any side effect**. In perticular they can not modify their input.
+Operators do not have to be [pure, they](https://en.wikipedia.org/wiki/Pure_function) can use variables available in scope and involve time `(Date.now())`, but they **must not have any side effect**. In particular they cannot modify their input.
 {% endhint %}
 
 ## Operator - Filter
 
-Let us consider the example use of an operator that filter out everey word that does not start with 'H'.
+Let us consider the example use of an operator that filters out every word that does not start with 'H'.
 
 ```typescript
 import { Evt } from "evt";
@@ -55,8 +55,8 @@ evtText.post("Hi!");
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-matcher-return-boolean?embed=1&file=index.ts)
 
-It is important to be sure that your filters always returns a `boolean`, typewise you will be warned it it is not the case but you must be sure that it is actually the case at runtime.  
-If in doubts use 'bang bang' \( `!!returnedValue` \). This note also apply for [Type Gard operators](https://docs.evt.land/api/operator#operator-type-guard).
+It is important to be sure that your filter always return a `boolean`, typewise you will be warned it is not the case but you must be sure that it is actually the case at runtime.  
+If in doubts use 'bang bang' \( `!!returnedValue` \). This note also applies for [Type Gard operators](https://docs.evt.land/api/operator#operator-type-guard).
 
 ## Operator - Type guard
 
@@ -94,7 +94,7 @@ evtShape.attach(
     shape => console.log(shape.radius)
 );
 
-//Nothing will be printed to the console, a Square is not a Circle.
+//Nothing will be printed on the console, a Square is not a Circle.
 evtShape.post({ "type": "SQUARE", "sideLength": 3 });
 
 //"33" Will be printed to the console.
@@ -108,23 +108,23 @@ The type of the Shape object is narrowed down to `Circle`
 
 ## Operator - fλ
 
-Anonymous functions to simultaniously filter, transform the data and control the event flow.
+Anonymous functions to simultaneously filter, transform the data and control the event flow.
 
 **fλ Returns**
 
-The type of values that a fλ operator soly determin what it does:
+The type of values that a fλ operator sole determine what it does:
 
 * `null` If the event should be ignored and nothing passed to the callback.
 * `[ U ]` or `[ U, null ]` When the event should be handled, wrapped into the singleton is the value will be passed to the callback.
 * `"DETACH"` If the event should be ignored and the handler detached from the `Evt`
-* `{ DETACH: Ctx<void> }` If the event should be ignored and a group of handler bound to a certain context be detached. See [`Ctx<T>`](https://docs.ts-evt.dev/api/ctx)
+* `{ DETACH: Ctx<void> }` If the event should be ignored and a group of handlers bound to a certain context be detached. See [`Ctx<T>`](https://docs.ts-evt.dev/api/ctx)
 * `{ DETACH: Ctx<V>, res: V }`  See [`Ctx<T>`](https://docs.ts-evt.dev/api/ctx)\`\`
 * `{ DETACH: Ctx; err: Error }`  See [`Ctx<T>`](https://docs.ts-evt.dev/api/ctx)\`\`
-* `[ U, "DETACH" ]` / `[ U, {DETACH:Ctx, ...} ]` If the event should be handler AND some detach  be performed.
+* `[ U, "DETACH" ]` / `[ U, {DETACH:Ctx, ...} ]` If the event should be handled AND some detach be performed.
 
 ### **Stateless fλ**
 
-Stateless fλ operator only takes the event data as argument.
+Stateless fλ operator only takes the event data as arguments.
 
 ```typescript
 import { Evt } from "evt";
@@ -133,7 +133,7 @@ const evtShape = new Evt<Shape>();
 
 /*
  * Filter: 
- *  Only circle event are handled.
+ *  Only circle events are handled.
  *  AND
  *  to be handled circles must have a radius greater than 100
  * 
@@ -168,7 +168,7 @@ const evtText= new Evt<"TICK" | "END">();
 /*
  * Only handle events that are not "END".
  * If the event is "END", detach the handler.
- * Pass the event data string in lower cace to the callback.
+ * Pass the event data string in lower case to the callback.
  */
 evtText.$attach(
     text => text !== "END" ? [ text.toLowerCase() ] : "DETACH",
@@ -176,11 +176,11 @@ evtText.$attach(
 );
 
 evtText.post("TICK"); //"tick" is printed to the console
-evtText.post("END"); //Nothing is printed to the console, the handler is detached
+evtText.post("END"); //Nothing is printed on the console, the handler is detached
 evtText.post("TICK"); //Nothing is printed to the console.
 ```
 
-Example use of `[U,null|"DETACH"]`, handling the event that cause the handler to be detached.
+Example use of `[U,null|"DETACH"]`, handling the event that causes the handler to be detached.
 
 ```typescript
 const evtText= new Evt<"TICK" | "END">();
@@ -191,11 +191,11 @@ evtText.$attach(
 );
 
 evtText.post("TICK"); //"TICK" is printed to the console
-evtText.post("END"); //"END" is printed to the console, the handler is detached.
-evtText.post("TICK"); //Nothing is printed to the console the handler have been detached.
+evtText.post("END"); //"END" is printed on the console, the handler is detached.
+evtText.post("TICK"); //Nothing is printed to the console the handler has been detached.
 ```
 
-Example use of `{ DETACH:`[`Ctx`](https://docs.ts-evt.dev/api-doc/ctx)`}`, detaching a group of handler bound to a given context.
+Example use of `{ DETACH:`[`Ctx`](https://docs.ts-evt.dev/api-doc/ctx)`}`, detaching a group of handlers bound to a given context.
 
 ```typescript
 const evtBtnClick = new Evt<"OK" | "QUIT">();
@@ -226,7 +226,7 @@ evtBtnClick.$attach(
 evtBtnClick.post("OK"); //Prints "Button clicked: OK"
 evtMessage.post("Hello World"); //Prints "Message: Hello World"
 evtNotification.post("Poke"); //Prints "Notification: Poke"
-evtBtnClick.post("QUIT"); //Prints "Button clicked: QUIT", handler are detached...
+evtBtnClick.post("QUIT"); //Prints "Button clicked: QUIT", handlers are detached...
 evtMessage.post("Hello World 2"); //Prints nothing
 evtNotification.post("Poke 2"); //Prints nothing
 evtBtnClick.post("OK"); //Prints "OK", evtBtnClick handler hasn't been detached as it was not bound to ctx.
@@ -259,16 +259,16 @@ evtText.post("World"); //Prints "START: Hello World"
 
 Operators cannot have any side effect \(they cannot modify anything\). No assumption should be made on when and how they are called. 
 
-#### Don't encapsulate state, do use statful **fλ**
+#### Don't encapsulate state, do use stateful **fλ**
 
-First thing that you might be tempted to do to is to use a variable avalible in the operator's scope as an accumulator.  
+The first thing that you might be tempted to do is to use a variable available in the operator's scope as an accumulator.  
   
 The following example **seems equivalent from the previous one** but it is **not**.
 
 ```typescript
 const evtText= new Evt<string>();
 
-//🚨 Do NOT do that 🚨...
+//🚨 DO NOT do that 🚨...
 evtText.$attach(
     (()=> {
 
@@ -290,16 +290,16 @@ if( evtText.isHandled(text) ){
 
 When evt.isHandled\(data\) is invoked the operator of every handler is invoked. The operator is invoked again when the event is actually posted. 
 
-In the example every time the operator is invoked the encapsulated variable acc is updated. This result in "Foo bar" being accumulated two time when the event is posted only one time.
+In the example every time the operator is invoked the encapsulated variable acc is updated. This result in "Foo bar" being accumulated twice when the event is posted only once.
 
-`evt.postAsyncOnceHandled(data)` and `evt.postSyncOnceHandled(data)` will also cause dry invokations of the operators.
+`evt.postAsyncOnceHandled(data)` will also cause dry invokations of the operators.
 
- If state are needed statfull fλ have to be used.
+ If state is needed stat full fλ have to be used.
 
 #### Don't modify input, do return a copy.
 
 ```typescript
-import { Evt } from "ts-evt";
+import { Evt } from "evt";
 
 const evtText= new Evt<string>();
 
@@ -332,7 +332,7 @@ evtText.$attach(
 
 #### Do use const assertions \( `as const` \) 
 
-The TypeScript [const assertion feature](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#const-assertions) come in handy if you introduice closures for example. The following example do not compile without the use of `as const`.
+The TypeScript [const assertion features](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#const-assertions) come in handy if you introduce closures, for example. The following example does not compile without the use of `as const`.
 
 ```typescript
 const evtShapeOrUndefined = new Evt<Shape | undefined>();
@@ -365,13 +365,13 @@ evtN.$attach(
 
 #### Do write single instruction function, try to avoid explicit return.
 
-This is more a guideline than a requirement but you shoud favor `data => expression` over `data=> { ...return x; }` wherever possible for multiple reasons:
+This is more a guideline than a requirement but you should favor `data => expression` over `data=> { ...return x; }` wherever possible for multiple reasons:
 
-1. It is much less likely to inadvertantely produce a side effet writing a single expression function than it is writing a function whit explicit returns.
-2. Operator are ment to be easily readable. If you think the operator you need is too complex to be clearly expressed by a single instruction you should consider splitting it in multiple operator and using the compose function introduced in the next section.
-3.  It is easyer for TypeScript to infer the return type of single expression functions.
+1. It is much less likely to inadvertently produce a side effect writing a single expression function than it is writing a function with explicit returns.
+2. Operators are meant to be easily readable. If you think the operator you need is too complex to be clearly expressed by a single instruction, you should consider splitting it in multiple operators and using the compose function introduced in the next section.
+3.  It is easier for TypeScript to infer the return type of single expression functions.
 
-Here is the previous example using explicit returns just to show you that the return type have to be explicitely specified, this code do  not copile without it.
+Here is the previous example using explicit returns just to show you that the return type has to be explicitly specified, this code does  not copy without it.
 
 ```typescript
 import { Evt } from "evt";
@@ -398,7 +398,7 @@ $$
 
 Operators can be composed \( aka piped \) to achieve more complex behavior.
 
-Example composing type guard with fλ:
+Example composing type guards with fλ:
 
 ```typescript
 import { Evt, compose } from "evt";
@@ -457,7 +457,7 @@ evtSentence.$attach(
 );
 
 evtSentence.post("Hello World"); //Prints "2"
-evtSentence.post("Boys will be boys"); //Prints "3", "boys" appears two times.
+evtSentence.post("Boys will be boys"); //Prints "3", "boys" appears twice.
 ```
 
 Using stateful fλ operators to implement `throttleTime(duration)`, an operator that let through at most one event every `duration` milliseconds.
@@ -521,7 +521,7 @@ const myStatefulFλOp: Operator.fλ.Stateful<string, number> =
     ];
  
 //Operator.fλ.Stateless<T, U> and Operator.fλ.Stateful<T, U>
-//are a subtypes of Operator.fλ<T,U> which is in turn a subtype
+//are subtype of Operator.fλ<T,U> which is in turn a subtype
 //of Operator<T,U>
 
 declare function f1<T,U>(op: Operator.fλ<T,U>): void;
@@ -535,9 +535,9 @@ f2(myStatefulFλOp);  //OK
 
 ## Generic operators built in
 
-Some generic operators are provided in `"evt/dist/lib/util/genericOperators"` such as `scan`, `throttleTime` or `of` but that's about it, the idea beeing to encourage users to create the ones they need and avoid the paralisis of choice.
+Some generic operators are provided in `"evt/dist/lib/util/genericOperators"` such as `scan`, `throttleTime` or `of` but that's about it, the idea being to encourage users to create the ones they need and avoid the paralysis of choice.
 
-If however you think of one that you think should be included feel free to submit an [issue](https://github.com/garronej/evt/issues) or a [pull request](https://github.com/garronej/evt/pulls).
+If, however, you think of one that you think should be included feel free to submit an [issue](https://github.com/garronej/evt/issues) or a [pull request](https://github.com/garronej/evt/pulls).
 
 ```typescript
 //Importing custom operator chunksOf that is not exported by default.

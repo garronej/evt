@@ -1,36 +1,36 @@
 ---
-description: Attach an Handler provided with a callback function to the Evt
+description: Attach a Handler provided with a callback function to the Evt
 ---
 
 # evt.\[$\]attach\*\(...\)
 
 There is multiple flavor of the attach method: `attachOnce`, `atachPrepend`, `attachExtract`... All this methods have in common to accept the same parameters and to return the same promise.
 
-## Returned value
+## Returned Value
 
-A `Promise<U>` that resolves with the first event data matched by the operator. By default of operator, every events are matched. 
+A `Promise<U>` that resolves with the first event data matched by the operator. By default of operator, all the events are matched. 
 
 The returned promise can reject **only** if a timeout parameter was passed to the `attach*` method.
 
- If no event have been matched within the specified timeout the promise will reject with a `EvtError.Timeout.` If the event is detached before the first event is matched the promise will reject with a `EvtError.Detached`.
+ If no event has been matched within the specified timeout, the promise will reject with a `EvtError.Timeout.` If the event is detached before the first event is matched, the promise will reject with an `EvtError.Detached`.
 
 If you have no use of the callback function and just want the promise, [`evt.waitFor(...)`](https://docs.ts-evt.dev/api-doc/evt#evt-waitfor)  should be used in place of `evt.attach*(...)`.
 
 ## Parameters
 
 1. `operator:` [`Operator`](https://docs.ts-evt.dev/api-doc/operator)`<T,U>`
-2. `timeout: number` Amount of time, in milliseconds before the returned promise rejects if no event have been matched within the specified dellay.
+2. `timeout: number` Amount of time, in milliseconds before the returned promise rejects if no event has been matched within the specified delay.
 3. `ctx:` [`Ctx`](https://docs.ts-evt.dev/api/ctx)A context that can be used as a reference to detach the handler later on. 
-4. `callback: (data: U)=> void` Function that will be invoked every time the matcher match an event emited by the `Evt`.
+4. `callback: (data: U)=> void` Function that will be invoked every time the matcher match an event emitted by the `Evt`.
 
-A large number or overloard are provided to cover all the possible combinaison of arguments. The ordering in which the params are listed above must be respected but every parameter other than the callback can be omited.
+A large number of overload is provided to cover all the possible combination of arguments. The ordering in which the parameters are listed above must be respected but every parameter other than the callback can be omitted.
 
 ![](https://user-images.githubusercontent.com/6702424/74090245-6c973a00-4aa9-11ea-8e48-90d49a0ed20b.png)
 
 Examples:
 
 * Only specifying a timeout: `evt.attach(timeout, callback)`
-* Specifying an operato and a context: `evt.attach(op, boundTo, callback)`
+* Specifying an operator and a context: `evt.attach(op, boundTo, callback)`
 * ...
 
 ## The `$` prefix
@@ -39,18 +39,18 @@ Due to a current [TypeScript limitation](https://github.com/microsoft/TypeScript
 
 ## **`evt.[$]attach(...)`**
 
-Adds the a new [Handler](https://docs.ts-evt.dev/api/handler) to the end of the handlers array. No checks are made to see if the hanlder has already been added. Multiple calls passing the same combination of parameters will result in the `handler` being added, and called, multiple times.
+Adds a new [handler](https://docs.ts-evt.dev/api/handler) to the end of the handlers array. No checks are made to see if the holder has already been added. Multiple calls passing the same combination of parameters will result in the `handler` being added, and called, multiple times.
 
 ## **`evt.[$]attachOnce*(...)`**
 
-When the  method contains the keyword "**once**": Adds a **one-time** [Handler](https://docs.ts-evt.dev/api/handler). The next time an event is matched this handler is detached and then it's callback is invoked.
+When the  method contains the keyword "**once**": Adds a **one-time** [handler](https://docs.ts-evt.dev/api/handler). The next time an event is matched this handler is detached and then it's callback is invoked.
 
 ## `evt.[$]attach[Once]Prepend(...)`
 
-When the method contain the keyword "**prepend**":  Same as .attach\(\) but the [`Handler`](https://docs.ts-evt.dev/api/handler) is added at the _beginning_ of the handler array. 
+When the method contains the keyword "**prepend**":  Same as .attach\(\) but the [`handler`](https://docs.ts-evt.dev/api/handler) is added at the _beginning_ of the handler array. 
 
 ```typescript
-import { VoidEvt } from "ts-evt";
+import { VoidEvt } from "evt";
 
 const evtConnect = new VoidEvt();
 
@@ -67,11 +67,11 @@ evtConnect.post();
 
 ## **`evt.[$]attach[Once]Extract(...)`**
 
-When the method contains the  "**extract**" keyword every event that the [`handler`](https://docs.ts-evt.dev/api/handler) matches will be swallowed and no other handler will have the opportunity to handle it, even the other "extract"' handlers. It behave like a trap.
+When the method contains the  "**extract**" keyword, every event that the [`handler`](https://docs.ts-evt.dev/api/handler) matches will be swallowed and no other handler will have the opportunity to handle it, even the other "extract"' handlers. It acts as a trap.
 
-"**extract**" handler have priority even over "**prepend**" [`Handler`](https://docs.ts-evt.dev/api/handler)s. 
+"**extract**" handler has priority even over "**prepend**" [`Handler`](https://docs.ts-evt.dev/api/handler)s. 
 
-If multiples "extractes" handlers are candidate to extract an event the handler that have been added first have the priority. 
+If multiples "extractes" handlers are candidates to extract an event the handler that has been added first have priority. 
 
 ```typescript
 import { Evt } from "ts-evt";

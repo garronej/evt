@@ -171,7 +171,7 @@ If timeout was specified the promise rejects if `ctx.done` was not invoked withi
 
 ### Returns
 
-`Handler.WithEvt[]` The [`Handler`](https://docs.ts-evt.dev/api/handler)s that are bound to the context alongside with the `Evt` instance each one is attached to. The Handlers that are bound to the context but no longer attached to an Evt are not listed \( they are usualy freed from memory anyway as there should be nor reference left of them as soon as they are detached \).
+`Handler.WithEvt[]` The [`Handler`](https://docs.ts-evt.dev/api/handler)s that are bound to the context alongside with the `Evt` instance each one is attached to. The Handlers that are bound to the context but no longer attached to an Evt are not listed \( they are usually freed from memory anyway as there should be nor reference left of them as soon as they are detached \).
 
 ### Example
 
@@ -188,7 +188,7 @@ ctx
 
 ### Returns
 
-`Evt<Handler.WithEvt<any>>` An Evt that posts every time a new handler bound to the context is attached. Every time `ctx.getEvtAttach()` is invoked it returns the same Evt instance. The fact that the returned Evt is lazyly initialized does not affect `ctx.getEvtDetach().postCount`.
+`Evt<Handler.WithEvt<any>>` An Evt that posts every time a new handler bound to the context is attached. Every time `ctx.getEvtAttach()` is invoked it returns the same Evt instance. The fact that the returned Evt is lazily initialized does not affect `ctx.getEvtDetach().postCount`.
 
 ### Example
 
@@ -225,19 +225,19 @@ Same as `ctx.getEvtAttach()` but post when handler are detached. Note that an ha
 
 ## Comprehensive example
 
-Let us consider a practical usecase of `Ctx`. The task is to download a file, we know the size of the file to download, we have an `Evt<Uint8Array>` that emmits chuncks of data, we want to accumulate them util we reach the expected file size. Multiple things can go wrong during the download:
+Let us consider a practical use case of `Ctx`. The task is to download a file, we know the size of the file to download, we have an `Evt<Uint8Array>` that emits chunks of data, we want to accumulate them until we reach the expected file size. Multiple things can go wrong during the download:
 
 * The user can cancel the download.
 * The download can take too long.
 * Socket may disconnect .
-* The socked may send more data than expected.
+* The socket may send more data than expected.
 
-Our expected output is a `Promise<Uint8Array>` that resolve with the downloaded file or reject if anything went wrong.
+Our expected output is a `Promise<Uint8Array>` that resolves with the downloaded file or reject if anything went wrong.
 
 This is a possible implementation using `Ctx<Uint8Array>`:
 
 ```typescript
-import { Evt, VoidEvt } from "ts-evt";
+import { Evt, VoidEvt } from "evt";
 
 function downloadFile(
     { fileSize, evtChunk, evtBtnCancelClick, evtSocketError, timeout }: {
@@ -287,7 +287,7 @@ function downloadFile(
 }
 ```
 
-Be the download sussesfull or not this use of Ctx enforce that there is no left over handlers on the Evt passed as input once the download attempt has completed.
+Be the download successful or not this use of Ctx enforce that there is no left over handlers on the Evt passed as input once the download attempt has completed.
 
 Run the example
 
