@@ -39,9 +39,9 @@ const evtTime = new Evt<number>();
 evtText.attach(text => console.log(text));
 evtTime.attachOnce(time => console.log(time));
 
-evtText.post("hi!");
-evtTime.post(123);
-evtTime.post(1234);
+evtText.post("hi!"); //Prints "hi!"
+evtTime.post(123);   //Prints "123"
+evtTime.post(1234);  //Prints nothing
 ```
 OR
 ```typescript
