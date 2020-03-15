@@ -8,13 +8,13 @@ There is multiple flavor of the attach method: `attachOnce`, `atachPrepend`, `at
 
 ## Returned Value
 
-A `Promise<U>` that resolves with the first event data matched by the operator. By default of operator, all the events are matched. 
+A `Promise<U>` that resolves with the first event data matched by the operator. By default of operator, all the events are matched.
 
 The returned promise can reject **only** if a timeout parameter was passed to the `attach*` method.
 
- If no event has been matched within the specified timeout, the promise will reject with a `EvtError.Timeout.` If the event is detached before the first event is matched, the promise will reject with an `EvtError.Detached`.
+If no event has been matched within the specified timeout, the promise will reject with a `EvtError.Timeout.` If the event is detached before the first event is matched, the promise will reject with an `EvtError.Detached`.
 
-If you have no use of the callback function and just want the promise, [`evt.waitFor(...)`](https://docs.ts-evt.dev/api-doc/evt#evt-waitfor)  should be used in place of `evt.attach*(...)`.
+If you have no use of the callback function and just want the promise, [`evt.waitFor(...)`](https://docs.ts-evt.dev/api-doc/evt#evt-waitfor) should be used in place of `evt.attach*(...)`.
 
 ## Parameters
 
@@ -43,11 +43,11 @@ Adds a new [handler](https://docs.ts-evt.dev/api/handler) to the end of the hand
 
 ## **`evt.[$]attachOnce*(...)`**
 
-When the  method contains the keyword "**once**": Adds a **one-time** [handler](https://docs.ts-evt.dev/api/handler). The next time an event is matched this handler is detached and then it's callback is invoked.
+When the method contains the keyword "**once**": Adds a **one-time** [handler](https://docs.ts-evt.dev/api/handler). The next time an event is matched this handler is detached and then it's callback is invoked.
 
 ## `evt.[$]attach[Once]Prepend(...)`
 
-When the method contains the keyword "**prepend**":  Same as .attach\(\) but the [`handler`](https://docs.ts-evt.dev/api/handler) is added at the _beginning_ of the handler array. 
+When the method contains the keyword "**prepend**": Same as .attach\(\) but the [`handler`](https://docs.ts-evt.dev/api/handler) is added at the _beginning_ of the handler array.
 
 ```typescript
 import { VoidEvt } from "evt";
@@ -67,11 +67,11 @@ evtConnect.post();
 
 ## **`evt.[$]attach[Once]Extract(...)`**
 
-When the method contains the  "**extract**" keyword, every event that the [`handler`](https://docs.ts-evt.dev/api/handler) matches will be swallowed and no other handler will have the opportunity to handle it, even the other "extract"' handlers. It acts as a trap.
+When the method contains the "**extract**" keyword, every event that the [`handler`](https://docs.ts-evt.dev/api/handler) matches will be swallowed and no other handler will have the opportunity to handle it, even the other "extract"' handlers. It acts as a trap.
 
-"**extract**" handler has priority even over "**prepend**" [`Handler`](https://docs.ts-evt.dev/api/handler)s. 
+"**extract**" handler has priority even over "**prepend**" [`Handler`](https://docs.ts-evt.dev/api/handler)s.
 
-If multiples "extractes" handlers are candidates to extract an event the handler that has been added first have priority. 
+If multiples "extractes" handlers are candidates to extract an event the handler that has been added first have priority.
 
 ```typescript
 import { Evt } from "ts-evt";
