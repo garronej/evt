@@ -2,10 +2,10 @@
 
 ![](https://img.shields.io/bundlephobia/min/ts-evt) ![](https://img.shields.io/bundlephobia/minzip/ts-evt) ![](https://img.shields.io/david/garronej/ts-evt) ![](https://img.shields.io/npm/l/ts-evt)
 
-`'evt'` is intended to be a replacement for Node's `'events'` and  a lighter alternative to `'rxjs'`.  
+`'evt'` is intended to be a replacement for Node's `'events'` and a lighter alternative to `'rxjs'`.  
 It enable and encourage **functional programming** and makes heavy use of **typescript**'s type inference features to provide **type safety** while keeping things **concise and elegant** 🍸.
 
-Its main target is [**Deno**](https://github.com/denoland/deno)**\***  but it is cross compatible with **Node** and will run just about anywhere from **React Native** to the **web browser** of your grama.
+Its main target is [**Deno**](https://github.com/denoland/deno)**\*** but it is cross compatible with **Node** and will run just about anywhere from **React Native** to the **web browser** of your grama.
 
 _\*The deno package hasn't been published yet but it will be very soon._
 
@@ -37,5 +37,5 @@ EVT is an attempt to solve all these issues while trying to remain as accessible
 
 Let's jump right in by considering [side by side examples comparing EVT with its peers](https://docs.ts-evt.dev/overview).
 
-![](https://ts-evt.dev/assets/img/gun-vs-sword.gif)
+![](.gitbook/assets/76691034-90204800-6646-11ea-8ef9-b07db8e39ca4.gif)
 

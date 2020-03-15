@@ -7,7 +7,7 @@ Do not instantiate directly, instead use `Evt.newCtx<T>()` or `Evt.getCtx(obj)`
 {% endhint %}
 
 {% hint style="info" %}
-The only difference between `CtxVoid` and `Ctx<void>` is that  `ctxVoid.post()` can be called without argument when `ctx<void>.done `must be called with `undefined`.
+The only difference between `CtxVoid` and `Ctx<void>` is that `ctxVoid.post()` can be called without argument when `ctx<void>.done`must be called with `undefined`.
 {% endhint %}
 
 ## `ctx.done([result])`
@@ -26,7 +26,7 @@ When it returns `{ "DETACH": ctx, "res": result }`, `ctx.done(result)` is invoke
 To test if ctx.done\(\) have been invoked already you can use:`ctx.getEvtDone().postCount !== 0`
 {% endhint %}
 
-### Returns 
+### Returns
 
 `ReturnType<ctx.getHandlers()>` All the [Handler](https://docs.ts-evt.dev/api/handler)s that were bound to the context. They are now detached, calling `ctx.getHandler()` just after `ctx.done()` returns an empty array.
 
@@ -43,7 +43,7 @@ Equivalent of `ctx.done()` to use when the task did not go through.
 When a fλ operator returns `{ "DETACH": ctx, "err": error }`, `ctx.abort(error)` is invoked.
 {% endhint %}
 
-### Returns 
+### Returns
 
 `ReturnType<ctx.done()>` \(cf `ctx.done` \)
 
@@ -62,13 +62,13 @@ For most use cases, it is more convenient to use ctx.getPrDone\(\[timeout\]\)
 ### Returns
 
 * For VoidCtx an Evt that posts:
-  *  `[ null, undefined, Handler.WithEvt[] ]` when `ctx.done()` is called.
-  *  `[ error, undefined, Handler.WithEvt[] ]` when `ctx.abort(error)` is called.
+  * `[ null, undefined, Handler.WithEvt[] ]` when `ctx.done()` is called.
+  * `[ error, undefined, Handler.WithEvt[] ]` when `ctx.abort(error)` is called.
 * For Ctx&lt;T&gt;, an Evt that post:
   * `[ null, result, Handler.WithEvt[] ]` when `ctx.done(result)` is called.
   * `[ error, undefined, Handler.WithEvt[] ]` when `ctx.abort(error)` is called.
 
-`Handler.WithEvt<T>` is just a type alias for an object that wraps a handler and the Evt it is attached to: `{ handler: Handler<T, any>, evt: Evt<T> }`
+`Handler.WithEvt<T>` is just a type alias for an object that wraps a handler and the Evt it is attached to: `{ handler: Handler<T, any>, evt: Evt<T> }`
 
 ### Example
 
@@ -119,21 +119,21 @@ console.log(ee.listenerCount("text")); //Print "1"
 
 ctx.getEvtDone().attachOnce(
     ([,,handlers])=> {
-    
+
         console.log(
             handlers.filter(({ evt })=> evt === evtText).length +
             " handlers detached from evtText"
         );
-        
+
         console.log(
             handlers.filter(({ evt })=> evt === evtTime).length +
             " handlers detached from evtTime"
         );
-        
+
         console.log(
             handlers.length + " handlers detached total"
         );
-        
+
     }
 );
 
@@ -157,7 +157,7 @@ Tracks via a Promise when ctx.done or ctx.abort is invoked.
 
 ### Returns
 
-`Promise<T>` \(T is the type argument of `Ctx<T>` \) A promise that resolve when ctx.done\(\[result\]\) is invoked. 
+`Promise<T>` \(T is the type argument of `Ctx<T>` \) A promise that resolve when ctx.done\(\[result\]\) is invoked.
 
 If `ctx.abort(error)` is invoked before `ctx.done` the promise rejects with `error`.
 
@@ -171,7 +171,7 @@ If timeout was specified the promise rejects if `ctx.done` was not invoked withi
 
 ### Returns
 
-`Handler.WithEvt[]` The [`Handler`](https://docs.ts-evt.dev/api/handler)s that are bound to the context alongside with the `Evt` instance each one is attached to. The Handlers that are bound to the context but no longer attached to an Evt are not listed ( they are usualy freed from memory anyway as there should be nor reference left of them as soon as they are detached ).
+`Handler.WithEvt[]` The [`Handler`](https://docs.ts-evt.dev/api/handler)s that are bound to the context alongside with the `Evt` instance each one is attached to. The Handlers that are bound to the context but no longer attached to an Evt are not listed \( they are usualy freed from memory anyway as there should be nor reference left of them as soon as they are detached \).
 
 ### Example
 
@@ -182,14 +182,13 @@ ctx
     .filter(({ evt }))=> evt === evtString)
     .forEach(({ handler })=> handler.detach())
     ;
-
 ```
 
 ## `ctx.getEvtAttach()`
 
 ### Returns
 
-`Evt<Handler.WithEvt<any>>` An Evt that posts every time a new handler bound to the context is attached.  Every time `ctx.getEvtAttach()` is invoked it returns the same Evt instance. The fact that the returned Evt is lazyly initialized does not affect `ctx.getEvtDetach().postCount`.
+`Evt<Handler.WithEvt<any>>` An Evt that posts every time a new handler bound to the context is attached. Every time `ctx.getEvtAttach()` is invoked it returns the same Evt instance. The fact that the returned Evt is lazyly initialized does not affect `ctx.getEvtDetach().postCount`.
 
 ### Example
 
@@ -207,7 +206,7 @@ console.log(ctx.getEvtAttach().postCount); //Prints "2"
 ```
 
 ```typescript
-import { Evt } from "ts-evt";
+import { Evt } from "ts-evt";
 
 const evtText = new Evt<string>();
 
@@ -233,9 +232,9 @@ Let us consider a practical usecase of `Ctx`. The task is to download a file, we
 * Socket may disconnect .
 * The socked may send more data than expected.
 
-Our expected output is a `Promise<Uint8Array>` that resolve with the downloaded file or reject if anything went wrong. 
+Our expected output is a `Promise<Uint8Array>` that resolve with the downloaded file or reject if anything went wrong.
 
-This is a possible implementation using `Ctx<Uint8Array>`: 
+This is a possible implementation using `Ctx<Uint8Array>`:
 
 ```typescript
 import { Evt, VoidEvt } from "ts-evt";
@@ -288,7 +287,7 @@ function downloadFile(
 }
 ```
 
-Be the download sussesfull or not this use of Ctx enforce that there is no left over handlers on the Evt passed as input once the download attempt has completed. 
+Be the download sussesfull or not this use of Ctx enforce that there is no left over handlers on the Evt passed as input once the download attempt has completed.
 
 Run the example
 
