@@ -1,6 +1,6 @@
 # NonPostable&lt;Evt&lt;T&gt;&gt; \(type\)
 
-A non postable `Evt` is an `Evt` that does not expose the methods `post()`, `postAsyncOnceHandled()` and `postSyncOnceHandled()`. It is useful for exposing `Evt`s to parts of the code that are in charge of reacting to the events but are not supposed to post.
+A non postable `Evt` is an `Evt` that does not expose the methods `post()`, `postAsyncOnceHandled()`. It is useful for exposing `Evt`s to parts of the code that are in charge of reacting to the events but are not supposed to post.
 
 Note that `NonPostable<>` is not a class or an interface it's just an helper type that says: _"You are not allowed to post with this `Evt`"_
 
