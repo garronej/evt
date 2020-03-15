@@ -19,7 +19,7 @@
 
 ---
 
-`'evt'` is intended to be a replacement for Node's `'events'` and a lighter alternative to `'rxjs'`.  
+`'evt'` is intended to be a replacement for `'events'` and a lighter alternative to `'rxjs'`.  
 It enable and encourage **functional programming** and makes heavy use of **typescript**'s type inference features to provide **type safety** while keeping things **concise and elegant** 🍸.
 
 **Browserify friendly:**
