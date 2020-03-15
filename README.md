@@ -28,7 +28,7 @@ It enable and encourage **functional programming** and makes heavy use of **type
 * Transpiled down to ES3 ✅  
 * Light-weight, no third party dependencies ✅   
 
-# TL;DR*;
+# TL;DR*
 
 ```typescript
 import { Evt } from "evt";
