@@ -40,7 +40,7 @@ evtTime.post(1234);
 However, the traditional approach that consists of gathering all the events in a single bus is also an option.
 
 ```typescript
-import { evt, to } from "evt";
+import { Evt, to } from "evt";
 
 const evt = new Evt<
     [ "text",  string ] | 
