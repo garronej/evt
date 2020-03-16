@@ -5,10 +5,10 @@ description: An alternative to compose for chaining operaors.
 # evt.pipe\(...\)
 
 {% hint style="warning" %}
-Being familiar with Ctx and Operator is a prerequisite  for properly using pipe.
+Being familiar with [`Ctx`](https://docs.evt.land/api/ctx) and [`Operator`](https://docs.evt.land/api/operator)is a prerequisite  for properly using pipe.
 {% endhint %}
 
-## Returns
+## Return
 
 A new Evt instance toward which are forwarded the transformed events matched by the operator\(s\).
 
@@ -29,6 +29,10 @@ Using a single call to `pipe`:
 ```typescript
 import { Evt } from "evt";
 
+type Circle = { type: "CIRCLE"; radius: number; };
+type Square = { type: "SQUARE"; sideLength: number; };
+type Shape = Circle | Square;
+
 const evtShape = new Evt<Shape | undefined>();
 
 evtShape.pipe(
@@ -38,6 +42,8 @@ evtShape.pipe(
     radius => radius > 200 ? "DETACH": [ radius ] //Detach if radius too large 
 ).attach(radius=> { /* ... */ });
 ```
+
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-jx2nnm?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
 
 Same thing chaining `pipe`:
 
@@ -55,8 +61,10 @@ evtShape
     .attach(radius => { /* ... */ });
 ```
 
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-yb4gzb?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
+
 {% hint style="danger" %}
-When chaining pipe if one operator in the midle of the chain returns "DETACH"  all the handler upstream will stay attached, it's a memory leak and it can cause performance issues. You must always detach the first link of the chain using a [`Ctx`](https://docs.evt.land/api/ctx).
+When chaining `pipe` if one operator in the midle of the chain returns `"DETACH"`  all the handler upstream will stay attached. You must always detach the first link of the chain using a [`Ctx`](https://docs.evt.land/api/ctx).
 {% endhint %}
 
 The first approach \(calling pipe only once\) is preferable as it is slightly less verbose but in some cases you will reach the limits of TypeScript inference capabilities especially if you throw filters and generic operators into the mix. Bottom point is: try the first method, see how TypeScript infer the types, if detection fails fallback to chainging `pipe()`.
@@ -116,5 +124,5 @@ evtShape.post({
 });
 ```
 
-[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-delegate?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/evt-e9zjnq?embed=1&file=index.ts&hideExplorer=1)
 
