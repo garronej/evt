@@ -14,5 +14,5 @@ evtSocketConnect.post();
 //"SOCKET CONNECTED" have been printed on the console.
 ```
 
-[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-voidevt?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/evt-bcu8ba?embed=1&file=index.ts&hideExplorer=1)
 

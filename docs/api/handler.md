@@ -1,6 +1,6 @@
 # Handler&lt;T, U&gt; \(type\)
 
-Every time [`attach*`](https://docs.ts-evt.dev/api/evt/evt.attach), `waitFor` or `pipe` is invoked a new `Handler<T, U>` is attached to the `Evt<T>`.
+Every time [`attach*`](https://docs.ts-evt.dev/api/evt/evt.attach), [`waitFor`](https://docs.evt.land/api/evt/waitfor) or [`pipe`](https://docs.evt.land/api/evt/pipe) is invoked a new [`Handler<T, U>`](https://docs.evt.land/api/handler) is attached to the [`Evt<T>`](https://docs.evt.land/api/evt).
 
 Handlers can be listed using the [`evt.getHandler()`](https://docs.evt.land/api/evt/evt.gethandler) method.
 

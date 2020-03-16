@@ -5,8 +5,8 @@ A non-potable `Evt` is an `Evt` that does not expose the methods `post() and` `p
 Note that `NonPostable<>` is not a class or an interface, it's just a helper type that says: _"You are not allowed to post with this `Evt`"_
 
 ```typescript
-import { Evt } from "ts-evt";
-import { NonPostable } from "ts-evt/dist/lib/helperTypes";
+import { Evt } from "evt";
+import { NonPostable } from "evt/dist/lib/helperTypes";
 
 const evtText= new Evt<string>();
 
@@ -21,5 +21,5 @@ api.evtText.postOnceMatched //<===== TS error
 evtText.post("good");
 ```
 
-[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-non-postable?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/evt-xc2eqj?embed=1&file=index.ts&hideExplorer=1)
 
