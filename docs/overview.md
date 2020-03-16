@@ -61,23 +61,9 @@ evt.post(["time", 1234]);
 
 ### "Get started" examples.
 
-Here are direct translations of examples provided as overview on the RxJS website. You will have to put on you 👓 to notice the differences, on the surface the API of the two libraries are very similar.
-
-[First examples](https://rxjs-dev.firebaseapp.com/guide/overview#first-examples):
-
-```typescript
-import { fromEvent } from "rxjs";
-
-fromEvent(document, "click").subscribe(() => console.log("Clicked!"));
-
-/* ------------------------------ */
-
-import { Evt } from "evt";
-
-Evt.from(document, "click").attach(()=> console.log("Clicked!"));
-```
-
-[Values](https://rxjs-dev.firebaseapp.com/guide/overview#values):
+Here is a direct translations of [the examples provided as an overview](https://rxjs-dev.firebaseapp.com/guide/overview#values) on the RxJS website.  
+  
+Ironically enough the very example chosen to showcase the library give a type error. RxJS, unlike EVT, fail to infer that event is of type `MouseEvent`. 
 
 ```typescript
 import { fromEvent } from "rxjs";
@@ -86,7 +72,7 @@ import { throttleTime, map, scan } from "rxjs/operators";
 fromEvent(document, "click")
   .pipe(
       throttleTime(1000),
-      map(event => event.clientX),
+      map(event => event.clientX), //<= type error
       scan((count, clientX) => count + clientX, 0)
   )
   .subscribe(count => console.log(count))
@@ -105,6 +91,8 @@ Evt.from(document, "click")
     .attach(count => console.log(count))
     ;
 ```
+
+As you can see it is very possible to do things à la RxJS with EVT but hold on here come the interesting part.
 
 ### What differentiates the two libs
 
