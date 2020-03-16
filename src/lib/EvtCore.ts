@@ -18,14 +18,18 @@ export class EvtCore<T> {
 
     //NOTE: Not really readonly but we want to prevent user from setting the value
     //manually and we cant user accessor because we target es3.
-    /** https://garronej.github.io/ts-evt/#evtpostcount */
+    /** 
+     * https://docs.evt.land/api/evt/post
+     * 
+     * Number of times .post(data) have been called.
+     */
     public readonly postCount: number = 0;
 
     private traceId: string | null = null;
     private traceFormatter!: (data: T) => string;
     private log!: NonNullable<Parameters<typeof EvtCore.prototype.enableTrace>[2]>;
 
-    /** https://garronej.github.io/ts-evt/#evtenabletrace */
+    /** https://docs.evt.land/api/evt/enabletrace */
     public enableTrace(
         id: string,
         formatter?: (data: T) => string,
@@ -47,7 +51,7 @@ export class EvtCore<T> {
         this.log = log ?? ((...inputs) => console.log(...inputs));
 
     }
-    /** https://garronej.github.io/ts-evt/#evtenabletrace */
+    /** https://docs.evt.land/api/evt/enabletrace */
     public disableTrace() {
         this.traceId = null;
     }
@@ -288,6 +292,7 @@ export class EvtCore<T> {
 
     }
 
+    /** https://docs.evt.land/api/evt/getstatelessop */
     public getStatelessOp(op: Operator<T, any>): Operator.Stateless<T, any> {
         return Operator.fλ.Stateful.match(op) ?
             this.statelessByStatefulOp.get(op)! :
@@ -305,7 +310,7 @@ export class EvtCore<T> {
         const isExtracted = !!this.handlers.find(
             ({ extract, op }) => (
                 extract &&
-                !!invokeOperator(this.getStatelessOp(op), data)
+                !!this.getStatelessOp(op)(data)
             )
         );
 
@@ -317,10 +322,8 @@ export class EvtCore<T> {
 
             const handlerCount = this.handlers
                 .filter(
-                    ({ extract, op }) => !extract && !!invokeOperator(
-                        this.getStatelessOp(op),
-                        data
-                    )
+                    ({ extract, op }) => !extract && 
+                        !!this.getStatelessOp(op)(data)
                 )
                 .length;
 
@@ -626,7 +629,7 @@ export class EvtCore<T> {
     }
 
     /**
-     * https://garronej.github.io/ts-evt/#evtishandleddata 
+     * https://docs.evt.land/api/evt/ishandled
      * 
      * Test if posting a given event data will have an effect.
      * 
@@ -634,27 +637,34 @@ export class EvtCore<T> {
      * -There is at least one handler matching
      * this event data ( at least one handler's callback function
      * will be invoked if the data is posted. )
-     * -There is at least one handler that will be detached
+     * -Handlers could be will be detached
      * if the event data is posted.
      * 
      */
     public isHandled(data: T): boolean {
         return !!this.getHandlers()
-            .find(({ op }) => !!invokeOperator(
-                this.getStatelessOp(op),
-                data
-            ))
+            .find(
+                ({ op }) => !!this.getStatelessOp(op)(data)
+            )
             ;
     }
 
-    /** https://garronej.github.io/ts-evt/#evtgethandlers */
+    /** https://docs.evt.land/api/evt/gethandler */
     public getHandlers(): Handler<T, any>[] {
         return [...this.handlers];
     }
 
-    /** Detach every handlers of the Evt that are bound to the provided context */
+    /** 
+     * https://docs.evt.land/api/evt/detach
+     * 
+     * Detach every handlers of the Evt that are bound to the provided context 
+     * */
     public detach(ctx: Ctx): Handler<T, any, Ctx>[];
-    /** (unsafe) Detach every handlers from the Evt */
+    /** 
+     * https://docs.evt.land/api/evt/detach
+     * 
+     * (unsafe) Detach every handlers from the Evt 
+     * */
     public detach(): Handler<T, any>[];
     public detach(ctx?: Ctx): Handler<T, any>[] {
 

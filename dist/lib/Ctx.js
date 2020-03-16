@@ -43,6 +43,7 @@ exports.__esModule = true;
 var Set_1 = require("minimal-polyfills/dist/lib/Set");
 var WeakMap_1 = require("minimal-polyfills/dist/lib/WeakMap");
 var getLazyEvtFactory_1 = require("./util/getLazyEvtFactory");
+/** https://docs.evt.land/api/ctx */
 var Ctx = /** @class */ (function () {
     function Ctx() {
         this.handlers = new Set_1.Polyfill();
@@ -64,6 +65,9 @@ var Ctx = /** @class */ (function () {
         }
     }
     /**
+     *
+     * https://docs.evt.land/api/ctx#ctx-getprdone-timeout
+     *
      * Return a promise that resolve next time ctx.done(result) is invoked
      * Reject if ctx.abort(error) is invoked.
      * Optionally a timeout can be passed, if so the returned promise will reject
@@ -86,6 +90,8 @@ var Ctx = /** @class */ (function () {
         });
     };
     /**
+     * https://docs.evt.land/api/ctx#ctx-abort-error
+     *
      * All the handler will be detached.
      * evtDone will post [ error, undefined, handlers (detached) ]
      * if getPrDone() was invoked the promise will reject with the error
@@ -94,6 +100,8 @@ var Ctx = /** @class */ (function () {
         return this.__done(error);
     };
     /**
+     * https://docs.evt.land/api/ctx#ctx-done-result
+     *
      * Detach all handlers.
      * evtDone will post [ null, result, handlers (detached) ]
      * If getPrDone() was invoked the promise will result with result
@@ -131,6 +139,7 @@ var Ctx = /** @class */ (function () {
         ]);
         return handlers;
     };
+    /** https://docs.evt.land/api/ctx#ctx-gethandlers */
     Ctx.prototype.getHandlers = function () {
         var _this_1 = this;
         return Array.from(this.handlers.values())
@@ -153,6 +162,8 @@ var Ctx = /** @class */ (function () {
     return Ctx;
 }());
 exports.Ctx = Ctx;
+//NOTE: Could be declared only, but in case someone import it, to avoid runtime error we declare it.
+/** https://docs.evt.land/api/ctx */
 var VoidCtx = /** @class */ (function (_super) {
     __extends(VoidCtx, _super);
     function VoidCtx() {

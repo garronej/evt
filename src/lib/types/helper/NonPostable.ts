@@ -9,5 +9,5 @@ import { EvtLike } from "./EvtLike";
  */
 type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
 
-/** https://garronej.github.io/ts-evt/#nonpostableevtt */
+/** https://docs.evt.land/api/nonpostable */
 export type NonPostable<T extends EvtLike<any>> = Omit<T, "post" | "postAsyncOnceHandled">;

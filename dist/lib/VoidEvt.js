@@ -50,7 +50,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var Evt_2 = require("./Evt");
-/** https://garronej.github.io/ts-evt/#voidevt */
+/** https://docs.evt.land/api/voidevt */
 var VoidEvt = /** @class */ (function (_super) {
     __extends(VoidEvt, _super);
     function VoidEvt() {

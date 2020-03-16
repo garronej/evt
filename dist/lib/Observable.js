@@ -3,7 +3,7 @@ exports.__esModule = true;
 var Evt_2 = require("./Evt");
 var overwriteReadonlyProp_1 = require("../tools/overwriteReadonlyProp");
 ;
-/** https://garronej.github.io/ts-evt/#observert-documentation */
+/** https://docs.evt.land/api/observable */
 var Observable = /** @class */ (function () {
     function Observable(initialValue, areSame) {
         if (areSame === void 0) { areSame = function (currentValue, newValue) { return currentValue === newValue; }; }

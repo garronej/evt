@@ -1,6 +1,7 @@
 import { Operator } from "./Operator";
 declare type EvtCore<T> = import("../EvtCore").EvtCore<T>;
 declare type Ctx<T = any> = import("../Ctx").Ctx<T>;
+/** https://docs.evt.land/api/handler */
 export declare type Handler<T, U, CtxProp extends Ctx<any> | undefined = Ctx | undefined> = Handler.PropsFromArgs<T, U, CtxProp> & Handler.PropsFromMethodName & Readonly<{
     detach(): boolean;
     promise: Promise<U>;

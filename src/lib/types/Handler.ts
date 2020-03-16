@@ -3,6 +3,7 @@ type EvtCore<T> = import("../EvtCore").EvtCore<T>;
 type Ctx<T=any> = import("../Ctx").Ctx<T>;
 
 
+/** https://docs.evt.land/api/handler */
 export type Handler<T, U, CtxProp extends Ctx<any> | undefined = Ctx | undefined> =
     Handler.PropsFromArgs<T, U, CtxProp> &
     Handler.PropsFromMethodName & Readonly<{

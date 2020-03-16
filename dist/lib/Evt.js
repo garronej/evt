@@ -52,6 +52,7 @@ var from_1 = require("./util/from");
 var parseOverloadParams_1 = require("./util/parseOverloadParams");
 var getLazyEvtFactory_1 = require("./util/getLazyEvtFactory");
 var getCtxFactory_1 = require("./util/getCtxFactory");
+/** https://docs.evt.land/api/evt */
 var Evt = /** @class */ (function (_super) {
     __extends(Evt, _super);
     function Evt() {
@@ -66,11 +67,15 @@ var Evt = /** @class */ (function (_super) {
         _this_1.getEvtDetach = getEvtDetach;
         return _this_1;
     }
-    /** return a new Ctx instance */
-    //public static newCtx(): VoidCtx;
+    /**
+     * https://docs.evt.land/api/evt/newctx
+     *
+     * return a new Ctx instance
+     * */
     Evt.newCtx = function () {
         return new Ctx_1.Ctx();
     };
+    /** https://docs.evt.land/api/evt/post */
     Evt.prototype.postAsyncOnceHandled = function (data) {
         var _this_1 = this;
         if (this.isHandled(data)) {
@@ -185,12 +190,16 @@ var Evt = /** @class */ (function (_super) {
         return this.__attachOnceExtract(this.__parseOverloadParams(inputs, "attach*"));
     };
     /**
+     * https://docs.evt.land/api/evt/getctx
+     *
      * Evt.weakCtx(obj) always return the same instance of VoidCtx for a given object.
      * No strong reference to the object is created
      * when the object is no longer referenced it's associated Ctx will be freed from memory.
      */
     Evt.getCtx = getCtxFactory_1.getCtxFactory();
+    /** https://docs.evt.land/api/evt/merge */
     Evt.merge = merge_1.merge;
+    /** https://docs.evt.land/api/evt/from */
     Evt.from = from_1.from;
     return Evt;
 }(EvtCore_1.EvtCore));

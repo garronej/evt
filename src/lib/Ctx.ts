@@ -8,12 +8,20 @@ type EvtCore<T> = import("./EvtCore").EvtCore<T>;
 
 type Done<T> = [Error | null, T, Handler.WithEvt<any>[]];
 
+/** https://docs.evt.land/api/ctx */
 export class Ctx<T = any> {
 
-    /** Posted each time ctx.done() is invoked, post the detached handler ( return value of evt.done()) */
+    /** 
+     * https://docs.evt.land/api/ctx#ctx-getevtdone
+     * 
+     * Posted every time ctx.done() is invoked, post the detached handler ( return value of evt.done()) 
+     */
     public readonly getEvtDone: () => Evt<Done<T>>;
 
     /** 
+     * 
+     * https://docs.evt.land/api/ctx#ctx-getprdone-timeout 
+     * 
      * Return a promise that resolve next time ctx.done(result) is invoked
      * Reject if ctx.abort(error) is invoked.
      * Optionally a timeout can be passed, if so the returned promise will reject 
@@ -38,10 +46,18 @@ export class Ctx<T = any> {
             ;
     }
 
-    /** Posted every time a handler is bound to this context */
+    /** 
+     * https://docs.evt.land/api/ctx#ctx-getevtattach
+     * 
+     * Posted every time a handler is bound to this context 
+     * */
     public readonly getEvtAttach: () => Evt<Handler.WithEvt<any>>;
 
-    /** Posted every time a handler bound to this context is detached from it's Evt */
+    /** 
+     * https://docs.evt.land/api/ctx#ctx-getevtdetach
+     * 
+     * Posted every time a handler bound to this context is detached from it's Evt 
+     * */
     public readonly getEvtDetach: () => Evt<Handler.WithEvt<any>>;
 
     private readonly onDone: ([error, result, handlers]: Done<T>) => void;
@@ -85,6 +101,8 @@ export class Ctx<T = any> {
     }
 
     /** 
+     * https://docs.evt.land/api/ctx#ctx-abort-error
+     * 
      * All the handler will be detached.
      * evtDone will post [ error, undefined, handlers (detached) ]
      * if getPrDone() was invoked the promise will reject with the error
@@ -94,6 +112,8 @@ export class Ctx<T = any> {
     }
 
     /**
+     * https://docs.evt.land/api/ctx#ctx-done-result
+     * 
      * Detach all handlers.
      * evtDone will post [ null, result, handlers (detached) ]
      * If getPrDone() was invoked the promise will result with result
@@ -139,6 +159,7 @@ export class Ctx<T = any> {
         EvtCore<any>
     >();
 
+    /** https://docs.evt.land/api/ctx#ctx-gethandlers */
     public getHandlers(): Handler.WithEvt<any>[] {
         return Array.from(this.handlers.values())
             .map(handler => ({ handler, "evt": this.evtByHandler.get(handler)! }))
@@ -173,6 +194,8 @@ export class Ctx<T = any> {
 
 }
 
+//NOTE: Could be declared only, but in case someone import it, to avoid runtime error we declare it.
+/** https://docs.evt.land/api/ctx */
 export class VoidCtx extends Ctx<undefined> {
 
     /**

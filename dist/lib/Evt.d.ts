@@ -5,22 +5,35 @@ import { Ctx } from "./Ctx";
 import { merge } from "./util/merge";
 import { from } from "./util/from";
 declare type VoidCtx = import("./Ctx").VoidCtx;
+/** https://docs.evt.land/api/evt */
 export declare class Evt<T> extends EvtCore<T> {
-    /** return a new Ctx instance */
+    /**
+     * https://docs.evt.land/api/evt/newctx
+     *
+     * return a new Ctx instance
+     * */
     static newCtx<T = void>(): T extends void ? VoidCtx : Ctx<T>;
     /**
+     * https://docs.evt.land/api/evt/getctx
+     *
      * Evt.weakCtx(obj) always return the same instance of VoidCtx for a given object.
      * No strong reference to the object is created
      * when the object is no longer referenced it's associated Ctx will be freed from memory.
      */
     static readonly getCtx: (obj: object) => import("./Ctx").VoidCtx;
+    /** https://docs.evt.land/api/evt/merge */
     static merge: typeof merge;
+    /** https://docs.evt.land/api/evt/from */
     static from: typeof from;
+    /** https://docs.evt.land/api/evt/getevtattachdetach */
     readonly getEvtAttach: () => Evt<Handler<T, any>>;
+    /** https://docs.evt.land/api/evt/getevtattachdetach */
     readonly getEvtDetach: () => Evt<Handler<T, any>>;
     constructor();
+    /** https://docs.evt.land/api/evt/post */
     postAsyncOnceHandled(data: T): number | Promise<number>;
     private __parseOverloadParams;
+    /** https://docs.evt.land/api/evt/pipe */
     pipe(): Evt<T>;
     pipe<U>(op: Operator.fλ<T, U>): Evt<U>;
     pipe<U extends T>(op: (data: T) => data is U): Evt<U>;
@@ -49,6 +62,8 @@ export declare class Evt<T> extends EvtCore<T> {
     pipe(...ops: [Operator<T, any>, ...Operator<any, any>[]]): Evt<any>;
     pipe<T>(...ops: [Operator<T, any>, ...Operator<any, any>[]]): Evt<any>;
     /**
+     * https://docs.evt.land/api/evt/waitfor
+     *
      * op - fλ
      *
      * ctx
@@ -57,6 +72,8 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     waitFor<U>(op: Operator.fλ.Stateless<T, U>, ctx: Ctx, timeout?: number): Promise<U>;
     /**
+     * https://docs.evt.land/api/evt/waitfor
+     *
      * op - Type guard
      *
      * ctx
@@ -65,6 +82,8 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     waitFor<Q extends T>(op: (data: T) => data is Q, ctx: Ctx, timeout?: number): Promise<Q>;
     /**
+     * https://docs.evt.land/api/evt/waitfor
+     *
      * op - Filter
      *
      * ctx
@@ -73,35 +92,45 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     waitFor(op: (data: T) => boolean, ctx: Ctx, timeout?: number): Promise<T>;
     /**
+     * https://docs.evt.land/api/evt/waitfor
+     *
      * op - fλ
      *
      * timeout?
      */
     waitFor<U>(op: Operator.fλ.Stateless<T, U>, timeout?: number): Promise<U>;
     /**
+     * https://docs.evt.land/api/evt/waitfor
+     *
      * op - Type guard
      *
      * timeout?
      */
     waitFor<Q extends T>(op: (data: T) => data is Q, timeout?: number): Promise<Q>;
     /**
+     * https://docs.evt.land/api/evt/waitfor
+     *
      * op - Filter
      *
      * timeout?
      */
     waitFor(op: (data: T) => boolean, timeout?: number): Promise<T>;
     /**
+     * https://docs.evt.land/api/evt/waitfor
+     *
      * ctx
      *
      * timeout?
      */
     waitFor(ctx: Ctx, timeout?: number): Promise<T>;
     /**
+     * https://docs.evt.land/api/evt/waitfor
+     *
      * timeout?
      */
     waitFor(timeout?: number): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#op---fλ
+     * https://docs.evt.land/api/evt/attach
      *
      * op - fλ
      *
@@ -113,7 +142,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     $attach<U>(op: Operator.fλ<T, U>, ctx: Ctx, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#op---fλ
+     * https://docs.evt.land/api/evt/attach
      *
      * op - fλ
      *
@@ -123,7 +152,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     $attach<U>(op: Operator.fλ<T, U>, ctx: Ctx, callback: (transformedData: U) => void): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#op---fλ
+     * https://docs.evt.land/api/evt/attach
      *
      * op - fλ
      *
@@ -133,7 +162,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     $attach<U>(op: Operator.fλ<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#op---fλ
+     * https://docs.evt.land/api/evt/attach
      *
      * op - fλ
      *
@@ -141,7 +170,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     $attach<U>(op: Operator.fλ<T, U>, callback: (transformedData: U) => void): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Type guard
      *
@@ -153,7 +182,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attach<Q extends T>(op: (data: T) => data is Q, ctx: Ctx, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Filter
      *
@@ -165,7 +194,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attach(op: (data: T) => boolean, ctx: Ctx, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Type guard
      *
@@ -175,7 +204,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attach<Q extends T>(op: (data: T) => data is Q, ctx: Ctx, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Filter
      *
@@ -185,7 +214,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attach(op: (data: T) => boolean, ctx: Ctx, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Type guard
      *
@@ -195,7 +224,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attach<Q extends T>(op: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Filter
      *
@@ -205,7 +234,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attach(op: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     * https://docs.evt.land/api/evt/attach
      *
      * ctx
      *
@@ -215,7 +244,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attach(ctx: Ctx, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Type guard
      *
@@ -223,7 +252,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attach<Q extends T>(op: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Filter
      *
@@ -231,7 +260,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attach(op: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     * https://docs.evt.land/api/evt/attach
      *
      * ctx
      *
@@ -239,7 +268,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attach(ctx: Ctx, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     * https://docs.evt.land/api/evt/attach
      *
      * timeout
      *
@@ -247,13 +276,13 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attach(timeout: number, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     * https://docs.evt.land/api/evt/attach
      *
      * callback
      */
     attach(callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#op---fλ
+     * https://docs.evt.land/api/evt/attach
      *
      * op - fλ
      *
@@ -265,7 +294,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     $attachOnce<U>(op: Operator.fλ.Stateless<T, U>, ctx: Ctx, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#op---fλ
+     * https://docs.evt.land/api/evt/attach
      *
      * op - fλ
      *
@@ -275,7 +304,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     $attachOnce<U>(op: Operator.fλ.Stateless<T, U>, ctx: Ctx, callback: (transformedData: U) => void): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#op---fλ
+     * https://docs.evt.land/api/evt/attach
      *
      * op - fλ
      *
@@ -285,7 +314,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     $attachOnce<U>(op: Operator.fλ.Stateless<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#op---fλ
+     * https://docs.evt.land/api/evt/attach
      *
      * op - fλ
      *
@@ -293,7 +322,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     $attachOnce<U>(op: Operator.fλ.Stateless<T, U>, callback: (transformedData: U) => void): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Type guard
      *
@@ -305,7 +334,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOnce<Q extends T>(op: (data: T) => data is Q, ctx: Ctx, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Filter
      *
@@ -317,7 +346,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOnce(op: (data: T) => boolean, ctx: Ctx, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Type guard
      *
@@ -327,7 +356,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOnce<Q extends T>(op: (data: T) => data is Q, ctx: Ctx, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Filter
      *
@@ -337,7 +366,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOnce(op: (data: T) => boolean, ctx: Ctx, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Type guard
      *
@@ -347,7 +376,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOnce<Q extends T>(op: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Filter
      *
@@ -357,7 +386,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOnce(op: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     * https://docs.evt.land/api/evt/attach
      *
      * ctx
      *
@@ -367,7 +396,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOnce(ctx: Ctx, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Type guard
      *
@@ -375,7 +404,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOnce<Q extends T>(op: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Filter
      *
@@ -383,7 +412,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOnce(op: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     * https://docs.evt.land/api/evt/attach
      *
      * ctx
      *
@@ -391,7 +420,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOnce(ctx: Ctx, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     * https://docs.evt.land/api/evt/attach
      *
      * timeout
      *
@@ -399,13 +428,13 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOnce(timeout: number, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpostdata
+     * https://docs.evt.land/api/evt/attach
      *
      * callback
      */
     attachOnce(callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#op---fλ
+     * https://docs.evt.land/api/evt/attach
      *
      * op - fλ
      *
@@ -417,7 +446,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     $attachExtract<U>(op: Operator.fλ<T, U>, ctx: Ctx, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#op---fλ
+     * https://docs.evt.land/api/evt/attach
      *
      * op - fλ
      *
@@ -427,7 +456,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     $attachExtract<U>(op: Operator.fλ<T, U>, ctx: Ctx, callback: (transformedData: U) => void): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#op---fλ
+     * https://docs.evt.land/api/evt/attach
      *
      * op - fλ
      *
@@ -437,7 +466,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     $attachExtract<U>(op: Operator.fλ<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#op---fλ
+     * https://docs.evt.land/api/evt/attach
      *
      * op - fλ
      *
@@ -445,7 +474,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     $attachExtract<U>(op: Operator.fλ<T, U>, callback: (transformedData: U) => void): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Type guard
      *
@@ -457,7 +486,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachExtract<Q extends T>(op: (data: T) => data is Q, ctx: Ctx, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     * https://docs.evt.land/api/evt/attach
      *
      * op - fλ
      *
@@ -469,7 +498,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachExtract(op: (data: T) => boolean, ctx: Ctx, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Type guard
      *
@@ -479,7 +508,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachExtract<Q extends T>(op: (data: T) => data is Q, ctx: Ctx, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Filter
      *
@@ -489,7 +518,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachExtract(op: (data: T) => boolean, ctx: Ctx, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Type guard
      *
@@ -499,7 +528,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachExtract<Q extends T>(op: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Filter
      *
@@ -509,7 +538,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachExtract(op: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Type guard
      *
@@ -517,7 +546,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachExtract<Q extends T>(op: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Filter
      *
@@ -525,7 +554,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachExtract(op: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#op---fλ
+     * https://docs.evt.land/api/evt/attach
      *
      * op - fλ
      *
@@ -537,7 +566,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     $attachPrepend<U>(op: Operator.fλ<T, U>, ctx: Ctx, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#op---fλ
+     * https://docs.evt.land/api/evt/attach
      *
      * op - fλ
      *
@@ -547,7 +576,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     $attachPrepend<U>(op: Operator.fλ<T, U>, ctx: Ctx, callback: (transformedData: U) => void): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#op---fλ
+     * https://docs.evt.land/api/evt/attach
      *
      * op - fλ
      *
@@ -557,7 +586,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     $attachPrepend<U>(op: Operator.fλ<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#op---fλ
+     * https://docs.evt.land/api/evt/attach
      *
      * op - fλ
      *
@@ -565,7 +594,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     $attachPrepend<U>(op: Operator.fλ<T, U>, callback: (transformedData: U) => void): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Type guard
      *
@@ -577,7 +606,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachPrepend<Q extends T>(op: (data: T) => data is Q, ctx: Ctx, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Filter
      *
@@ -589,7 +618,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachPrepend(op: (data: T) => boolean, ctx: Ctx, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Type guard
      *
@@ -599,7 +628,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachPrepend<Q extends T>(op: (data: T) => data is Q, ctx: Ctx, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Filter
      *
@@ -609,7 +638,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachPrepend(op: (data: T) => boolean, ctx: Ctx, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Type guard
      *
@@ -619,7 +648,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachPrepend<Q extends T>(op: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Filter
      *
@@ -629,7 +658,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachPrepend(op: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
+     * https://docs.evt.land/api/evt/attach
      *
      * ctx
      *
@@ -639,7 +668,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachPrepend(ctx: Ctx, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Type guard
      *
@@ -647,7 +676,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachPrepend<Q extends T>(op: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Filter
      *
@@ -655,7 +684,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachPrepend(op: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
+     * https://docs.evt.land/api/evt/attach
      *
      * ctx
      *
@@ -663,7 +692,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachPrepend(ctx: Ctx, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
+     * https://docs.evt.land/api/evt/attach
      *
      * timeout
      *
@@ -671,13 +700,13 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachPrepend(timeout: number, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and-evtattachonceprepend
+     * https://docs.evt.land/api/evt/attach
      *
      * callback
      */
     attachPrepend(callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#op---fλ
+     * https://docs.evt.land/api/evt/attach
      *
      * op - fλ
      *
@@ -689,7 +718,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     $attachOncePrepend<U>(op: Operator.fλ.Stateless<T, U>, ctx: Ctx, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#op---fλ
+     * https://docs.evt.land/api/evt/attach
      *
      * op - fλ
      *
@@ -699,7 +728,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     $attachOncePrepend<U>(op: Operator.fλ.Stateless<T, U>, ctx: Ctx, callback: (transformedData: U) => void): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#op---fλ
+     * https://docs.evt.land/api/evt/attach
      *
      * op - fλ
      *
@@ -709,7 +738,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     $attachOncePrepend<U>(op: Operator.fλ.Stateless<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#op---fλ
+     * https://docs.evt.land/api/evt/attach
      *
      * op - fλ
      *
@@ -717,7 +746,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     $attachOncePrepend<U>(op: Operator.fλ.Stateless<T, U>, callback: (transformedData: U) => void): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Type guard
      *
@@ -729,7 +758,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOncePrepend<Q extends T>(op: (data: T) => data is Q, ctx: Ctx, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Filter
      *
@@ -741,7 +770,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOncePrepend(op: (data: T) => boolean, ctx: Ctx, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Type guard
      *
@@ -751,7 +780,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOncePrepend<Q extends T>(op: (data: T) => data is Q, ctx: Ctx, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Filter
      *
@@ -761,7 +790,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOncePrepend(op: (data: T) => boolean, ctx: Ctx, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Type guard
      *
@@ -771,7 +800,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOncePrepend<Q extends T>(op: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Filter
      *
@@ -781,7 +810,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOncePrepend(op: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
+     * https://docs.evt.land/api/evt/attach
      *
      * ctx
      *
@@ -791,7 +820,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOncePrepend(ctx: Ctx, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Type guard
      *
@@ -799,7 +828,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOncePrepend<Q extends T>(op: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Filter
      *
@@ -807,7 +836,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOncePrepend(op: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
+     * https://docs.evt.land/api/evt/attach
      *
      * ctx
      *
@@ -815,7 +844,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOncePrepend(ctx: Ctx, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
+     * https://docs.evt.land/api/evt/attach
      *
      * timeout
      *
@@ -823,13 +852,13 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOncePrepend(timeout: number, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachprepend-and--evtattachonceprepend
+     * https://docs.evt.land/api/evt/attach
      *
      * callback
      */
     attachOncePrepend(callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#op---fλ
+     * https://docs.evt.land/api/evt/attach
      *
      * op - fλ
      *
@@ -841,7 +870,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     $attachOnceExtract<U>(op: Operator.fλ.Stateless<T, U>, ctx: Ctx, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#op---fλ
+     * https://docs.evt.land/api/evt/attach
      *
      * op - fλ
      *
@@ -851,7 +880,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     $attachOnceExtract<U>(op: Operator.fλ.Stateless<T, U>, ctx: Ctx, callback: (transformedData: U) => void): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#op---fλ
+     * https://docs.evt.land/api/evt/attach
      *
      * op - fλ
      *
@@ -861,7 +890,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     $attachOnceExtract<U>(op: Operator.fλ.Stateless<T, U>, timeout: number, callback: (transformedData: U) => void): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#op---fλ
+     * https://docs.evt.land/api/evt/attach
      *
      * op - fλ
      *
@@ -869,7 +898,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     $attachOnceExtract<U>(op: Operator.fλ.Stateless<T, U>, callback: (transformedData: U) => void): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Type guard
      *
@@ -881,7 +910,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOnceExtract<Q extends T>(op: (data: T) => data is Q, ctx: Ctx, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Filter
      *
@@ -893,7 +922,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOnceExtract(op: (data: T) => boolean, ctx: Ctx, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Type guard
      *
@@ -903,7 +932,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOnceExtract<Q extends T>(op: (data: T) => data is Q, ctx: Ctx, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Filter
      *
@@ -913,7 +942,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOnceExtract(op: (data: T) => boolean, ctx: Ctx, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Type guard
      *
@@ -923,7 +952,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOnceExtract<Q extends T>(op: (data: T) => data is Q, timeout: number, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Filter
      *
@@ -933,7 +962,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOnceExtract(op: (data: T) => boolean, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     * https://docs.evt.land/api/evt/attach
      *
      * ctx
      *
@@ -941,7 +970,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOnceExtract(ctx: Ctx, timeout: number, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Type guard
      *
@@ -949,7 +978,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOnceExtract<Q extends T>(op: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     * https://docs.evt.land/api/evt/attach
      *
      * op - Filter
      *
@@ -957,7 +986,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOnceExtract(op: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     * https://docs.evt.land/api/evt/attach
      *
      * ctx
      *
@@ -965,7 +994,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOnceExtract(ctx: Ctx, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     * https://docs.evt.land/api/evt/attach
      *
      * timeout
      *
@@ -973,7 +1002,7 @@ export declare class Evt<T> extends EvtCore<T> {
      */
     attachOnceExtract(timeout: number, callback: (data: T) => void): Promise<T>;
     /**
-     * https://garronej.github.io/ts-evt/#evtattachextract-and-evtattachonceextract
+     * https://docs.evt.land/api/evt/attach
      *
      * callback
      */

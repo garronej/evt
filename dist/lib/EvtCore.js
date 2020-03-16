@@ -61,7 +61,11 @@ var EvtCore = /** @class */ (function () {
         var _this_1 = this;
         //NOTE: Not really readonly but we want to prevent user from setting the value
         //manually and we cant user accessor because we target es3.
-        /** https://garronej.github.io/ts-evt/#evtpostcount */
+        /**
+         * https://docs.evt.land/api/evt/post
+         *
+         * Number of times .post(data) have been called.
+         */
         this.postCount = 0;
         this.traceId = null;
         this.handlers = [];
@@ -168,7 +172,7 @@ var EvtCore = /** @class */ (function () {
             });
         });
     }
-    /** https://garronej.github.io/ts-evt/#evtenabletrace */
+    /** https://docs.evt.land/api/evt/enabletrace */
     EvtCore.prototype.enableTrace = function (id, formatter, log
     //NOTE: Not typeof console.log as we don't want to expose types from node
     ) {
@@ -189,7 +193,7 @@ var EvtCore = /** @class */ (function () {
             return console.log.apply(console, __spread(inputs));
         });
     };
-    /** https://garronej.github.io/ts-evt/#evtenabletrace */
+    /** https://docs.evt.land/api/evt/enabletrace */
     EvtCore.prototype.disableTrace = function () {
         this.traceId = null;
     };
@@ -279,6 +283,7 @@ var EvtCore = /** @class */ (function () {
         (_a = this.onHandler) === null || _a === void 0 ? void 0 : _a.call(this, true, handler);
         return handler;
     };
+    /** https://docs.evt.land/api/evt/getstatelessop */
     EvtCore.prototype.getStatelessOp = function (op) {
         return Operator_1.Operator.fλ.Stateful.match(op) ?
             this.statelessByStatefulOp.get(op) :
@@ -293,7 +298,7 @@ var EvtCore = /** @class */ (function () {
         var isExtracted = !!this.handlers.find(function (_a) {
             var extract = _a.extract, op = _a.op;
             return (extract &&
-                !!invokeOperator_1.invokeOperator(_this_1.getStatelessOp(op), data));
+                !!_this_1.getStatelessOp(op)(data));
         });
         if (isExtracted) {
             message += "extracted ";
@@ -302,7 +307,8 @@ var EvtCore = /** @class */ (function () {
             var handlerCount = this.handlers
                 .filter(function (_a) {
                 var extract = _a.extract, op = _a.op;
-                return !extract && !!invokeOperator_1.invokeOperator(_this_1.getStatelessOp(op), data);
+                return !extract &&
+                    !!_this_1.getStatelessOp(op)(data);
             })
                 .length;
             message += handlerCount + " handler" + ((handlerCount > 1) ? "s" : "") + " => ";
@@ -417,7 +423,7 @@ var EvtCore = /** @class */ (function () {
         }).promise;
     };
     /**
-     * https://garronej.github.io/ts-evt/#evtishandleddata
+     * https://docs.evt.land/api/evt/ishandled
      *
      * Test if posting a given event data will have an effect.
      *
@@ -425,7 +431,7 @@ var EvtCore = /** @class */ (function () {
      * -There is at least one handler matching
      * this event data ( at least one handler's callback function
      * will be invoked if the data is posted. )
-     * -There is at least one handler that will be detached
+     * -Handlers could be will be detached
      * if the event data is posted.
      *
      */
@@ -434,10 +440,10 @@ var EvtCore = /** @class */ (function () {
         return !!this.getHandlers()
             .find(function (_a) {
             var op = _a.op;
-            return !!invokeOperator_1.invokeOperator(_this_1.getStatelessOp(op), data);
+            return !!_this_1.getStatelessOp(op)(data);
         });
     };
-    /** https://garronej.github.io/ts-evt/#evtgethandlers */
+    /** https://docs.evt.land/api/evt/gethandler */
     EvtCore.prototype.getHandlers = function () {
         return __spread(this.handlers);
     };

@@ -5,9 +5,11 @@ declare type ChangeDiff<T> = {
     previousValue: T;
 };
 /**
- * https://garronej.github.io/ts-evt/#observert-documentation
- * The interface that should be exposed to users that should
- * have read only access on the observable */
+ * https://docs.evt.land/api/observable
+ *
+ * Interface to be exposed to users that should
+ * have read only access on the observable
+ * */
 export interface IObservable<T> {
     readonly value: T;
     /** when value changed post the new value and the value it previously replaced */
@@ -15,7 +17,7 @@ export interface IObservable<T> {
     /** when value changed post the new value */
     readonly evtChange: NonPostable<Evt<T>>;
 }
-/** https://garronej.github.io/ts-evt/#observert-documentation */
+/** https://docs.evt.land/api/observable */
 export declare class Observable<T> implements IObservable<T> {
     private readonly areSame;
     private readonly evtChangeDiff_post;

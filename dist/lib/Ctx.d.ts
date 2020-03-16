@@ -2,10 +2,18 @@ import { Handler } from "./types/Handler";
 import { Evt } from "./Evt";
 declare type EvtCore<T> = import("./EvtCore").EvtCore<T>;
 declare type Done<T> = [Error | null, T, Handler.WithEvt<any>[]];
+/** https://docs.evt.land/api/ctx */
 export declare class Ctx<T = any> {
-    /** Posted each time ctx.done() is invoked, post the detached handler ( return value of evt.done()) */
+    /**
+     * https://docs.evt.land/api/ctx#ctx-getevtdone
+     *
+     * Posted every time ctx.done() is invoked, post the detached handler ( return value of evt.done())
+     */
     readonly getEvtDone: () => Evt<Done<T>>;
     /**
+     *
+     * https://docs.evt.land/api/ctx#ctx-getprdone-timeout
+     *
      * Return a promise that resolve next time ctx.done(result) is invoked
      * Reject if ctx.abort(error) is invoked.
      * Optionally a timeout can be passed, if so the returned promise will reject
@@ -13,21 +21,33 @@ export declare class Ctx<T = any> {
      * If the timeout is reached ctx.abort(timeoutError) will be invoked.
      */
     getPrDone(timeout?: number): Promise<T>;
-    /** Posted every time a handler is bound to this context */
+    /**
+     * https://docs.evt.land/api/ctx#ctx-getevtattach
+     *
+     * Posted every time a handler is bound to this context
+     * */
     readonly getEvtAttach: () => Evt<Handler.WithEvt<any>>;
-    /** Posted every time a handler bound to this context is detached from it's Evt */
+    /**
+     * https://docs.evt.land/api/ctx#ctx-getevtdetach
+     *
+     * Posted every time a handler bound to this context is detached from it's Evt
+     * */
     readonly getEvtDetach: () => Evt<Handler.WithEvt<any>>;
     private readonly onDone;
     private readonly onAttach;
     private readonly onDetach;
     constructor();
     /**
+     * https://docs.evt.land/api/ctx#ctx-abort-error
+     *
      * All the handler will be detached.
      * evtDone will post [ error, undefined, handlers (detached) ]
      * if getPrDone() was invoked the promise will reject with the error
      */
     abort(error: Error): Handler.WithEvt<any>[];
     /**
+     * https://docs.evt.land/api/ctx#ctx-done-result
+     *
      * Detach all handlers.
      * evtDone will post [ null, result, handlers (detached) ]
      * If getPrDone() was invoked the promise will result with result
@@ -37,11 +57,13 @@ export declare class Ctx<T = any> {
     private __done;
     private handlers;
     private evtByHandler;
+    /** https://docs.evt.land/api/ctx#ctx-gethandlers */
     getHandlers(): Handler.WithEvt<any>[];
     static __addHandlerToCtxCore<T>(handler: Handler<T, any, Ctx<T>>, evt: EvtCore<T>): void;
     static __removeHandlerFromCtxCore(handler: Handler<any, any, Ctx>): void;
     static __matchHandlerBoundToCtx<T>(handler: Handler<T, any>): handler is Handler<T, any, Ctx>;
 }
+/** https://docs.evt.land/api/ctx */
 export declare class VoidCtx extends Ctx<undefined> {
     /**
      * Detach all handlers.

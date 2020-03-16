@@ -2,6 +2,7 @@ type Ctx<T = any> = import("../Ctx").Ctx<T>;
 type VoidCtx= import("../Ctx").VoidCtx;
 import { typeGuard } from "../../tools/typeSafety";
 
+/** https://docs.evt.land/api/operator */
 export type Operator<T, U> =
     Operator.fλ<T, U> |
     ((data: U) => boolean) | //Filter

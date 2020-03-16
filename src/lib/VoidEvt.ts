@@ -1,7 +1,7 @@
 
 import { Evt } from "./Evt";
 
-/** https://garronej.github.io/ts-evt/#voidevt */
+/** https://docs.evt.land/api/voidevt */
 export class VoidEvt extends Evt<void> {
 
     public post(): number {

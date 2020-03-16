@@ -1,5 +1,6 @@
 declare type Ctx<T = any> = import("../Ctx").Ctx<T>;
 declare type VoidCtx = import("../Ctx").VoidCtx;
+/** https://docs.evt.land/api/operator */
 export declare type Operator<T, U> = Operator.fλ<T, U> | ((data: U) => boolean) | //Filter
 (U extends T ? (data: T) => data is U : never);
 export declare namespace Operator {

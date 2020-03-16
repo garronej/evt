@@ -5,14 +5,18 @@ import { Ctx } from "./Ctx";
 export declare const setPostCount: (evt: EvtCore<any>, value: number) => void;
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 export declare class EvtCore<T> {
-    /** https://garronej.github.io/ts-evt/#evtpostcount */
+    /**
+     * https://docs.evt.land/api/evt/post
+     *
+     * Number of times .post(data) have been called.
+     */
     readonly postCount: number;
     private traceId;
     private traceFormatter;
     private log;
-    /** https://garronej.github.io/ts-evt/#evtenabletrace */
+    /** https://docs.evt.land/api/evt/enabletrace */
     enableTrace(id: string, formatter?: (data: T) => string, log?: (message?: any, ...optionalParams: any[]) => void): void;
-    /** https://garronej.github.io/ts-evt/#evtenabletrace */
+    /** https://docs.evt.land/api/evt/enabletrace */
     disableTrace(): void;
     private readonly handlers;
     private readonly handlerTriggers;
@@ -25,6 +29,7 @@ export declare class EvtCore<T> {
     private static doDetachIfNeeded;
     private triggerHandler;
     private addHandler;
+    /** https://docs.evt.land/api/evt/getstatelessop */
     getStatelessOp(op: Operator<T, any>): Operator.Stateless<T, any>;
     private trace;
     /**
@@ -44,7 +49,7 @@ export declare class EvtCore<T> {
     protected __attachOncePrepend<U>(attachParams: Handler.PropsFromArgs<T, U>): Promise<U>;
     protected __attachOnceExtract<U>(attachParams: Handler.PropsFromArgs<T, U>): Promise<U>;
     /**
-     * https://garronej.github.io/ts-evt/#evtishandleddata
+     * https://docs.evt.land/api/evt/ishandled
      *
      * Test if posting a given event data will have an effect.
      *
@@ -52,15 +57,23 @@ export declare class EvtCore<T> {
      * -There is at least one handler matching
      * this event data ( at least one handler's callback function
      * will be invoked if the data is posted. )
-     * -There is at least one handler that will be detached
+     * -Handlers could be will be detached
      * if the event data is posted.
      *
      */
     isHandled(data: T): boolean;
-    /** https://garronej.github.io/ts-evt/#evtgethandlers */
+    /** https://docs.evt.land/api/evt/gethandler */
     getHandlers(): Handler<T, any>[];
-    /** Detach every handlers of the Evt that are bound to the provided context */
+    /**
+     * https://docs.evt.land/api/evt/detach
+     *
+     * Detach every handlers of the Evt that are bound to the provided context
+     * */
     detach(ctx: Ctx): Handler<T, any, Ctx>[];
-    /** (unsafe) Detach every handlers from the Evt */
+    /**
+     * https://docs.evt.land/api/evt/detach
+     *
+     * (unsafe) Detach every handlers from the Evt
+     * */
     detach(): Handler<T, any>[];
 }

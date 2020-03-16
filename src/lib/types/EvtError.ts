@@ -1,3 +1,4 @@
+
 export type EvtError = 
     EvtError.Timeout |
     EvtError.Detached

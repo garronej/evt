@@ -1,9 +1,66 @@
 
-import { Evt, to, compose } from "../lib";
+import { Evt, to, compose, invokeOperator } from "../lib";
 
 import { chunksOf } from "../lib/util/genericOperators/chunksOf";
 
 //import { Operator } from "../lib/types/Operator";
+
+{
+
+    {
+
+        const evtPoint = new Evt<number>();
+
+        evtPoint.$attach(
+            [(point, sum) => [point + sum], 0],
+            sum => console.log(`sum: ${sum}`)
+        );
+
+        evtPoint.post(2); // Prints "sum: 2"
+
+        console.log(
+            invokeOperator(
+                evtPoint.getStatelessOp(
+                    evtPoint.getHandlers()[0].op
+                ),
+                2
+            )
+        ); // Prints "[ 4 ]" ( 2 + 2 )
+
+        evtPoint.post(3); // Prints "sum: 5" ( the state was not affected )
+
+    }
+
+    {
+
+        const evtPoint = new Evt<number>();
+
+        evtPoint.attach(
+            point => point > 10,
+            point => { }
+        );
+
+        console.log(
+            invokeOperator(
+                evtPoint.getStatelessOp(
+                    evtPoint.getHandlers()[0].op
+                ),
+                5
+            )
+        ); // Prints "null" ( 5 < 10 )
+
+        console.log(
+            invokeOperator(
+                evtPoint.getStatelessOp(
+                    evtPoint.getHandlers()[0].op
+                ),
+                15
+            )
+        ); // Prints "[ 15 ]" ( 15 > 10 )
+
+    }
+
+}
 
 {
 
@@ -15,12 +72,12 @@ import { chunksOf } from "../lib/util/genericOperators/chunksOf";
         console.log
     );
 
-    evt.post(new Uint8Array([1,2,3]));
-    evt.post(new Uint8Array([4,5,6,7]));
+    evt.post(new Uint8Array([1, 2, 3]));
+    evt.post(new Uint8Array([4, 5, 6, 7]));
     evt.post(new Uint8Array([0]));
-    evt.post(new Uint8Array([1,2]));
-    evt.post(new Uint8Array([3,4]));
-    evt.post(new Uint8Array([1,2,3,4,5,6]));
+    evt.post(new Uint8Array([1, 2]));
+    evt.post(new Uint8Array([3, 4]));
+    evt.post(new Uint8Array([1, 2, 3, 4, 5, 6]));
 
 
 }
