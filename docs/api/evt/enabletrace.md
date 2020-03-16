@@ -1,7 +1,5 @@
 # evt.enableTrace\(...\)
 
-## `evt.enableTrace(...)`
-
 If you need help to track down a bug, you can use `enableTrace` to log what's going on with an Evt.  
 Use `evt.disableTrace()` to stop logging.
 
