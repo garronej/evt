@@ -14,7 +14,7 @@ The recomanded way to get a new [`Ctx`](https://docs.ts-evt.dev/api/ctx) instanc
 ## Example
 
 ```typescript
-import { Evt } from "ts-evt";
+import { Evt } from "evt";
 
 const ctx = Evt.newCtx();
 
