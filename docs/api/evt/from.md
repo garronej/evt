@@ -8,7 +8,7 @@ Evt&lt;T&gt; will post every time the emitter emits
 
 ## Parameters
 
-Ctx Optional, Allows to detach the handlers attached to the source emitter.
+Ctx Optional, Allows detaching the handlers attached to the source emitter.
 
 `emitter`: Any of the following,
 
@@ -18,7 +18,7 @@ Ctx Optional, Allows to detach the handlers attached to the source emitter.
 * RxJS Subject
 * An Array, NodeList or HTMLCollection of many of these.
 
-Depending of the API the type argument will be inffered or not.
+Depending of the API the type argument will be inferred or not.
 
 `name`: The event name of interest, being emitted by the `target`.
 
@@ -55,7 +55,7 @@ const ctx= Evt.newCtx();
 
 const subject = new Subject<string>();
 
-const evtText = Evt.from(ctx, subject); //The type argument is inffered
+const evtText = Evt.from(ctx, subject); //The type argument is inferred.
 
 evtText.attach(text=> console.log(text));
 
@@ -81,7 +81,7 @@ Evt.from(document, "click").attach(()=> console.log("Clicked!"));
 ### With JQuery-like event target
 
 ```typescript
-import { Evt } from "ts-evt";
+import { Evt } from "evt";
 
 Evt.from([
     $("#btnA"),

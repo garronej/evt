@@ -23,7 +23,7 @@ evtShape.waitFor(matchCircle)
     .then(circle => console.log("3:", circle))
     ;
 
-//Only handler that do not use matchCircle as operator.
+//Only handler that does not use matchCircle as operator.
 evtShape.attach(circle => console.log("4:", circle))
 
 

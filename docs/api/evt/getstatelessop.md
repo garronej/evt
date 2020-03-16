@@ -4,14 +4,14 @@
 This is a very advanced feature, it you are new to EVT do not bother.
 {% endhint %}
 
-It is not always possible to manually invoke an operator attached to an Handler that you got using `evt.getHandlers()`. Indeed if the operator is statefull you can't provide the `prev` value. This function give access to this state.
+It is not always possible to manually invoke an operator attached to an Handler that you got using `evt.getHandlers()`. Indeed if the operator is stateful you can't provide the `prev` value. This function gives access to this state.
 
-Because it is such an advanced feature we just provide an exaple as documentation:
+Because it is such an advanced feature we just provide an example as documentation:
 
 ```typescript
-//invokeOperator allow to call any type of stateless operator and 
+//invokeOperator allow calling any type of stateless operator and 
 //get a return as if the operator was a fλ
-import { Evt, invokeOperator } from "../lib";
+import { Evt, invokeOperator } from “evt”;
 
 
 {

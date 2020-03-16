@@ -26,7 +26,7 @@ evtText.detach();
 
 [**Run the example**](https://stackblitz.com/edit/evt-xwe67h?embed=1&file=index.ts&hideExplorer=1)
 
-Thoses event are lazyly initializated for performance reasons but their post count is as if they where instantiated right from the start.
+These Evt are lazily initialized for performance reasons but their post count is as if they were instantiated right from the start.
 
 ```typescript
 import { Evt } from "evt";
