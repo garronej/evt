@@ -59,7 +59,7 @@ evtText.attachOnce(
     _text => console.assert(false,"never")
 );
 
-evtText.detach(boundTo);
+evtText.detach(ctx);
 
 //"Hello World" will be printed
 evtText.post("World");
