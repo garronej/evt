@@ -55,7 +55,7 @@ evt.post(["time", 123]);
 evt.post(["time", 1234]);
 ```
 
-[**Run the example**](https://stackblitz.com/edit/evt-template-honvv3?embed=1&file=index.ts&hideExplorer=1)
+[**Run the example**](https://stackblitz.com/edit/evt-honvv3?embed=1&file=index.ts&hideExplorer=1)
 
 ## RxJS comparison
 
