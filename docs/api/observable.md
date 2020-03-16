@@ -50,12 +50,14 @@ assert(obsText.value === "bar");
 const exposedObsText: IObservable<string> = obsText;
 ```
 
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-yffb9r?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
+
 It is possible to define what qualifies as a change. Here for example we observe an array of names to see what values are being added and removed in real time.
 
 ```typescript
 import { Observable } from "evt";
-import { representsSameDataFactory } from "ts-evt/dist/tools/inDepthObjectComparison";
-import { diff } from "ts-evt/dist/tools/reducers";
+import { representsSameDataFactory } from "evt/dist/tools/inDepthObjectComparison";
+import { diff } from "evt/dist/tools/reducers";
 
 const { representsSameData } = representsSameDataFactory(
     { "takeIntoAccountArraysOrdering": false }
@@ -87,5 +89,5 @@ const updatedUsers = [
 obsUsers.onPotentialChange(updatedUsers);
 ```
 
-[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-observable-change-condition?embed=1&file=index.ts)
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-ydvtrf?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
 
