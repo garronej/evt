@@ -1,4 +1,4 @@
-# evt.enableTrace\(...\)
+# evt.\[enable\|disable\]Trace\(...\)
 
 ## `evt.enableTrace(...)`
 
