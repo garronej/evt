@@ -41,7 +41,7 @@ evtText.detach();
 Using a context argument
 
 ```typescript
-import { Evt } from "ts-evt";
+import { Evt } from "evt";
 
 const evtText = new Evt<string>();
 
@@ -65,5 +65,5 @@ evtText.detach(boundTo);
 evtText.post("World");
 ```
 
-[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-detach-with-contex?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/evt-bhxla6?embed=1&file=index.ts&hideExplorer=1)
 
