@@ -24,10 +24,10 @@ Depending of the API the type argument will be inffered or not.
 
 ## Example
 
-### With nodez EventEmitter
+### From `EventEmitter`
 
 ```typescript
-import { Evt } from "ts-evt";
+import { Evt } from "evt";
 import { EventEmitter } from "events";
 
 const ctx= Evt.newCtx();
@@ -43,17 +43,19 @@ ctx.done();
 console.log(ee.listenerCount("text"));//Prints "0"
 ```
 
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-qyk2ny?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
+
 ### With RxJS Subject
 
 ```typescript
-import { Evt } from "ts-evt";
+import { Evt } from "evt";
 import { Subject } from "rxjs";
 
 const ctx= Evt.newCtx();
 
 const subject = new Subject<string>();
 
-const evtText = Evt.from(subject); //The type argument is inffered
+const evtText = Evt.from(ctx, subject); //The type argument is inffered
 
 evtText.attach(text=> console.log(text));
 
@@ -64,13 +66,17 @@ ctx.done();
 subject.next("Foo bar"); //Prints nothing
 ```
 
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-t14cot?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
+
 ### With DOM EventTarget
 
 ```typescript
-import { Evt } from "ts-evt";
+import { Evt } from "evt";
 
 Evt.from(document, "click").attach(()=> console.log("Clicked!"));
 ```
+
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-whhtbw?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
 
 ### With JQuery-like event target
 
