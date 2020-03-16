@@ -40,7 +40,7 @@ evtTime.post(1234);
 However, the traditional approach that consists of gathering all the events in a single bus is also an option.
 
 ```typescript
-import { evt, to } from "evt";
+import { Evt, to } from "evt";
 
 const evt = new Evt<
     [ "text",  string ] | 
@@ -55,29 +55,15 @@ evt.post(["time", 123]);
 evt.post(["time", 1234]);
 ```
 
-[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-compared-with-events?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/evt-template-honvv3?embed=1&file=index.ts&hideExplorer=1)
 
 ## RxJS comparison
 
 ### "Get started" examples.
 
-Here are direct translations of examples provided as overview on the RxJS website. You will have to put on you 👓 to notice the differences, on the surface the API of the two libraries are very similar.
-
-[First examples](https://rxjs-dev.firebaseapp.com/guide/overview#first-examples):
-
-```typescript
-import { fromEvent } from "rxjs";
-
-fromEvent(document, "click").subscribe(() => console.log("Clicked!"));
-
-/* ------------------------------ */
-
-import { Evt } from "evt";
-
-Evt.from(document, "click").attach(()=> console.log("Clicked!"));
-```
-
-[Values](https://rxjs-dev.firebaseapp.com/guide/overview#values):
+Here is a direct translations of [the examples provided as an overview](https://rxjs-dev.firebaseapp.com/guide/overview#values) on the RxJS website.  
+  
+Ironically enough the very example chosen to showcase the library give a type error. RxJS, unlike EVT, fail to infer that event is of type `MouseEvent`.
 
 ```typescript
 import { fromEvent } from "rxjs";
@@ -86,7 +72,7 @@ import { throttleTime, map, scan } from "rxjs/operators";
 fromEvent(document, "click")
   .pipe(
       throttleTime(1000),
-      map(event => event.clientX),
+      map(event => event.clientX), //<= type error
       scan((count, clientX) => count + clientX, 0)
   )
   .subscribe(count => console.log(count))
@@ -105,6 +91,10 @@ Evt.from(document, "click")
     .attach(count => console.log(count))
     ;
 ```
+
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-q772em?embed=1&file=index.ts&hideExplorer=1)  
+****  
+As you can see it is possible to do things à la RxJS with EVT but hold on here come the interesting part.
 
 ### What differentiates the two libs
 
@@ -156,8 +146,8 @@ const subject = new Subject<Data>();
 const prText = subject
     .pipe(
         filter(
-            (data): data is Extract<Data, { type: "TEXT" }> 
-            => data.type === "TEXT"
+            (data): data is Extract<Data, { type: "TEXT" }> => 
+                data.type === "TEXT"
         ),
         first(),
         map(data => data.text) 
@@ -178,6 +168,8 @@ const prText = evt.waitFor(
 );
 ```
 
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-795plc?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
+
 By gathering the `filter` and `map` operation into a single function, we enable TypeScript to infer that `data` has a `text` property because `data.type` is `"TEXT"`. Using `filter`s, on the other hand, we have to explicitly tell TypeScript that we filter out all `shapes` that are not `circle` using a [type guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards). Type guards are powerful but they increase verbosity and it's possible to get them wrong, TypeScript trust you to perform the right checks.
 
 Also, for the sake of not misrepresenting RxJS, we make use of advanced TypeScript features \(Extract and type guards\) to enforce type safety but it is common for programmers not to bother and just use `as Foo` which is a severe liability as it cause the code to silently break on refactor.
@@ -192,9 +184,9 @@ const subject = new Subject<Data>();
 
 subject
     .pipe(
-        .filter(
-            (data): data is Extract<Data, { type: "TEXT" }> 
-             => data.type === "TEXT"
+        filter(
+            (data): data is Extract<Data, { type: "TEXT" }> => 
+                data.type === "TEXT"
         ), 
         map(data=> data.text),
         takeWhile(text => text !== "STOP"),
@@ -224,11 +216,11 @@ evtData.$attach(
 );
 ```
 
-On top of the improved type safety, we remove the need for the `takeWhile` abstraction by simply returning `"DETACH"` once we no longer need to listen. We also get rid of `scan`, fλ working à la `Array.prototype.reduce`.
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-xuutfw?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
+
+On top of the increased type safety, we remove the need for the `takeWhile` abstraction by simply returning `"DETACH"` once we no longer need to listen. We also get rid of `scan`, fλ working like`Array.prototype.reduce`.
 
 It is almost impossible to make a mistake writing a fλ operator as the code will either not compile or the output type will make it obvious that something is wrong.
-
-[Run these examples and others](https://stackblitz.com/edit/ts-evt-vs-rxjs?embed=1&file=index.ts), see for yourself the full extend of the type inference.
 
 ## Where to start
 
