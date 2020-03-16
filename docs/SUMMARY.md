@@ -14,7 +14,7 @@
     * [evt.pipe\(...\)](api/evt/pipe.md)
     * [evt.getHandlers\(\)](api/evt/gethandler.md)
     * [evt.isHandled\(data\)](api/evt/ishandled.md)
-    * [evt.\[enable\|disable\]Trace\(...\)](api/evt/enabletrace.md)
+    * [evt.enableTrace\(...\)](api/evt/enabletrace.md)
     * [Evt.from&lt;T&gt;\(...\)](api/evt/from.md)
     * [Evt.newCtx&lt;T&gt;\(\)](api/evt/newctx.md)
     * [Evt.merge\(\[ evt1, evt2, ... \]\)](api/evt/merge.md)
