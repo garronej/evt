@@ -4,7 +4,7 @@ If you need help to track down a bug, you can use `enableTrace` to log what's go
 Use `evt.disableTrace()` to stop logging.
 
 ```typescript
-import { Evt } from "ts-evt";
+import { Evt } from "evt";
 
 {
     const evtCircle = new Evt<Circle>();
@@ -53,5 +53,5 @@ This will print:
 [myPrefix] (evtCircle n°2) 1 handler => CIRCLE(33)
 ```
 
-[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-trace?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/evt-vfjvfs?embed=1&file=index.ts&hideExplorer=1)
 

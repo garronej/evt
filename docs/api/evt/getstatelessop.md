@@ -66,7 +66,7 @@ import { Evt, invokeOperator } from "../lib";
     ); // Prints "[ 15 ]" ( 15 > 10 )
 
 }
-
-}
 ```
+
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-yljxhq?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
 
