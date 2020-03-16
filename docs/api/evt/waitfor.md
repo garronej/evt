@@ -11,7 +11,7 @@ _Essentialy_ the same but [not exactly the same](https://docs.ts-evt.dev/api/evt
 By default the promise returned by `waitFor` will never reject.
 
 ```typescript
-import { Evt } from "ts-evt";
+import { Evt } from "evt";
 
 const evtText = new Evt<string>();
 
@@ -28,14 +28,14 @@ setTimeout(()=> evtText.post("Hi!"), 1500);
 })();
 ```
 
-[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-waitfor?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/evt-cazqyr?embed=1&file=index.ts&hideExplorer=1)
 
 ## With timeout
 
 As with `attach*`, it is possible to set what is the maximum amount of time we are willing to wait for the event before the promise rejects.
 
 ```typescript
-import { Evt, EvtError } from "ts-evt";
+import { Evt, EvtError } from "evt";
 
 const evtText = new Evt<string>();
 
@@ -71,7 +71,7 @@ setTimeout(
 );
 ```
 
-[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-waitfor-timeout?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/evt-wqh856?embed=1&file=index.ts&hideExplorer=1)
 
 ## Difference between `evt.waitFor(...)` and `evt.attachOnce(...)`
 
@@ -82,7 +82,7 @@ setTimeout(
 Basically it means that the following example prints `A B` on the console instead of waiting forever for the secondLetter.
 
 ```typescript
-import { Evt } from "ts-evt";
+import { Evt } from "evt";
 
 const evtText = new Evt<string>();
 
@@ -101,5 +101,5 @@ evtText.post("B");
 //"A B" is printed to the console.
 ```
 
-Run this [**more practical example**](https://stackblitz.com/edit/ts-evt-demo-edge-case?embed=1&file=index.ts) to understand how this behavior prevent from some hard to figure out bugs.
+Run this [**more practical example**](https://stackblitz.com/edit/evt-v4q4s2?embed=1&file=index.ts&hideExplorer=1) if you want to understand how this behavior prevent from some hard to figure out bugs.
 
