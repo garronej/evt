@@ -25,7 +25,7 @@ If you have no use of the callback function and just want the promise, [`evt.wai
 
 A large number of overload is provided to cover all the possible combination of arguments. The ordering in which the parameters are listed above must be respected but every parameter other than the callback can be omitted.
 
-![](https://user-images.githubusercontent.com/6702424/74090245-6c973a00-4aa9-11ea-8e48-90d49a0ed20b.png)
+![](../../.gitbook/assets/screenshot-2020-03-16-at-06.28.38.png)
 
 Examples:
 
@@ -63,7 +63,7 @@ evtConnect.post();
 //"A", "B", "C" is printed to the console.
 ```
 
-[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-prepend?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/evt-qshmkh?embed=1&file=index.ts&hideExplorer=1)
 
 ## **`evt.[$]attach[Once]Extract(...)`**
 
@@ -74,7 +74,7 @@ When the method contains the "**extract**" keyword, every event that the [`handl
 If multiples "extractes" handlers are candidates to extract an event the handler that has been added first have priority.
 
 ```typescript
-import { Evt } from "ts-evt";
+import { Evt } from "evt";
 
 const evtCircle = new Evt<Circle>();
 
@@ -96,5 +96,5 @@ evtCircle.attachPrepend(
 );
 ```
 
-[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-extract?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/evt-bwkprd?embed=1&file=index.ts&hideExplorer=1)
 
