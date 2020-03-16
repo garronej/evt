@@ -43,5 +43,5 @@ const evtHuman = new Evt<{
 }
 ```
 
-[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-unpack-type-argument?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/evt-ykjacd?embed=1&file=index.ts&hideExplorer=1)
 
