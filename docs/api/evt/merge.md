@@ -2,7 +2,7 @@
 
 Returns a new `Evt` instance which concurrently post all event data from every given input `Evt`.
 
-## Returns
+## Return
 
 A new Evt that have for type argument the union of the type arguments of the inputs Evt.
 
@@ -15,7 +15,7 @@ Evt&lt;any&gt;\[\] Evts to be merged.
 ## Example
 
 ```typescript
-import { Evt } from "ts-evt";
+import { Evt } from "evt";
 
 const ctx= Evt.newCtx();
 
@@ -33,4 +33,6 @@ ctx.done();
 
 evtText.post("Foo bar"); //Prints nothing
 ```
+
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-nbshnc?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
 

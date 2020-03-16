@@ -73,7 +73,7 @@ For most use cases, it is more convenient to use ctx.getPrDone\(\[timeout\]\)
 ### Example
 
 ```typescript
-import { Evt } from “evt”;
+import { Evt } from "evt";
 import { EventEmitter } from "events";
 
 const ctx= Evt.newCtx();
@@ -151,6 +151,8 @@ evtText.post("foo"); //Prints nothing
 ee.emit("text", "bar"); //Prints nothing
 ```
 
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-niwafz?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
+
 ## `ctx.getPrDone([timeout])`
 
 Tracks via a Promise when ctx.done or ctx.abort is invoked.
@@ -205,19 +207,23 @@ evt.textAttach(ctx, ()=> {});
 console.log(ctx.getEvtAttach().postCount); //Prints "2"
 ```
 
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-nwh1ju?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
+
 ```typescript
-import { Evt } from "ts-evt";
+import { Evt } from "evt";
 
 const evtText = new Evt<string>();
 
 const ctx= Evt.newCtx();
 
-ctx.getEvtAttach.attach(handler => console.log(handler.timeout));
+ctx.getEvtAttach().attach(handler => console.log(handler.timeout));
 
 const timeout = 43;
 
 evtText.attach(timeout, ()=>{}); //Prints "43"
 ```
+
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-t17qsy?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
 
 ## `ctx.getEvtDetach()`
 
@@ -287,7 +293,7 @@ function downloadFile(
 }
 ```
 
-Be the download successful or not this use of Ctx enforce that there is no left over handlers on the Evt passed as input once the download attempt has completed.
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-qpke6h?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
 
-Run the example
+Be the download successful or not this use of Ctx enforce that there is no left over handlers on the Evt passed as input once the download attempt has completed.
 
