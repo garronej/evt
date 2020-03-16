@@ -1,5 +1,5 @@
 ---
-description: Test if posting event data will have an effect.
+Description: Test if posting event data will have an effect.
 ---
 
 # evt.isHandled\(data\)

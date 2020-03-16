@@ -4,11 +4,11 @@ Returns a new `Evt` instance which concurrently post all event data from every g
 
 ## Return
 
-A new Evt that have for type argument the union of the type arguments of the inputs Evt.
+A new Evt that has for type arguments the union of the type arguments of the inputs Evt.
 
 ## Parameters
 
-Ctx&lt;any&gt; Optional, Ctx that will be used to detach the handler that have been attached to the input Evts.
+Ctx&lt;any&gt; Optional, Ctx that will be used to detach the handler that has been attached to the input Evts.
 
 Evt&lt;any&gt;\[\] Evts to be merged.
 

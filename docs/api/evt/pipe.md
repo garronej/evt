@@ -14,15 +14,15 @@ A new Evt instance toward which are forwarded the transformed events matched by 
 
 ## Parameters
 
-`Ctx`: Optional, the context to which will be bound the handler responsable to forwarding event to the returned Evt.
+`Ctx`: Optional, the context to which will be bound the handler responsible for forwarding events to the returned Evt.
 
-`...Operator[]`: One ore many operator composable with one another. 
+`...Operator[]`: One or many operators composable with one another. 
 
 ## Examples
 
-There is two ways of using pipe, the first is to call pipe ony once and passing it all the operators to chain, the second is to chain the `pipe` calls providing each time a single operator. Depending on the situation you should favor one aproach ovet the other.
+There are two ways of using pipe, the first is to call pipe only once and passing it all the operators to chain, the second is to chain the `pipe` calls providing each time a single operator. Depending on the situation, you should favor one approach over the other.
 
-Let us consider a case where the two approach are equally valid.
+Let us consider a case where the two approaches are equally valid.
 
 Using a single call to `pipe`:
 

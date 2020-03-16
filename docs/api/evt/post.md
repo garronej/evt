@@ -8,7 +8,7 @@ Returns evt.postCount
 
 ## **`evt.postCount: number`**
 
-The number of times `evt.post()` has been called. It's a readonly property.
+The number of times `evt.post()` has been called. It's a read-only property.
 
 ```typescript
 import { Evt } from "evt";
@@ -34,8 +34,8 @@ Post the event data only once there is at least one  handler candidate to handle
 
 When `evt.isHandled(data)` return `true`, `post(data)` is invoked synchronously and the new post count is returned. When `postAsyncOnceHandled(data)` is invoked at a time where`evt.isHandled(data)` returns `false`, the `data` will be kept on hold and posted only once a candidate handler is attached.
 
-`evt.post(data)` is not invoked synchronously as soon as the candidate handler is attached but is sheduled to be invoked in a microtask.  
-When the call to post is delayed `postAsyncOnceHandled(data)` returns a promise that resolve with the new post count after `post(data)` have been invoked. 
+`evt.post(data)` is not invoked synchronously as soon as the candidate handler is attached but is scheduled to be invoked in a microtask.  
+When the call to post is delayed `postAsyncOnceHandled(data)` returns a promise that resolves with the new post count after `post(data)` has been invoked. 
 
 ```typescript
 import { Evt } from "evt";
@@ -70,6 +70,6 @@ console.log("BEFORE");
 [**Run the example**](https://stackblitz.com/edit/evt-mycz4t?embed=1&file=index.ts&hideExplorer=1)
 
 {% hint style="info" %}
-`evt.postSyncOnceHandled()` does not exsist because it is perferable to wait the next event cicle before posting the event. For example the previous example would not print `"2 foo"` if we would have used `evt.postSyncOnceHandled()`
+`evt.postSyncOnceHandled()` does not exist because it is preferable to wait for the next event cycle before posting the event. For example, the previous example would not print `"2 foo"` if we had used `evt.postSyncOnceHandled()`
 {% endhint %}
 

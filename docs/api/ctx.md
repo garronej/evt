@@ -227,7 +227,7 @@ evtText.attach(timeout, ()=>{}); //Prints "43"
 
 ## `ctx.getEvtDetach()`
 
-Same as `ctx.getEvtAttach()` but post when handler are detached. Note that an handler beeing detached does not mean that it has been explicitely detached. One-time handlers and handlers that have timed out are automatically detached.
+Same as `ctx.getEvtAttach()` but post when handlers are detached. Note that a handler being detached does not mean that it has been explicitly detached. One-time handlers and handlers that have timed out are automatically detached.
 
 ## Comprehensive example
 
@@ -295,5 +295,5 @@ function downloadFile(
 
 \*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-qpke6h?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
 
-Be the download successful or not this use of Ctx enforce that there is no left over handlers on the Evt passed as input once the download attempt has completed.
+Whether the download is successful or not this use of Ctx enforce that there is no left over handlers on the Evt passed as input once the download attempt has completed.
 

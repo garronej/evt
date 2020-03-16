@@ -4,7 +4,7 @@ description: Get a new instance of Ctx
 
 # Evt.newCtx&lt;T&gt;\(\)
 
-The recomanded way to get a new [`Ctx`](https://docs.ts-evt.dev/api/ctx) instance. The type argument is optional, default is void.
+The recommended way to get a new [`Ctx`](https://docs.ts-evt.dev/api/ctx) instance. The type argument is optional, default is void.
 
 ## Returns
 
