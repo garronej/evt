@@ -31,8 +31,9 @@ ctxText.getPrDone().then(
 );
 
 ctxText.done(new Uint8Array([1,2,3])); //Prints "DONE: 3 bytes"
-
 ```
+
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-5xs5rr?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
 
 
 
