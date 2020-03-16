@@ -20,7 +20,7 @@ is posted the handler is detached
 evtText.$attach(
     text=> text.startsWith("h") ? 
         [ text ] : 
-        text.startsWith("g") ? "DETACH" : null
+        text.startsWith("g") ? "DETACH" : null,
     text=> {/* do something with the text */}
 );
 
@@ -31,7 +31,7 @@ console.log(
 
 //"false", do not start with 'h' or 'g'
 console.log(
-    evtText.isHandled("hello world")
+    evtText.isHandled("foo bar")
 );
 
 //"true", not matched but will cause the handler to be detached if posted
@@ -40,5 +40,5 @@ console.log(
 );
 ```
 
-[**Run the example**](https://stackblitz.com/edit/ts-evt-is-hadled?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/evt-a3m4od?embed=1&file=index.ts&hideExplorer=1)
 
