@@ -2,7 +2,7 @@
 
 ![](https://img.shields.io/bundlephobia/min/ts-evt) ![](https://img.shields.io/bundlephobia/minzip/ts-evt) ![](https://img.shields.io/david/garronej/ts-evt) ![](https://img.shields.io/npm/l/ts-evt)
 
-`'evt'` is intended to be a replacement for Node's `'events'` and a lighter alternative to `'rxjs'`.  
+`'evt'` is intended to be a replacement for Node's `'events'`.  
 It enable and encourage **functional programming** and makes heavy use of **typescript**'s type inference features to provide **type safety** while keeping things **concise and elegant** 🍸.
 
 Its main target is [**Deno**](https://github.com/denoland/deno)**\*** but it is cross compatible with **Node** and will run just about anywhere from **React Native** to the **web browser** of your grama.
@@ -28,14 +28,12 @@ There are a lot of things that can't easily be done with `EventEmitter`:
 
   _Example: waiting at most one second for the next message, stop waiting if the socket disconnects._
 
-RxJS have its issues as well:
+Concerning RxJS:
 
-* When chaining operators the type is often lost along the way as TypeScript struggle to keep track of the mutation / filtering being applied to the event flow.
-* Introduce _\(too\)_ many abstractions/operators, combining them right can be challenging, even for seemingly straights forward control flows.
+* It introduce lot of abstractions. It is a big jump from `EventEmitter`.
+* [The filter operator breaks the type inference](https://stackblitz.com/edit/evt-795plc?embed=1&file=index.ts&hideExplorer=1).
 
 EVT is an attempt to solve all these issues while trying to remain as accessible as `EventEmitter`.
 
 Let's jump right in by considering [side by side examples comparing EVT with its peers](https://docs.ts-evt.dev/overview).
-
-![](.gitbook/assets/76691034-90204800-6646-11ea-8ef9-b07db8e39ca4.gif)
 

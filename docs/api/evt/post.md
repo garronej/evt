@@ -30,12 +30,12 @@ console.log(evtText.postCount);
 
 ## `evt.postAsyncOnceHandled(data)`
 
-Post the event data only once there is at least one  handler candidate to handle it.
+Post the event data only once there is at least one handler candidate to handle it.
 
 When `evt.isHandled(data)` return `true`, `post(data)` is invoked synchronously and the new post count is returned. When `postAsyncOnceHandled(data)` is invoked at a time where`evt.isHandled(data)` returns `false`, the `data` will be kept on hold and posted only once a candidate handler is attached.
 
 `evt.post(data)` is not invoked synchronously as soon as the candidate handler is attached but is scheduled to be invoked in a microtask.  
-When the call to post is delayed `postAsyncOnceHandled(data)` returns a promise that resolves with the new post count after `post(data)` has been invoked. 
+When the call to post is delayed `postAsyncOnceHandled(data)` returns a promise that resolves with the new post count after `post(data)` has been invoked.
 
 ```typescript
 import { Evt } from "evt";
@@ -64,7 +64,6 @@ evtText.attach(text => console.log("2 " + text));
 console.log("BEFORE");
 
 //"BEFORE" then (next micro task) "1 foo" "2 foo" "1 bar" "2 bar"
-
 ```
 
 [**Run the example**](https://stackblitz.com/edit/evt-mycz4t?embed=1&file=index.ts&hideExplorer=1)

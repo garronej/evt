@@ -14,7 +14,7 @@ The recommended way to get a new [`Ctx`](https://docs.ts-evt.dev/api/ctx) instan
 ## Example
 
 ```typescript
-import { Evt } from "evt";
+import { Evt } from "evt";
 
 const ctx = Evt.newCtx();
 
@@ -34,6 +34,4 @@ ctxText.done(new Uint8Array([1,2,3])); //Prints "DONE: 3 bytes"
 ```
 
 \*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-5xs5rr?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
-
-
 

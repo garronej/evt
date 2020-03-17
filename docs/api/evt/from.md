@@ -27,7 +27,7 @@ Depending of the API the type argument will be inferred or not.
 ### From `EventEmitter`
 
 ```typescript
-import { Evt } from "evt";
+import { Evt } from "evt";
 import { EventEmitter } from "events";
 
 const ctx= Evt.newCtx();
@@ -81,7 +81,7 @@ Evt.from(document, "click").attach(()=> console.log("Clicked!"));
 ### With JQuery-like event target
 
 ```typescript
-import { Evt } from "evt";
+import { Evt } from "evt";
 
 Evt.from([
     $("#btnA"),

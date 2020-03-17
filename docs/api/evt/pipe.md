@@ -5,7 +5,7 @@ description: An alternative to compose for chaining operaors.
 # evt.pipe\(...\)
 
 {% hint style="warning" %}
-Being familiar with [`Ctx`](https://docs.evt.land/api/ctx) and [`Operator`](https://docs.evt.land/api/operator)is a prerequisite  for properly using pipe.
+Being familiar with [`Ctx`](https://docs.evt.land/api/ctx) and [`Operator`](https://docs.evt.land/api/operator)is a prerequisite for properly using pipe.
 {% endhint %}
 
 ## Return
@@ -16,7 +16,7 @@ A new Evt instance toward which are forwarded the transformed events matched by 
 
 `Ctx`: Optional, the context to which will be bound the handler responsible for forwarding events to the returned Evt.
 
-`...Operator[]`: One or many operators composable with one another. 
+`...Operator[]`: One or many operators composable with one another.
 
 ## Examples
 
@@ -27,19 +27,19 @@ Let us consider a case where the two approaches are equally valid.
 Using a single call to `pipe`:
 
 ```typescript
-import { Evt } from "evt";
+import { Evt } from "evt";
 
 type Circle = { type: "CIRCLE"; radius: number; };
 type Square = { type: "SQUARE"; sideLength: number; };
 type Shape = Circle | Square;
 
-const evtShape = new Evt<Shape | undefined>();
+const evtShape = new Evt<Shape | undefined>();
 
 evtShape.pipe(
     shape => !shape ? null : [ shape ], // Filter out undefined
     shape => shape.type !== "CIRCLE" ? null : [ shape ], // Filter Circle
-    ({ radius }) => [ radius ], // Extract radius
-    radius => radius > 200 ? "DETACH": [ radius ] //Detach if radius too large 
+    ({ radius }) => [ radius ], // Extract radius
+    radius => radius > 200 ? "DETACH": [ radius ] //Detach if radius too large 
 ).attach(radius=> { /* ... */ });
 ```
 
@@ -48,7 +48,7 @@ evtShape.pipe(
 Same thing chaining `pipe`:
 
 ```typescript
-const evtShape = new Evt<Shape | undefined>();
+const evtShape = new Evt<Shape | undefined>();
 
 const ctx= Evt.newCtx();
 
@@ -56,7 +56,7 @@ evtShape
     .pipe(ctx)
     .pipe(shape => !shape ? null : [ shape ])
     .pipe(shape => shape.type !== "CIRCLE" ? null : [ shape ])
-    .pipe(({ radius }) => [ radius ])
+    .pipe(({ radius }) => [ radius ])
     .pipe(radius => radius > 200 ? { "DETACH": ctx } : [radius])
     .attach(radius => { /* ... */ });
 ```
@@ -64,12 +64,12 @@ evtShape
 \*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-yb4gzb?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
 
 {% hint style="danger" %}
-When chaining `pipe` if one operator in the midle of the chain returns `"DETACH"`  all the handler upstream will stay attached. You must always detach the first link of the chain using a [`Ctx`](https://docs.evt.land/api/ctx).
+When chaining `pipe` if one operator in the midle of the chain returns `"DETACH"` all the handler upstream will stay attached. You must always detach the first link of the chain using a [`Ctx`](https://docs.evt.land/api/ctx).
 {% endhint %}
 
 The first approach \(calling pipe only once\) is preferable as it is slightly less verbose but in some cases you will reach the limits of TypeScript inference capabilities especially if you throw filters and generic operators into the mix. Bottom point is: try the first method, see how TypeScript infer the types, if detection fails fallback to chainging `pipe()`.
 
-#### Creating delegates
+### Creating delegates
 
 Pipe can also be used to create proxies to a source `Evt`.
 

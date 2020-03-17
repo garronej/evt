@@ -33,8 +33,7 @@ evtShape.getHandlers()
     ;
 
 //Prints only "4: ..." other handlers are detached.
-evtShape.post({ "type": "CIRCLE", "radius": 300 }); 
-
+evtShape.post({ "type": "CIRCLE", "radius": 300 });
 ```
 
 [**Run the example**](https://stackblitz.com/edit/evt-zufivp?embed=1&file=index.ts&hideExplorer=1)
@@ -44,7 +43,7 @@ evtShape.post({ "type": "CIRCLE", "radius": 300 });
 To detach all the handlers using a given callback function as we do with `EventEmitter`:
 
 ```typescript
-import { Evt } from "evt";
+import { Evt } from "evt";
 
 const evtText = new Evt<string>();
 
