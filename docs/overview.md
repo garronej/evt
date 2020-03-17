@@ -61,7 +61,7 @@ evt.post(["time", 1234]);
 
 ### "Get started" examples.
 
-Here is a direct translations of [the examples provided as an overview](https://rxjs-dev.firebaseapp.com/guide/overview#values) on the RxJS website.
+Here is a translations of [the examples provided as an overview](https://rxjs-dev.firebaseapp.com/guide/overview#values) on the RxJS website.
 
 ```typescript
 import { fromEvent } from "rxjs";
