@@ -13,7 +13,7 @@ _\*The deno package hasn't been published yet but it will be very soon._
 
 * No polyfills needed ✅  
 * Transpiled down to ES3 ✅  
-* Light-weight, no third party dependencies ✅   
+* Light-weight, no dependencies ✅   
 
 Can be imported in TypeScript projects using version &gt;= **2.8** \(Mar 2018\) and in any plain JS project.
 
@@ -34,6 +34,4 @@ Concerning RxJS:
 * [The filter operator breaks the type inference](https://stackblitz.com/edit/evt-795plc?embed=1&file=index.ts&hideExplorer=1).
 
 EVT is an attempt to solve all these issues while trying to remain as accessible as `EventEmitter`.
-
-Let's jump right in by considering [side by side examples comparing EVT with its peers](https://docs.ts-evt.dev/overview).
 
