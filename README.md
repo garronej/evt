@@ -19,14 +19,14 @@
 
 ---
 
-`'evt'` is intended to be a replacement for `'events'` and a lighter alternative to `'rxjs'`.  
+`'evt'` is intended to be a replacement for `'events'`.  
 It enable and encourage **functional programming** and makes heavy use of **typescript**'s type inference features to provide **type safety** while keeping things **concise and elegant** 🍸.
 
 **Browserify friendly:**
 
 * No polyfills needed ✅  
 * Transpiled down to ES3 ✅  
-* Light-weight, no third party dependencies ✅   
+* Light-weight, no dependencies ✅   
 
 # TL;DR*
 
@@ -82,18 +82,14 @@ There are a lot of things that can't easily be done with `EventEmitter`:
 * Waiting \(via a Promise\) for one thing or another to happen.  
 _Example: waiting at most one second for the next message, stop waiting if the socket disconnects._
 
-RxJS have its issues as well:
+Concerning RxJS:
 
-* When chaining operators the type is often lost along the way as TypeScript struggle to keep track of the mutation / filtering being applied to the event flow.  
-* Introduce _\(too\)_ many abstractions/operators, combining them right can be challenging, even for seemingly straights forward control flows.  
+* It introduce lot of abstractions. It is a big jump from ``EventEmitter``.
+* [The filter operator breaks the type inference](https://stackblitz.com/edit/evt-795plc?embed=1&file=index.ts&hideExplorer=1).
 
 EVT is an attempt to solve all these issues while trying to remain as accessible as `EventEmitter`.  
   
 </br>
-
-<p align="center">
-    <img src="https://user-images.githubusercontent.com/6702424/76691034-90204800-6646-11ea-8ef9-b07db8e39ca4.gif">
-</p> 
 
 <p align="center">
     <b><a href="https://docs.evt.land/overview#rxjs-comparison">Get started</a></b>
