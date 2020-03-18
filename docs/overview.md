@@ -90,9 +90,7 @@ Evt.from(document, "click")
     ;
 ```
 
-\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-q772em?embed=1&file=index.ts&hideExplorer=1)  
-****  
-As you can see it is possible to do things à la RxJS with EVT but hold on here come the interesting part.
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-q772em?embed=1&file=index.ts&hideExplorer=1)
 
 ### RxJS operators vs EVT operator
 
