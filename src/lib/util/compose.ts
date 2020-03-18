@@ -3,7 +3,6 @@ import { invokeOperator } from "./invokeOperator";
 import { Operator } from "../types/Operator";
 import { id } from "../../tools/typeSafety/id";
 
-
 function f_o_g<A, B, C>(
     op1: Operator<A, B>,
     op2: Operator<B, C>
@@ -32,14 +31,24 @@ function f_o_g<A, B, C>(
                 return resultB;
             }
 
+            const detachOp1 = resultB[1] ?? null;
+
             const [dataB] = resultB;
 
-            return invokeOperator(
+            const resultC= invokeOperator(
                 opBtoC,
                 dataB,
                 cbInvokedIfMatched
             );
 
+            if (Operator.fλ.Result.NotMatched.match(resultC)) {
+                return detachOp1 ?? resultC;
+            }
+
+            return id<Operator.fλ.Result<C>>([ 
+                resultC[0],
+                detachOp1 ?? resultC[1]  ?? null 
+            ]);
 
         }
     );

@@ -37,12 +37,21 @@ function f_o_g(op1, op2) {
             _a[_i] = arguments[_i];
         }
         var _b = __read(_a, 3), dataA = _b[0], cbInvokedIfMatched = _b[2];
+        var _c, _d;
         var resultB = invokeOperator_1.invokeOperator(opAtoB, dataA, cbInvokedIfMatched);
         if (Operator_1.Operator.fλ.Result.NotMatched.match(resultB)) {
             return resultB;
         }
-        var _c = __read(resultB, 1), dataB = _c[0];
-        return invokeOperator_1.invokeOperator(opBtoC, dataB, cbInvokedIfMatched);
+        var detachOp1 = (_c = resultB[1]) !== null && _c !== void 0 ? _c : null;
+        var _e = __read(resultB, 1), dataB = _e[0];
+        var resultC = invokeOperator_1.invokeOperator(opBtoC, dataB, cbInvokedIfMatched);
+        if (Operator_1.Operator.fλ.Result.NotMatched.match(resultC)) {
+            return detachOp1 !== null && detachOp1 !== void 0 ? detachOp1 : resultC;
+        }
+        return id_1.id([
+            resultC[0],
+            (_d = detachOp1 !== null && detachOp1 !== void 0 ? detachOp1 : resultC[1]) !== null && _d !== void 0 ? _d : null
+        ]);
     });
 }
 function compose() {
