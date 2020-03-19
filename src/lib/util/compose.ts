@@ -4,8 +4,8 @@ import { Operator } from "../types/Operator";
 import { id } from "../../tools/typeSafety/id";
 
 function f_o_g<A, B, C>(
-    op1: Operator<A, B>,
-    op2: Operator<B, C>
+    op1: Operator.AnyButSpecial<A, B>,
+    op2: Operator.AnyButSpecial<B, C>
 ): Operator.fλ.Stateless<A, C> {
 
     const opAtoB = Operator.fλ.Stateful.match(op1) ?
@@ -122,43 +122,43 @@ export function compose<A, B, C, D, E, F>(
 
 
 export function compose<A, B, C>(
-    op1: Operator<A, B>,
-    op2: Operator<B, C>
+    op1: Operator.AnyButSpecial<A, B>,
+    op2: Operator.AnyButSpecial<B, C>
 ): Operator.fλ.Stateless<A, C>;
 
 export function compose<A, B, C, D>(
-    op1: Operator<A, B>,
-    op2: Operator<B, C>,
-    op3: Operator<C, D>
+    op1: Operator.AnyButSpecial<A, B>,
+    op2: Operator.AnyButSpecial<B, C>,
+    op3: Operator.AnyButSpecial<C, D>
 ): Operator.fλ.Stateless<A, D>;
 
 export function compose<A, B, C, D, E>(
-    op1: Operator<A, B>,
-    op2: Operator<B, C>,
-    op3: Operator<C, D>,
-    op4: Operator<D, E>,
+    op1: Operator.AnyButSpecial<A, B>,
+    op2: Operator.AnyButSpecial<B, C>,
+    op3: Operator.AnyButSpecial<C, D>,
+    op4: Operator.AnyButSpecial<D, E>,
 ): Operator.fλ.Stateless<A, E>;
 
 export function compose<A, B, C, D, E, F>(
-    op1: Operator<A, B>,
-    op2: Operator<B, C>,
-    op3: Operator<C, D>,
-    op4: Operator<D, E>,
-    op5: Operator<E, F>
+    op1: Operator.AnyButSpecial<A, B>,
+    op2: Operator.AnyButSpecial<B, C>,
+    op3: Operator.AnyButSpecial<C, D>,
+    op4: Operator.AnyButSpecial<D, E>,
+    op5: Operator.AnyButSpecial<E, F>
 ): Operator.fλ.Stateless<A, F>;
 
 
 export function compose<T>(
     ...ops: [
-        Operator<T, any>,
-        ...Operator<any, any>[]
+        Operator.AnyButSpecial<T, any>,
+        ...Operator.AnyButSpecial<any, any>[]
     ]
 ): Operator.Stateless<T, any>;
 
 export function compose<T>(
     ...ops: [
-        Operator<T, any>,
-        ...Operator<any, any>[]
+        Operator.AnyButSpecial<T, any>,
+        ...Operator.AnyButSpecial<any, any>[]
     ]
 ): Operator.Stateless<T, any> {
 
@@ -242,14 +242,14 @@ opCompose(
 
 
 opCompose(
-    id<Operator<string,string>>((data: string) => true),
-    id<Operator<string, number>>((data: string) => [data.length] as const)
+    id<Operator.AnyButSpecial<string,string>>((data: string) => true),
+    id<Operator.AnyButSpecial<string, number>>((data: string) => [data.length] as const)
 );
 
 
 
 opCompose(
-    id<Operator<string, string>>(
+    id<Operator.AnyButSpecial<string, string>>(
         (data: string) => true
     ),
     id<Operator.fλ<string, number>>(

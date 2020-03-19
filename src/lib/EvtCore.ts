@@ -9,6 +9,7 @@ import { overwriteReadonlyProp } from "../tools/overwriteReadonlyProp";
 import { invokeOperator } from "./util/invokeOperator";
 import { encapsulateOpState } from "./util/encapsulateOpState";
 import { Ctx } from "./Ctx";
+import { Deferred } from "../tools/Deferred";
 
 export const setPostCount = (evt: EvtCore<any>, value: number) =>
     overwriteReadonlyProp(evt, "postCount", value);
@@ -194,26 +195,102 @@ export class EvtCore<T> {
 
     }
 
+
+
+
+
+
+
+
+
     private addHandler<U>(
         propsFromArgs: Handler.PropsFromArgs<T, U>,
         propsFromMethodName: Handler.PropsFromMethodName
     ): Handler<T, U> {
 
-        if (Operator.fλ.Stateful.match<T, any>(propsFromArgs.op)) {
+        const deferred = new Deferred<U>();
 
-            this.statelessByStatefulOp.set(
-                propsFromArgs.op,
-                encapsulateOpState(propsFromArgs.op)
-            );
+        const wTimer: [NodeJS.Timer | undefined] = [undefined];
+
+        if (typeof propsFromArgs.timeout === "number") {
+
+            wTimer[0] = setTimeout(() => {
+
+                wTimer[0] = undefined;
+
+                handler.detach();
+
+                deferred.reject(new EvtError.Timeout(handler.timeout!));
+
+            }, propsFromArgs.timeout);
 
         }
 
         const handler: Handler<T, U> = {
             ...propsFromArgs,
             ...propsFromMethodName,
-            "detach": null as any,
-            "promise": null as any
+            "promise": deferred.pr,
+            "detach": () => this.detachHandler(
+                handler,
+                wTimer,
+                error => deferred.reject(error)
+            )
         };
+
+        this.handlerTriggers.set(
+            handler,
+            opResult => this.triggerHandler(
+                handler,
+                wTimer,
+                transformedData=>deferred.resolve(transformedData),
+                opResult
+            )
+        );
+
+
+        if (Operator.fλ.Stateful.match<T, any>(handler.op)) {
+
+            this.statelessByStatefulOp.set(
+                handler.op,
+                encapsulateOpState(handler.op)
+            );
+
+        }
+
+        if (Operator.Special.match<T, any>(handler.op)) {
+
+            let { ctx } = handler;
+
+            if (!ctx) {
+
+                ctx = new Ctx();
+
+                (handler.ctx as (typeof handler)["ctx"]) = ctx;
+
+
+            }
+
+            handler.op[0](
+                transformedData => {
+
+                    if (this.handlers.indexOf(handler) < 0) {
+                        return;
+                    }
+
+                    handler.callback?.(transformedData);
+
+                    //TODO: resolve promise
+
+
+                },
+                ctx,
+                this as any
+            );
+
+
+        }
+
+
 
         if (handler.async) {
 
@@ -292,6 +369,152 @@ export class EvtCore<T> {
 
     }
 
+
+
+
+
+
+
+
+
+
+
+
+    /*
+    private addHandler<U>(
+        propsFromArgs: Handler.PropsFromArgs<T, U>,
+        propsFromMethodName: Handler.PropsFromMethodName
+    ): Handler<T, U> {
+
+        const handler: Handler<T, U> = {
+            ...propsFromArgs,
+            ...propsFromMethodName,
+            "detach": null as any,
+            "promise": null as any
+        };
+
+        if (Operator.fλ.Stateful.match<T, any>(handler.op)) {
+
+            this.statelessByStatefulOp.set(
+                handler.op,
+                encapsulateOpState(handler.op)
+            );
+
+        }
+
+        if( Operator.Special.match<T, any>(handler.op) ){
+
+            let { ctx } = handler;
+
+            if( !ctx ){
+
+                ctx = new Ctx();
+
+                (handler.ctx as (typeof handler)["ctx"]) = ctx;
+
+                
+            }
+
+            handler.op[0](
+                transformedData=> {
+
+                    if(this.handlers.indexOf(handler) < 0) {
+                        return;
+                    }
+
+                    handler.callback?.(transformedData);
+                    
+                    //TODO: resolve promise
+
+
+                },
+                ctx,
+                this as any
+            );
+
+
+        }
+
+        
+
+        if (handler.async) {
+
+            this.asyncHandlerChronologyMark.set(
+                handler,
+                this.getChronologyMark()
+            );
+
+        }
+
+        (handler.promise as (typeof handler)["promise"]) = new Promise<U>(
+            (resolve, reject) => {
+
+                const wTimer: [NodeJS.Timer | undefined] = [undefined];
+
+                if (typeof handler.timeout === "number") {
+
+                    wTimer[0] = setTimeout(() => {
+
+                        wTimer[0] = undefined;
+
+                        handler.detach();
+
+                        reject(new EvtError.Timeout(handler.timeout!));
+
+                    }, handler.timeout);
+
+                }
+
+                (handler.detach as (typeof handler)["detach"]) =
+                    () => this.detachHandler(handler, wTimer, reject)
+                    ;
+
+                this.handlerTriggers.set(
+                    handler,
+                    opResult => this.triggerHandler(
+                        handler,
+                        wTimer,
+                        resolve,
+                        opResult
+                    )
+                );
+
+            }
+        );
+
+        if (handler.prepend) {
+
+            let i: number;
+
+            for (i = 0; i < this.handlers.length; i++) {
+
+                if (this.handlers[i].extract) {
+                    continue;
+                }
+
+                break;
+
+            }
+
+            this.handlers.splice(i, 0, handler);
+
+        } else {
+
+            this.handlers.push(handler);
+
+        }
+
+        if (Ctx.__matchHandlerBoundToCtx(handler)) {
+            Ctx.__addHandlerToCtxCore(handler, this);
+        }
+
+        this.onHandler?.(true, handler);
+
+        return handler;
+
+    }
+    */
+
     /** https://docs.evt.land/api/evt/getstatelessop */
     public getStatelessOp(op: Operator<T, any>): Operator.Stateless<T, any> {
         return Operator.fλ.Stateful.match(op) ?
@@ -322,7 +545,7 @@ export class EvtCore<T> {
 
             const handlerCount = this.handlers
                 .filter(
-                    ({ extract, op }) => !extract && 
+                    ({ extract, op }) => !extract &&
                         !!this.getStatelessOp(op)(data)
                 )
                 .length;
@@ -428,8 +651,8 @@ export class EvtCore<T> {
                 }
 
                 const opResult = invokeOperator(
-                    this.getStatelessOp(handler.op), 
-                    data, 
+                    this.getStatelessOp(handler.op),
+                    data,
                     true
                 );
 

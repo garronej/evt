@@ -219,6 +219,7 @@ export class Evt<T> extends EvtCore<T> {
 
         const evtDelegate = new Evt<any>();
 
+        //To do if there is special operator pipe should be called recursively.
         this.__attach(
             {
                 ...this.__parseOverloadParams(inputs, "pipe"),

@@ -1,15 +1,32 @@
 type Ctx<T = any> = import("../Ctx").Ctx<T>;
-type VoidCtx= import("../Ctx").VoidCtx;
+type Evt<T> = import("../Evt").Evt<T>;
+type VoidCtx = import("../Ctx").VoidCtx;
 import { typeGuard } from "../../tools/typeSafety";
 
 /** https://docs.evt.land/api/operator */
 export type Operator<T, U> =
     Operator.fλ<T, U> |
+    Operator.Special<T, U> |
     ((data: U) => boolean) | //Filter
     (U extends T ? (data: T) => data is U : never) //Type guard
     ;
 
 export namespace Operator {
+
+    export type Special<T, U> = [(
+        handlerCallback: (transformedData: U) => void,
+        ctx: Ctx<T>,
+        evt: Evt<T>
+    ) => {
+        isHandled: (data: T) => boolean;
+        onEvent: (data: T) => void;
+    }];
+
+    export namespace Special {
+        export function match<T,U>(op: Operator<T,U>): op is Operator.Special<T,U>{
+            return typeof op !== "function" && op.length === 1;
+        }
+    }
 
     export type fλ<T, U> =
         fλ.Stateless<T, U> |
@@ -28,7 +45,7 @@ export namespace Operator {
         export namespace Stateful {
 
             export function match<T, U>(op: Operator<T, U>): op is Stateful<T, U> {
-                return typeof op !== "function";
+                return typeof op !== "function" && op.length === 2;
             }
 
         }
@@ -149,6 +166,12 @@ export namespace Operator {
         fλ.Stateless<T, U> |
         ((data: U) => boolean) |
         (U extends T ? (data: T) => data is U : never)
+        ;
+
+    export type AnyButSpecial<T, U> =
+        Operator.fλ<T, U> |
+        ((data: U) => boolean) | //Filter
+        (U extends T ? (data: T) => data is U : never) //Type guard
         ;
 
 }
