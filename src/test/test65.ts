@@ -1,5 +1,8 @@
 
 import { Evt, throttleTime } from "../lib";
+import * as dom from "../lib/types/lib.dom";
+
+declare const document: dom.Document;
 
 //Type only test
 if (1 + 0 === 2) {
@@ -21,6 +24,29 @@ if (1 + 0 === 2) {
 
     //clientX should be number
     Evt.from(document, "click")
+        .pipe(
+            throttleTime(1000),
+            event => [event.clientX],
+            [(clientX, count) => [count + clientX], 0]
+        ).attach(count => console.log(count));
+
+    {
+
+        let count = 0;
+        const rate = 1000;
+        let lastClick = Date.now() - rate;
+        document.getElementById("app")!.addEventListener('click', event => {
+            if (Date.now() - lastClick >= rate) {
+                count += event.clientX;
+                console.log(count);
+                lastClick = Date.now();
+            }
+        });
+
+    }
+
+    //clientX should be number
+    Evt.from(document.getElementById("app")!, "click")
         .pipe(
             throttleTime(1000),
             event => [event.clientX],

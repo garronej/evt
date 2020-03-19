@@ -3,7 +3,9 @@ import { Evt } from "../Evt";
 import { id, assert, typeGuard } from "../../tools/typeSafety";
 import { EventTargetLike } from "../types/EventTargetLike";
 import { mergeImpl } from "./merge";
+import * as dom from "../types/lib.dom";
 type Ctx = import("../Ctx").Ctx;
+
 
 type OneOrMany<T> = T | ArrayLike<T>;
 
@@ -83,12 +85,26 @@ function fromImpl<T>(
 
 }
 
-export function from<K extends keyof DocumentEventMap>(
+export function from<K extends keyof dom.HTMLElementEventMap>(
     ctx: Ctx,
-    target: Document, 
+    target: EventTargetLike.HTMLElement,
     eventName: K,
     options?: EventTargetLike.HasEventTargetAddRemove.Options
-): Evt<DocumentEventMap[K]>;
+): Evt<dom.HTMLElementEventMap[K]>;
+
+export function from <K extends keyof dom.WindowEventMap>(
+    ctx: Ctx,
+    target: EventTargetLike.Window,
+    eventName: K,
+    options?: EventTargetLike.HasEventTargetAddRemove.Options
+): Evt<dom.WindowEventMap[K]>;
+
+export function from<K extends keyof dom.DocumentEventMap>(
+    ctx: Ctx,
+    target: EventTargetLike.Document, 
+    eventName: K,
+    options?: EventTargetLike.HasEventTargetAddRemove.Options
+): Evt<dom.DocumentEventMap[K]>;
 
 export function from<T>(
     ctx: Ctx,
@@ -111,11 +127,23 @@ export function from<T>(
     target: OneOrMany<EventTargetLike.RxJSSubject<T>>
 ): Evt<T>;
 
-export function from<K extends keyof DocumentEventMap>(
-    target: Document, 
+
+
+export function from<K extends keyof dom.HTMLElementEventMap>(
+    target: EventTargetLike.HTMLElement,
     eventName: K,
     options?: EventTargetLike.HasEventTargetAddRemove.Options
-): Evt<DocumentEventMap[K]>;
+): Evt<dom.HTMLElementEventMap[K]>;
+export function from <K extends keyof dom.WindowEventMap>(
+    target: EventTargetLike.Window,
+    eventName: K,
+    options?: EventTargetLike.HasEventTargetAddRemove.Options
+): Evt<dom.WindowEventMap[K]>;
+export function from<K extends keyof dom.DocumentEventMap>(
+    target: EventTargetLike.Document, 
+    eventName: K,
+    options?: EventTargetLike.HasEventTargetAddRemove.Options
+): Evt<dom.DocumentEventMap[K]>;
 export function from<T>(
     target: OneOrMany<
         EventTargetLike.NodeStyleEventEmitter |

@@ -5,4 +5,6 @@ function __export(m) {
 exports.__esModule = true;
 __export(require("./EvtError"));
 __export(require("./Operator"));
+var dom = require("./lib.dom");
+exports.dom = dom;
 //# sourceMappingURL=index.js.map

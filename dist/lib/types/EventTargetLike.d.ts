@@ -1,5 +1,14 @@
 export declare type EventTargetLike<T> = EventTargetLike.HasEventTargetAddRemove<T> | EventTargetLike.NodeStyleEventEmitter | EventTargetLike.JQueryStyleEventEmitter | EventTargetLike.RxJSSubject<T>;
 export declare namespace EventTargetLike {
+    type HTMLElement = HasEventTargetAddRemove<any> & {
+        innerText: string;
+    };
+    type Window = HasEventTargetAddRemove<any> & {
+        document: EventTargetLike.Document;
+    };
+    type Document = HasEventTargetAddRemove<any> & {
+        URL: string;
+    };
     type RxJSSubject<T> = {
         subscribe: (next: (data: T) => void) => RxJSSubject.Subscription;
     };

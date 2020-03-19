@@ -1,6 +1,6 @@
 {
   "name": "evt",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "Type safe replacement for node's EventEmitter",
   "repository": {
     "type": "git",
@@ -40,6 +40,6 @@
     "@types/node": "^8.9.1",
     "colors": "^1.3.0",
     "rxjs": "^6.5.4",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.0"
   }
 }

@@ -10,8 +10,20 @@ export type EventTargetLike<T> =
 
 export namespace EventTargetLike {
 
+    export type HTMLElement = HasEventTargetAddRemove<any> & {
+        innerText: string;
+    };
+
+    export type Window = HasEventTargetAddRemove<any> & {
+        document: EventTargetLike.Document;
+    };
+
+    export type Document = HasEventTargetAddRemove<any> & {
+        URL: string;
+    };
+
     export type RxJSSubject<T> = {
-        subscribe: (next: (data: T)=> void) => RxJSSubject.Subscription;
+        subscribe: (next: (data: T) => void) => RxJSSubject.Subscription;
     };
 
     export namespace RxJSSubject {
