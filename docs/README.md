@@ -15,7 +15,7 @@ _\*The deno package hasn't been published yet but it will be very soon._
 * Transpiled down to ES3 ✅  
 * Light-weight, no dependencies ✅   
 
-Can be imported in TypeScript projects using version &gt;= **2.8** \(Mar 2018\) and in any plain JS project.
+Can be imported in TypeScript projects using version &gt;= **3.4** \(Mar 2019\) and in any plain JS projects.
 
 ## Motivation
 
