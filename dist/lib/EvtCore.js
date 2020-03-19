@@ -59,6 +59,7 @@ exports.setPostCount = function (evt, value) {
 var EvtCore = /** @class */ (function () {
     function EvtCore() {
         var _this_1 = this;
+        this.__maxHandlers = 25;
         //NOTE: Not really readonly but we want to prevent user from setting the value
         //manually and we cant user accessor because we target es3.
         /**
@@ -172,6 +173,20 @@ var EvtCore = /** @class */ (function () {
             });
         });
     }
+    /**
+     *
+     * By default EventEmitters will print a warning if more than 25 handlers are added for
+     * a particular event. This is a useful default that helps finding memory leaks.
+     * Not all events should be limited to 25 handlers. The evt.setMaxHandlers() method allows the limit to be
+     * modified for this specific EventEmitter instance.
+     * The value can be set to Infinity (or 0) to indicate an unlimited number of listeners.
+     * Returns a reference to the EventEmitter, so that calls can be chained.
+     *
+     */
+    EvtCore.prototype.setMaxHandlers = function (n) {
+        this.__maxHandlers = isFinite(n) ? n : 0;
+        return this;
+    };
     /** https://docs.evt.land/api/evt/enabletrace */
     EvtCore.prototype.enableTrace = function (id, formatter, log
     //NOTE: Not typeof console.log as we don't want to expose types from node
@@ -276,6 +291,19 @@ var EvtCore = /** @class */ (function () {
         }
         else {
             this.handlers.push(handler);
+        }
+        if (this.__maxHandlers !== 0 &&
+            this.handlers.length % (this.__maxHandlers + 1) === 0) {
+            var message = [
+                "MaxHandlersExceededWarning: Possible Evt memory leak detected.",
+                this.handlers.length + " handlers attached" + (this.traceId ? " to " + this.traceId : "") + ".",
+                "Use evt.setMaxHandlers() to increase limit."
+            ].join(" ");
+            try {
+                console.warn(message);
+            }
+            catch (_b) {
+            }
         }
         if (Ctx_1.Ctx.__matchHandlerBoundToCtx(handler)) {
             Ctx_1.Ctx.__addHandlerToCtxCore(handler, this);

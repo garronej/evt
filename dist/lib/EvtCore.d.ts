@@ -5,6 +5,18 @@ import { Ctx } from "./Ctx";
 export declare const setPostCount: (evt: EvtCore<any>, value: number) => void;
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 export declare class EvtCore<T> {
+    private __maxHandlers;
+    /**
+     *
+     * By default EventEmitters will print a warning if more than 25 handlers are added for
+     * a particular event. This is a useful default that helps finding memory leaks.
+     * Not all events should be limited to 25 handlers. The evt.setMaxHandlers() method allows the limit to be
+     * modified for this specific EventEmitter instance.
+     * The value can be set to Infinity (or 0) to indicate an unlimited number of listeners.
+     * Returns a reference to the EventEmitter, so that calls can be chained.
+     *
+     */
+    setMaxHandlers(n: number): this;
     /**
      * https://docs.evt.land/api/evt/post
      *

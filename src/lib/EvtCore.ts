@@ -16,6 +16,24 @@ export const setPostCount = (evt: EvtCore<any>, value: number) =>
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
 export class EvtCore<T> {
 
+
+    private __maxHandlers = 25;
+
+    /**
+     * 
+     * By default EventEmitters will print a warning if more than 25 handlers are added for 
+     * a particular event. This is a useful default that helps finding memory leaks. 
+     * Not all events should be limited to 25 handlers. The evt.setMaxHandlers() method allows the limit to be 
+     * modified for this specific EventEmitter instance. 
+     * The value can be set to Infinity (or 0) to indicate an unlimited number of listeners.
+     * Returns a reference to the EventEmitter, so that calls can be chained.
+     * 
+     */
+    public setMaxHandlers(n: number): this {
+        this.__maxHandlers = isFinite(n) ? n : 0;
+        return this;
+    }
+
     //NOTE: Not really readonly but we want to prevent user from setting the value
     //manually and we cant user accessor because we target es3.
     /** 
@@ -260,6 +278,7 @@ export class EvtCore<T> {
             }
         );
 
+
         if (handler.prepend) {
 
             let i: number;
@@ -279,6 +298,23 @@ export class EvtCore<T> {
         } else {
 
             this.handlers.push(handler);
+
+        }
+
+        if (
+            this.__maxHandlers !== 0 &&
+            this.handlers.length % (this.__maxHandlers + 1) === 0
+        ) {
+            const message = [
+                `MaxHandlersExceededWarning: Possible Evt memory leak detected.`,
+                `${this.handlers.length} handlers attached${this.traceId ? ` to ${this.traceId}` : ""}.`,
+                `Use evt.setMaxHandlers() to increase limit.`
+            ].join(" ");
+
+            try {
+                console.warn(message);
+            } catch{
+            }
 
         }
 
@@ -322,7 +358,7 @@ export class EvtCore<T> {
 
             const handlerCount = this.handlers
                 .filter(
-                    ({ extract, op }) => !extract && 
+                    ({ extract, op }) => !extract &&
                         !!this.getStatelessOp(op)(data)
                 )
                 .length;
@@ -428,8 +464,8 @@ export class EvtCore<T> {
                 }
 
                 const opResult = invokeOperator(
-                    this.getStatelessOp(handler.op), 
-                    data, 
+                    this.getStatelessOp(handler.op),
+                    data,
                     true
                 );
 
