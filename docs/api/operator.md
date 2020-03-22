@@ -494,6 +494,52 @@ setTimeout(()=>evtText.post("D"), 2500); //Prints "D"
 
 [**Run the example**](https://stackblitz.com/edit/ts-evt-demo-compose?embed=1&file=index.ts)
 
+{% hint style="warning" %}
+Unless all the operators passed as arguments are stateless the operator returned by `compose` is **not** reusable.
+{% endhint %}
+
+```typescript
+import { Evt, compose } from "evt";
+
+//Never do that: 
+{
+
+const op= compose<string,string, number>(
+    [(str, acc)=>[`${acc} ${str}`], ""],
+    str=> [str.length]
+);
+
+const evtText= new Evt<string>();
+
+evtText.$attach(op, n=> console.log(n));
+evtText.$attach(op, n=> console.log(n));
+
+evtText.post("Hello World"); //Prints "12 24" ❌
+
+}
+
+console.log("");
+
+//Do that instead: 
+{
+
+const getOp= ()=> compose<string,string, number>(
+    [(str, acc)=>[`${acc} ${str}`], ""],
+    str=> [str.length]
+);
+
+const evtText= new Evt<string>();
+
+evtText.$attach(getOp(), n=> console.log(n));
+evtText.$attach(getOp(), n=> console.log(n));
+
+evtText.post("Hello World"); //Prints "12 12" ✅
+
+}
+```
+
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-gmzzzx?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
+
 ## Explicitly using the type alias
 
 The `Operator` type alias defines what functions qualify as a valid EVT operaor. The type can be used as a scaffolder to write fλ.
