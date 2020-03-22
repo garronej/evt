@@ -12,7 +12,8 @@ export declare class Evt<T> extends EvtCore<T> {
      *
      * return a new Ctx instance
      * */
-    static newCtx<T = void>(): T extends void ? VoidCtx : Ctx<T>;
+    static newCtx(): VoidCtx;
+    static newCtx<T>(): Ctx<T>;
     /**
      * https://docs.evt.land/api/evt/getctx
      *

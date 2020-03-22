@@ -67,11 +67,6 @@ var Evt = /** @class */ (function (_super) {
         _this_1.getEvtDetach = getEvtDetach;
         return _this_1;
     }
-    /**
-     * https://docs.evt.land/api/evt/newctx
-     *
-     * return a new Ctx instance
-     * */
     Evt.newCtx = function () {
         return new Ctx_1.Ctx();
     };
