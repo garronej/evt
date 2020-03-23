@@ -579,9 +579,11 @@ f2(myStatefulFλOp);  //OK
 
 ## Generic operators built in
 
-Some generic operators are provided in `"evt/dist/lib/util/genericOperators"` such as `scan`, `throttleTime` or `of` but that's about it, the idea being to encourage users to create the ones they need and avoid the paralysis of choice.
+{% hint style="warning" %}
+Generic operators such as `bufferTime` `debounceTime`, `skip`, `take`, `switchMap`, `mergeMap` and `reduce`. Will be added in the next release alongside with creators. As for now they can't be implemented.
+{% endhint %}
 
-If, however, you think of one that you think should be included feel free to submit an [issue](https://github.com/garronej/evt/issues) or a [pull request](https://github.com/garronej/evt/pulls).
+Some generic operators are provided in `"evt/dist/lib/util/genericOperators"` such as `scan`, `throttleTime` or `to` but that's about it.
 
 ```typescript
 //Importing custom operator chunksOf that is not exported by default.
