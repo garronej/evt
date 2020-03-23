@@ -254,6 +254,8 @@ evtText.post("Hello"); //Prints "START: Hello"
 evtText.post("World"); //Prints "START: Hello World"
 ```
 
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-stateful-qs1nsh?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
+
 ### Dos and don'ts
 
 Operators cannot have any side effect \(they cannot modify anything\). No assumption should be made on when and how they are called.
@@ -326,8 +328,6 @@ evtText.$attach(
 );
 ```
 
-[**Run example**](https://stackblitz.com/edit/ts-evt-demo-stateful?embed=1&file=index.ts)
-
 #### Do use const assertions \( `as const` \)
 
 The TypeScript [const assertion features](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#const-assertions) come in handy if you introduce closures, for example. The following example does not compile without the use of `as const`.
@@ -348,7 +348,7 @@ evtShapeOrUndefined.$attach(
 );
 ```
 
-Generaly const assertions can help you narrow down the return type of your operator. In the following example without the const assertions `data` is infered as being `string | number` , with the const assertions it is `"TOO LARGE" | number`
+Generally const assertions can help you narrow down the return type of your operator. In the following example without the const assertions `data` is inferred as being `string | number` , with the const assertions it is `"TOO LARGE" | number`
 
 ```typescript
 import { Evt } from "evt";
@@ -394,7 +394,7 @@ $$
 op_n \circ... \circ op_2 \circ op_1
 $$
 
-Operators can be composed \( aka piped \) to achieve more complex behavior.
+Operators can be composed \( aka piped \) to achieve more complex behaviour.
 
 Example composing type guards with fλ:
 
