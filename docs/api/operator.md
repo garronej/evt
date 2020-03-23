@@ -492,7 +492,7 @@ setTimeout(()=>evtText.post("C"), 1001); //Prints "C"
 setTimeout(()=>evtText.post("D"), 2500); //Prints "D"
 ```
 
-[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-compose?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/evt-dkx3kn?embed=1&file=index.ts&hideExplorer=1)
 
 {% hint style="warning" %}
 Unless all the operators passed as arguments are stateless the operator returned by `compose` is **not** reusable.
