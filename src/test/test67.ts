@@ -78,7 +78,7 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi();
         evtText.$attach(
             compose(
                 text => [text, { "DETACH": ctx }],
-                () => null
+                str => null
             ),
             ctx,
             text => { }

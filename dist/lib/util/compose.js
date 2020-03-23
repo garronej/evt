@@ -24,6 +24,8 @@ var encapsulateOpState_1 = require("./encapsulateOpState");
 var invokeOperator_1 = require("./invokeOperator");
 var Operator_1 = require("../types/Operator");
 var id_1 = require("../../tools/typeSafety/id");
+var assert_1 = require("../../tools/typeSafety/assert");
+var typeGuard_1 = require("../../tools/typeSafety/typeGuard");
 function f_o_g(op1, op2) {
     var opAtoB = Operator_1.Operator.fλ.Stateful.match(op1) ?
         encapsulateOpState_1.encapsulateOpState(op1) :
@@ -36,16 +38,22 @@ function f_o_g(op1, op2) {
         for (var _i = 0; _i < arguments.length; _i++) {
             _a[_i] = arguments[_i];
         }
-        var _b = __read(_a, 3), dataA = _b[0], cbInvokedIfMatched = _b[2];
+        var _b = __read(_a, 3), dataA = _b[0], isPost = _b[2];
         var _c, _d;
-        var resultB = invokeOperator_1.invokeOperator(opAtoB, dataA, cbInvokedIfMatched);
+        var resultB = invokeOperator_1.invokeOperator(opAtoB, dataA, isPost);
         if (Operator_1.Operator.fλ.Result.NotMatched.match(resultB)) {
+            //CtxResultOp1 assignable to CtxResultOp1 | CtxResultOp2...
+            assert_1.assert(typeGuard_1.typeGuard.dry(resultB));
             return resultB;
         }
         var detachOp1 = (_c = resultB[1]) !== null && _c !== void 0 ? _c : null;
+        //...same...
+        assert_1.assert(typeGuard_1.typeGuard.dry(detachOp1));
         var _e = __read(resultB, 1), dataB = _e[0];
-        var resultC = invokeOperator_1.invokeOperator(opBtoC, dataB, cbInvokedIfMatched);
+        var resultC = invokeOperator_1.invokeOperator(opBtoC, dataB, isPost);
         if (Operator_1.Operator.fλ.Result.NotMatched.match(resultC)) {
+            //...same
+            assert_1.assert(typeGuard_1.typeGuard.dry(resultC));
             return detachOp1 !== null && detachOp1 !== void 0 ? detachOp1 : resultC;
         }
         return id_1.id([

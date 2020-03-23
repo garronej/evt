@@ -23,7 +23,7 @@ if (n) {
 
 } else {
 
-    const n = 69;
+    const n = 70;
 
     for (let i = 1; i <= n; i++) {
 

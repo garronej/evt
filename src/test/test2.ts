@@ -12,7 +12,7 @@ let evtProxy = new Evt<T>();
 
 {
 
-    const map = new Map<string, Ctx>();
+    const map = new Map<string, Ctx<void>>();
 
     evt.attach(data => {
 

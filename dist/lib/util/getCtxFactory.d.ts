@@ -1,1 +1,2 @@
-export declare function getCtxFactory(): (obj: object) => import("../Ctx").VoidCtx;
+import { VoidCtx } from "../Ctx";
+export declare function getCtxFactory(): (obj: object) => VoidCtx;

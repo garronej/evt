@@ -1,20 +1,17 @@
-import { Ctx } from "../Ctx";
+import { VoidCtx } from "../Ctx";
 import { Polyfill as WeakMap } from "minimal-polyfills/dist/lib/WeakMap";
-type VoidCtx = import("../Ctx").VoidCtx;
 
 export function getCtxFactory() {
 
-    const ctxByObj = new WeakMap<object, Ctx>();
+    const ctxByObj = new WeakMap<object, VoidCtx>();
 
-    function getCtx(obj: object): VoidCtx;
-    //function getCtx<T>(obj: object): Ctx<T>;
-    function getCtx(obj: object): Ctx {
+    function getCtx(obj: object): VoidCtx {
 
         let ctx = ctxByObj.get(obj);
 
         if (ctx === undefined) {
 
-            ctx = new Ctx();
+            ctx = new VoidCtx();
 
             ctxByObj.set(obj, ctx);
 

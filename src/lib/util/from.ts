@@ -4,13 +4,13 @@ import { id, assert, typeGuard } from "../../tools/typeSafety";
 import { EventTargetLike } from "../types/EventTargetLike";
 import { mergeImpl } from "./merge";
 import * as dom from "../types/lib.dom";
-type Ctx = import("../Ctx").Ctx;
+type Ctx<Result> = import("../Ctx").Ctx<Result>;
 
 
 type OneOrMany<T> = T | ArrayLike<T>;
 
 function fromImpl<T>(
-    ctx: Ctx | undefined,
+    ctx: Ctx<any> | undefined,
     target: OneOrMany<EventTargetLike<T>>,
     eventName?: string,
     options?: EventTargetLike.HasEventTargetAddRemove.Options
@@ -86,28 +86,28 @@ function fromImpl<T>(
 }
 
 export function from<K extends keyof dom.HTMLElementEventMap>(
-    ctx: Ctx,
+    ctx: Ctx<any>,
     target: EventTargetLike.HTMLElement,
     eventName: K,
     options?: EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<dom.HTMLElementEventMap[K]>;
 
 export function from <K extends keyof dom.WindowEventMap>(
-    ctx: Ctx,
+    ctx: Ctx<any>,
     target: EventTargetLike.Window,
     eventName: K,
     options?: EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<dom.WindowEventMap[K]>;
 
 export function from<K extends keyof dom.DocumentEventMap>(
-    ctx: Ctx,
+    ctx: Ctx<any>,
     target: EventTargetLike.Document, 
     eventName: K,
     options?: EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<dom.DocumentEventMap[K]>;
 
 export function from<T>(
-    ctx: Ctx,
+    ctx: Ctx<any>,
     target: OneOrMany<
         EventTargetLike.NodeStyleEventEmitter |
         EventTargetLike.JQueryStyleEventEmitter
@@ -115,7 +115,7 @@ export function from<T>(
     eventName: string
 ): Evt<T>;
 export function from<T>(
-    ctx: Ctx,
+    ctx: Ctx<any>,
     target: OneOrMany<
         EventTargetLike.HasEventTargetAddRemove<T>
     >,
@@ -123,7 +123,7 @@ export function from<T>(
     options?: EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<T>;
 export function from<T>(
-    ctx: Ctx,
+    ctx: Ctx<any>,
     target: OneOrMany<EventTargetLike.RxJSSubject<T>>
 ): Evt<T>;
 
@@ -163,7 +163,7 @@ export function from<T>(
 ): Evt<T>;
 
 export function from<T>(
-    ctxOrTarget: Ctx | OneOrMany<EventTargetLike<T>>,
+    ctxOrTarget: Ctx<any> | OneOrMany<EventTargetLike<T>>,
     targetOrEventName?: OneOrMany<EventTargetLike<T>> | string,
     eventNameOrOptions?: string | EventTargetLike.HasEventTargetAddRemove.Options,
     options?: EventTargetLike.HasEventTargetAddRemove.Options

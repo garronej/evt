@@ -21,8 +21,8 @@ const prText = evtText.attach(ctx, () => assert(false));
 const prAge = evtAge.attach(ctx, () => assert(false));
 
 const handlers_ = [
-    ...(evtText.getHandlers() as Handler<string, any, Ctx>[]).map(handler => ({ handler, "evt": evtText })),
-    ...(evtAge.getHandlers() as Handler<string, any, Ctx>[]).map(handler => ({ handler, "evt": evtAge }))
+    ...(evtText.getHandlers() as Handler<string, any, Ctx<any>>[]).map(handler => ({ handler, "evt": evtText })),
+    ...(evtAge.getHandlers() as Handler<string, any, Ctx<any>>[]).map(handler => ({ handler, "evt": evtAge }))
 ];
 
 mustResolve({

@@ -3,10 +3,11 @@ import { Evt } from "../Evt";
 import { NonPostable } from "../types/helper/NonPostable";
 import { UnpackEvt } from "../types/helper/UnpackEvt";
 
-type Ctx = import("../Ctx").Ctx;
+type Ctx<Result> = import("../Ctx").Ctx<Result>;
 
+//TODO: Fix interoperability between versions.
 export function mergeImpl<EvtUnion extends NonPostable<Evt<any>>>(
-    ctx: Ctx | undefined,
+    ctx: Ctx<any> | undefined,
     evts: readonly EvtUnion[]
 ): Evt<UnpackEvt<EvtUnion>> {
 
@@ -34,14 +35,14 @@ export function mergeImpl<EvtUnion extends NonPostable<Evt<any>>>(
 
 
 export function merge<EvtUnion extends NonPostable<Evt<any>>>(
-    ctx: Ctx,
+    ctx: Ctx<any>,
     evts: readonly EvtUnion[]
 ): Evt<UnpackEvt<EvtUnion>>;
 export function merge<EvtUnion extends NonPostable<Evt<any>>>(
     evts: readonly EvtUnion[]
 ): Evt<UnpackEvt<EvtUnion>>;
 export function merge<EvtUnion extends NonPostable<Evt<any>>>(
-    p1: Ctx | readonly EvtUnion[],
+    p1: Ctx<any> | readonly EvtUnion[],
     p2?: readonly EvtUnion[]
 ): Evt<UnpackEvt<EvtUnion>> {
 

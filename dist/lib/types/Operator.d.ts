@@ -1,55 +1,57 @@
-declare type Ctx<T = any> = import("../Ctx").Ctx<T>;
+declare type Ctx<T> = import("../Ctx").Ctx<T>;
 declare type VoidCtx = import("../Ctx").VoidCtx;
 /** https://docs.evt.land/api/operator */
-export declare type Operator<T, U> = Operator.fλ<T, U> | ((data: U) => boolean) | //Filter
+export declare type Operator<T, U, CtxResult> = Operator.fλ<T, U, CtxResult> | ((data: U) => boolean) | //Filter
 (U extends T ? (data: T) => data is U : never);
 export declare namespace Operator {
-    type fλ<T, U> = fλ.Stateless<T, U> | fλ.Stateful<T, U>;
+    type fλ<T, U, CtxResult> = fλ.Stateless<T, U, CtxResult> | fλ.Stateful<T, U, CtxResult>;
     namespace fλ {
-        type Stateless<T, U> = (data: T, prev?: undefined, isPost?: true) => Result<U>;
-        type Stateful<T, U> = [(data: T, prev: U, isPost?: true) => Result<U>, U];
+        type Stateless<T, U, CtxResult> = (data: T, prev?: undefined, isPost?: true) => Result<U, CtxResult>;
+        type Stateful<T, U, CtxResult> = [(data: T, prev: U, isPost?: true) => Result<U, CtxResult>, U];
         namespace Stateful {
-            function match<T, U>(op: Operator<T, U>): op is Stateful<T, U>;
+            function match<T, U, CtxResult>(op: Operator<T, U, CtxResult>): op is Stateful<T, U, CtxResult>;
         }
-        type Result<U> = Result.Matched<U> | Result.NotMatched;
+        type Result<U, CtxResult> = Result.Matched<U, CtxResult> | Result.NotMatched<CtxResult>;
         namespace Result {
-            function match<U>(result: any): result is Result<U>;
-            function getDetachArg(result: Result<any>): boolean | [Ctx, undefined | Error, any];
-            type NotMatched = Detach | null;
+            function match<U, CtxResult>(result: any): result is Result<U, CtxResult>;
+            function getDetachArg<CtxResult>(result: Result<any, CtxResult>): boolean | [Ctx<CtxResult>, undefined | Error, CtxResult];
+            type NotMatched<CtxResult> = Detach<CtxResult> | null;
             namespace NotMatched {
-                function match(result: any): result is NotMatched;
+                function match<CtxResult>(result: any): result is NotMatched<CtxResult>;
             }
-            type Matched<U> = Matched.NoDetachArg<U> | Matched.WithDetachArg<U>;
+            type Matched<U, CtxResult> = Matched.NoDetachArg<U> | Matched.WithDetachArg<U, CtxResult>;
             namespace Matched {
                 type NoDetachArg<U> = readonly [U];
-                type WithDetachArg<U> = readonly [U, Detach | null];
-                function match(result: any): result is Matched<any>;
+                type WithDetachArg<U, CtxResult> = readonly [U, Detach<CtxResult> | null];
+                function match<U, CtxResult>(result: any): result is Matched<U, CtxResult>;
             }
-            type Detach = Detach.FromEvt | Detach.WithCtxArg;
+            type Detach<CtxResult> = Detach.FromEvt | Detach.WithCtxArg<CtxResult>;
             namespace Detach {
                 type FromEvt = "DETACH";
                 namespace FromEvt {
                     function match(detach: any): detach is FromEvt;
                 }
-                type WithCtxArg<T = any> = {
-                    DETACH: Ctx<T>;
-                    err: Error;
-                } | {
-                    DETACH: Ctx<T>;
-                    res: T;
-                } | {
-                    DETACH: VoidCtx;
-                    err: Error;
-                } | {
-                    DETACH: VoidCtx;
-                };
+                type WithCtxArg<CtxResult> = WithCtxArg.Void | WithCtxArg.Arg<CtxResult>;
                 namespace WithCtxArg {
-                    function match(detach: any): detach is WithCtxArg;
+                    type Void = {
+                        DETACH: VoidCtx;
+                        err: Error;
+                    } | {
+                        DETACH: VoidCtx;
+                    };
+                    type Arg<CtxResult> = {
+                        DETACH: Ctx<CtxResult>;
+                        err: Error;
+                    } | {
+                        DETACH: Ctx<CtxResult>;
+                        res: CtxResult;
+                    };
+                    function match<CtxResult>(detach: any): detach is WithCtxArg<CtxResult>;
                 }
-                function match(detach: any): detach is Detach;
+                function match<CtxResult>(detach: any): detach is Detach<CtxResult>;
             }
         }
     }
-    type Stateless<T, U> = fλ.Stateless<T, U> | ((data: U) => boolean) | (U extends T ? (data: T) => data is U : never);
+    type Stateless<T, U, CtxResult> = fλ.Stateless<T, U, CtxResult> | ((data: U) => boolean) | (U extends T ? (data: T) => data is U : never);
 }
 export {};

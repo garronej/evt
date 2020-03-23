@@ -1,6 +1,7 @@
 "use strict";
 exports.__esModule = true;
 var Evt_2 = require("../Evt");
+//TODO: Fix interoperability between versions.
 function mergeImpl(ctx, evts) {
     var evtUnion = new Evt_2.Evt();
     var callback = function (data) { return evtUnion.post(data); };

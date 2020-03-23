@@ -6,17 +6,24 @@ import { getLazyEvtFactory } from "./util/getLazyEvtFactory";
 import { UnpackEvt } from "./types/helper/UnpackEvt";
 type EvtCore<T> = import("./EvtCore").EvtCore<T>;
 
-type Done<T> = [Error | null, T, Handler.WithEvt<any>[]];
+type Done<Result> = [Error | null, Result, Handler.WithEvt<any, Result>[]];
+
+/*
+export interface CtxLike<T = any> {
+    done(result?: T): void;
+    abort(error: Error): void;
+}
+*/
 
 /** https://docs.evt.land/api/ctx */
-export class Ctx<T = any> {
+export class Ctx<Result> {
 
     /** 
      * https://docs.evt.land/api/ctx#ctx-getevtdone
      * 
      * Posted every time ctx.done() is invoked, post the detached handler ( return value of evt.done()) 
      */
-    public readonly getEvtDone: () => Evt<Done<T>>;
+    public readonly getEvtDone: () => Evt<Done<Result>>;
 
     /** 
      * 
@@ -28,7 +35,7 @@ export class Ctx<T = any> {
      * with EvtError.Timeout if done(result) is not called * within [timeout]ms.
      * If the timeout is reached ctx.abort(timeoutError) will be invoked.
      */
-    public getPrDone(timeout?: number): Promise<T> {
+    public getPrDone(timeout?: number): Promise<Result> {
         return this.getEvtDone()
             .waitFor(timeout)
             .then(
@@ -51,16 +58,16 @@ export class Ctx<T = any> {
      * 
      * Posted every time a handler is bound to this context 
      * */
-    public readonly getEvtAttach: () => Evt<Handler.WithEvt<any>>;
+    public readonly getEvtAttach: () => Evt<Handler.WithEvt<any,Result>>;
 
     /** 
      * https://docs.evt.land/api/ctx#ctx-getevtdetach
      * 
      * Posted every time a handler bound to this context is detached from it's Evt 
      * */
-    public readonly getEvtDetach: () => Evt<Handler.WithEvt<any>>;
+    public readonly getEvtDetach: () => Evt<Handler.WithEvt<any,Result>>;
 
-    private readonly onDone: ([error, result, handlers]: Done<T>) => void;
+    private readonly onDone: ([error, result, handlers]: Done<Result>) => void;
     private readonly onAttach: (handler: UnpackEvt<ReturnType<typeof Ctx.prototype.getEvtAttach>>) => void;
     private readonly onDetach: (handler: UnpackEvt<ReturnType<typeof Ctx.prototype.getEvtDetach>>) => void;
 
@@ -68,7 +75,7 @@ export class Ctx<T = any> {
 
         {
 
-            const { getEvt, post } = getLazyEvtFactory<Done<T>>();
+            const { getEvt, post } = getLazyEvtFactory<Done<Result>>();
 
             this.onDone = post;
             this.getEvtDone = getEvt;
@@ -118,14 +125,14 @@ export class Ctx<T = any> {
      * evtDone will post [ null, result, handlers (detached) ]
      * If getPrDone() was invoked the promise will result with result
      */
-    public done(result: T) {
+    public done(result: Result) {
         return this.__done(undefined, result);
     }
 
     /** Detach all handler bound to this context from theirs respective Evt and post getEvtDone() */
-    private __done(error: Error | undefined, result?: T): Handler.WithEvt<any>[] {
+    private __done(error: Error | undefined, result?: Result): Handler.WithEvt<any, Result>[] {
 
-        const handlers: Handler.WithEvt<any>[] = [];
+        const handlers: Handler.WithEvt<any, Result>[] = [];
 
         for (const handler of this.handlers.values()) {
 
@@ -152,22 +159,22 @@ export class Ctx<T = any> {
     }
 
     private handlers = new Set<
-        Handler<any, any, Ctx>
+        Handler<any, any, Ctx<Result>>
     >();
     private evtByHandler = new WeakMap<
-        Handler<any, any, Ctx>,
+        Handler<any, any, Ctx<Result>>,
         EvtCore<any>
     >();
 
     /** https://docs.evt.land/api/ctx#ctx-gethandlers */
-    public getHandlers(): Handler.WithEvt<any>[] {
+    public getHandlers(): Handler.WithEvt<any,Result>[] {
         return Array.from(this.handlers.values())
             .map(handler => ({ handler, "evt": this.evtByHandler.get(handler)! }))
             ;
     }
 
-    public static __addHandlerToCtxCore<T>(
-        handler: Handler<T, any, Ctx<T>>,
+    public static __addHandlerToCtxCore<T,Result>(
+        handler: Handler<T, any, Ctx<Result>>,
         evt: EvtCore<T>
     ) {
         const { ctx } = handler;
@@ -176,17 +183,17 @@ export class Ctx<T = any> {
         ctx.onAttach({ handler, evt });
     }
 
-    public static __removeHandlerFromCtxCore(
-        handler: Handler<any, any, Ctx>
+    public static __removeHandlerFromCtxCore<Result>(
+        handler: Handler<any, any, Ctx<Result>>
     ) {
         const { ctx } = handler;
         ctx.onDetach({ handler, "evt": ctx.evtByHandler.get(handler)! });
         ctx.handlers.delete(handler);
     }
 
-    public static __matchHandlerBoundToCtx<T>(
+    public static __matchHandlerBoundToCtx<T, Result>(
         handler: Handler<T, any>
-    ): handler is Handler<T, any, Ctx> {
+    ): handler is Handler<T, any, Ctx<Result>> {
         return handler.ctx !== undefined;
     }
 
@@ -194,16 +201,15 @@ export class Ctx<T = any> {
 
 }
 
-//NOTE: Could be declared only, but in case someone import it, to avoid runtime error we declare it.
 /** https://docs.evt.land/api/ctx */
-export class VoidCtx extends Ctx<undefined> {
+export class VoidCtx extends Ctx<void> {
 
     /**
      * Detach all handlers.
      * evtDone will post [ null, undefined, handlers (detached) ]
      * If getPrDone() was invoked the promise will resolve
      */
-    public done(): ReturnType<typeof Ctx.prototype.done> {
+    public done(): Handler.WithEvt<any, void>[] {
         return super.done(undefined);
     }
 

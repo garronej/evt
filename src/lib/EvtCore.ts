@@ -79,7 +79,7 @@ export class EvtCore<T> {
 
     private readonly handlerTriggers: LightMap<
         Handler<T, any>,
-        (opResult: Operator.fλ.Result.Matched<any>) => void
+        (opResult: Operator.fλ.Result.Matched<any, any>) => void
     > = new Map();
 
     //NOTE: An async handler ( attached with waitFor ) is only eligible to handle a post if the post
@@ -111,8 +111,8 @@ export class EvtCore<T> {
     })();
 
     private readonly statelessByStatefulOp = new WeakMap<
-        Operator.fλ.Stateful<T, any>,
-        Operator.fλ.Stateless<T, any>
+        Operator.fλ.Stateful<T, any, any>,
+        Operator.fλ.Stateless<T, any, any>
     >();
 
 
@@ -156,16 +156,16 @@ export class EvtCore<T> {
 
     private static doDetachIfNeeded<U = any>(
         handler: Handler<any, U>,
-        opResult: Operator.fλ.Result.Matched<U>,
+        opResult: Operator.fλ.Result.Matched<U, any>,
         once: boolean
     ): void;
     private static doDetachIfNeeded(
         handler: Handler<any, any>,
-        opResult: Operator.fλ.Result.NotMatched,
+        opResult: Operator.fλ.Result.NotMatched<any>,
     ): void;
     private static doDetachIfNeeded<U = any>(
         handler: Handler<any, U>,
-        opResult: Operator.fλ.Result<U>,
+        opResult: Operator.fλ.Result<U, any>,
         once?: boolean
     ): void {
 
@@ -189,7 +189,7 @@ export class EvtCore<T> {
         handler: Handler<T, U>,
         wTimer: [NodeJS.Timer | undefined],
         resolvePr: (transformedData: any) => void,
-        opResult: Operator.fλ.Result.Matched<any>
+        opResult: Operator.fλ.Result.Matched<any, any>
     ): void {
 
         const { callback, once } = handler;
@@ -217,7 +217,7 @@ export class EvtCore<T> {
         propsFromMethodName: Handler.PropsFromMethodName
     ): Handler<T, U> {
 
-        if (Operator.fλ.Stateful.match<T, any>(propsFromArgs.op)) {
+        if (Operator.fλ.Stateful.match<T, any, any>(propsFromArgs.op)) {
 
             this.statelessByStatefulOp.set(
                 propsFromArgs.op,
@@ -329,7 +329,7 @@ export class EvtCore<T> {
     }
 
     /** https://docs.evt.land/api/evt/getstatelessop */
-    public getStatelessOp(op: Operator<T, any>): Operator.Stateless<T, any> {
+    public getStatelessOp<U,CtxResult>(op: Operator<T, U, CtxResult>): Operator.Stateless<T, U, CtxResult> {
         return Operator.fλ.Stateful.match(op) ?
             this.statelessByStatefulOp.get(op)! :
             op
@@ -695,14 +695,14 @@ export class EvtCore<T> {
      * 
      * Detach every handlers of the Evt that are bound to the provided context 
      * */
-    public detach(ctx: Ctx): Handler<T, any, Ctx>[];
+    public detach<CtxResult>(ctx: Ctx<CtxResult>): Handler<T, any, Ctx<CtxResult>>[];
     /** 
      * https://docs.evt.land/api/evt/detach
      * 
      * (unsafe) Detach every handlers from the Evt 
      * */
     public detach(): Handler<T, any>[];
-    public detach(ctx?: Ctx): Handler<T, any>[] {
+    public detach(ctx?: Ctx<any>): Handler<T, any>[] {
 
         const detachedHandlers: Handler<T, any>[] = [];
 

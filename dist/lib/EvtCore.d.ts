@@ -42,7 +42,7 @@ export declare class EvtCore<T> {
     private triggerHandler;
     private addHandler;
     /** https://docs.evt.land/api/evt/getstatelessop */
-    getStatelessOp(op: Operator<T, any>): Operator.Stateless<T, any>;
+    getStatelessOp<U, CtxResult>(op: Operator<T, U, CtxResult>): Operator.Stateless<T, U, CtxResult>;
     private trace;
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
@@ -81,7 +81,7 @@ export declare class EvtCore<T> {
      *
      * Detach every handlers of the Evt that are bound to the provided context
      * */
-    detach(ctx: Ctx): Handler<T, any, Ctx>[];
+    detach<CtxResult>(ctx: Ctx<CtxResult>): Handler<T, any, Ctx<CtxResult>>[];
     /**
      * https://docs.evt.land/api/evt/detach
      *

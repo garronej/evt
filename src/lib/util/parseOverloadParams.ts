@@ -4,14 +4,14 @@ import { Operator } from "../types/Operator"
 import { id } from "../../tools/typeSafety/id";
 import { compose } from "./compose";
 import { typeGuard } from "../../tools/typeSafety/typeGuard"
-type Ctx = import("../Ctx").Ctx;
+type Ctx<Result> = import("../Ctx").Ctx<Result>;
 
 function matchAll() { return true; }
 
-const canBeOperator = (p: undefined | Ctx | Operator<any, any>): boolean => {
+const canBeOperator = (p: undefined | Ctx<any> | Operator<any, any, any>): boolean => {
     return (
         p !== undefined &&
-        typeGuard.dry<Operator<any, any>>(p) &&
+        typeGuard.dry<Operator<any, any, any>>(p) &&
         (
             typeof p === "function" ||
             typeof p[0] === "function"
@@ -43,7 +43,7 @@ export function parseOverloadParamsFactory<T>() {
                 //[ ctx, ...op[] ]
                 //[ ...op[] ]
 
-                const getOpWrap = (ops: [Operator<T, any>, ...Operator<any, any>[]]) =>
+                const getOpWrap = (ops: [Operator<T, any, any>, ...Operator<any, any, any>[]]) =>
                     ops.length === 0 ?
                         {}
                         :

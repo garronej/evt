@@ -43,6 +43,12 @@ exports.__esModule = true;
 var Set_1 = require("minimal-polyfills/dist/lib/Set");
 var WeakMap_1 = require("minimal-polyfills/dist/lib/WeakMap");
 var getLazyEvtFactory_1 = require("./util/getLazyEvtFactory");
+/*
+export interface CtxLike<T = any> {
+    done(result?: T): void;
+    abort(error: Error): void;
+}
+*/
 /** https://docs.evt.land/api/ctx */
 var Ctx = /** @class */ (function () {
     function Ctx() {
@@ -162,7 +168,6 @@ var Ctx = /** @class */ (function () {
     return Ctx;
 }());
 exports.Ctx = Ctx;
-//NOTE: Could be declared only, but in case someone import it, to avoid runtime error we declare it.
 /** https://docs.evt.land/api/ctx */
 var VoidCtx = /** @class */ (function (_super) {
     __extends(VoidCtx, _super);
