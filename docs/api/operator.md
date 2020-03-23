@@ -53,7 +53,7 @@ evtText.post("Bonjour");
 evtText.post("Hi!");
 ```
 
-[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-matcher-return-boolean?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/evt-38z5nd?embed=1&file=index.ts&hideExplorer=1)
 
 It is important to be sure that your filter always return a `boolean`, typewise you will be warned it is not the case but you must be sure that it is actually the case at runtime.  
 If in doubts use 'bang bang' \( `!!returnedValue` \). This note also applies for [Type Gard operators](https://docs.evt.land/api/operator#operator-type-guard).
@@ -104,7 +104,7 @@ evtShape.post({ "type": "CIRCLE", "radius": 33 });
 The type of the Shape object is narrowed down to `Circle`  
 ![Screenshot 2020-02-08 at 19 17 46](https://user-images.githubusercontent.com/6702424/74090059-baab3e00-4aa7-11ea-9c75-97f1fb99666d.png)
 
-[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-matcher-type-guard?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/evt-nn29kf?embed=1&file=index.ts&hideExplorer=1)
 
 ## Operator - fλ
 
@@ -228,10 +228,10 @@ evtNotification.post("Poke"); //Prints "Notification: Poke"
 evtBtnClick.post("QUIT"); //Prints "Button clicked: QUIT", handlers are detached...
 evtMessage.post("Hello World 2"); //Prints nothing
 evtNotification.post("Poke 2"); //Prints nothing
-evtBtnClick.post("OK"); //Prints "OK", evtBtnClick handler hasn't been detached as it was not bound to ctx.
+evtBtnClick.post("OK"); //Prints "Button clicked: OK", evtBtnClick handler hasn't been detached as it was not bound to ctx.
 ```
 
-[**Run examples**](https://stackblitz.com/edit/ts-evt-demo-transformative-matcher?embed=1&file=index.ts)
+[**Run examples**](https://stackblitz.com/edit/evt-mf3nzt?embed=1&file=index.ts&hideExplorer=1)
 
 ### **Stateful fλ**
 
