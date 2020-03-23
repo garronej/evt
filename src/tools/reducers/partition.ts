@@ -17,7 +17,7 @@ function arrPartitionImpl<ArrOf, U extends ArrOf>(
         } else {
 
             //NOTE: Should be deduced by the compiler
-            assert(typeGuard.dry<Exclude<ArrOf, U>>(currentValue));
+            assert(typeGuard<Exclude<ArrOf, U>>(currentValue));
 
             previousValue[1].push(currentValue);
 

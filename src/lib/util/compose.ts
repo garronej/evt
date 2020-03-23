@@ -31,7 +31,7 @@ function f_o_g<A, B, C, CtxResultOp1 = any, CtxResultOp2 = any>(
 
             if (Operator.fλ.Result.NotMatched.match<CtxResultOp1>(resultB)) {
                 //CtxResultOp1 assignable to CtxResultOp1 | CtxResultOp2...
-                assert(typeGuard.dry<Operator.fλ.Result.NotMatched<CtxResultOp1 | CtxResultOp2>>(resultB));
+                assert(typeGuard<Operator.fλ.Result.NotMatched<CtxResultOp1 | CtxResultOp2>>(resultB));
                 return resultB;
             }
 
@@ -39,7 +39,7 @@ function f_o_g<A, B, C, CtxResultOp1 = any, CtxResultOp2 = any>(
             const detachOp1 = resultB[1] ?? null;
 
             //...same...
-            assert(typeGuard.dry<Operator.fλ.Result.Detach<CtxResultOp1 | CtxResultOp2>>(detachOp1));
+            assert(typeGuard<Operator.fλ.Result.Detach<CtxResultOp1 | CtxResultOp2>>(detachOp1));
 
             const [dataB] = resultB;
 
@@ -51,7 +51,7 @@ function f_o_g<A, B, C, CtxResultOp1 = any, CtxResultOp2 = any>(
 
             if (Operator.fλ.Result.NotMatched.match<CtxResultOp2>(resultC)) {
                 //...same
-                assert(typeGuard.dry<Operator.fλ.Result.NotMatched<CtxResultOp1 | CtxResultOp2>>(resultC));
+                assert(typeGuard<Operator.fλ.Result.NotMatched<CtxResultOp1 | CtxResultOp2>>(resultC));
                 return detachOp1 ?? resultC;
             }
 

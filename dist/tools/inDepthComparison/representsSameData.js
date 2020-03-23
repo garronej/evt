@@ -16,7 +16,7 @@ var Set_1 = require("minimal-polyfills/dist/lib/Set");
 var SetLike;
 (function (SetLike) {
     function match(set) {
-        return (typeGuard_1.typeGuard.dry(set) &&
+        return (typeGuard_1.typeGuard(set) &&
             typeof set.values === "function" &&
             /Set/.test(Object.getPrototypeOf(set).constructor.name));
     }
@@ -25,7 +25,7 @@ var SetLike;
 var MapLike;
 (function (MapLike) {
     function match(map) {
-        return (typeGuard_1.typeGuard.dry(map) &&
+        return (typeGuard_1.typeGuard(map) &&
             typeof map.keys === "function" &&
             typeof map.get === "function" &&
             /Map/.test(Object.getPrototypeOf(map).constructor.name));

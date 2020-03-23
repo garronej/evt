@@ -6,7 +6,7 @@ var EventTargetLike;
     var RxJSSubject;
     (function (RxJSSubject) {
         function match(eventTarget) {
-            return (typeSafety_1.typeGuard.dry(eventTarget) &&
+            return (typeSafety_1.typeGuard(eventTarget) &&
                 eventTarget instanceof Object &&
                 typeof eventTarget.subscribe === "function");
         }
@@ -16,7 +16,7 @@ var EventTargetLike;
     (function (NodeStyleEventEmitter) {
         ;
         function match(eventTarget) {
-            return (typeSafety_1.typeGuard.dry(eventTarget) &&
+            return (typeSafety_1.typeGuard(eventTarget) &&
                 eventTarget instanceof Object &&
                 typeof eventTarget.addListener === "function" &&
                 typeof eventTarget.removeListener === "function");
@@ -26,7 +26,7 @@ var EventTargetLike;
     var JQueryStyleEventEmitter;
     (function (JQueryStyleEventEmitter) {
         function match(eventTarget) {
-            return (typeSafety_1.typeGuard.dry(eventTarget) &&
+            return (typeSafety_1.typeGuard(eventTarget) &&
                 eventTarget instanceof Object &&
                 typeof eventTarget.on === "function" &&
                 typeof eventTarget.off === "function");
@@ -36,7 +36,7 @@ var EventTargetLike;
     var HasEventTargetAddRemove;
     (function (HasEventTargetAddRemove) {
         function match(eventTarget) {
-            return (typeSafety_1.typeGuard.dry(eventTarget) &&
+            return (typeSafety_1.typeGuard(eventTarget) &&
                 eventTarget instanceof Object &&
                 typeof eventTarget.addEventListener === "function" &&
                 typeof eventTarget.removeEventListener === "function");

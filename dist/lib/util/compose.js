@@ -43,17 +43,17 @@ function f_o_g(op1, op2) {
         var resultB = invokeOperator_1.invokeOperator(opAtoB, dataA, isPost);
         if (Operator_1.Operator.fλ.Result.NotMatched.match(resultB)) {
             //CtxResultOp1 assignable to CtxResultOp1 | CtxResultOp2...
-            assert_1.assert(typeGuard_1.typeGuard.dry(resultB));
+            assert_1.assert(typeGuard_1.typeGuard(resultB));
             return resultB;
         }
         var detachOp1 = (_c = resultB[1]) !== null && _c !== void 0 ? _c : null;
         //...same...
-        assert_1.assert(typeGuard_1.typeGuard.dry(detachOp1));
+        assert_1.assert(typeGuard_1.typeGuard(detachOp1));
         var _e = __read(resultB, 1), dataB = _e[0];
         var resultC = invokeOperator_1.invokeOperator(opBtoC, dataB, isPost);
         if (Operator_1.Operator.fλ.Result.NotMatched.match(resultC)) {
             //...same
-            assert_1.assert(typeGuard_1.typeGuard.dry(resultC));
+            assert_1.assert(typeGuard_1.typeGuard(resultC));
             return detachOp1 !== null && detachOp1 !== void 0 ? detachOp1 : resultC;
         }
         return id_1.id([

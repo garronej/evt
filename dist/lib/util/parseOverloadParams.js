@@ -37,7 +37,7 @@ var typeGuard_1 = require("../../tools/typeSafety/typeGuard");
 function matchAll() { return true; }
 var canBeOperator = function (p) {
     return (p !== undefined &&
-        typeGuard_1.typeGuard.dry(p) &&
+        typeGuard_1.typeGuard(p) &&
         (typeof p === "function" ||
             typeof p[0] === "function"));
 };

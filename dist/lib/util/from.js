@@ -46,14 +46,14 @@ function fromImpl(ctx, target, eventName, options) {
 }
 function from(ctxOrTarget, targetOrEventName, eventNameOrOptions, options) {
     if ("getEvtDone" in ctxOrTarget) {
-        typeSafety_1.assert(typeSafety_1.typeGuard.dry(targetOrEventName) &&
-            typeSafety_1.typeGuard.dry(eventNameOrOptions) &&
-            typeSafety_1.typeGuard.dry(options));
+        typeSafety_1.assert(typeSafety_1.typeGuard(targetOrEventName) &&
+            typeSafety_1.typeGuard(eventNameOrOptions) &&
+            typeSafety_1.typeGuard(options));
         return fromImpl(ctxOrTarget, targetOrEventName, eventNameOrOptions, options);
     }
     else {
-        typeSafety_1.assert(typeSafety_1.typeGuard.dry(targetOrEventName) &&
-            typeSafety_1.typeGuard.dry(eventNameOrOptions));
+        typeSafety_1.assert(typeSafety_1.typeGuard(targetOrEventName) &&
+            typeSafety_1.typeGuard(eventNameOrOptions));
         return fromImpl(undefined, ctxOrTarget, targetOrEventName, eventNameOrOptions);
     }
 }

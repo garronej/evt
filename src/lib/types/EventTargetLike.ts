@@ -34,7 +34,7 @@ export namespace EventTargetLike {
 
         export function match<T>(eventTarget: EventTargetLike<T>): eventTarget is RxJSSubject<T> {
             return (
-                typeGuard.dry<RxJSSubject<T>>(eventTarget) &&
+                typeGuard<RxJSSubject<T>>(eventTarget) &&
                 eventTarget instanceof Object &&
                 typeof eventTarget.subscribe === "function"
             );
@@ -65,7 +65,7 @@ export namespace EventTargetLike {
 
         export function match<T>(eventTarget: EventTargetLike<T>): eventTarget is NodeStyleEventEmitter {
             return (
-                typeGuard.dry<NodeStyleEventEmitter>(eventTarget) &&
+                typeGuard<NodeStyleEventEmitter>(eventTarget) &&
                 eventTarget instanceof Object &&
                 typeof eventTarget.addListener === "function" &&
                 typeof eventTarget.removeListener === "function"
@@ -83,7 +83,7 @@ export namespace EventTargetLike {
 
         export function match<T>(eventTarget: EventTargetLike<T>): eventTarget is JQueryStyleEventEmitter {
             return (
-                typeGuard.dry<JQueryStyleEventEmitter>(eventTarget) &&
+                typeGuard<JQueryStyleEventEmitter>(eventTarget) &&
                 eventTarget instanceof Object &&
                 typeof eventTarget.on === "function" &&
                 typeof eventTarget.off === "function"
@@ -107,7 +107,7 @@ export namespace EventTargetLike {
 
         export function match<T>(eventTarget: EventTargetLike<T>): eventTarget is HasEventTargetAddRemove<T> {
             return (
-                typeGuard.dry<HasEventTargetAddRemove<T>>(eventTarget) &&
+                typeGuard<HasEventTargetAddRemove<T>>(eventTarget) &&
                 eventTarget instanceof Object &&
                 typeof eventTarget.addEventListener === "function" &&
                 typeof eventTarget.removeEventListener === "function"

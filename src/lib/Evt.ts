@@ -215,7 +215,7 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
             return false;
         }
 
-        if (typeGuard.dry<Handler<T, any, CtxLike<any>>>(handler, !!handler.ctx)) {
+        if (typeGuard<Handler<T, any, CtxLike<any>>>(handler, !!handler.ctx)) {
             handler.ctx.zz__removeHandler(handler);
         }
 
@@ -402,7 +402,7 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
 
         }
 
-        if (typeGuard.dry<Handler<T, U, CtxLike<any>>>(handler, !!handler.ctx)) {
+        if (typeGuard<Handler<T, U, CtxLike<any>>>(handler, !!handler.ctx)) {
             handler.ctx.zz__addHandler(handler, this);
         }
 

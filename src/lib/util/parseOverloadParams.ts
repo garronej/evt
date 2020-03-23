@@ -11,7 +11,7 @@ function matchAll() { return true; }
 const canBeOperator = (p: undefined | CtxLike<any> | Operator<any, any, any>): boolean => {
     return (
         p !== undefined &&
-        typeGuard.dry<Operator<any, any, any>>(p) &&
+        typeGuard<Operator<any, any, any>>(p) &&
         (
             typeof p === "function" ||
             typeof p[0] === "function"

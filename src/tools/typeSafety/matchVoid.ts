@@ -18,5 +18,5 @@ import { typeGuard } from "./typeGuard";
  * @returns true if o is void'ish ( null or undefined )
  */
 export function matchVoid(o: any): o is void {
-    return typeGuard<void>(o, o => o === undefined || o === null );
+    return typeGuard<void>(o, o === undefined || o === null );
 }

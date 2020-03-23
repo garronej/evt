@@ -44,7 +44,7 @@ var Operator;
             var Matched;
             (function (Matched) {
                 function match(result) {
-                    return (typeSafety_1.typeGuard.dry(result) &&
+                    return (typeSafety_1.typeGuard(result) &&
                         result instanceof Object &&
                         (result.length === 1 ||
                             (result.length === 2 &&
@@ -65,7 +65,7 @@ var Operator;
                 var WithCtxArg;
                 (function (WithCtxArg) {
                     function match(detach) {
-                        return (typeSafety_1.typeGuard.dry(detach) &&
+                        return (typeSafety_1.typeGuard(detach) &&
                             detach instanceof Object &&
                             detach.DETACH instanceof Object);
                     }

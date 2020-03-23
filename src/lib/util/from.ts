@@ -173,9 +173,9 @@ export function from<T>(
     if ("getEvtDone" in ctxOrTarget) {
 
         assert(
-            typeGuard.dry<OneOrMany<EventTargetLike<T>>>(targetOrEventName) &&
-            typeGuard.dry<string | undefined>(eventNameOrOptions) &&
-            typeGuard.dry<EventTargetLike.HasEventTargetAddRemove.Options | undefined>(options)
+            typeGuard<OneOrMany<EventTargetLike<T>>>(targetOrEventName) &&
+            typeGuard<string | undefined>(eventNameOrOptions) &&
+            typeGuard<EventTargetLike.HasEventTargetAddRemove.Options | undefined>(options)
         );
 
         return fromImpl(
@@ -188,8 +188,8 @@ export function from<T>(
     } else {
 
         assert(
-            typeGuard.dry<string | undefined>(targetOrEventName) &&
-            typeGuard.dry<EventTargetLike.HasEventTargetAddRemove.Options | undefined>(eventNameOrOptions)
+            typeGuard<string | undefined>(targetOrEventName) &&
+            typeGuard<EventTargetLike.HasEventTargetAddRemove.Options | undefined>(eventNameOrOptions)
         );
 
         return fromImpl(

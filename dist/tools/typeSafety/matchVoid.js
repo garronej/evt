@@ -18,7 +18,7 @@ var typeGuard_1 = require("./typeGuard");
  * @returns true if o is void'ish ( null or undefined )
  */
 function matchVoid(o) {
-    return typeGuard_1.typeGuard(o, function (o) { return o === undefined || o === null; });
+    return typeGuard_1.typeGuard(o, o === undefined || o === null);
 }
 exports.matchVoid = matchVoid;
 //# sourceMappingURL=matchVoid.js.map

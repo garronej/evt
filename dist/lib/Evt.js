@@ -296,7 +296,7 @@ var Evt = /** @class */ (function () {
         if (index < 0) {
             return false;
         }
-        if (typeGuard_1.typeGuard.dry(handler, !!handler.ctx)) {
+        if (typeGuard_1.typeGuard(handler, !!handler.ctx)) {
             handler.ctx.zz__removeHandler(handler);
         }
         this.handlers.splice(index, 1);
@@ -383,7 +383,7 @@ var Evt = /** @class */ (function () {
             catch (_b) {
             }
         }
-        if (typeGuard_1.typeGuard.dry(handler, !!handler.ctx)) {
+        if (typeGuard_1.typeGuard(handler, !!handler.ctx)) {
             handler.ctx.zz__addHandler(handler, this);
         }
         (_a = this.onHandler) === null || _a === void 0 ? void 0 : _a.call(this, true, handler);

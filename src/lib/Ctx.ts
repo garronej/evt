@@ -178,7 +178,7 @@ export class Ctx<Result> implements CtxLike<Result>{
         evt: EvtLike<T>
     ) {
         assert(handler.ctx === this);
-        assert(typeGuard.dry<Handler<T, any, Ctx<Result>>>(handler));
+        assert(typeGuard<Handler<T, any, Ctx<Result>>>(handler));
         this.handlers.add(handler);
         this.evtByHandler.set(handler, evt);
         this.onAttach({ handler, evt });
@@ -189,7 +189,7 @@ export class Ctx<Result> implements CtxLike<Result>{
         handler: Handler<T, any, CtxLike<Result>>,
     ) {
         assert(handler.ctx === this);
-        assert(typeGuard.dry<Handler<T, any, Ctx<Result>>>(handler));
+        assert(typeGuard<Handler<T, any, Ctx<Result>>>(handler));
 
         this.onDetach({ handler, "evt": this.evtByHandler.get(handler)! });
         this.handlers.delete(handler);

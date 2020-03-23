@@ -150,7 +150,7 @@ var Ctx = /** @class */ (function () {
     /** Exposed only to enable safe interoperability between mismatching EVT versions, do not use */
     Ctx.prototype.zz__addHandler = function (handler, evt) {
         assert_1.assert(handler.ctx === this);
-        assert_1.assert(typeGuard_1.typeGuard.dry(handler));
+        assert_1.assert(typeGuard_1.typeGuard(handler));
         this.handlers.add(handler);
         this.evtByHandler.set(handler, evt);
         this.onAttach({ handler: handler, evt: evt });
@@ -158,7 +158,7 @@ var Ctx = /** @class */ (function () {
     /** Exposed only to enable safe interoperability between EVT versions, do not use */
     Ctx.prototype.zz__removeHandler = function (handler) {
         assert_1.assert(handler.ctx === this);
-        assert_1.assert(typeGuard_1.typeGuard.dry(handler));
+        assert_1.assert(typeGuard_1.typeGuard(handler));
         this.onDetach({ handler: handler, "evt": this.evtByHandler.get(handler) });
         this.handlers["delete"](handler);
     };

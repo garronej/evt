@@ -9,7 +9,7 @@ function arrPartitionImpl(arr, matcher) {
         }
         else {
             //NOTE: Should be deduced by the compiler
-            typeSafety_1.assert(typeSafety_1.typeGuard.dry(currentValue));
+            typeSafety_1.assert(typeSafety_1.typeGuard(currentValue));
             previousValue[1].push(currentValue);
         }
         return previousValue;

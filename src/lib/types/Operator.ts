@@ -87,7 +87,7 @@ export namespace Operator {
                     result: any,
                 ): result is Matched<U, CtxResult> {
                     return (
-                        typeGuard.dry<Matched<U, CtxResult>>(result) &&
+                        typeGuard<Matched<U, CtxResult>>(result) &&
                         result instanceof Object &&
                         (
                             result.length === 1 ||
@@ -134,7 +134,7 @@ export namespace Operator {
 
                     export function match<CtxResult>(detach: any): detach is WithCtxArg<CtxResult> {
                         return (
-                            typeGuard.dry<Detach<CtxResult>>(detach) &&
+                            typeGuard<Detach<CtxResult>>(detach) &&
                             detach instanceof Object &&
                             detach.DETACH instanceof Object
                         );

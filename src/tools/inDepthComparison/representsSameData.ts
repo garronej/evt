@@ -9,7 +9,7 @@ namespace SetLike {
 
     export function match<T>(set: Object): set is SetLike<T> {
         return (
-            typeGuard.dry<SetLike<T>>(set) &&
+            typeGuard<SetLike<T>>(set) &&
             typeof set.values === "function" &&
             /Set/.test(Object.getPrototypeOf(set).constructor.name)
         );
@@ -26,7 +26,7 @@ namespace MapLike {
 
     export function match<T,U>(map: Object): map is MapLike<T,U> {
         return (
-            typeGuard.dry<MapLike<T,U>>(map) &&
+            typeGuard<MapLike<T,U>>(map) &&
             typeof map.keys === "function" &&
             typeof map.get === "function" &&
             /Map/.test(Object.getPrototypeOf(map).constructor.name)
