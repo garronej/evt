@@ -580,7 +580,7 @@ f2(myStatefulFλOp);  //OK
 ## Generic operators built in
 
 {% hint style="warning" %}
-Generic operators such as `bufferTime` `debounceTime`, `skip`, `take`, `switchMap`, `mergeMap` and `reduce`. Will be added in the next release alongside with creators. To implement thoes we need a third type of operators that is called `AutonomousOperators` that will ship in the next release.
+Generic operators such as `bufferTime` `debounceTime`, `skip`, `take`, `switchMap`, `mergeMap` and `reduce`. Will be added in the next release alongside with creators. To implement those we need a third type of operator called `AutonomousOperators` that will ship in the next release.
 {% endhint %}
 
 Some generic operators are provided in `"evt/dist/lib/util/genericOperators"` such as `scan`, `throttleTime` or `to` but that's about it.
