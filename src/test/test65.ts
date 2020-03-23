@@ -22,11 +22,12 @@ if (1 + 0 === 2) {
 
     }
 
+
     //clientX should be number
     Evt.from(document, "click")
         .pipe(
             throttleTime(1000),
-            event => [event.clientX],
+            event => [parseInt(event.clientX.toFixed())],
             [(clientX, count) => [count + clientX], 0]
         ).attach(count => console.log(count));
 
@@ -49,7 +50,7 @@ if (1 + 0 === 2) {
     Evt.from(document.getElementById("app")!, "click")
         .pipe(
             throttleTime(1000),
-            event => [event.clientX],
+            event => [parseInt(event.clientX.toFixed())],
             [(clientX, count) => [count + clientX], 0]
         ).attach(count => console.log(count));
 

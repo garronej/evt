@@ -1,5 +1,5 @@
-type Ctx<T> = import("../Ctx").Ctx<T>;
-type VoidCtx = import("../Ctx").VoidCtx;
+type CtxLike<Result> = import("../Ctx").CtxLike<Result>;
+type VoidCtxLike = import("../Ctx").VoidCtxLike;
 import { typeGuard } from "../../tools/typeSafety";
 
 /** https://docs.evt.land/api/operator */
@@ -41,7 +41,7 @@ export namespace Operator {
                 return Matched.match(result) || NotMatched.match(result);
             }
 
-            export function getDetachArg<CtxResult>(result: Result<any, CtxResult>): boolean | [Ctx<CtxResult>, undefined | Error, CtxResult] {
+            export function getDetachArg<CtxResult>(result: Result<any, CtxResult>): boolean | [CtxLike<CtxResult>, undefined | Error, CtxResult] {
 
                 const detach = Matched.match<any, CtxResult>(result) ? result[1] : result;
 
@@ -51,7 +51,7 @@ export namespace Operator {
 
                 if (Detach.WithCtxArg.match<CtxResult>(detach)) {
                     return [
-                        detach.DETACH as Exclude<typeof detach.DETACH, VoidCtx>,
+                        detach.DETACH as Exclude<typeof detach.DETACH, VoidCtxLike>,
                         (detach as Extract<Result<any,CtxResult>, { err: any }>).err,
                         (detach as Extract<Result<any, CtxResult>, { res: any }>).res
                     ];
@@ -123,13 +123,13 @@ export namespace Operator {
                 export namespace WithCtxArg {
 
                     export type Void =
-                        { DETACH: VoidCtx; err: Error; } |
-                        { DETACH: VoidCtx; }
+                        { DETACH: VoidCtxLike; err: Error; } |
+                        { DETACH: VoidCtxLike; }
                         ;
 
                     export type Arg<CtxResult> =
-                        { DETACH: Ctx<CtxResult>; err: Error; } |
-                        { DETACH: Ctx<CtxResult>; res: CtxResult; }
+                        { DETACH: CtxLike<CtxResult>; err: Error; } |
+                        { DETACH: CtxLike<CtxResult>; res: CtxResult; }
                         ;
 
                     export function match<CtxResult>(detach: any): detach is WithCtxArg<CtxResult> {

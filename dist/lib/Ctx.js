@@ -43,12 +43,8 @@ exports.__esModule = true;
 var Set_1 = require("minimal-polyfills/dist/lib/Set");
 var WeakMap_1 = require("minimal-polyfills/dist/lib/WeakMap");
 var getLazyEvtFactory_1 = require("./util/getLazyEvtFactory");
-/*
-export interface CtxLike<T = any> {
-    done(result?: T): void;
-    abort(error: Error): void;
-}
-*/
+var assert_1 = require("../tools/typeSafety/assert");
+var typeGuard_1 = require("../tools/typeSafety/typeGuard");
 /** https://docs.evt.land/api/ctx */
 var Ctx = /** @class */ (function () {
     function Ctx() {
@@ -151,19 +147,20 @@ var Ctx = /** @class */ (function () {
         return Array.from(this.handlers.values())
             .map(function (handler) { return ({ handler: handler, "evt": _this_1.evtByHandler.get(handler) }); });
     };
-    Ctx.__addHandlerToCtxCore = function (handler, evt) {
-        var ctx = handler.ctx;
-        ctx.handlers.add(handler);
-        ctx.evtByHandler.set(handler, evt);
-        ctx.onAttach({ handler: handler, evt: evt });
+    /** Exposed only to enable safe interoperability between mismatching EVT versions, do not use */
+    Ctx.prototype.zz__addHandler = function (handler, evt) {
+        assert_1.assert(handler.ctx === this);
+        assert_1.assert(typeGuard_1.typeGuard.dry(handler));
+        this.handlers.add(handler);
+        this.evtByHandler.set(handler, evt);
+        this.onAttach({ handler: handler, evt: evt });
     };
-    Ctx.__removeHandlerFromCtxCore = function (handler) {
-        var ctx = handler.ctx;
-        ctx.onDetach({ handler: handler, "evt": ctx.evtByHandler.get(handler) });
-        ctx.handlers["delete"](handler);
-    };
-    Ctx.__matchHandlerBoundToCtx = function (handler) {
-        return handler.ctx !== undefined;
+    /** Exposed only to enable safe interoperability between EVT versions, do not use */
+    Ctx.prototype.zz__removeHandler = function (handler) {
+        assert_1.assert(handler.ctx === this);
+        assert_1.assert(typeGuard_1.typeGuard.dry(handler));
+        this.onDetach({ handler: handler, "evt": this.evtByHandler.get(handler) });
+        this.handlers["delete"](handler);
     };
     return Ctx;
 }());

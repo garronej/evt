@@ -5,8 +5,7 @@ var Evt_2 = require("../Evt");
 function mergeImpl(ctx, evts) {
     var evtUnion = new Evt_2.Evt();
     var callback = function (data) { return evtUnion.post(data); };
-    evts
-        .forEach(function (evt) {
+    evts.forEach(function (evt) {
         if (ctx === undefined) {
             evt.attach(callback);
         }

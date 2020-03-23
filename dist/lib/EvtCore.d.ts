@@ -1,10 +1,13 @@
 import "minimal-polyfills/dist/lib/Array.prototype.find";
 import { Handler } from "./types/Handler";
 import { Operator } from "./types/Operator";
-import { Ctx } from "./Ctx";
+declare type CtxLike<Result> = import("./Ctx").CtxLike<Result>;
 export declare const setPostCount: (evt: EvtCore<any>, value: number) => void;
+export interface EvtLike<T> {
+    isHandled(data?: T): void;
+}
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
-export declare class EvtCore<T> {
+export declare class EvtCore<T> implements EvtLike<any> {
     private __maxHandlers;
     /**
      *
@@ -81,7 +84,7 @@ export declare class EvtCore<T> {
      *
      * Detach every handlers of the Evt that are bound to the provided context
      * */
-    detach<CtxResult>(ctx: Ctx<CtxResult>): Handler<T, any, Ctx<CtxResult>>[];
+    detach<CtxResult>(ctx: CtxLike<CtxResult>): Handler<T, any, CtxLike<CtxResult>>[];
     /**
      * https://docs.evt.land/api/evt/detach
      *
@@ -89,3 +92,4 @@ export declare class EvtCore<T> {
      * */
     detach(): Handler<T, any>[];
 }
+export {};

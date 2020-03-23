@@ -1,6 +1,6 @@
 
 /** Invoke a test function as if it was a typeGuard for a given type */
-export function typeGuard<T>(o: any, matcher: (o: any) => boolean) {
+export function typeGuard<T>(o: any, matcher: (o: any) => boolean): o is T {
     return matcher(o);
 }
 

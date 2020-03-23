@@ -3,27 +3,29 @@ import { Evt } from "./Evt";
 import { Polyfill as Set } from "minimal-polyfills/dist/lib/Set";
 import { Polyfill as WeakMap } from "minimal-polyfills/dist/lib/WeakMap";
 import { getLazyEvtFactory } from "./util/getLazyEvtFactory";
-import { UnpackEvt } from "./types/helper/UnpackEvt";
-type EvtCore<T> = import("./EvtCore").EvtCore<T>;
+import { assert } from "../tools/typeSafety/assert";
+import { typeGuard } from "../tools/typeSafety/typeGuard";
+type EvtLike<T> = import("./EvtCore").EvtLike<T>;
 
-type Done<Result> = [Error | null, Result, Handler.WithEvt<any, Result>[]];
+export type CtxEvtDoneData<Result> = [Error | null, Result, Handler.WithEvt<any, Result>[]];
 
-/*
-export interface CtxLike<T = any> {
-    done(result?: T): void;
+export interface CtxLike<Result = any> {
+    done(result: Result): void;
     abort(error: Error): void;
+    zz__addHandler<T>(handler: Handler<T, any, CtxLike<Result>>, evt: EvtLike<T>): void;
+    zz__removeHandler<T>(handler: Handler<T, any, CtxLike<Result>>): void;
 }
-*/
+
 
 /** https://docs.evt.land/api/ctx */
-export class Ctx<Result> {
+export class Ctx<Result> implements CtxLike<Result>{
 
     /** 
      * https://docs.evt.land/api/ctx#ctx-getevtdone
      * 
      * Posted every time ctx.done() is invoked, post the detached handler ( return value of evt.done()) 
      */
-    public readonly getEvtDone: () => Evt<Done<Result>>;
+    public readonly getEvtDone: () => Evt<CtxEvtDoneData<Result>>;
 
     /** 
      * 
@@ -58,24 +60,24 @@ export class Ctx<Result> {
      * 
      * Posted every time a handler is bound to this context 
      * */
-    public readonly getEvtAttach: () => Evt<Handler.WithEvt<any,Result>>;
+    public readonly getEvtAttach: () => Evt<Handler.WithEvt<any, Result>>;
 
     /** 
      * https://docs.evt.land/api/ctx#ctx-getevtdetach
      * 
      * Posted every time a handler bound to this context is detached from it's Evt 
      * */
-    public readonly getEvtDetach: () => Evt<Handler.WithEvt<any,Result>>;
+    public readonly getEvtDetach: () => Evt<Handler.WithEvt<any, Result>>;
 
-    private readonly onDone: ([error, result, handlers]: Done<Result>) => void;
-    private readonly onAttach: (handler: UnpackEvt<ReturnType<typeof Ctx.prototype.getEvtAttach>>) => void;
-    private readonly onDetach: (handler: UnpackEvt<ReturnType<typeof Ctx.prototype.getEvtDetach>>) => void;
+    private readonly onDone: ([error, result, handlers]: CtxEvtDoneData<Result>) => void;
+    private readonly onAttach: (handler: Handler.WithEvt<any, Result>) => void;
+    private readonly onDetach: (handler: Handler.WithEvt<any, Result>) => void;
 
     constructor() {
 
         {
 
-            const { getEvt, post } = getLazyEvtFactory<Done<Result>>();
+            const { getEvt, post } = getLazyEvtFactory<CtxEvtDoneData<Result>>();
 
             this.onDone = post;
             this.getEvtDone = getEvt;
@@ -84,9 +86,7 @@ export class Ctx<Result> {
 
         {
 
-            const { getEvt, post } = getLazyEvtFactory<
-                UnpackEvt<ReturnType<typeof Ctx.prototype.getEvtAttach>>
-            >();
+            const { getEvt, post } = getLazyEvtFactory<Handler.WithEvt<any, Result>>();
 
             this.getEvtAttach = getEvt;
             this.onAttach = post;
@@ -95,9 +95,7 @@ export class Ctx<Result> {
 
         {
 
-            const { getEvt, post } = getLazyEvtFactory<
-                UnpackEvt<ReturnType<typeof Ctx.prototype.getEvtDetach>>
-            >();
+            const { getEvt, post } = getLazyEvtFactory<Handler.WithEvt<any, Result>>();
 
             this.getEvtDetach = getEvt;
             this.onDetach = post;
@@ -163,28 +161,56 @@ export class Ctx<Result> {
     >();
     private evtByHandler = new WeakMap<
         Handler<any, any, Ctx<Result>>,
-        EvtCore<any>
+        EvtLike<any>
     >();
 
     /** https://docs.evt.land/api/ctx#ctx-gethandlers */
-    public getHandlers(): Handler.WithEvt<any,Result>[] {
+    public getHandlers(): Handler.WithEvt<any, Result>[] {
         return Array.from(this.handlers.values())
             .map(handler => ({ handler, "evt": this.evtByHandler.get(handler)! }))
             ;
     }
 
-    public static __addHandlerToCtxCore<T,Result>(
-        handler: Handler<T, any, Ctx<Result>>,
+
+    /** Exposed only to enable safe interoperability between mismatching EVT versions, do not use */
+    public zz__addHandler<T>(
+        handler: Handler<T, any, CtxLike<Result>>,
+        evt: EvtLike<T>
+    ) {
+        assert(handler.ctx === this);
+        assert(typeGuard.dry<Handler<T, any, Ctx<Result>>>(handler));
+        this.handlers.add(handler);
+        this.evtByHandler.set(handler, evt);
+        this.onAttach({ handler, evt });
+    }
+
+    /** Exposed only to enable safe interoperability between EVT versions, do not use */
+    public zz__removeHandler<T>(
+        handler: Handler<T, any, CtxLike<Result>>,
+    ) {
+        assert(handler.ctx === this);
+        assert(typeGuard.dry<Handler<T, any, Ctx<Result>>>(handler));
+
+        this.onDetach({ handler, "evt": this.evtByHandler.get(handler)! });
+        this.handlers.delete(handler);
+    }
+
+    /*
+    public static __addHandlerToCtxCore<T, Result>(
+        handler: Handler<T, any, CtxLike<Result>>,
         evt: EvtCore<T>
     ) {
+
         const { ctx } = handler;
+
         ctx.handlers.add(handler);
         ctx.evtByHandler.set(handler, evt);
         ctx.onAttach({ handler, evt });
+
     }
 
     public static __removeHandlerFromCtxCore<Result>(
-        handler: Handler<any, any, Ctx<Result>>
+        handler: Handler<any, any, CtxLike<Result>>
     ) {
         const { ctx } = handler;
         ctx.onDetach({ handler, "evt": ctx.evtByHandler.get(handler)! });
@@ -193,16 +219,21 @@ export class Ctx<Result> {
 
     public static __matchHandlerBoundToCtx<T, Result>(
         handler: Handler<T, any>
-    ): handler is Handler<T, any, Ctx<Result>> {
+    ): handler is Handler<T, any, CtxLike<Result>> {
         return handler.ctx !== undefined;
     }
+    */
 
 
 
 }
 
+export interface VoidCtxLike extends CtxLike<void> {
+    done(): void;
+}
+
 /** https://docs.evt.land/api/ctx */
-export class VoidCtx extends Ctx<void> {
+export class VoidCtx extends Ctx<void> implements VoidCtxLike {
 
     /**
      * Detach all handlers.

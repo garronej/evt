@@ -1,15 +1,21 @@
 import { Handler } from "./types/Handler";
 import { Evt } from "./Evt";
-declare type EvtCore<T> = import("./EvtCore").EvtCore<T>;
-declare type Done<Result> = [Error | null, Result, Handler.WithEvt<any, Result>[]];
+declare type EvtLike<T> = import("./EvtCore").EvtLike<T>;
+export declare type CtxEvtDoneData<Result> = [Error | null, Result, Handler.WithEvt<any, Result>[]];
+export interface CtxLike<Result = any> {
+    done(result: Result): void;
+    abort(error: Error): void;
+    zz__addHandler<T>(handler: Handler<T, any, CtxLike<Result>>, evt: EvtLike<T>): void;
+    zz__removeHandler<T>(handler: Handler<T, any, CtxLike<Result>>): void;
+}
 /** https://docs.evt.land/api/ctx */
-export declare class Ctx<Result> {
+export declare class Ctx<Result> implements CtxLike<Result> {
     /**
      * https://docs.evt.land/api/ctx#ctx-getevtdone
      *
      * Posted every time ctx.done() is invoked, post the detached handler ( return value of evt.done())
      */
-    readonly getEvtDone: () => Evt<Done<Result>>;
+    readonly getEvtDone: () => Evt<CtxEvtDoneData<Result>>;
     /**
      *
      * https://docs.evt.land/api/ctx#ctx-getprdone-timeout
@@ -59,12 +65,16 @@ export declare class Ctx<Result> {
     private evtByHandler;
     /** https://docs.evt.land/api/ctx#ctx-gethandlers */
     getHandlers(): Handler.WithEvt<any, Result>[];
-    static __addHandlerToCtxCore<T, Result>(handler: Handler<T, any, Ctx<Result>>, evt: EvtCore<T>): void;
-    static __removeHandlerFromCtxCore<Result>(handler: Handler<any, any, Ctx<Result>>): void;
-    static __matchHandlerBoundToCtx<T, Result>(handler: Handler<T, any>): handler is Handler<T, any, Ctx<Result>>;
+    /** Exposed only to enable safe interoperability between mismatching EVT versions, do not use */
+    zz__addHandler<T>(handler: Handler<T, any, CtxLike<Result>>, evt: EvtLike<T>): void;
+    /** Exposed only to enable safe interoperability between EVT versions, do not use */
+    zz__removeHandler<T>(handler: Handler<T, any, CtxLike<Result>>): void;
+}
+export interface VoidCtxLike extends CtxLike<void> {
+    done(): void;
 }
 /** https://docs.evt.land/api/ctx */
-export declare class VoidCtx extends Ctx<void> {
+export declare class VoidCtx extends Ctx<void> implements VoidCtxLike {
     /**
      * Detach all handlers.
      * evtDone will post [ null, undefined, handlers (detached) ]

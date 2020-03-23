@@ -9,6 +9,7 @@ import { parseOverloadParamsFactory } from "./util/parseOverloadParams";
 import { getLazyEvtFactory } from "./util/getLazyEvtFactory";
 import { getCtxFactory } from "./util/getCtxFactory";
 type VoidCtx = import("./Ctx").VoidCtx;
+type CtxLike<Result> = import("./Ctx").CtxLike<Result>;
 
 /** https://docs.evt.land/api/evt */
 export class Evt<T> extends EvtCore<T> {
@@ -95,18 +96,18 @@ export class Evt<T> extends EvtCore<T> {
         op: (data: T) => boolean
     ): Evt<T>;
 
-    public pipe(ctx: Ctx<any>): Evt<T>;
+    public pipe(ctx: CtxLike<any>): Evt<T>;
 
     public pipe<U,CtxResult>(
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         op: Operator.fλ<T, U, CtxResult>
     ): Evt<U>;
     public pipe<U extends T>(
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         op: (data: T) => data is U
     ): Evt<U>;
     public pipe(
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         op: (data: T) => boolean
     ): Evt<T>;
 
@@ -244,7 +245,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public waitFor<U, CtxResult>(
         op: Operator.fλ.Stateless<T, U, CtxResult>,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout?: number
     ): Promise<U>;
     /**
@@ -258,7 +259,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public waitFor<Q extends T>(
         op: (data: T) => data is Q,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout?: number
     ): Promise<Q>;
     /**
@@ -272,7 +273,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public waitFor(
         op: (data: T) => boolean,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout?: number
     ): Promise<T>;
     /**
@@ -316,7 +317,7 @@ export class Evt<T> extends EvtCore<T> {
      * timeout?
      */
     public waitFor(
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout?: number
     ): Promise<T>;
     /**
@@ -350,7 +351,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public $attach<U, CtxResult = any>(
         op: Operator.fλ<T, U, CtxResult>,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -365,7 +366,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public $attach<U, CtxResult = any>(
         op: Operator.fλ<T, U, CtxResult>,
-        ctx: Ctx<CtxResult>,
+        ctx: CtxLike<CtxResult>,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
@@ -416,7 +417,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attach<Q extends T>(
         op: (data: T) => data is Q,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
@@ -433,7 +434,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attach(
         op: (data: T) => boolean,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -448,7 +449,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attach<Q extends T>(
         op: (data: T) => data is Q,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
@@ -462,7 +463,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attach(
         op: (data: T) => boolean,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -503,7 +504,7 @@ export class Evt<T> extends EvtCore<T> {
      * callback
      */
     public attach(
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -537,7 +538,7 @@ export class Evt<T> extends EvtCore<T> {
      * callback
      */
     public attach(
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -579,7 +580,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public $attachOnce<U, CtxResult = any>(
         op: Operator.fλ.Stateless<T, U, CtxResult>,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -594,7 +595,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public $attachOnce<U, CtxResult = any>(
         op: Operator.fλ.Stateless<T, U, CtxResult>,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
@@ -644,7 +645,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachOnce<Q extends T>(
         op: (data: T) => data is Q,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
@@ -661,7 +662,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachOnce(
         op: (data: T) => boolean,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -676,7 +677,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachOnce<Q extends T>(
         op: (data: T) => data is Q,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
@@ -690,7 +691,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachOnce(
         op: (data: T) => boolean,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -731,7 +732,7 @@ export class Evt<T> extends EvtCore<T> {
      * callback
      */
     public attachOnce(
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -765,7 +766,7 @@ export class Evt<T> extends EvtCore<T> {
      * callback
      */
     public attachOnce(
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -808,7 +809,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public $attachExtract<U, CtxResult>(
         op: Operator.fλ<T, U, CtxResult>,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -823,7 +824,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public $attachExtract<U, CtxResult>(
         op: Operator.fλ<T, U, CtxResult>,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
@@ -875,7 +876,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachExtract<Q extends T>(
         op: (data: T) => data is Q,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
@@ -892,7 +893,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachExtract(
         op: (data: T) => boolean,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -907,7 +908,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachExtract<Q extends T>(
         op: (data: T) => data is Q,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
@@ -921,7 +922,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachExtract(
         op: (data: T) => boolean,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -1001,7 +1002,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public $attachPrepend<U, CtxResult = any>(
         op: Operator.fλ<T, U, CtxResult>,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -1016,7 +1017,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public $attachPrepend<U, CtxResult = any>(
         op: Operator.fλ<T, U, CtxResult>,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
@@ -1069,7 +1070,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachPrepend<Q extends T>(
         op: (data: T) => data is Q,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
@@ -1087,7 +1088,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachPrepend(
         op: (data: T) => boolean,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -1103,7 +1104,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachPrepend<Q extends T>(
         op: (data: T) => data is Q,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
@@ -1117,7 +1118,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachPrepend(
         op: (data: T) => boolean,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -1158,7 +1159,7 @@ export class Evt<T> extends EvtCore<T> {
      * callback
      */
     public attachPrepend(
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -1192,7 +1193,7 @@ export class Evt<T> extends EvtCore<T> {
      * callback
      */
     public attachPrepend(
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -1237,7 +1238,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public $attachOncePrepend<U, CtxResult=any>(
         op: Operator.fλ.Stateless<T, U, CtxResult>,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -1252,7 +1253,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public $attachOncePrepend<U, CtxResult = any>(
         op: Operator.fλ.Stateless<T, U, CtxResult>,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
@@ -1305,7 +1306,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachOncePrepend<Q extends T>(
         op: (data: T) => data is Q,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
@@ -1322,7 +1323,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachOncePrepend(
         op: (data: T) => boolean,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -1337,7 +1338,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachOncePrepend<Q extends T>(
         op: (data: T) => data is Q,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
@@ -1351,7 +1352,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachOncePrepend(
         op: (data: T) => boolean,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -1392,7 +1393,7 @@ export class Evt<T> extends EvtCore<T> {
      * callback
      */
     public attachOncePrepend(
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -1426,7 +1427,7 @@ export class Evt<T> extends EvtCore<T> {
      * callback
      */
     public attachOncePrepend(
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -1472,7 +1473,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public $attachOnceExtract<U, CtxResult = any>(
         op: Operator.fλ.Stateless<T, U, CtxResult>,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -1487,7 +1488,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public $attachOnceExtract<U, CtxResult = any>(
         op: Operator.fλ.Stateless<T, U, CtxResult>,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         callback: (transformedData: U) => void
     ): Promise<U>;
     /**
@@ -1539,7 +1540,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachOnceExtract<Q extends T>(
         op: (data: T) => data is Q,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout: number,
         callback: (data: Q) => void
     ): Promise<Q>;
@@ -1556,7 +1557,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachOnceExtract(
         op: (data: T) => boolean,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -1571,7 +1572,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachOnceExtract<Q extends T>(
         op: (data: T) => data is Q,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         callback: (data: Q) => void
     ): Promise<Q>;
     /**
@@ -1585,7 +1586,7 @@ export class Evt<T> extends EvtCore<T> {
      */
     public attachOnceExtract(
         op: (data: T) => boolean,
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -1624,7 +1625,7 @@ export class Evt<T> extends EvtCore<T> {
      * timeout
      */
     public attachOnceExtract(
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         timeout: number,
         callback: (data: T) => void
     ): Promise<T>;
@@ -1658,7 +1659,7 @@ export class Evt<T> extends EvtCore<T> {
      * callback
      */
     public attachOnceExtract(
-        ctx: Ctx<any>,
+        ctx: CtxLike<any>,
         callback: (data: T) => void
     ): Promise<T>;
     /**
@@ -1688,3 +1689,15 @@ export class Evt<T> extends EvtCore<T> {
 }
 
 
+/** https://docs.evt.land/api/voidevt */
+export class VoidEvt extends Evt<void> {
+
+    public post(): number {
+        return super.post(undefined);
+    }
+
+    public async postAsyncOnceHandled() {
+        return super.postAsyncOnceHandled(undefined);
+    }
+
+}

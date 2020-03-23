@@ -51,7 +51,7 @@ var Operator_1 = require("./types/Operator");
 var overwriteReadonlyProp_1 = require("../tools/overwriteReadonlyProp");
 var invokeOperator_1 = require("./util/invokeOperator");
 var encapsulateOpState_1 = require("./util/encapsulateOpState");
-var Ctx_1 = require("./Ctx");
+var typeGuard_1 = require("../tools/typeSafety/typeGuard");
 exports.setPostCount = function (evt, value) {
     return overwriteReadonlyProp_1.overwriteReadonlyProp(evt, "postCount", value);
 };
@@ -218,8 +218,8 @@ var EvtCore = /** @class */ (function () {
         if (index < 0) {
             return false;
         }
-        if (Ctx_1.Ctx.__matchHandlerBoundToCtx(handler)) {
-            Ctx_1.Ctx.__removeHandlerFromCtxCore(handler);
+        if (typeGuard_1.typeGuard.dry(handler, !!handler.ctx)) {
+            handler.ctx.zz__removeHandler(handler);
         }
         this.handlers.splice(index, 1);
         this.handlerTriggers["delete"](handler);
@@ -305,8 +305,8 @@ var EvtCore = /** @class */ (function () {
             catch (_b) {
             }
         }
-        if (Ctx_1.Ctx.__matchHandlerBoundToCtx(handler)) {
-            Ctx_1.Ctx.__addHandlerToCtxCore(handler, this);
+        if (typeGuard_1.typeGuard.dry(handler, !!handler.ctx)) {
+            handler.ctx.zz__addHandler(handler, this);
         }
         (_a = this.onHandler) === null || _a === void 0 ? void 0 : _a.call(this, true, handler);
         return handler;

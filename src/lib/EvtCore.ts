@@ -8,13 +8,19 @@ import { Operator } from "./types/Operator";
 import { overwriteReadonlyProp } from "../tools/overwriteReadonlyProp";
 import { invokeOperator } from "./util/invokeOperator";
 import { encapsulateOpState } from "./util/encapsulateOpState";
-import { Ctx } from "./Ctx";
+import { typeGuard } from "../tools/typeSafety/typeGuard";
+type CtxLike<Result>= import("./Ctx").CtxLike<Result>;
+
 
 export const setPostCount = (evt: EvtCore<any>, value: number) =>
     overwriteReadonlyProp(evt, "postCount", value);
 
+export interface EvtLike<T> {
+     isHandled(data?: T): void;
+}
+
 /** Evt without evtAttach property, attachOnceMatched, createDelegate and without overload */
-export class EvtCore<T> {
+export class EvtCore<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
 
 
     private __maxHandlers = 25;
@@ -131,8 +137,8 @@ export class EvtCore<T> {
             return false;
         }
 
-        if (Ctx.__matchHandlerBoundToCtx(handler)) {
-            Ctx.__removeHandlerFromCtxCore(handler);
+        if( typeGuard.dry<Handler<T, any, CtxLike<any>>>(handler, !!handler.ctx) ){
+            handler.ctx.zz__removeHandler(handler);
         }
 
 
@@ -318,8 +324,8 @@ export class EvtCore<T> {
 
         }
 
-        if (Ctx.__matchHandlerBoundToCtx(handler)) {
-            Ctx.__addHandlerToCtxCore(handler, this);
+        if( typeGuard.dry<Handler<T, U, CtxLike<any>>>(handler, !!handler.ctx) ){
+            handler.ctx.zz__addHandler(handler, this);
         }
 
         this.onHandler?.(true, handler);
@@ -695,14 +701,14 @@ export class EvtCore<T> {
      * 
      * Detach every handlers of the Evt that are bound to the provided context 
      * */
-    public detach<CtxResult>(ctx: Ctx<CtxResult>): Handler<T, any, Ctx<CtxResult>>[];
+    public detach<CtxResult>(ctx: CtxLike<CtxResult>): Handler<T, any, CtxLike<CtxResult>>[];
     /** 
      * https://docs.evt.land/api/evt/detach
      * 
      * (unsafe) Detach every handlers from the Evt 
      * */
     public detach(): Handler<T, any>[];
-    public detach(ctx?: Ctx<any>): Handler<T, any>[] {
+    public detach(ctx?: CtxLike<any>): Handler<T, any>[] {
 
         const detachedHandlers: Handler<T, any>[] = [];
 

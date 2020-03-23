@@ -4,11 +4,11 @@ import { Operator } from "../types/Operator"
 import { id } from "../../tools/typeSafety/id";
 import { compose } from "./compose";
 import { typeGuard } from "../../tools/typeSafety/typeGuard"
-type Ctx<Result> = import("../Ctx").Ctx<Result>;
+type CtxLike<Result> = import("../Ctx").CtxLike<Result>;
 
 function matchAll() { return true; }
 
-const canBeOperator = (p: undefined | Ctx<any> | Operator<any, any, any>): boolean => {
+const canBeOperator = (p: undefined | CtxLike<any> | Operator<any, any, any>): boolean => {
     return (
         p !== undefined &&
         typeGuard.dry<Operator<any, any, any>>(p) &&

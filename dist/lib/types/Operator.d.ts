@@ -1,5 +1,5 @@
-declare type Ctx<T> = import("../Ctx").Ctx<T>;
-declare type VoidCtx = import("../Ctx").VoidCtx;
+declare type CtxLike<Result> = import("../Ctx").CtxLike<Result>;
+declare type VoidCtxLike = import("../Ctx").VoidCtxLike;
 /** https://docs.evt.land/api/operator */
 export declare type Operator<T, U, CtxResult> = Operator.fλ<T, U, CtxResult> | ((data: U) => boolean) | //Filter
 (U extends T ? (data: T) => data is U : never);
@@ -14,7 +14,7 @@ export declare namespace Operator {
         type Result<U, CtxResult> = Result.Matched<U, CtxResult> | Result.NotMatched<CtxResult>;
         namespace Result {
             function match<U, CtxResult>(result: any): result is Result<U, CtxResult>;
-            function getDetachArg<CtxResult>(result: Result<any, CtxResult>): boolean | [Ctx<CtxResult>, undefined | Error, CtxResult];
+            function getDetachArg<CtxResult>(result: Result<any, CtxResult>): boolean | [CtxLike<CtxResult>, undefined | Error, CtxResult];
             type NotMatched<CtxResult> = Detach<CtxResult> | null;
             namespace NotMatched {
                 function match<CtxResult>(result: any): result is NotMatched<CtxResult>;
@@ -34,16 +34,16 @@ export declare namespace Operator {
                 type WithCtxArg<CtxResult> = WithCtxArg.Void | WithCtxArg.Arg<CtxResult>;
                 namespace WithCtxArg {
                     type Void = {
-                        DETACH: VoidCtx;
+                        DETACH: VoidCtxLike;
                         err: Error;
                     } | {
-                        DETACH: VoidCtx;
+                        DETACH: VoidCtxLike;
                     };
                     type Arg<CtxResult> = {
-                        DETACH: Ctx<CtxResult>;
+                        DETACH: CtxLike<CtxResult>;
                         err: Error;
                     } | {
-                        DETACH: Ctx<CtxResult>;
+                        DETACH: CtxLike<CtxResult>;
                         res: CtxResult;
                     };
                     function match<CtxResult>(detach: any): detach is WithCtxArg<CtxResult>;

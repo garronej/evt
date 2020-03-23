@@ -1,10 +1,10 @@
 import { Operator } from "./Operator";
-type EvtCore<T> = import("../EvtCore").EvtCore<T>;
-type Ctx<T> = import("../Ctx").Ctx<T>;
+type EvtLike<T> = import("../EvtCore").EvtLike<T>;
+type CtxLike<T> = import("../Ctx").CtxLike<T>;
 
 
 /** https://docs.evt.land/api/handler */
-export type Handler<T, U, CtxProp extends Ctx<any> | undefined = Ctx<any> | undefined> =
+export type Handler<T, U, CtxProp extends CtxLike<any> | undefined = CtxLike<any> | undefined> =
     Handler.PropsFromArgs<T, U, CtxProp> &
     Handler.PropsFromMethodName & Readonly<{
         detach(): boolean;
@@ -15,10 +15,10 @@ export type Handler<T, U, CtxProp extends Ctx<any> | undefined = Ctx<any> | unde
 export namespace Handler {
 
     /** Handlers params that come from the arguments passed to the method invoked */
-    export type PropsFromArgs<T, U, CtxProp extends Ctx<any> | undefined = Ctx<any> | undefined> = {
+    export type PropsFromArgs<T, U, CtxProp extends CtxLike<any> | undefined = CtxLike<any> | undefined> = {
         ctx: CtxProp;
         timeout: number | undefined;
-        op: Operator<T, U, CtxProp extends Ctx<infer CtxResult> ? CtxResult : undefined>;
+        op: Operator<T, U, CtxProp extends CtxLike<infer CtxResult> ? CtxResult : undefined>;
         callback: ((transformedData: U) => void) | undefined;
     };
 
@@ -53,8 +53,8 @@ export namespace Handler {
     }
 
     export type WithEvt<T,CtxResult> = {
-        handler: Handler<T, any, Ctx<CtxResult>>;
-        evt: EvtCore<T>;
+        handler: Handler<T, any, CtxLike<CtxResult>>;
+        evt: EvtLike<T>;
     };
 
 }

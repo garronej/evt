@@ -1,5 +1,5 @@
 /** Invoke a test function as if it was a typeGuard for a given type */
-export declare function typeGuard<T>(o: any, matcher: (o: any) => boolean): boolean;
+export declare function typeGuard<T>(o: any, matcher: (o: any) => boolean): o is T;
 export declare namespace typeGuard {
     /**
      * type guard that always returns true for a given type.
