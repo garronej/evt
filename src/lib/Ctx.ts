@@ -5,7 +5,7 @@ import { Polyfill as WeakMap } from "minimal-polyfills/dist/lib/WeakMap";
 import { getLazyEvtFactory } from "./util/getLazyEvtFactory";
 import { assert } from "../tools/typeSafety/assert";
 import { typeGuard } from "../tools/typeSafety/typeGuard";
-type EvtLike<T> = import("./EvtCore").EvtLike<T>;
+type EvtLike<T> = import("./Evt").EvtLike<T>;
 
 export type CtxEvtDoneData<Result> = [Error | null, Result, Handler.WithEvt<any, Result>[]];
 
@@ -194,37 +194,6 @@ export class Ctx<Result> implements CtxLike<Result>{
         this.onDetach({ handler, "evt": this.evtByHandler.get(handler)! });
         this.handlers.delete(handler);
     }
-
-    /*
-    public static __addHandlerToCtxCore<T, Result>(
-        handler: Handler<T, any, CtxLike<Result>>,
-        evt: EvtCore<T>
-    ) {
-
-        const { ctx } = handler;
-
-        ctx.handlers.add(handler);
-        ctx.evtByHandler.set(handler, evt);
-        ctx.onAttach({ handler, evt });
-
-    }
-
-    public static __removeHandlerFromCtxCore<Result>(
-        handler: Handler<any, any, CtxLike<Result>>
-    ) {
-        const { ctx } = handler;
-        ctx.onDetach({ handler, "evt": ctx.evtByHandler.get(handler)! });
-        ctx.handlers.delete(handler);
-    }
-
-    public static __matchHandlerBoundToCtx<T, Result>(
-        handler: Handler<T, any>
-    ): handler is Handler<T, any, CtxLike<Result>> {
-        return handler.ctx !== undefined;
-    }
-    */
-
-
 
 }
 

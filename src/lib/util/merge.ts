@@ -5,7 +5,7 @@ import { UnpackEvt } from "../types/helper/UnpackEvt";
 
 type CtxLike<Result> = import("../Ctx").CtxLike<Result>;
 
-type EvtLike<T> = import("../EvtCore").EvtLike<T> & {
+type EvtLike<T> = import("../Evt").EvtLike<T> & {
     attach<T>(callback: (data: T)=> void): void;
     attach<T>(ctx: CtxLike<any>, callback: (data: T)=> void): void;
 };

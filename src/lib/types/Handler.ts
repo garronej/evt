@@ -1,5 +1,5 @@
 import { Operator } from "./Operator";
-type EvtLike<T> = import("../EvtCore").EvtLike<T>;
+type EvtLike<T> = import("../Evt").EvtLike<T>;
 type CtxLike<T> = import("../Ctx").CtxLike<T>;
 
 

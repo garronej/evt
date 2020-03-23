@@ -1,14 +1,14 @@
 "use strict";
 exports.__esModule = true;
 var Evt_2 = require("../Evt");
-var EvtCore_1 = require("../EvtCore");
+var Evt_3 = require("../Evt");
 function getLazyEvtFactory() {
     var initialPostCount = 0;
     var evt = undefined;
     function getEvt() {
         if (evt === undefined) {
             evt = new Evt_2.Evt();
-            EvtCore_1.setPostCount(evt, initialPostCount);
+            Evt_3.setPostCount(evt, initialPostCount);
         }
         return evt;
     }

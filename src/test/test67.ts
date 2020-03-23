@@ -5,6 +5,26 @@ import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi"
 const { mustResolve, mustStayPending } = getPromiseAssertionApi();
 
 {
+    //Test type only
+    const evtText = new Evt<string>();
+
+    evtText.$attach(
+        compose(
+            text => [text.toUpperCase(), { "DETACH": Evt.newCtx<boolean>(), "res": true }],
+            text => [text.length, { "DETACH": Evt.newCtx<number>(), "res": 3 }],
+            n => [`=>${n}<=`, { "DETACH": Evt.newCtx() }],
+            str => [str.toUpperCase(), { "DETACH": Evt.newCtx(), "err": new Error() }],
+            str => [str.toUpperCase(), { "DETACH": Evt.newCtx<boolean>(), "err": new Error() }]
+        ),
+        str => str.toUpperCase()
+    );
+
+
+
+}
+
+
+{
 
     const evtText = new Evt<string>();
 
@@ -14,7 +34,7 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi();
                 text => [text, "DETACH"],
                 text => [text]
             ),
-            text => { }
+            text => text.toLowerCase()
         )
     });
 
@@ -33,11 +53,11 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi();
     mustResolve({
         "promise": evtText.$attach(
             compose(
-                text => [text, {"DETACH": ctx }],
+                text => [text, { "DETACH": ctx }],
                 text => [text]
             ),
             ctx,
-            text => { }
+            text => text.toLowerCase()
         )
     });
 
@@ -58,7 +78,7 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi();
                 text => [text, "DETACH"],
                 () => null
             ),
-            text => { }
+            () => { }
         )
     );
 
@@ -78,10 +98,10 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi();
         evtText.$attach(
             compose(
                 text => [text, { "DETACH": ctx }],
-                str => null
+                str => { str.toLowerCase(); return null; }
             ),
             ctx,
-            text => { }
+            () => { }
         )
     );
 

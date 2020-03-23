@@ -2,7 +2,7 @@ import { Evt } from "../Evt";
 import { EventTargetLike } from "../types/EventTargetLike";
 import * as dom from "../types/lib.dom";
 declare type OneOrMany<T> = T | ArrayLike<T>;
-declare type EvtLike<T> = import("../EvtCore").EvtLike<T>;
+declare type EvtLike<T> = import("../Evt").EvtLike<T>;
 declare type CtxLike<Result> = import("../Ctx").CtxLike<Result> & {
     getEvtDone(): EvtLike<unknown> & {
         attachOnce(callback: () => void): void;

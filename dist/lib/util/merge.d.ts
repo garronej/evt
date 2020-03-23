@@ -2,7 +2,7 @@ import { Evt } from "../Evt";
 import { NonPostable } from "../types/helper/NonPostable";
 import { UnpackEvt } from "../types/helper/UnpackEvt";
 declare type CtxLike<Result> = import("../Ctx").CtxLike<Result>;
-declare type EvtLike<T> = import("../EvtCore").EvtLike<T> & {
+declare type EvtLike<T> = import("../Evt").EvtLike<T> & {
     attach<T>(callback: (data: T) => void): void;
     attach<T>(ctx: CtxLike<any>, callback: (data: T) => void): void;
 };

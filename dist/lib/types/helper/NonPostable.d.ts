@@ -1,4 +1,4 @@
-declare type EvtLike<T> = import("../../EvtCore").EvtLike<T>;
+declare type EvtLike<T> = import("../../Evt").EvtLike<T>;
 /**
  * Construct a type with the properties of T except for those in type K.
  */

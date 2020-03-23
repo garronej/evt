@@ -5,7 +5,7 @@ import { EventTargetLike } from "../types/EventTargetLike";
 import { mergeImpl } from "./merge";
 import * as dom from "../types/lib.dom";
 type OneOrMany<T> = T | ArrayLike<T>;
-type EvtLike<T> = import("../EvtCore").EvtLike<T>;
+type EvtLike<T> = import("../Evt").EvtLike<T>;
 type CtxLike<Result> = import("../Ctx").CtxLike<Result> & {
       getEvtDone(): EvtLike<unknown> & { attachOnce(callback: ()=> void): void; };
 };

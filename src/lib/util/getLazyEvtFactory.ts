@@ -1,5 +1,5 @@
 import { Evt } from "../Evt";
-import { setPostCount } from "../EvtCore";
+import { setPostCount } from "../Evt";
 
 export function getLazyEvtFactory<T>(): { getEvt: () => Evt<T>; post: (data: T) => void; } {
 

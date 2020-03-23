@@ -1,4 +1,4 @@
-import { EvtCore } from "./EvtCore";
+import "minimal-polyfills/dist/lib/Array.prototype.find";
 import { Handler } from "./types/Handler";
 import { Operator } from "./types/Operator";
 import { Ctx } from "./Ctx";
@@ -6,8 +6,12 @@ import { merge } from "./util/merge";
 import { from } from "./util/from";
 declare type VoidCtx = import("./Ctx").VoidCtx;
 declare type CtxLike<Result> = import("./Ctx").CtxLike<Result>;
+export declare const setPostCount: (evt: Evt<any>, value: number) => void;
+export interface EvtLike<T> {
+    isHandled(data?: T): void;
+}
 /** https://docs.evt.land/api/evt */
-export declare class Evt<T> extends EvtCore<T> {
+export declare class Evt<T> implements EvtLike<any> {
     /**
      * https://docs.evt.land/api/evt/newctx
      *
@@ -31,9 +35,92 @@ export declare class Evt<T> extends EvtCore<T> {
     readonly getEvtAttach: () => Evt<Handler<T, any>>;
     /** https://docs.evt.land/api/evt/getevtattachdetach */
     readonly getEvtDetach: () => Evt<Handler<T, any>>;
+    private readonly onHandler;
     constructor();
     /** https://docs.evt.land/api/evt/post */
     postAsyncOnceHandled(data: T): number | Promise<number>;
+    private __maxHandlers;
+    /**
+     *
+     * By default EventEmitters will print a warning if more than 25 handlers are added for
+     * a particular event. This is a useful default that helps finding memory leaks.
+     * Not all events should be limited to 25 handlers. The evt.setMaxHandlers() method allows the limit to be
+     * modified for this specific EventEmitter instance.
+     * The value can be set to Infinity (or 0) to indicate an unlimited number of listeners.
+     * Returns a reference to the EventEmitter, so that calls can be chained.
+     *
+     */
+    setMaxHandlers(n: number): this;
+    /**
+     * https://docs.evt.land/api/evt/post
+     *
+     * Number of times .post(data) have been called.
+     */
+    readonly postCount: number;
+    private traceId;
+    private traceFormatter;
+    private log;
+    /** https://docs.evt.land/api/evt/enabletrace */
+    enableTrace(id: string, formatter?: (data: T) => string, log?: (message?: any, ...optionalParams: any[]) => void): void;
+    /** https://docs.evt.land/api/evt/enabletrace */
+    disableTrace(): void;
+    private readonly handlers;
+    private readonly handlerTriggers;
+    private readonly asyncHandlerChronologyMark;
+    private readonly asyncHandlerChronologyExceptionRange;
+    private readonly getChronologyMark;
+    private readonly statelessByStatefulOp;
+    private detachHandler;
+    private static doDetachIfNeeded;
+    private triggerHandler;
+    private addHandler;
+    /** https://docs.evt.land/api/evt/getstatelessop */
+    getStatelessOp<U, CtxResult>(op: Operator<T, U, CtxResult>): Operator.Stateless<T, U, CtxResult>;
+    private trace;
+    /**
+     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
+     *
+     * Returns post count
+     * */
+    post(data: T): number;
+    /** Return isExtracted */
+    private postSync;
+    private readonly postAsync;
+    private __waitFor;
+    private __attach;
+    private __attachExtract;
+    private __attachPrepend;
+    private __attachOnce;
+    private __attachOncePrepend;
+    private __attachOnceExtract;
+    /**
+     * https://docs.evt.land/api/evt/ishandled
+     *
+     * Test if posting a given event data will have an effect.
+     *
+     * Return true if:
+     * -There is at least one handler matching
+     * this event data ( at least one handler's callback function
+     * will be invoked if the data is posted. )
+     * -Handlers could be will be detached
+     * if the event data is posted.
+     *
+     */
+    isHandled(data: T): boolean;
+    /** https://docs.evt.land/api/evt/gethandler */
+    getHandlers(): Handler<T, any>[];
+    /**
+     * https://docs.evt.land/api/evt/detach
+     *
+     * Detach every handlers of the Evt that are bound to the provided context
+     * */
+    detach<CtxResult>(ctx: CtxLike<CtxResult>): Handler<T, any, CtxLike<CtxResult>>[];
+    /**
+     * https://docs.evt.land/api/evt/detach
+     *
+     * (unsafe) Detach every handlers from the Evt
+     * */
+    detach(): Handler<T, any>[];
     private __parseOverloadParams;
     /** https://docs.evt.land/api/evt/pipe */
     pipe(): Evt<T>;

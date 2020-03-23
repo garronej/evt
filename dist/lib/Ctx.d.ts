@@ -1,6 +1,6 @@
 import { Handler } from "./types/Handler";
 import { Evt } from "./Evt";
-declare type EvtLike<T> = import("./EvtCore").EvtLike<T>;
+declare type EvtLike<T> = import("./Evt").EvtLike<T>;
 export declare type CtxEvtDoneData<Result> = [Error | null, Result, Handler.WithEvt<any, Result>[]];
 export interface CtxLike<Result = any> {
     done(result: Result): void;
