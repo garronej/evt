@@ -22,21 +22,17 @@ var Deferred = /** @class */ (function () {
         var reject;
         this.pr = new Promise(function (resolve_, reject_) {
             resolve = function (value) {
-                _this_1.setIsPendingToFalse();
+                overwriteReadonlyProp_1.overwriteReadonlyProp(_this_1, "isPending", false);
                 resolve_(value);
             };
             reject = function (error) {
-                _this_1.setIsPendingToFalse();
+                overwriteReadonlyProp_1.overwriteReadonlyProp(_this_1, "isPending", false);
                 reject_(error);
             };
         });
         this.resolve = resolve;
         this.reject = reject;
     }
-    Deferred.prototype.setIsPendingToFalse = function () {
-        overwriteReadonlyProp_1.overwriteReadonlyProp(this, "isPending", false);
-    };
-    ;
     return Deferred;
 }());
 exports.Deferred = Deferred;

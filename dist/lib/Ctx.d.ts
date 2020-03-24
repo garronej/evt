@@ -1,7 +1,6 @@
 import { Handler } from "./types/Handler";
-import { Evt } from "./Evt";
 declare type EvtLike<T> = import("./Evt").EvtLike<T>;
-export declare type CtxEvtDoneData<Result> = [Error | null, Result, Handler.WithEvt<any, Result>[]];
+declare type Evt<T> = import("./Evt").Evt<T>;
 export interface CtxLike<Result = any> {
     done(result: Result): void;
     abort(error: Error): void;
@@ -15,7 +14,7 @@ export declare class Ctx<Result> implements CtxLike<Result> {
      *
      * Posted every time ctx.done() is invoked, post the detached handler ( return value of evt.done())
      */
-    readonly getEvtDone: () => Evt<CtxEvtDoneData<Result>>;
+    readonly getEvtDone: () => Evt<Ctx.DoneEvtData<Result>>;
     /**
      *
      * https://docs.evt.land/api/ctx#ctx-getprdone-timeout
@@ -40,8 +39,7 @@ export declare class Ctx<Result> implements CtxLike<Result> {
      * */
     readonly getEvtDetach: () => Evt<Handler.WithEvt<any, Result>>;
     private readonly onDone;
-    private readonly onAttach;
-    private readonly onDetach;
+    private readonly onHandler;
     constructor();
     /**
      * https://docs.evt.land/api/ctx#ctx-abort-error
@@ -69,6 +67,9 @@ export declare class Ctx<Result> implements CtxLike<Result> {
     zz__addHandler<T>(handler: Handler<T, any, CtxLike<Result>>, evt: EvtLike<T>): void;
     /** Exposed only to enable safe interoperability between EVT versions, do not use */
     zz__removeHandler<T>(handler: Handler<T, any, CtxLike<Result>>): void;
+}
+export declare namespace Ctx {
+    type DoneEvtData<Result> = [Error | null, Result, Handler.WithEvt<any, Result>[]];
 }
 export interface VoidCtxLike extends CtxLike<void> {
     done(): void;

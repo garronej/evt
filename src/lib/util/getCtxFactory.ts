@@ -1,5 +1,6 @@
-import { VoidCtx } from "../Ctx";
 import { Polyfill as WeakMap } from "minimal-polyfills/dist/lib/WeakMap";
+import { importProxy } from "../importProxy";
+type VoidCtx= import("../Ctx").VoidCtx;
 
 export function getCtxFactory() {
 
@@ -11,7 +12,7 @@ export function getCtxFactory() {
 
         if (ctx === undefined) {
 
-            ctx = new VoidCtx();
+            ctx = new importProxy.VoidCtx();
 
             ctxByObj.set(obj, ctx);
 

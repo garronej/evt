@@ -1,7 +1,9 @@
-export * from "./EvtError";
-export * from "./Handler";
-export * from "./Operator";
+
+export { EvtError } from "./EvtError";
+export { Handler } from "./Handler";
+export { Operator } from "./Operator";
+
 export * from "./helper";
 
-import * as dom from "./lib.dom";
+import /*type*/ * as dom from "./lib.dom";
 export { dom };

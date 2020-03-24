@@ -1,9 +1,5 @@
 import { Evt } from "./Evt";
 import { NonPostable } from "./types/helper/NonPostable";
-declare type ChangeDiff<T> = {
-    newValue: T;
-    previousValue: T;
-};
 /**
  * https://docs.evt.land/api/observable
  *
@@ -13,9 +9,15 @@ declare type ChangeDiff<T> = {
 export interface IObservable<T> {
     readonly value: T;
     /** when value changed post the new value and the value it previously replaced */
-    readonly evtChangeDiff: NonPostable<Evt<ChangeDiff<T>>>;
+    readonly evtChangeDiff: NonPostable<Evt<IObservable.ChangeDiff<T>>>;
     /** when value changed post the new value */
     readonly evtChange: NonPostable<Evt<T>>;
+}
+export declare namespace IObservable {
+    type ChangeDiff<T> = {
+        newValue: T;
+        previousValue: T;
+    };
 }
 /** https://docs.evt.land/api/observable */
 export declare class Observable<T> implements IObservable<T> {
@@ -25,8 +27,6 @@ export declare class Observable<T> implements IObservable<T> {
     readonly evtChange: IObservable<T>["evtChange"];
     readonly value: T;
     constructor(initialValue: T, areSame?: (currentValue: T, newValue: T) => boolean);
-    private overwriteReadonlyValue;
     /** Return true if the value have been changed */
     onPotentialChange(newValue: T): boolean;
 }
-export {};

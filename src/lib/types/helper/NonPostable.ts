@@ -1,7 +1,5 @@
 
-
-
-type EvtLike<T> = import("../../Evt").EvtLike<T>
+type EvtLike<T> = import("../../Evt").EvtLike<T>;
 
 //NOTE: Omit only introduced in 3.5
 /**

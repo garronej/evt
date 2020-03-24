@@ -1,11 +1,14 @@
-
-import { Evt } from "../Evt";
-import { id, assert, typeGuard } from "../../tools/typeSafety";
+import { id } from "../../tools/typeSafety/id";
+import { assert } from "../../tools/typeSafety/assert";
+import { typeGuard } from "../../tools/typeSafety/typeGuard";
 import { EventTargetLike } from "../types/EventTargetLike";
 import { mergeImpl } from "./merge";
-import * as dom from "../types/lib.dom";
-type OneOrMany<T> = T | ArrayLike<T>;
+import { importProxy } from "../importProxy";
+import /*type*/ * as dom from "../types/lib.dom";
+type Evt<T>= import("../Evt").Evt<T>;
 type EvtLike<T> = import("../Evt").EvtLike<T>;
+
+type OneOrMany<T> = T | ArrayLike<T>;
 type CtxLike<Result> = import("../Ctx").CtxLike<Result> & {
       getEvtDone(): EvtLike<unknown> & { attachOnce(callback: ()=> void): void; };
 };
@@ -68,7 +71,7 @@ function fromImpl<T>(
 
     }
 
-    const evt = new Evt<T>();
+    const evt = new importProxy.Evt<T>();
 
     const listener = (data: T) => evt.post(data);
 

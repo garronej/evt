@@ -17,18 +17,15 @@ var Observable = /** @class */ (function () {
             });
             this.evtChangeDiff = evtChangeDiff_1;
         }
-        this.overwriteReadonlyValue(initialValue);
+        overwriteReadonlyProp_1.overwriteReadonlyProp(this, "value", initialValue);
     }
-    Observable.prototype.overwriteReadonlyValue = function (newValue) {
-        overwriteReadonlyProp_1.overwriteReadonlyProp(this, "value", newValue);
-    };
     /** Return true if the value have been changed */
     Observable.prototype.onPotentialChange = function (newValue) {
         if (this.areSame(this.value, newValue)) {
             return false;
         }
         var previousValue = this.value;
-        this.overwriteReadonlyValue(newValue);
+        overwriteReadonlyProp_1.overwriteReadonlyProp(this, "value", newValue);
         this.evtChangeDiff_post({ previousValue: previousValue, newValue: newValue });
         return true;
     };

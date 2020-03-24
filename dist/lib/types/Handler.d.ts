@@ -1,6 +1,6 @@
 import { Operator } from "./Operator";
 declare type EvtLike<T> = import("../Evt").EvtLike<T>;
-declare type CtxLike<T> = import("../Ctx").CtxLike<T>;
+declare type CtxLike<Result> = import("../Ctx").CtxLike<Result>;
 /** https://docs.evt.land/api/handler */
 export declare type Handler<T, U, CtxProp extends CtxLike<any> | undefined = CtxLike<any> | undefined> = Handler.PropsFromArgs<T, U, CtxProp> & Handler.PropsFromMethodName & Readonly<{
     detach(): boolean;

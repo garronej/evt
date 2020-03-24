@@ -1,9 +1,10 @@
+import /*type*/ { NonPostable } from "../types/helper/NonPostable";
+import /*type*/ { UnpackEvt } from "../types/helper/UnpackEvt";
+import { importProxy } from "../importProxy";
 
-import { Evt } from "../Evt";
-import { NonPostable } from "../types/helper/NonPostable";
-import { UnpackEvt } from "../types/helper/UnpackEvt";
-
+type Evt<T>= import("../Evt").Evt<T>;
 type CtxLike<Result> = import("../Ctx").CtxLike<Result>;
+
 
 type EvtLike<T> = import("../Evt").EvtLike<T> & {
     attach<T>(callback: (data: T)=> void): void;
@@ -16,7 +17,7 @@ export function mergeImpl<EvtUnion extends EvtLike<any>>(
     evts: readonly EvtUnion[]
 ): Evt<UnpackEvt<EvtUnion>> {
 
-    const evtUnion = new Evt<UnpackEvt<EvtUnion>>();
+    const evtUnion = new importProxy.Evt<UnpackEvt<EvtUnion>>();
 
     const callback = (data: UnpackEvt<typeof evtUnion>) => evtUnion.post(data)
 

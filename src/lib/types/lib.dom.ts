@@ -1,4 +1,16 @@
 
+/* 
+This is a curated re export of the dom API definitions.
+
+The DOM definitions are available only when "compilerOptions": { "lib": ["DOM"] }}
+is present in the tsconfig.json.
+
+We need we re-export those definitions so that we can expose methods that interact with
+the DOM ( ex Evt.from ) while not producing type error when
+EVT is imported in project that does not use 'lib DOM', typically 
+projects that targets Node.JS.
+*/
+
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved. 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use

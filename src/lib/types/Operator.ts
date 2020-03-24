@@ -1,6 +1,6 @@
+import { typeGuard } from "../../tools/typeSafety";
 type CtxLike<Result> = import("../Ctx").CtxLike<Result>;
 type VoidCtxLike = import("../Ctx").VoidCtxLike;
-import { typeGuard } from "../../tools/typeSafety";
 
 /** https://docs.evt.land/api/operator */
 export type Operator<T, U, CtxResult> =

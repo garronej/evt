@@ -4,7 +4,6 @@ export declare class Deferred<T> {
     readonly resolve: (value: T) => void;
     readonly reject: (error: any) => void;
     constructor();
-    private setIsPendingToFalse;
     readonly isPending: boolean;
 }
 export declare namespace Deferred {

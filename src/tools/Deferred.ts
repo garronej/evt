@@ -19,16 +19,15 @@ export class Deferred<T> {
 
                 resolve = value => {
 
-                    this.setIsPendingToFalse();
-
+                    overwriteReadonlyProp(this, "isPending", false);
                     resolve_(value);
 
                 };
 
                 reject = error => {
 
-                    this.setIsPendingToFalse();
 
+                    overwriteReadonlyProp(this, "isPending", false);
                     reject_(error);
 
                 };
@@ -41,9 +40,6 @@ export class Deferred<T> {
 
     }
 
-    private setIsPendingToFalse() {
-        overwriteReadonlyProp(this, "isPending", false);
-    };
 
     public readonly isPending: boolean = true;
 

@@ -1,12 +1,11 @@
 import "minimal-polyfills/dist/lib/Array.prototype.find";
-import { Handler } from "./types/Handler";
 import { Operator } from "./types/Operator";
-import { Ctx } from "./Ctx";
 import { merge } from "./util/merge";
 import { from } from "./util/from";
+import { Handler } from "./types/Handler";
+declare type Ctx<Result> = import("./Ctx").Ctx<Result>;
 declare type VoidCtx = import("./Ctx").VoidCtx;
 declare type CtxLike<Result> = import("./Ctx").CtxLike<Result>;
-export declare const setPostCount: (evt: Evt<any>, value: number) => void;
 export interface EvtLike<T> {
     isHandled(data?: T): void;
 }

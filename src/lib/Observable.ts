@@ -1,12 +1,8 @@
 
 import { Evt } from "./Evt";
 import { overwriteReadonlyProp } from "../tools/overwriteReadonlyProp";
-import { NonPostable } from "./types/helper/NonPostable";
+import /*type*/ { NonPostable } from "./types/helper/NonPostable";
 
-type ChangeDiff<T> = {
-    newValue: T;
-    previousValue: T;
-};
 
 /** 
  * https://docs.evt.land/api/observable
@@ -17,15 +13,22 @@ type ChangeDiff<T> = {
 export interface IObservable<T> {
     readonly value: T;
     /** when value changed post the new value and the value it previously replaced */
-    readonly evtChangeDiff: NonPostable<Evt<ChangeDiff<T>>>;
+    readonly evtChangeDiff: NonPostable<Evt<IObservable.ChangeDiff<T>>>;
     /** when value changed post the new value */
     readonly evtChange: NonPostable<Evt<T>>;
 };
 
+export namespace IObservable {
+    export type ChangeDiff<T> = {
+        newValue: T;
+        previousValue: T;
+    }
+}
+
 /** https://docs.evt.land/api/observable */
 export class Observable<T> implements IObservable<T> {
 
-    private readonly evtChangeDiff_post: (data: ChangeDiff<T>) => void;
+    private readonly evtChangeDiff_post: (data: IObservable.ChangeDiff<T>) => void;
 
     public readonly evtChangeDiff: IObservable<T>["evtChangeDiff"];
     public readonly evtChange: IObservable<T>["evtChange"];
@@ -42,7 +45,7 @@ export class Observable<T> implements IObservable<T> {
 
         {
 
-            const evtChangeDiff: Evt<ChangeDiff<T>> = new Evt();
+            const evtChangeDiff: Evt<IObservable.ChangeDiff<T>> = new Evt();
 
             this.evtChangeDiff_post = changeDiff => evtChangeDiff.post(changeDiff);
 
@@ -52,13 +55,10 @@ export class Observable<T> implements IObservable<T> {
 
         }
 
-        this.overwriteReadonlyValue(initialValue);
+        overwriteReadonlyProp(this, "value", initialValue);
 
     }
 
-    private overwriteReadonlyValue(newValue: T) {
-        overwriteReadonlyProp(this, "value", newValue);
-    }
 
 
     /** Return true if the value have been changed */
@@ -70,7 +70,7 @@ export class Observable<T> implements IObservable<T> {
 
         const previousValue = this.value;
 
-        this.overwriteReadonlyValue(newValue);
+        overwriteReadonlyProp(this, "value", newValue);
 
         this.evtChangeDiff_post({ previousValue, newValue });
 

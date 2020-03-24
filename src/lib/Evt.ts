@@ -6,25 +6,23 @@ import { EvtError } from "./types/EvtError";
 import { overwriteReadonlyProp } from "../tools/overwriteReadonlyProp";
 import { encapsulateOpState } from "./util/encapsulateOpState";
 import { typeGuard } from "../tools/typeSafety/typeGuard";
-import { Handler } from "./types/Handler";
 import { Operator } from "./types/Operator";
-import { Ctx } from "./Ctx";
 import { invokeOperator } from "./util/invokeOperator";
 import { merge } from "./util/merge";
 import { from } from "./util/from";
 import { parseOverloadParamsFactory } from "./util/parseOverloadParams";
-import { getLazyEvtFactory } from "./util/getLazyEvtFactory";
 import { getCtxFactory } from "./util/getCtxFactory";
+import { LazyEvtFactory } from "./util/LazyEvtFactory";
+import { importProxy } from "./importProxy";
+import /*type*/ { Handler } from "./types/Handler";
+
+type Ctx<Result> = import("./Ctx").Ctx<Result>;
 type VoidCtx = import("./Ctx").VoidCtx;
 type CtxLike<Result> = import("./Ctx").CtxLike<Result>;
-
-export const setPostCount = (evt: Evt<any>, value: number) =>
-    overwriteReadonlyProp(evt, "postCount", value);
 
 export interface EvtLike<T> {
     isHandled(data?: T): void;
 }
-
 
 /** https://docs.evt.land/api/evt */
 export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
@@ -36,9 +34,7 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
      * */
     public static newCtx(): VoidCtx;
     public static newCtx<T>(): Ctx<T>;
-    public static newCtx<T = void>(): T extends void ? VoidCtx : Ctx<T> {
-        return new Ctx() as any;
-    }
+    public static newCtx(): Ctx<any> { return new importProxy.Ctx(); }
 
     /** 
      * https://docs.evt.land/api/evt/getctx
@@ -65,15 +61,17 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
 
     constructor() {
 
-        const { getEvt: getEvtAttach, post: postEvtAttach } = getLazyEvtFactory<Handler<T, any>>();
-        const { getEvt: getEvtDetach, post: postEvtDetach } = getLazyEvtFactory<Handler<T, any>>();
+        const lazyEvtAttachFactory = new LazyEvtFactory<Handler<T, any>>();
+        const lazyEvtDetachFactory = new LazyEvtFactory<Handler<T, any>>();
 
         this.onHandler = (isAttach, handler) =>
-            (isAttach ? postEvtAttach : postEvtDetach)(handler)
+            isAttach ?
+                lazyEvtAttachFactory.post(handler) :
+                lazyEvtDetachFactory.post(handler)
             ;
 
-        this.getEvtAttach = getEvtAttach;
-        this.getEvtDetach = getEvtDetach;
+        this.getEvtAttach= ()=> lazyEvtAttachFactory.getEvt();
+        this.getEvtDetach = ()=> lazyEvtDetachFactory.getEvt();
 
     }
 
@@ -465,7 +463,7 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
 
         this.trace(data);
 
-        setPostCount(this, this.postCount + 1);
+        overwriteReadonlyProp(this, "postCount", this.postCount + 1);
 
         //NOTE: Must be before postSync.
         const postChronologyMark = this.getChronologyMark();
@@ -2428,6 +2426,9 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
 
 
 }
+
+importProxy.Evt = Evt;
+
 
 /** https://docs.evt.land/api/voidevt */
 export class VoidEvt extends Evt<void> {

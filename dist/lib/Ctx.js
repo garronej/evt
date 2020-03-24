@@ -42,28 +42,30 @@ var __values = (this && this.__values) || function(o) {
 exports.__esModule = true;
 var Set_1 = require("minimal-polyfills/dist/lib/Set");
 var WeakMap_1 = require("minimal-polyfills/dist/lib/WeakMap");
-var getLazyEvtFactory_1 = require("./util/getLazyEvtFactory");
 var assert_1 = require("../tools/typeSafety/assert");
 var typeGuard_1 = require("../tools/typeSafety/typeGuard");
+var LazyEvtFactory_1 = require("./util/LazyEvtFactory");
+var importProxy_1 = require("./importProxy");
 /** https://docs.evt.land/api/ctx */
 var Ctx = /** @class */ (function () {
     function Ctx() {
         this.handlers = new Set_1.Polyfill();
         this.evtByHandler = new WeakMap_1.Polyfill();
         {
-            var _a = getLazyEvtFactory_1.getLazyEvtFactory(), getEvt = _a.getEvt, post = _a.post;
-            this.onDone = post;
-            this.getEvtDone = getEvt;
+            var lazyEvtAttachFactory_1 = new LazyEvtFactory_1.LazyEvtFactory();
+            var lazyEvtDetachFactory_1 = new LazyEvtFactory_1.LazyEvtFactory();
+            this.onHandler = function (isAttach, handler) {
+                return isAttach ?
+                    lazyEvtAttachFactory_1.post(handler) :
+                    lazyEvtDetachFactory_1.post(handler);
+            };
+            this.getEvtAttach = function () { return lazyEvtAttachFactory_1.getEvt(); };
+            this.getEvtDetach = function () { return lazyEvtDetachFactory_1.getEvt(); };
         }
         {
-            var _b = getLazyEvtFactory_1.getLazyEvtFactory(), getEvt = _b.getEvt, post = _b.post;
-            this.getEvtAttach = getEvt;
-            this.onAttach = post;
-        }
-        {
-            var _c = getLazyEvtFactory_1.getLazyEvtFactory(), getEvt = _c.getEvt, post = _c.post;
-            this.getEvtDetach = getEvt;
-            this.onDetach = post;
+            var lazyEvtDoneFactory_1 = new LazyEvtFactory_1.LazyEvtFactory();
+            this.onDone = function (doneEvtData) { return lazyEvtDoneFactory_1.post(doneEvtData); };
+            this.getEvtDone = function () { return lazyEvtDoneFactory_1.getEvt(); };
         }
     }
     /**
@@ -153,18 +155,19 @@ var Ctx = /** @class */ (function () {
         assert_1.assert(typeGuard_1.typeGuard(handler));
         this.handlers.add(handler);
         this.evtByHandler.set(handler, evt);
-        this.onAttach({ handler: handler, evt: evt });
+        this.onHandler(true, { handler: handler, evt: evt });
     };
     /** Exposed only to enable safe interoperability between EVT versions, do not use */
     Ctx.prototype.zz__removeHandler = function (handler) {
         assert_1.assert(handler.ctx === this);
         assert_1.assert(typeGuard_1.typeGuard(handler));
-        this.onDetach({ handler: handler, "evt": this.evtByHandler.get(handler) });
+        this.onHandler(false, { handler: handler, "evt": this.evtByHandler.get(handler) });
         this.handlers["delete"](handler);
     };
     return Ctx;
 }());
 exports.Ctx = Ctx;
+importProxy_1.importProxy.Ctx = Ctx;
 /** https://docs.evt.land/api/ctx */
 var VoidCtx = /** @class */ (function (_super) {
     __extends(VoidCtx, _super);
@@ -182,4 +185,5 @@ var VoidCtx = /** @class */ (function (_super) {
     return VoidCtx;
 }(Ctx));
 exports.VoidCtx = VoidCtx;
+importProxy_1.importProxy.VoidCtx = VoidCtx;
 //# sourceMappingURL=Ctx.js.map

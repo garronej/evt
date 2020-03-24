@@ -1,8 +1,8 @@
 
-export const overwriteReadonlyProp = (
-    obj: { [key: string]: any; },
-    propertyName: string,
-    value: any
+export const overwriteReadonlyProp = <T extends { [key: string]: any; }, K extends keyof T>(
+    obj: T,
+    propertyName: K,
+    value: T[K]
 ): void => {
 
     try {

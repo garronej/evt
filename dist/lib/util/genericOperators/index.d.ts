@@ -1,3 +1,3 @@
-export * from "./scan";
-export * from "./throttleTime";
-export * from "./to";
+export { scan } from "./scan";
+export { throttleTime } from "./throttleTime";
+export { to } from "./to";

@@ -100,16 +100,13 @@ var overwriteReadonlyProp_1 = require("../tools/overwriteReadonlyProp");
 var encapsulateOpState_1 = require("./util/encapsulateOpState");
 var typeGuard_1 = require("../tools/typeSafety/typeGuard");
 var Operator_1 = require("./types/Operator");
-var Ctx_1 = require("./Ctx");
 var invokeOperator_1 = require("./util/invokeOperator");
 var merge_1 = require("./util/merge");
 var from_1 = require("./util/from");
 var parseOverloadParams_1 = require("./util/parseOverloadParams");
-var getLazyEvtFactory_1 = require("./util/getLazyEvtFactory");
 var getCtxFactory_1 = require("./util/getCtxFactory");
-exports.setPostCount = function (evt, value) {
-    return overwriteReadonlyProp_1.overwriteReadonlyProp(evt, "postCount", value);
-};
+var LazyEvtFactory_1 = require("./util/LazyEvtFactory");
+var importProxy_1 = require("./importProxy");
 /** https://docs.evt.land/api/evt */
 var Evt = /** @class */ (function () {
     function Evt() {
@@ -226,17 +223,17 @@ var Evt = /** @class */ (function () {
             });
         });
         this.__parseOverloadParams = parseOverloadParams_1.parseOverloadParamsFactory();
-        var _a = getLazyEvtFactory_1.getLazyEvtFactory(), getEvtAttach = _a.getEvt, postEvtAttach = _a.post;
-        var _b = getLazyEvtFactory_1.getLazyEvtFactory(), getEvtDetach = _b.getEvt, postEvtDetach = _b.post;
+        var lazyEvtAttachFactory = new LazyEvtFactory_1.LazyEvtFactory();
+        var lazyEvtDetachFactory = new LazyEvtFactory_1.LazyEvtFactory();
         this.onHandler = function (isAttach, handler) {
-            return (isAttach ? postEvtAttach : postEvtDetach)(handler);
+            return isAttach ?
+                lazyEvtAttachFactory.post(handler) :
+                lazyEvtDetachFactory.post(handler);
         };
-        this.getEvtAttach = getEvtAttach;
-        this.getEvtDetach = getEvtDetach;
+        this.getEvtAttach = function () { return lazyEvtAttachFactory.getEvt(); };
+        this.getEvtDetach = function () { return lazyEvtDetachFactory.getEvt(); };
     }
-    Evt.newCtx = function () {
-        return new Ctx_1.Ctx();
-    };
+    Evt.newCtx = function () { return new importProxy_1.importProxy.Ctx(); };
     /** https://docs.evt.land/api/evt/post */
     Evt.prototype.postAsyncOnceHandled = function (data) {
         var _this_1 = this;
@@ -428,7 +425,7 @@ var Evt = /** @class */ (function () {
      * */
     Evt.prototype.post = function (data) {
         this.trace(data);
-        exports.setPostCount(this, this.postCount + 1);
+        overwriteReadonlyProp_1.overwriteReadonlyProp(this, "postCount", this.postCount + 1);
         //NOTE: Must be before postSync.
         var postChronologyMark = this.getChronologyMark();
         var isExtracted = this.postSync(data);
@@ -694,6 +691,7 @@ var Evt = /** @class */ (function () {
     return Evt;
 }());
 exports.Evt = Evt;
+importProxy_1.importProxy.Evt = Evt;
 /** https://docs.evt.land/api/voidevt */
 var VoidEvt = /** @class */ (function (_super) {
     __extends(VoidEvt, _super);

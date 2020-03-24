@@ -1,9 +1,11 @@
 "use strict";
 exports.__esModule = true;
-var Evt_2 = require("../Evt");
-var typeSafety_1 = require("../../tools/typeSafety");
+var id_1 = require("../../tools/typeSafety/id");
+var assert_1 = require("../../tools/typeSafety/assert");
+var typeGuard_1 = require("../../tools/typeSafety/typeGuard");
 var EventTargetLike_1 = require("../types/EventTargetLike");
 var merge_1 = require("./merge");
+var importProxy_1 = require("../importProxy");
 function fromImpl(ctx, target, eventName, options) {
     if ("length" in target) {
         return merge_1.mergeImpl(ctx, Array.from(target).map(function (target) { return fromImpl(ctx, target, eventName, options); }));
@@ -35,10 +37,10 @@ function fromImpl(ctx, target, eventName, options) {
         };
     }
     else {
-        typeSafety_1.id(target);
-        typeSafety_1.assert(false);
+        id_1.id(target);
+        assert_1.assert(false);
     }
-    var evt = new Evt_2.Evt();
+    var evt = new importProxy_1.importProxy.Evt();
     var listener = function (data) { return evt.post(data); };
     ctx === null || ctx === void 0 ? void 0 : ctx.getEvtDone().attachOnce(function () { return proxy.off(listener, eventName, options); });
     proxy.on(listener, eventName, options);
@@ -46,14 +48,14 @@ function fromImpl(ctx, target, eventName, options) {
 }
 function from(ctxOrTarget, targetOrEventName, eventNameOrOptions, options) {
     if ("getEvtDone" in ctxOrTarget) {
-        typeSafety_1.assert(typeSafety_1.typeGuard(targetOrEventName) &&
-            typeSafety_1.typeGuard(eventNameOrOptions) &&
-            typeSafety_1.typeGuard(options));
+        assert_1.assert(typeGuard_1.typeGuard(targetOrEventName) &&
+            typeGuard_1.typeGuard(eventNameOrOptions) &&
+            typeGuard_1.typeGuard(options));
         return fromImpl(ctxOrTarget, targetOrEventName, eventNameOrOptions, options);
     }
     else {
-        typeSafety_1.assert(typeSafety_1.typeGuard(targetOrEventName) &&
-            typeSafety_1.typeGuard(eventNameOrOptions));
+        assert_1.assert(typeGuard_1.typeGuard(targetOrEventName) &&
+            typeGuard_1.typeGuard(eventNameOrOptions));
         return fromImpl(undefined, ctxOrTarget, targetOrEventName, eventNameOrOptions);
     }
 }

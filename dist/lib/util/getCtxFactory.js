@@ -1,13 +1,13 @@
 "use strict";
 exports.__esModule = true;
-var Ctx_1 = require("../Ctx");
 var WeakMap_1 = require("minimal-polyfills/dist/lib/WeakMap");
+var importProxy_1 = require("../importProxy");
 function getCtxFactory() {
     var ctxByObj = new WeakMap_1.Polyfill();
     function getCtx(obj) {
         var ctx = ctxByObj.get(obj);
         if (ctx === undefined) {
-            ctx = new Ctx_1.VoidCtx();
+            ctx = new importProxy_1.importProxy.VoidCtx();
             ctxByObj.set(obj, ctx);
         }
         return ctx;

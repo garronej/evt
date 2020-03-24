@@ -1,6 +1,6 @@
 
-import { Handler } from "../types/Handler"
-import { Operator } from "../types/Operator"
+import /*type*/ { Handler } from "../types/Handler"
+import /*type*/ { Operator } from "../types/Operator"
 import { id } from "../../tools/typeSafety/id";
 import { compose } from "./compose";
 import { typeGuard } from "../../tools/typeSafety/typeGuard"
