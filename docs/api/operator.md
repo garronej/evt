@@ -492,7 +492,7 @@ setTimeout(()=>evtText.post("C"), 1001); //Prints "C"
 setTimeout(()=>evtText.post("D"), 2500); //Prints "D"
 ```
 
-[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-compose?embed=1&file=index.ts)
+[**Run the example**](https://stackblitz.com/edit/evt-dkx3kn?embed=1&file=index.ts&hideExplorer=1)
 
 {% hint style="warning" %}
 Unless all the operators passed as arguments are stateless the operator returned by `compose` is **not** reusable.
@@ -579,9 +579,11 @@ f2(myStatefulFλOp);  //OK
 
 ## Generic operators built in
 
-Some generic operators are provided in `"evt/dist/lib/util/genericOperators"` such as `scan`, `throttleTime` or `of` but that's about it, the idea being to encourage users to create the ones they need and avoid the paralysis of choice.
+{% hint style="warning" %}
+Generic operators such as `bufferTime` `debounceTime`, `skip`, `take`, `switchMap`, `mergeMap` and `reduce`. Will be added in the next release alongside with creators. To implement those we need a third type of operator called `AutonomousOperators` that will ship in the next release.
+{% endhint %}
 
-If, however, you think of one that you think should be included feel free to submit an [issue](https://github.com/garronej/evt/issues) or a [pull request](https://github.com/garronej/evt/pulls).
+Some generic operators are provided in `"evt/dist/lib/util/genericOperators"` such as `scan`, `throttleTime` or `to` but that's about it.
 
 ```typescript
 //Importing custom operator chunksOf that is not exported by default.
