@@ -89,6 +89,7 @@ export namespace Operator {
                     return (
                         typeGuard<Matched<U, CtxResult>>(result) &&
                         result instanceof Object &&
+                        !("input" in result) && //exclude String.prototype.match
                         (
                             result.length === 1 ||
                             (
