@@ -3,7 +3,7 @@ type CtxLike<Result> = import("../Ctx").CtxLike<Result>;
 type VoidCtxLike = import("../Ctx").VoidCtxLike;
 
 /** https://docs.evt.land/api/operator */
-export type Operator<T, U, CtxResult> =
+export type Operator<T, U, CtxResult = any> =
     Operator.fλ<T, U, CtxResult> |
     ((data: U) => boolean) | //Filter
     (U extends T ? (data: T) => data is U : never) //Type guard
@@ -11,16 +11,16 @@ export type Operator<T, U, CtxResult> =
 
 export namespace Operator {
 
-    export type fλ<T, U, CtxResult> =
+    export type fλ<T, U, CtxResult = any> =
         fλ.Stateless<T, U, CtxResult> |
         fλ.Stateful<T, U, CtxResult>
         ;
 
     export namespace fλ {
 
-        export type Stateless<T, U, CtxResult> = (data: T, prev?: undefined, isPost?: true) => Result<U, CtxResult>;
+        export type Stateless<T, U, CtxResult = any> = (data: T, prev?: undefined, isPost?: true) => Result<U, CtxResult>;
 
-        export type Stateful<T, U, CtxResult> = [
+        export type Stateful<T, U, CtxResult = any> = [
             (data: T, prev: U, isPost?: true) => Result<U, CtxResult>,
             U //Seed
         ];
@@ -153,7 +153,7 @@ export namespace Operator {
 
     }
 
-    export type Stateless<T, U, CtxResult> =
+    export type Stateless<T, U, CtxResult = any> =
         fλ.Stateless<T, U, CtxResult> |
         ((data: U) => boolean) |
         (U extends T ? (data: T) => data is U : never)
