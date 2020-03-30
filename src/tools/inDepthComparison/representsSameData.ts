@@ -1,4 +1,4 @@
-import { typeGuard } from "../typeSafety/typeGuard";
+import { typeGuard } from "../typeSafety/typeGuard";
 import { Polyfill as Set } from "minimal-polyfills/dist/lib/Set";
 
 type SetLike<T> = {
@@ -17,16 +17,16 @@ namespace SetLike {
 
 }
 
-type MapLike<T,U> = {
-    keys: ()=> Iterable<T>;
+type MapLike<T, U> = {
+    keys: () => Iterable<T>;
     get(key: T): U | undefined;
 };
 
 namespace MapLike {
 
-    export function match<T,U>(map: Object): map is MapLike<T,U> {
+    export function match<T, U>(map: Object): map is MapLike<T, U> {
         return (
-            typeGuard<MapLike<T,U>>(map) &&
+            typeGuard<MapLike<T, U>>(map) &&
             typeof map.keys === "function" &&
             typeof map.get === "function" &&
             /Map/.test(Object.getPrototypeOf(map).constructor.name)
@@ -81,16 +81,16 @@ function representsSameData<T>(
             return false;
         }
 
-        if( MapLike.match<any,any>(o1) ){
+        if (MapLike.match<any, any>(o1)) {
 
             if (!MapLike.match(o2)) {
                 return false;
             }
 
-            type Entry= { key: any, value: any };
+            type Entry = { key: any, value: any };
 
-            const newO1= new Set<Entry>();
-            const newO2= new Set<Entry>();
+            const newO1 = new Set<Entry>();
+            const newO2 = new Set<Entry>();
 
             for (const o of [o1, o2]) {
 
@@ -110,8 +110,8 @@ function representsSameData<T>(
             }
 
             return representsSameData(
-                newO1, 
-                newO2, 
+                newO1,
+                newO2,
                 takeIntoAccountArraysOrdering
             );
 
@@ -197,7 +197,7 @@ function representsSameData<T>(
                 const result = representsSameData(
                     Object.keys(o1).filter(key => (o1 as any)[key] !== undefined),
                     Object.keys(o2).filter(key => (o2 as any)[key] !== undefined),
-                    takeIntoAccountArraysOrdering
+                    false
                 );
 
                 if (!result) {
@@ -206,7 +206,9 @@ function representsSameData<T>(
 
             }
 
+
             for (const key in o1) {
+
                 const result = representsSameData(
                     o1[key],
                     o2[key],
@@ -224,7 +226,6 @@ function representsSameData<T>(
     }
 
     return false;
-
 
 }
 
