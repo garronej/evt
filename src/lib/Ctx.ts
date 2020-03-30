@@ -168,7 +168,10 @@ export class Ctx<Result> implements CtxLike<Result>{
     }
 
 
-    /** Exposed only to enable safe interoperability between mismatching EVT versions, do not use */
+    /** 
+     * Exposed to enable safe interoperability between mismatching EVT versions. 
+     * Should be considered private
+     * */
     public zz__addHandler<T>(
         handler: Handler<T, any, CtxLike<Result>>,
         evt: EvtLike<T>
@@ -180,7 +183,10 @@ export class Ctx<Result> implements CtxLike<Result>{
         this.onHandler(true, { handler, evt });
     }
 
-    /** Exposed only to enable safe interoperability between EVT versions, do not use */
+    /** 
+     * Exposed to enable safe interoperability between EVT versions. 
+     * Should be considered private
+     * */
     public zz__removeHandler<T>(
         handler: Handler<T, any, CtxLike<Result>>,
     ) {
