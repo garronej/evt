@@ -5,6 +5,7 @@
 * [API Documentation](api/README.md)
   * [Operator&lt;T, U&gt; \(type\)](api/operator.md)
   * [Evt&lt;T&gt; \(class\)](api/evt/README.md)
+    * [Evt.useEffect\(...\)](api/evt/use-effect.md)
     * [evt.\[$\]attach\*\(...\)](api/evt/attach.md)
     * [evt.post\*\(data\)](api/evt/post.md)
     * [evt.waitFor\(...\)](api/evt/waitfor.md)
