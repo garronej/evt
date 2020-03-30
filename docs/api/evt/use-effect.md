@@ -4,6 +4,8 @@ description: Invoke a callback now and every time an event is posted.
 
 # Evt.useEffect\(...\)
 
+_Added in 1.1.0_
+
 ```typescript
 import { Evt } from "evt";
 
