@@ -1,4 +1,3 @@
-import /*type*/ { NonPostable } from "../types/helper/NonPostable";
 import /*type*/ { UnpackEvt } from "../types/helper/UnpackEvt";
 import { importProxy } from "../importProxy";
 
@@ -7,8 +6,8 @@ type CtxLike<Result> = import("../Ctx").CtxLike<Result>;
 
 
 type EvtLike<T> = import("../Evt").EvtLike<T> & {
-    attach<T>(callback: (data: T)=> void): void;
-    attach<T>(ctx: CtxLike<any>, callback: (data: T)=> void): void;
+    attach(callback: (data: T)=> void): void;
+    attach(ctx: CtxLike<any>, callback: (data: T)=> void): void;
 };
 
 //TODO: Fix interoperability between versions.
@@ -38,14 +37,14 @@ export function mergeImpl<EvtUnion extends EvtLike<any>>(
 }
 
 
-export function merge<EvtUnion extends NonPostable<Evt<any>>>(
+export function merge<EvtUnion extends EvtLike<any>>(
     ctx: CtxLike<any>,
     evts: readonly EvtUnion[]
 ): Evt<UnpackEvt<EvtUnion>>;
-export function merge<EvtUnion extends NonPostable<Evt<any>>>(
+export function merge<EvtUnion extends EvtLike<any>>(
     evts: readonly EvtUnion[]
 ): Evt<UnpackEvt<EvtUnion>>;
-export function merge<EvtUnion extends NonPostable<Evt<any>>>(
+export function merge<EvtUnion extends EvtLike<any>>(
     p1: CtxLike<any> | readonly EvtUnion[],
     p2?: readonly EvtUnion[]
 ): Evt<UnpackEvt<EvtUnion>> {
