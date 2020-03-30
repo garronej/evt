@@ -10,15 +10,43 @@ type EvtLike<T> = import("../Evt").EvtLike<T>;
 
 type OneOrMany<T> = T | ArrayLike<T>;
 type CtxLike<Result> = import("../Ctx").CtxLike<Result> & {
-      getEvtDone(): EvtLike<unknown> & { attachOnce(callback: ()=> void): void; };
+      getEvtDone(): EvtLike<unknown> & { postCount: number; attachOnce(callback: ()=> void): void; };
 };
 
 function fromImpl<T>(
     ctx: CtxLike<any> | undefined,
-    target: OneOrMany<EventTargetLike<T>>,
+    target: OneOrMany<EventTargetLike<T>> | PromiseLike<T>,
     eventName?: string,
     options?: EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<T> {
+
+    if ("then" in target) {
+
+        const evt = new importProxy.Evt<T>();
+
+        const isCtxDone = (()=>{
+
+            const getEvtDonePostCount = () => ctx?.getEvtDone().postCount;
+
+            const n = getEvtDonePostCount();
+
+            return ()=> n !== getEvtDonePostCount();
+
+        })();
+
+        target.then(data => {
+
+            if( isCtxDone() ){
+                return;
+            }
+
+            evt.post(data);
+
+        });
+
+        return evt;
+
+    }
 
     if ("length" in target) {
         return mergeImpl<Evt<T>>(
@@ -89,6 +117,7 @@ function fromImpl<T>(
 
 }
 
+
 export function from<K extends keyof dom.HTMLElementEventMap>(
     ctx: CtxLike<any>,
     target: EventTargetLike.HTMLElement,
@@ -96,7 +125,7 @@ export function from<K extends keyof dom.HTMLElementEventMap>(
     options?: EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<dom.HTMLElementEventMap[K]>;
 
-export function from <K extends keyof dom.WindowEventMap>(
+export function from<K extends keyof dom.WindowEventMap>(
     ctx: CtxLike<any>,
     target: EventTargetLike.Window,
     eventName: K,
@@ -105,7 +134,7 @@ export function from <K extends keyof dom.WindowEventMap>(
 
 export function from<K extends keyof dom.DocumentEventMap>(
     ctx: CtxLike<any>,
-    target: EventTargetLike.Document, 
+    target: EventTargetLike.Document,
     eventName: K,
     options?: EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<dom.DocumentEventMap[K]>;
@@ -131,6 +160,10 @@ export function from<T>(
     target: OneOrMany<EventTargetLike.RxJSSubject<T>>
 ): Evt<T>;
 
+export function from<T>(
+    ctx: CtxLike<any>,
+    target: PromiseLike<T>
+): Evt<T>;
 
 
 export function from<K extends keyof dom.HTMLElementEventMap>(
@@ -138,13 +171,13 @@ export function from<K extends keyof dom.HTMLElementEventMap>(
     eventName: K,
     options?: EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<dom.HTMLElementEventMap[K]>;
-export function from <K extends keyof dom.WindowEventMap>(
+export function from<K extends keyof dom.WindowEventMap>(
     target: EventTargetLike.Window,
     eventName: K,
     options?: EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<dom.WindowEventMap[K]>;
 export function from<K extends keyof dom.DocumentEventMap>(
-    target: EventTargetLike.Document, 
+    target: EventTargetLike.Document,
     eventName: K,
     options?: EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<dom.DocumentEventMap[K]>;
@@ -165,10 +198,13 @@ export function from<T>(
 export function from<T>(
     target: OneOrMany<EventTargetLike.RxJSSubject<T>>
 ): Evt<T>;
+export function from<T>(
+    target: PromiseLike<T>
+): Evt<T>;
 
 export function from<T>(
-    ctxOrTarget: CtxLike<any> | OneOrMany<EventTargetLike<T>>,
-    targetOrEventName?: OneOrMany<EventTargetLike<T>> | string,
+    ctxOrTarget: CtxLike<any> | OneOrMany<EventTargetLike<T>> | PromiseLike<T>,
+    targetOrEventName?: OneOrMany<EventTargetLike<T>> | string | PromiseLike<T>,
     eventNameOrOptions?: string | EventTargetLike.HasEventTargetAddRemove.Options,
     options?: EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<T> {
@@ -176,7 +212,7 @@ export function from<T>(
     if ("getEvtDone" in ctxOrTarget) {
 
         assert(
-            typeGuard<OneOrMany<EventTargetLike<T>>>(targetOrEventName) &&
+            typeGuard<OneOrMany<EventTargetLike<T>> | PromiseLike<T>>(targetOrEventName) &&
             typeGuard<string | undefined>(eventNameOrOptions) &&
             typeGuard<EventTargetLike.HasEventTargetAddRemove.Options | undefined>(options)
         );
