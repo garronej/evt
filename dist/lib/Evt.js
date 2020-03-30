@@ -689,6 +689,7 @@ var Evt = /** @class */ (function () {
     Evt.merge = merge_1.merge;
     /** https://docs.evt.land/api/evt/from */
     Evt.from = from_1.from;
+    /** https://docs.evt.land/api/evt/use-effect */
     Evt.useEffect = useEffect_1.useEffect;
     return Evt;
 }());

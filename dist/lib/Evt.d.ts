@@ -31,6 +31,7 @@ export declare class Evt<T> implements EvtLike<any> {
     static readonly merge: typeof merge;
     /** https://docs.evt.land/api/evt/from */
     static readonly from: typeof from;
+    /** https://docs.evt.land/api/evt/use-effect */
     static readonly useEffect: typeof useEffect;
     /** https://docs.evt.land/api/evt/getevtattachdetach */
     readonly getEvtAttach: () => Evt<Handler<T, any>>;

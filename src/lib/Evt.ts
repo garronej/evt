@@ -52,6 +52,7 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
     /** https://docs.evt.land/api/evt/from */
     public static readonly from = from;
 
+    /** https://docs.evt.land/api/evt/use-effect */
     public static readonly useEffect = useEffect;
 
     /** https://docs.evt.land/api/evt/getevtattachdetach */
