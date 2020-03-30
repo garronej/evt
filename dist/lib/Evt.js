@@ -107,6 +107,7 @@ var parseOverloadParams_1 = require("./util/parseOverloadParams");
 var getCtxFactory_1 = require("./util/getCtxFactory");
 var LazyEvtFactory_1 = require("./util/LazyEvtFactory");
 var importProxy_1 = require("./importProxy");
+var useEffect_1 = require("./util/useEffect");
 /** https://docs.evt.land/api/evt */
 var Evt = /** @class */ (function () {
     function Evt() {
@@ -688,6 +689,7 @@ var Evt = /** @class */ (function () {
     Evt.merge = merge_1.merge;
     /** https://docs.evt.land/api/evt/from */
     Evt.from = from_1.from;
+    Evt.useEffect = useEffect_1.useEffect;
     return Evt;
 }());
 exports.Evt = Evt;

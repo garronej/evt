@@ -63,9 +63,15 @@ export declare class Ctx<Result> implements CtxLike<Result> {
     private evtByHandler;
     /** https://docs.evt.land/api/ctx#ctx-gethandlers */
     getHandlers(): Handler.WithEvt<any, Result>[];
-    /** Exposed only to enable safe interoperability between mismatching EVT versions, do not use */
+    /**
+     * Exposed to enable safe interoperability between mismatching EVT versions.
+     * Should be considered private
+     * */
     zz__addHandler<T>(handler: Handler<T, any, CtxLike<Result>>, evt: EvtLike<T>): void;
-    /** Exposed only to enable safe interoperability between EVT versions, do not use */
+    /**
+     * Exposed to enable safe interoperability between EVT versions.
+     * Should be considered private
+     * */
     zz__removeHandler<T>(handler: Handler<T, any, CtxLike<Result>>): void;
 }
 export declare namespace Ctx {

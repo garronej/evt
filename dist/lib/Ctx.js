@@ -149,7 +149,10 @@ var Ctx = /** @class */ (function () {
         return Array.from(this.handlers.values())
             .map(function (handler) { return ({ handler: handler, "evt": _this_1.evtByHandler.get(handler) }); });
     };
-    /** Exposed only to enable safe interoperability between mismatching EVT versions, do not use */
+    /**
+     * Exposed to enable safe interoperability between mismatching EVT versions.
+     * Should be considered private
+     * */
     Ctx.prototype.zz__addHandler = function (handler, evt) {
         assert_1.assert(handler.ctx === this);
         assert_1.assert(typeGuard_1.typeGuard(handler));
@@ -157,7 +160,10 @@ var Ctx = /** @class */ (function () {
         this.evtByHandler.set(handler, evt);
         this.onHandler(true, { handler: handler, evt: evt });
     };
-    /** Exposed only to enable safe interoperability between EVT versions, do not use */
+    /**
+     * Exposed to enable safe interoperability between EVT versions.
+     * Should be considered private
+     * */
     Ctx.prototype.zz__removeHandler = function (handler) {
         assert_1.assert(handler.ctx === this);
         assert_1.assert(typeGuard_1.typeGuard(handler));

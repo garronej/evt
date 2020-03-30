@@ -157,7 +157,7 @@ function representsSameData(o1, o2, takeIntoAccountArraysOrdering) {
                 }
             }
             else {
-                var result = representsSameData(Object.keys(o1).filter(function (key) { return o1[key] !== undefined; }), Object.keys(o2).filter(function (key) { return o2[key] !== undefined; }), takeIntoAccountArraysOrdering);
+                var result = representsSameData(Object.keys(o1).filter(function (key) { return o1[key] !== undefined; }), Object.keys(o2).filter(function (key) { return o2[key] !== undefined; }), false);
                 if (!result) {
                     return false;
                 }

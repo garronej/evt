@@ -7,6 +7,21 @@ var EventTargetLike_1 = require("../types/EventTargetLike");
 var merge_1 = require("./merge");
 var importProxy_1 = require("../importProxy");
 function fromImpl(ctx, target, eventName, options) {
+    if ("then" in target) {
+        var evt_1 = new importProxy_1.importProxy.Evt();
+        var isCtxDone_1 = (function () {
+            var getEvtDonePostCount = function () { return ctx === null || ctx === void 0 ? void 0 : ctx.getEvtDone().postCount; };
+            var n = getEvtDonePostCount();
+            return function () { return n !== getEvtDonePostCount(); };
+        })();
+        target.then(function (data) {
+            if (isCtxDone_1()) {
+                return;
+            }
+            evt_1.post(data);
+        });
+        return evt_1;
+    }
     if ("length" in target) {
         return merge_1.mergeImpl(ctx, Array.from(target).map(function (target) { return fromImpl(ctx, target, eventName, options); }));
     }

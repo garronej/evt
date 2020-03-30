@@ -3,6 +3,7 @@ import { Operator } from "./types/Operator";
 import { merge } from "./util/merge";
 import { from } from "./util/from";
 import { Handler } from "./types/Handler";
+import { useEffect } from "./util/useEffect";
 declare type Ctx<Result> = import("./Ctx").Ctx<Result>;
 declare type VoidCtx = import("./Ctx").VoidCtx;
 declare type CtxLike<Result> = import("./Ctx").CtxLike<Result>;
@@ -27,9 +28,10 @@ export declare class Evt<T> implements EvtLike<any> {
      */
     static readonly getCtx: (obj: object) => import("./Ctx").VoidCtx;
     /** https://docs.evt.land/api/evt/merge */
-    static merge: typeof merge;
+    static readonly merge: typeof merge;
     /** https://docs.evt.land/api/evt/from */
-    static from: typeof from;
+    static readonly from: typeof from;
+    static readonly useEffect: typeof useEffect;
     /** https://docs.evt.land/api/evt/getevtattachdetach */
     readonly getEvtAttach: () => Evt<Handler<T, any>>;
     /** https://docs.evt.land/api/evt/getevtattachdetach */

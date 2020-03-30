@@ -12,9 +12,10 @@ import { merge } from "./util/merge";
 import { from } from "./util/from";
 import { parseOverloadParamsFactory } from "./util/parseOverloadParams";
 import { getCtxFactory } from "./util/getCtxFactory";
-import { LazyEvtFactory } from "./util/LazyEvtFactory";
+import { LazyEvtFactory } from "./util/LazyEvtFactory";
 import { importProxy } from "./importProxy";
 import /*type*/ { Handler } from "./types/Handler";
+import { useEffect } from "./util/useEffect";
 
 type Ctx<Result> = import("./Ctx").Ctx<Result>;
 type VoidCtx = import("./Ctx").VoidCtx;
@@ -46,16 +47,19 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
     public static readonly getCtx = getCtxFactory();
 
     /** https://docs.evt.land/api/evt/merge */
-    public static merge = merge;
+    public static readonly merge = merge;
 
     /** https://docs.evt.land/api/evt/from */
-    public static from = from;
+    public static readonly from = from;
+
+    public static readonly useEffect = useEffect;
 
     /** https://docs.evt.land/api/evt/getevtattachdetach */
     public readonly getEvtAttach: () => Evt<Handler<T, any>>;
 
     /** https://docs.evt.land/api/evt/getevtattachdetach */
     public readonly getEvtDetach: () => Evt<Handler<T, any>>;
+
 
     private readonly onHandler: (isAttach: boolean, handler: Handler<T, any>) => void;
 
@@ -70,8 +74,8 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
                 lazyEvtDetachFactory.post(handler)
             ;
 
-        this.getEvtAttach= ()=> lazyEvtAttachFactory.getEvt();
-        this.getEvtDetach = ()=> lazyEvtDetachFactory.getEvt();
+        this.getEvtAttach = () => lazyEvtAttachFactory.getEvt();
+        this.getEvtDetach = () => lazyEvtDetachFactory.getEvt();
 
     }
 
