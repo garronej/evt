@@ -17,6 +17,7 @@ Ctx Optional, Allows detaching the handlers attached to the source emitter.
 * JQuery-like event target
 * RxJS Subject
 * An Array, NodeList or HTMLCollection of many of these.
+* A promise
 
 Depending of the API the type argument will be inferred or not.
 
