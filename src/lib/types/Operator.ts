@@ -33,7 +33,7 @@ export namespace Operator {
 
         }
 
-        export type Result<U, CtxResult> = Result.Matched<U, CtxResult> | Result.NotMatched<CtxResult>;
+        export type Result<U, CtxResult = any> = Result.Matched<U, CtxResult> | Result.NotMatched<CtxResult>;
 
         export namespace Result {
 
@@ -62,7 +62,7 @@ export namespace Operator {
 
             }
 
-            export type NotMatched<CtxResult> = Detach<CtxResult> | null;
+            export type NotMatched<CtxResult = any> = Detach<CtxResult> | null;
 
             export namespace NotMatched {
 
@@ -75,13 +75,13 @@ export namespace Operator {
 
             }
 
-            export type Matched<U, CtxResult> = Matched.NoDetachArg<U> | Matched.WithDetachArg<U, CtxResult>;
+            export type Matched<U, CtxResult= any> = Matched.NoDetachArg<U> | Matched.WithDetachArg<U, CtxResult>;
 
             export namespace Matched {
 
                 export type NoDetachArg<U> = readonly [U];
 
-                export type WithDetachArg<U, CtxResult> = readonly [U, Detach<CtxResult> | null];
+                export type WithDetachArg<U, CtxResult = any> = readonly [U, Detach<CtxResult> | null];
 
                 export function match<U,CtxResult>(
                     result: any,
@@ -105,7 +105,7 @@ export namespace Operator {
 
             }
 
-            export type Detach<CtxResult> = Detach.FromEvt | Detach.WithCtxArg<CtxResult>;
+            export type Detach<CtxResult = any> = Detach.FromEvt | Detach.WithCtxArg<CtxResult>;
 
             export namespace Detach {
 
@@ -119,7 +119,7 @@ export namespace Operator {
 
                 }
 
-                export type WithCtxArg<CtxResult> = WithCtxArg.Void | WithCtxArg.Arg<CtxResult>;
+                export type WithCtxArg<CtxResult = any> = WithCtxArg.Void | WithCtxArg.Arg<CtxResult>;
 
                 export namespace WithCtxArg {
 
