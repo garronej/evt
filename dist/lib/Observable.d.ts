@@ -1,5 +1,6 @@
 import { Evt } from "./Evt";
 import { NonPostable } from "./types/helper/NonPostable";
+import { from } from "./util/observableFrom";
 /**
  * https://docs.evt.land/api/observable
  *
@@ -22,6 +23,8 @@ export declare namespace IObservable {
 /** https://docs.evt.land/api/observable */
 export declare class Observable<T> implements IObservable<T> {
     private readonly areSame;
+    /*** https://docs.evt.land/api/observable#observable-from */
+    static readonly from: typeof from;
     private readonly evtChangeDiff_post;
     readonly evtChangeDiff: IObservable<T>["evtChangeDiff"];
     readonly evtChange: IObservable<T>["evtChange"];

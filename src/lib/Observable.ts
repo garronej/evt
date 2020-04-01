@@ -2,6 +2,8 @@
 import { Evt } from "./Evt";
 import { overwriteReadonlyProp } from "../tools/overwriteReadonlyProp";
 import /*type*/ { NonPostable } from "./types/helper/NonPostable";
+import { importProxy } from "./importProxy";
+import { from } from "./util/observableFrom";
 
 
 /** 
@@ -27,6 +29,9 @@ export namespace IObservable {
 
 /** https://docs.evt.land/api/observable */
 export class Observable<T> implements IObservable<T> {
+
+    /*** https://docs.evt.land/api/observable#observable-from */
+    public static readonly from = from;
 
     private readonly evtChangeDiff_post: (data: IObservable.ChangeDiff<T>) => void;
 
@@ -59,8 +64,6 @@ export class Observable<T> implements IObservable<T> {
 
     }
 
-
-
     /** Return true if the value have been changed */
     public onPotentialChange(newValue: T): boolean {
 
@@ -79,3 +82,5 @@ export class Observable<T> implements IObservable<T> {
     }
 
 }
+
+importProxy.Observable = Observable;

@@ -2,6 +2,8 @@
 exports.__esModule = true;
 var Evt_2 = require("./Evt");
 var overwriteReadonlyProp_1 = require("../tools/overwriteReadonlyProp");
+var importProxy_1 = require("./importProxy");
+var observableFrom_1 = require("./util/observableFrom");
 ;
 /** https://docs.evt.land/api/observable */
 var Observable = /** @class */ (function () {
@@ -29,7 +31,10 @@ var Observable = /** @class */ (function () {
         this.evtChangeDiff_post({ previousValue: previousValue, newValue: newValue });
         return true;
     };
+    /*** https://docs.evt.land/api/observable#observable-from */
+    Observable.from = observableFrom_1.from;
     return Observable;
 }());
 exports.Observable = Observable;
+importProxy_1.importProxy.Observable = Observable;
 //# sourceMappingURL=Observable.js.map

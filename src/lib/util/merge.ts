@@ -5,7 +5,7 @@ type Evt<T>= import("../Evt").Evt<T>;
 type CtxLike<Result> = import("../Ctx").CtxLike<Result>;
 
 
-type EvtLike<T> = import("../Evt").EvtLike<T> & {
+export type EvtLike<T> = import("../Evt").EvtLike<T> & {
     attach(callback: (data: T)=> void): void;
     attach(ctx: CtxLike<any>, callback: (data: T)=> void): void;
 };
