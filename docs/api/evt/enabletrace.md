@@ -9,7 +9,7 @@ import { Evt } from "evt";
 {
     const evtCircle = new Evt<Circle>();
 
-    evtCircle.enableTrace("evtCircle n°1");
+    evtCircle.enableTrace({ "id": "evtCircle n°1" });
 
     evtCircle.post(circle1);
 
@@ -26,10 +26,11 @@ console.log("\n");
 
     const evtCircle = new Evt<Circle>();
 
-    evtCircle.enableTrace(
-        "evtCircle n°2",
-        circle => `CIRCLE(${circle.radius})`, //Formatter
-        (...args)=> console.log(...["[myPrefix]",...args]) // Log function ( default console.log )
+    evtCircle.enableTrace({
+        "id": "evtCircle n°2",
+        "formatter": circle => `CIRCLE(${circle.radius})`,
+        "log": (...args)=> console.log(...["[myPrefix]",...args]) 
+        // ^Log function default console log
     );
 
     evtCircle.attach(
