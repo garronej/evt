@@ -112,7 +112,7 @@ var useEffect_1 = require("./util/useEffect");
 var Evt = /** @class */ (function () {
     function Evt() {
         var _this_1 = this;
-        this.__maxHandlers = 25;
+        this.__maxHandlers = undefined;
         //NOTE: Not really readonly but we want to prevent user from setting the value
         //manually and we cant user accessor because we target es3.
         /**
@@ -249,24 +249,20 @@ var Evt = /** @class */ (function () {
         }, function () { return Promise.resolve().then(function () { return resolvePr(_this_1.post(data)); }); });
         return pr;
     };
-    /**
-     *
-     * By default EventEmitters will print a warning if more than 25 handlers are added for
-     * a particular event. This is a useful default that helps finding memory leaks.
-     * Not all events should be limited to 25 handlers. The evt.setMaxHandlers() method allows the limit to be
-     * modified for this specific EventEmitter instance.
-     * The value can be set to Infinity (or 0) to indicate an unlimited number of listeners.
-     * Returns a reference to the EventEmitter, so that calls can be chained.
-     *
-     */
+    /** https://docs.evt.land/api/evt/setdefaultmaxhandlers */
+    Evt.setDefaultMaxHandlers = function (n) {
+        this.__defaultMaxHandlers = isFinite(n) ? n : 0;
+    };
+    /** https://docs.evt.land/api/evt/setmaxhandlers */
     Evt.prototype.setMaxHandlers = function (n) {
         this.__maxHandlers = isFinite(n) ? n : 0;
         return this;
     };
     /** https://docs.evt.land/api/evt/enabletrace */
-    Evt.prototype.enableTrace = function (id, formatter, log
+    Evt.prototype.enableTrace = function (params
     //NOTE: Not typeof console.log as we don't want to expose types from node
     ) {
+        var id = params.id, formatter = params.formatter, log = params.log;
         this.traceId = id;
         this.traceFormatter = formatter !== null && formatter !== void 0 ? formatter : (function (data) {
             try {
@@ -276,13 +272,16 @@ var Evt = /** @class */ (function () {
                 return "" + data;
             }
         });
-        this.log = log !== null && log !== void 0 ? log : (function () {
-            var inputs = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                inputs[_i] = arguments[_i];
-            }
-            return console.log.apply(console, __spread(inputs));
-        });
+        this.log =
+            log === undefined ?
+                (function () {
+                    var inputs = [];
+                    for (var _i = 0; _i < arguments.length; _i++) {
+                        inputs[_i] = arguments[_i];
+                    }
+                    return console.log.apply(console, __spread(inputs));
+                }) :
+                log === false ? undefined : log;
     };
     /** https://docs.evt.land/api/evt/enabletrace */
     Evt.prototype.disableTrace = function () {
@@ -334,7 +333,6 @@ var Evt = /** @class */ (function () {
     };
     Evt.prototype.addHandler = function (propsFromArgs, propsFromMethodName) {
         var _this_1 = this;
-        var _a;
         if (Operator_1.Operator.fλ.Stateful.match(propsFromArgs.op)) {
             this.statelessByStatefulOp.set(propsFromArgs.op, encapsulateOpState_1.encapsulateOpState(propsFromArgs.op));
         }
@@ -368,24 +366,54 @@ var Evt = /** @class */ (function () {
         else {
             this.handlers.push(handler);
         }
-        if (this.__maxHandlers !== 0 &&
-            this.handlers.length % (this.__maxHandlers + 1) === 0) {
-            var message = [
-                "MaxHandlersExceededWarning: Possible Evt memory leak detected.",
-                this.handlers.length + " handlers attached" + (this.traceId ? " to " + this.traceId : "") + ".",
-                "Use evt.setMaxHandlers() to increase limit."
-            ].join(" ");
-            try {
-                console.warn(message);
-            }
-            catch (_b) {
-            }
-        }
+        this.checkForPotentialMemoryLeak();
         if (typeGuard_1.typeGuard(handler, !!handler.ctx)) {
             handler.ctx.zz__addHandler(handler, this);
         }
-        (_a = this.onHandler) === null || _a === void 0 ? void 0 : _a.call(this, true, handler);
+        this.onHandler(true, handler);
         return handler;
+    };
+    Evt.prototype.checkForPotentialMemoryLeak = function () {
+        var _a;
+        var maxHandlers = (_a = this.__maxHandlers) !== null && _a !== void 0 ? _a : Evt.__defaultMaxHandlers;
+        if (maxHandlers === 0 ||
+            this.handlers.length % (maxHandlers + 1) !== 0) {
+            return;
+        }
+        var message = [
+            "MaxHandlersExceededWarning: Possible Evt memory leak detected.",
+            this.handlers.length + " handlers attached" + (this.traceId ? " to \"" + this.traceId + "\"" : "") + ".\n",
+            "Use Evt.prototype.setMaxHandlers(n) to increase limit on a specific Evt.\n",
+            "Use Evt.setDefaultMaxHandlers(n) to change the default limit currently set to " + Evt.__defaultMaxHandlers + ".\n",
+        ].join("");
+        var map = new Map_1.Polyfill();
+        this.getHandlers()
+            .map(function (_a) {
+            var ctx = _a.ctx, async = _a.async, once = _a.once, prepend = _a.prepend, extract = _a.extract, op = _a.op, callback = _a.callback;
+            return (__assign(__assign({ "hasCtx": !!ctx, once: once,
+                prepend: prepend,
+                extract: extract, "isWaitFor": async }, (op === parseOverloadParams_1.matchAll ? {} : { "op": op.toString() })), (!callback ? {} : { "callback": callback.toString() })));
+        })
+            .map(function (obj) {
+            return "{\n" + Object.keys(obj)
+                .map(function (key) { return "  " + key + ": " + obj[key]; })
+                .join(",\n") + "\n}";
+        })
+            .forEach(function (str) { var _a; return map.set(str, ((_a = map.get(str)) !== null && _a !== void 0 ? _a : 0) + 1); });
+        message += "\n" + Array.from(map.keys())
+            .map(function (str) { return map.get(str) + " handler" + (map.get(str) === 1 ? "" : "s") + " like:\n" + str; })
+            .join("\n") + "\n";
+        if (this.traceId === null) {
+            message += "\n" + [
+                "To validate the identify of the Evt instance that is triggering this warning you can call",
+                "Evt.prototype.enableTrace({ \"id\": \"My evt id\", \"log\": false }) on the Evt that you suspect.\n"
+            ].join(" ");
+        }
+        try {
+            console.warn(message);
+        }
+        catch (_b) {
+        }
     };
     /** https://docs.evt.land/api/evt/getstatelessop */
     Evt.prototype.getStatelessOp = function (op) {
@@ -395,6 +423,7 @@ var Evt = /** @class */ (function () {
     };
     Evt.prototype.trace = function (data) {
         var _this_1 = this;
+        var _a;
         if (this.traceId === null) {
             return;
         }
@@ -417,7 +446,7 @@ var Evt = /** @class */ (function () {
                 .length;
             message += handlerCount + " handler" + ((handlerCount > 1) ? "s" : "") + " => ";
         }
-        this.log(message + this.traceFormatter(data));
+        (_a = this.log) === null || _a === void 0 ? void 0 : _a.call(this, message + this.traceFormatter(data));
     };
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
@@ -691,6 +720,7 @@ var Evt = /** @class */ (function () {
     Evt.from = from_1.from;
     /** https://docs.evt.land/api/evt/use-effect */
     Evt.useEffect = useEffect_1.useEffect;
+    Evt.__defaultMaxHandlers = 25;
     return Evt;
 }());
 exports.Evt = Evt;

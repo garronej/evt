@@ -41,17 +41,11 @@ export declare class Evt<T> implements EvtLike<any> {
     constructor();
     /** https://docs.evt.land/api/evt/post */
     postAsyncOnceHandled(data: T): number | Promise<number>;
+    private static __defaultMaxHandlers;
+    /** https://docs.evt.land/api/evt/setdefaultmaxhandlers */
+    static setDefaultMaxHandlers(n: number): void;
     private __maxHandlers;
-    /**
-     *
-     * By default EventEmitters will print a warning if more than 25 handlers are added for
-     * a particular event. This is a useful default that helps finding memory leaks.
-     * Not all events should be limited to 25 handlers. The evt.setMaxHandlers() method allows the limit to be
-     * modified for this specific EventEmitter instance.
-     * The value can be set to Infinity (or 0) to indicate an unlimited number of listeners.
-     * Returns a reference to the EventEmitter, so that calls can be chained.
-     *
-     */
+    /** https://docs.evt.land/api/evt/setmaxhandlers */
     setMaxHandlers(n: number): this;
     /**
      * https://docs.evt.land/api/evt/post
@@ -63,7 +57,11 @@ export declare class Evt<T> implements EvtLike<any> {
     private traceFormatter;
     private log;
     /** https://docs.evt.land/api/evt/enabletrace */
-    enableTrace(id: string, formatter?: (data: T) => string, log?: (message?: any, ...optionalParams: any[]) => void): void;
+    enableTrace(params: {
+        id: string;
+        formatter?: (data: T) => string;
+        log?: ((message?: any, ...optionalParams: any[]) => void) | false;
+    }): void;
     /** https://docs.evt.land/api/evt/enabletrace */
     disableTrace(): void;
     private readonly handlers;
@@ -76,6 +74,7 @@ export declare class Evt<T> implements EvtLike<any> {
     private static doDetachIfNeeded;
     private triggerHandler;
     private addHandler;
+    private checkForPotentialMemoryLeak;
     /** https://docs.evt.land/api/evt/getstatelessop */
     getStatelessOp<U, CtxResult>(op: Operator<T, U, CtxResult>): Operator.Stateless<T, U, CtxResult>;
     private trace;

@@ -14,21 +14,60 @@ for (let i = 1; i <= 60; i++) {
 
     if (i === 27) {
 
-        evt.enableTrace("my event", undefined, () => { });
+        evt.enableTrace({
+            "id": "my event",
+            "log": false
+        });
 
     }
 
-    evt.attach(() => { });
+    evt.attach(() => {
+        /** my handler */
+        console.log("identification from source");
+    });
 
 }
 
-assert(
-    warn_str ==
-    [
-        "MaxHandlersExceededWarning: Possible Evt memory leak detected. 26 handlers attached. Use evt.setMaxHandlers() to increase limit.",
-        "MaxHandlersExceededWarning: Possible Evt memory leak detected. 52 handlers attached to my event. Use evt.setMaxHandlers() to increase limit." + "\n"
-    ].join("\n")
-);
+const warn_str_expected =
+    `MaxHandlersExceededWarning: Possible Evt memory leak detected.26 handlers attached.
+Use Evt.prototype.setMaxHandlers(n) to increase limit on a specific Evt.
+Use Evt.setDefaultMaxHandlers(n) to change the default limit currently set to 25.
+
+26 handlers like:
+{
+  hasCtx: false,
+  once: false,
+  prepend: false,
+  extract: false,
+  isWaitFor: false,
+  callback: function () {
+        /** my handler */
+        console.log("identification from source");
+    }
+}
+
+To validate the identify of the Evt instance that is triggering this warning you can call Evt.prototype.enableTrace({ "id": "My evt id", "log": false }) on the Evt that you suspect.
+
+MaxHandlersExceededWarning: Possible Evt memory leak detected.52 handlers attached to "my event".
+Use Evt.prototype.setMaxHandlers(n) to increase limit on a specific Evt.
+Use Evt.setDefaultMaxHandlers(n) to change the default limit currently set to 25.
+
+52 handlers like:
+{
+  hasCtx: false,
+  once: false,
+  prepend: false,
+  extract: false,
+  isWaitFor: false,
+  callback: function () {
+        /** my handler */
+        console.log("identification from source");
+    }
+}
+
+`;
+
+assert(warn_str === warn_str_expected);
 
 console.log("PASS".green);
 

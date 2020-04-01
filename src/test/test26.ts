@@ -7,7 +7,11 @@ type UnpackEvt_<T> = import("../lib/types/helper").UnpackEvt<T>;
 
     let evt = new Evt<number>();
 
-    evt.enableTrace("myEvent", n => n.toString(), str => console.assert(str === "(myEvent) 1 handler => 666"));
+    evt.enableTrace({
+        "id": "myEvent", 
+        "formatter": n => n.toString(), 
+        "log": str => console.assert(str === "(myEvent) 1 handler => 666")
+    });
 
     evt.attachOnce(n => console.assert(n === 666));
 

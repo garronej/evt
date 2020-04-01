@@ -3,7 +3,11 @@ import { Evt } from "../lib";
 
 let evt = new Evt<number | string>();
 
-evt.enableTrace("myEvent", n => n.toString(), str => console.assert(str === "(myEvent) 1 handler => 666" ));
+evt.enableTrace({
+    "id": "myEvent", 
+    "formatter": n => n.toString(), 
+    "log": str => console.assert(str === "(myEvent) 1 handler => 666" )
+});
 
 evt.postAsyncOnceHandled(666);
 

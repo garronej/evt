@@ -10,7 +10,7 @@ import { Operator } from "./types/Operator";
 import { invokeOperator } from "./util/invokeOperator";
 import { merge } from "./util/merge";
 import { from } from "./util/from";
-import { parseOverloadParamsFactory } from "./util/parseOverloadParams";
+import { parseOverloadParamsFactory, matchAll } from "./util/parseOverloadParams";
 import { getCtxFactory } from "./util/getCtxFactory";
 import { LazyEvtFactory } from "./util/LazyEvtFactory";
 import { importProxy } from "./importProxy";
@@ -104,20 +104,17 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
 
 
 
+    private static __defaultMaxHandlers = 25;
 
+    
+    /** https://docs.evt.land/api/evt/setdefaultmaxhandlers */
+    public static setDefaultMaxHandlers(n: number) {
+        this.__defaultMaxHandlers = isFinite(n) ? n : 0;
+    }
 
-    private __maxHandlers = 25;
+    private __maxHandlers: undefined | number = undefined;
 
-    /**
-     * 
-     * By default EventEmitters will print a warning if more than 25 handlers are added for 
-     * a particular event. This is a useful default that helps finding memory leaks. 
-     * Not all events should be limited to 25 handlers. The evt.setMaxHandlers() method allows the limit to be 
-     * modified for this specific EventEmitter instance. 
-     * The value can be set to Infinity (or 0) to indicate an unlimited number of listeners.
-     * Returns a reference to the EventEmitter, so that calls can be chained.
-     * 
-     */
+    /** https://docs.evt.land/api/evt/setmaxhandlers */
     public setMaxHandlers(n: number): this {
         this.__maxHandlers = isFinite(n) ? n : 0;
         return this;
@@ -134,15 +131,20 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
 
     private traceId: string | null = null;
     private traceFormatter!: (data: T) => string;
-    private log!: NonNullable<Parameters<typeof Evt.prototype.enableTrace>[2]>;
+    private log!: Exclude<Parameters<typeof Evt.prototype.enableTrace>[0]["log"], false>;
 
     /** https://docs.evt.land/api/evt/enabletrace */
     public enableTrace(
-        id: string,
-        formatter?: (data: T) => string,
-        log?: (message?: any, ...optionalParams: any[]) => void
+        params: {
+            id: string,
+            formatter?: (data: T) => string,
+            log?: ((message?: any, ...optionalParams: any[]) => void) | false
+        }
         //NOTE: Not typeof console.log as we don't want to expose types from node
     ) {
+
+        const { id, formatter, log } = params;
+
         this.traceId = id;
 
         this.traceFormatter = formatter ?? (
@@ -155,7 +157,11 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
             }
         );
 
-        this.log = log ?? ((...inputs) => console.log(...inputs));
+        this.log =
+            log === undefined ?
+                ((...inputs) => console.log(...inputs)) :
+                log === false ? undefined : log
+            ;
 
     }
     /** https://docs.evt.land/api/evt/enabletrace */
@@ -388,30 +394,72 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
 
         }
 
-        if (
-            this.__maxHandlers !== 0 &&
-            this.handlers.length % (this.__maxHandlers + 1) === 0
-        ) {
-            const message = [
-                `MaxHandlersExceededWarning: Possible Evt memory leak detected.`,
-                `${this.handlers.length} handlers attached${this.traceId ? ` to ${this.traceId}` : ""}.`,
-                `Use evt.setMaxHandlers() to increase limit.`
-            ].join(" ");
-
-            try {
-                console.warn(message);
-            } catch{
-            }
-
-        }
+        this.checkForPotentialMemoryLeak();
 
         if (typeGuard<Handler<T, U, CtxLike<any>>>(handler, !!handler.ctx)) {
             handler.ctx.zz__addHandler(handler, this);
         }
 
-        this.onHandler?.(true, handler);
+        this.onHandler(true, handler);
 
         return handler;
+
+    }
+
+    private checkForPotentialMemoryLeak(): void {
+
+        const maxHandlers = this.__maxHandlers ?? Evt.__defaultMaxHandlers;
+
+        if (
+            maxHandlers === 0 ||
+            this.handlers.length % (maxHandlers + 1) !== 0) {
+            return;
+        }
+
+        let message = [
+            `MaxHandlersExceededWarning: Possible Evt memory leak detected.`,
+            `${this.handlers.length} handlers attached${this.traceId ? ` to "${this.traceId}"` : ""}.\n`,
+            `Use Evt.prototype.setMaxHandlers(n) to increase limit on a specific Evt.\n`,
+            `Use Evt.setDefaultMaxHandlers(n) to change the default limit currently set to ${Evt.__defaultMaxHandlers}.\n`,
+        ].join("");
+
+        const map = new Map<string, number>();
+
+        this.getHandlers()
+            .map(({ ctx, async, once, prepend, extract, op, callback }) => ({
+                "hasCtx": !!ctx,
+                once,
+                prepend,
+                extract,
+                "isWaitFor": async,
+                ...(op === matchAll ? {} : { "op": op.toString() }),
+                ...(!callback ? {} : { "callback": callback.toString() })
+            }))
+            .map(obj =>
+                "{\n" + Object.keys(obj)
+                    .map(key => `  ${key}: ${(obj as any)[key]}`)
+                    .join(",\n") + "\n}"
+            )
+            .forEach(str => map.set(str, (map.get(str) ?? 0) + 1))
+            ;
+
+        message += "\n" + Array.from(map.keys())
+            .map(str => `${map.get(str)} handler${map.get(str) === 1 ? "" : "s"} like:\n${str}`)
+            .join("\n") + "\n";
+
+        if (this.traceId === null) {
+
+            message += "\n" + [
+                `To validate the identify of the Evt instance that is triggering this warning you can call`,
+                `Evt.prototype.enableTrace({ "id": "My evt id", "log": false }) on the Evt that you suspect.\n`
+            ].join(" ");
+
+        }
+
+        try {
+            console.warn(message);
+        } catch{
+        }
 
     }
 
@@ -454,7 +502,7 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
 
         }
 
-        this.log(message + this.traceFormatter(data));
+        this.log?.(message + this.traceFormatter(data));
 
     }
 

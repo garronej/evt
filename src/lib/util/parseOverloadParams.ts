@@ -6,7 +6,7 @@ import { compose } from "./compose";
 import { typeGuard } from "../../tools/typeSafety/typeGuard"
 type CtxLike<Result> = import("../Ctx").CtxLike<Result>;
 
-function matchAll() { return true; }
+export function matchAll() { return true; }
 
 const canBeOperator = (p: undefined | CtxLike<any> | Operator<any, any, any>): boolean => {
     return (

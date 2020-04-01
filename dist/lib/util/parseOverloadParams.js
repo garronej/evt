@@ -35,6 +35,7 @@ var id_1 = require("../../tools/typeSafety/id");
 var compose_1 = require("./compose");
 var typeGuard_1 = require("../../tools/typeSafety/typeGuard");
 function matchAll() { return true; }
+exports.matchAll = matchAll;
 var canBeOperator = function (p) {
     return (p !== undefined &&
         typeGuard_1.typeGuard(p) &&
