@@ -47,11 +47,11 @@ console.log("\n");
 This will print:
 
 ```text
-(evtCircle n°1) 0 handler => { "type": "CIRCLE", "radius": 12 }
-(evtCircle n°1) 1 handler => { "type": "CIRCLE", "radius": 33 }
+(evtCircle n°1) 0 handler, { "type": "CIRCLE", "radius": 12 }
+(evtCircle n°1) 1 handler, { "type": "CIRCLE", "radius": 33 }
 
-[myPrefix] (evtCircle n°2) 0 handler => CIRCLE(12)
-[myPrefix] (evtCircle n°2) 1 handler => CIRCLE(33)
+[myPrefix] (evtCircle n°2) 0 handler, CIRCLE(12)
+[myPrefix] (evtCircle n°2) 1 handler, CIRCLE(33)
 ```
 
 [**Run the example**](https://stackblitz.com/edit/evt-vfjvfs?embed=1&file=index.ts&hideExplorer=1)
