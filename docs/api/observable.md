@@ -2,9 +2,7 @@
 
 `Observable` in RxJS and in TS-EVT are **not** the same abstraction.
 
-`Observable<T>` in TS-EVT provide a way to react to an object mutation.
-
-An `Observable<T>` encapsulate a value of type `T` when this value is changed `.evtChange` is posted.
+In EVT `Observable` is a class of object that enclose an observed value and post `.evtChange` whenever this value is changed.
 
 ```typescript
 import { Observable, IObservable } from "evt";
@@ -90,4 +88,8 @@ obsUsers.onPotentialChange(updatedUsers);
 ```
 
 \*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-ydvtrf?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
+
+## **Observable.from\(...\)**
+
+The static method `Observable.from` allows to create a new observable from an Evt instance or from an other Observable.
 
