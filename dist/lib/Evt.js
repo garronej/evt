@@ -444,7 +444,7 @@ var Evt = /** @class */ (function () {
                     !!_this_1.getStatelessOp(op)(data);
             })
                 .length;
-            message += handlerCount + " handler" + ((handlerCount > 1) ? "s" : "") + " => ";
+            message += handlerCount + " handler" + ((handlerCount > 1) ? "s" : "") + ", ";
         }
         (_a = this.log) === null || _a === void 0 ? void 0 : _a.call(this, message + this.traceFormatter(data));
     };

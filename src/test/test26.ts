@@ -10,7 +10,7 @@ type UnpackEvt_<T> = import("../lib/types/helper").UnpackEvt<T>;
     evt.enableTrace({
         "id": "myEvent", 
         "formatter": n => n.toString(), 
-        "log": str => console.assert(str === "(myEvent) 1 handler => 666")
+        "log": str => console.assert(str === "(myEvent) 1 handler, 666")
     });
 
     evt.attachOnce(n => console.assert(n === 666));

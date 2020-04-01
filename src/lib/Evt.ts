@@ -498,7 +498,7 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
                 )
                 .length;
 
-            message += `${handlerCount} handler${(handlerCount > 1) ? "s" : ""} => `;
+            message += `${handlerCount} handler${(handlerCount > 1) ? "s" : ""}, `;
 
         }
 

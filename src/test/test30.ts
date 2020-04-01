@@ -6,7 +6,7 @@ let evt = new Evt<number | string>();
 evt.enableTrace({
     "id": "myEvent", 
     "formatter": n => n.toString(), 
-    "log": str => console.assert(str === "(myEvent) 1 handler => 666" )
+    "log": str => console.assert(str === "(myEvent) 1 handler, 666" )
 });
 
 evt.postAsyncOnceHandled(666);
