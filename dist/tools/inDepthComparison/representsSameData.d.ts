@@ -17,3 +17,4 @@ export declare function representsSameDataFactory({ takeIntoAccountArraysOrderin
 }): {
     representsSameData: <T>(o1: T, o2: T) => boolean;
 };
+export declare function representsSameData<T>(o1: T, o2: T, takeIntoAccountArraysOrdering?: boolean): boolean;

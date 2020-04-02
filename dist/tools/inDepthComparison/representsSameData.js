@@ -53,6 +53,7 @@ function representsSameDataFactory(_a) {
 exports.representsSameDataFactory = representsSameDataFactory;
 function representsSameData(o1, o2, takeIntoAccountArraysOrdering) {
     var e_1, _a, e_2, _b, e_3, _c;
+    if (takeIntoAccountArraysOrdering === void 0) { takeIntoAccountArraysOrdering = true; }
     if (o1 === o2) {
         return true;
     }
@@ -173,4 +174,5 @@ function representsSameData(o1, o2, takeIntoAccountArraysOrdering) {
     }
     return false;
 }
+exports.representsSameData = representsSameData;
 //# sourceMappingURL=representsSameData.js.map

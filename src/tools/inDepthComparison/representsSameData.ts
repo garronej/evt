@@ -53,10 +53,10 @@ export function representsSameDataFactory({ takeIntoAccountArraysOrdering }: { t
     return { "representsSameData": <T>(o1: T, o2: T) => representsSameData(o1, o2, takeIntoAccountArraysOrdering) }
 }
 
-function representsSameData<T>(
+export function representsSameData<T>(
     o1: T,
     o2: T,
-    takeIntoAccountArraysOrdering: boolean
+    takeIntoAccountArraysOrdering: boolean = true
 ): boolean {
 
     if (o1 === o2) {
