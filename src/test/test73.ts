@@ -25,15 +25,20 @@ import { assert } from "../tools/typeSafety/assert";
 
     const obsText = new Observable("foo");
 
+    let count= 0;
+
     const obsCharCount = Observable.from(
         ctx,
         obsText,
-        text => text.length
+        text => text.length,
+        (a,b)=> { count++; return a===b; }
     );
 
     assert(obsCharCount.value === obsText.value.length);
 
     obsText.onPotentialChange("foo bar");
+
+    assert(count===1 as number);
 
     assert(obsCharCount.value === obsText.value.length);
 
@@ -42,6 +47,8 @@ import { assert } from "../tools/typeSafety/assert";
     ctx.done();
 
     obsText.onPotentialChange("foo bar baz");
+
+    assert(count===1);
 
     assert(value === obsCharCount.value);
 
@@ -70,7 +77,7 @@ import { assert } from "../tools/typeSafety/assert";
 
     const evtText = new Evt<string>();
 
-    const obsText = Observable.from(ctx, evtText, "foo bar");
+    const obsText = Observable.from(evtText.pipe(ctx), "foo bar");
 
     assert(obsText.value === "foo bar" as string);
 

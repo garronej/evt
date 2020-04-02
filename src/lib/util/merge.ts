@@ -5,9 +5,9 @@ type Evt<T>= import("../Evt").Evt<T>;
 type CtxLike<Result> = import("../Ctx").CtxLike<Result>;
 
 
-export type EvtLike<T> = import("../Evt").EvtLike<T> & {
-    attach(callback: (data: T)=> void): void;
+type EvtLike<T> = import("../Evt").EvtLike<T> & {
     attach(ctx: CtxLike<any>, callback: (data: T)=> void): void;
+    attach(callback: (data: T)=> void): void;
 };
 
 //TODO: Fix interoperability between versions.
