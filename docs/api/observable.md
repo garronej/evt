@@ -87,9 +87,76 @@ const updatedUsers = [
 obsUsers.onPotentialChange(updatedUsers);
 ```
 
-\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-ydvtrf?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-ydvtrf?embed=1&file=index.ts&hideExplorer=1)  
+****
 
 ## **Observable.from\(...\)**
 
-The static method `Observable.from` allows to create a new observable from an Evt instance or from an other Observable.
+The static method `Observable.from` allows to create a new observable from an Evt instance or from an other Observable.  
+
+
+### From an other observable
+
+```typescript
+import { Observable } from "evt";
+import { representsSameDataFactory } from "evt/dist/tools/inDepthObjectComparison";
+
+const { representsSameData } = representsSameDataFactory();
+
+type Circle= { radius: number; color: "RED" | "WHITE" };
+
+const obsCircle= new Observable<Circle>(
+    {"radius": 3, color: "RED"},
+    representSameData
+);
+
+//Observable<"RED"|"WHITE"> 
+const obsCircleColor = Observable.from(
+    obsCricle, 
+    circle=> circle.color
+);
+
+obsCricleColor.evtChange.attach(color => console.log(color));
+
+
+//Prints nothing the color of the circle has not changed.
+obsCircle.onPotentialChange({
+    ...obsCircle.value,
+    "color": "RED"
+});
+
+//Prints "WHITE"
+obsCircle.onPotentialChange({
+    ...obsCircle.value,
+    "color": "WHITE"
+});
+```
+
+### From an `Evt`
+
+```typescript
+import { Observable, Evt } from "evt";
+
+const evtText= new Evt<string>();
+const ctx= Evt.newCtx();
+
+const obsCharCount = Observable.from(
+    evtText.pipe(ctx,text=> [ text.length ]),
+    0
+);
+
+console.log(obsCharCount.value); //Prints "0"
+
+evtText.post("Foo");
+
+console.log(obsCharCount.value); //Prints "3"
+
+ctx.done();
+
+evtText.post("Goodbye");
+
+console.log(obsCharCount.value); //Prints "3" ( unchanged )
+    
+    
+```
 
