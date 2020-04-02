@@ -99,24 +99,25 @@ The static method `Observable.from` allows to create a new observable from an Ev
 
 ```typescript
 import { Observable } from "evt";
-import { representsSameDataFactory } from "evt/dist/tools/inDepthObjectComparison";
+import { representsSameDataFactory } from "evt/dist/tools/inDepthComparison";
 
-const { representsSameData } = representsSameDataFactory();
+
+const { representsSameData } = representsSameDataFactory({ "takeIntoAccountArraysOrdering": false });
 
 type Circle= { radius: number; color: "RED" | "WHITE" };
 
 const obsCircle= new Observable<Circle>(
     {"radius": 3, color: "RED"},
-    representSameData
+    representsSameData
 );
 
 //Observable<"RED"|"WHITE"> 
 const obsCircleColor = Observable.from(
-    obsCricle, 
+    obsCircle, 
     circle=> circle.color
 );
 
-obsCricleColor.evtChange.attach(color => console.log(color));
+obsCircleColor.evtChange.attach(color => console.log(color));
 
 
 //Prints nothing the color of the circle has not changed.
@@ -131,6 +132,8 @@ obsCircle.onPotentialChange({
     "color": "WHITE"
 });
 ```
+
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-ptfvd6?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
 
 ### From an `Evt`
 
@@ -156,7 +159,7 @@ ctx.done();
 evtText.post("Goodbye");
 
 console.log(obsCharCount.value); //Prints "3" ( unchanged )
-    
-    
 ```
+
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-2ak7kh?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
 
