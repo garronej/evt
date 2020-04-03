@@ -3,161 +3,159 @@ exports.__esModule = true;
 var same_1 = require("./same");
 var assert_1 = require("../typeSafety/assert");
 var copy_1 = require("./copy");
-if (1 === 1 + 2) {
-    {
-        var same_2 = same_1.sameFactory({ "takeIntoAccountArraysOrdering": false }).same;
-        assert_1.assert(same_2(new Set([
-            ["a", "b"],
-            ["c", "d"]
-        ]), new Set([
-            ["a", "b"],
-            ["c", "d"]
-        ])));
-        assert_1.assert(same_2(new Set([
-            ["a", "b"],
-            ["c", "d"]
-        ]), new Set([
-            ["c", "d"],
-            ["a", "b"]
-        ])));
-        assert_1.assert(same_2(new Set([
-            ["a", "b"],
-            ["c", "d"]
-        ]), new Set([
-            ["b", "a"],
-            ["c", "d"]
-        ])));
-        assert_1.assert(same_2(new Set([
-            ["a", "b"],
-            ["c", "d"]
-        ]), new Set([
-            ["c", "d"],
-            ["b", "a"]
-        ])));
-        assert_1.assert(!same_2(new Set([
-            ["a", "b", "c"],
-            ["c", "d"]
-        ]), new Set([
-            ["c", "d"],
-            ["b", "a"]
-        ])));
-    }
-    {
-        var same_3 = same_1.sameFactory({ "takeIntoAccountArraysOrdering": true }).same;
-        assert_1.assert(same_3(new Set([
-            ["a", "b"],
-            ["c", "d"]
-        ]), new Set([
-            ["a", "b"],
-            ["c", "d"]
-        ])));
-        assert_1.assert(same_3(new Set([
-            ["a", "b"],
-            ["c", "d"]
-        ]), new Set([
-            ["c", "d"],
-            ["a", "b"]
-        ])));
-        assert_1.assert(!same_3(new Set([
-            ["a", "b"],
-            ["c", "d"]
-        ]), new Set([
-            ["b", "a"],
-            ["c", "d"]
-        ])));
-        assert_1.assert(!same_3(new Set([
-            ["a", "b"],
-            ["c", "d"]
-        ]), new Set([
-            ["c", "d"],
-            ["b", "a"]
-        ])));
-        assert_1.assert(!same_3(new Set([
-            ["a", "b", "c"],
-            ["c", "d"]
-        ]), new Set([
-            ["c", "d"],
-            ["b", "a"]
-        ])));
-    }
-    {
-        var same_4 = same_1.sameFactory({ "takeIntoAccountArraysOrdering": false }).same;
-        assert_1.assert(same_4(new Map([
-            [["a", "b"], ["1", "2"]],
-            [["c", "d"], ["3", "4"]]
-        ]), new Map([
-            [["a", "b"], ["1", "2"]],
-            [["c", "d"], ["3", "4"]]
-        ])));
-        assert_1.assert(same_4(new Map([
-            [["b", "a"], ["1", "2"]],
-            [["c", "d"], ["3", "4"]]
-        ]), new Map([
-            [["a", "b"], ["1", "2"]],
-            [["c", "d"], ["3", "4"]]
-        ])));
-        assert_1.assert(same_4(new Map([
-            [["c", "d"], ["3", "4"]],
-            [["a", "b"], ["1", "2"]]
-        ]), new Map([
-            [["a", "b"], ["1", "2"]],
-            [["c", "d"], ["3", "4"]]
-        ])));
-        assert_1.assert(!same_4(new Map([
-            [["a", "b"], ["1", "2"]],
-            [["c", "d"], ["3", "4"]],
-            [["e", "f"], ["5", "6"]],
-        ]), new Map([
-            [["a", "b"], ["1", "2"]],
-            [["c", "d"], ["3", "4"]]
-        ])));
-        assert_1.assert(!same_4(new Map([
-            [["1", "2"], ["a", "b"]],
-            [["c", "d"], ["3", "4"]]
-        ]), new Map([
-            [["a", "b"], ["1", "2"]],
-            [["c", "d"], ["3", "4"]]
-        ])));
-    }
-    {
-        var same_5 = same_1.sameFactory({ "takeIntoAccountArraysOrdering": true }).same;
-        assert_1.assert(same_5(new Map([
-            [["a", "b"], ["1", "2"]],
-            [["c", "d"], ["3", "4"]]
-        ]), new Map([
-            [["a", "b"], ["1", "2"]],
-            [["c", "d"], ["3", "4"]]
-        ])));
-        assert_1.assert(!same_5(new Map([
-            [["b", "a"], ["1", "2"]],
-            [["c", "d"], ["3", "4"]]
-        ]), new Map([
-            [["a", "b"], ["1", "2"]],
-            [["c", "d"], ["3", "4"]]
-        ])));
-        assert_1.assert(same_5(new Map([
-            [["c", "d"], ["3", "4"]],
-            [["a", "b"], ["1", "2"]]
-        ]), new Map([
-            [["a", "b"], ["1", "2"]],
-            [["c", "d"], ["3", "4"]]
-        ])));
-        assert_1.assert(!same_5(new Map([
-            [["a", "b"], ["1", "2"]],
-            [["c", "d"], ["3", "4"]],
-            [["e", "f"], ["5", "6"]],
-        ]), new Map([
-            [["a", "b"], ["1", "2"]],
-            [["c", "d"], ["3", "4"]]
-        ])));
-        assert_1.assert(!same_5(new Map([
-            [["1", "2"], ["a", "b"]],
-            [["c", "d"], ["3", "4"]]
-        ]), new Map([
-            [["a", "b"], ["1", "2"]],
-            [["c", "d"], ["3", "4"]]
-        ])));
-    }
+{
+    var same_2 = same_1.sameFactory({ "takeIntoAccountArraysOrdering": false }).same;
+    assert_1.assert(same_2(new Set([
+        ["a", "b"],
+        ["c", "d"]
+    ]), new Set([
+        ["a", "b"],
+        ["c", "d"]
+    ])));
+    assert_1.assert(same_2(new Set([
+        ["a", "b"],
+        ["c", "d"]
+    ]), new Set([
+        ["c", "d"],
+        ["a", "b"]
+    ])));
+    assert_1.assert(same_2(new Set([
+        ["a", "b"],
+        ["c", "d"]
+    ]), new Set([
+        ["b", "a"],
+        ["c", "d"]
+    ])));
+    assert_1.assert(same_2(new Set([
+        ["a", "b"],
+        ["c", "d"]
+    ]), new Set([
+        ["c", "d"],
+        ["b", "a"]
+    ])));
+    assert_1.assert(!same_2(new Set([
+        ["a", "b", "c"],
+        ["c", "d"]
+    ]), new Set([
+        ["c", "d"],
+        ["b", "a"]
+    ])));
+}
+{
+    var same_3 = same_1.sameFactory({ "takeIntoAccountArraysOrdering": true }).same;
+    assert_1.assert(same_3(new Set([
+        ["a", "b"],
+        ["c", "d"]
+    ]), new Set([
+        ["a", "b"],
+        ["c", "d"]
+    ])));
+    assert_1.assert(same_3(new Set([
+        ["a", "b"],
+        ["c", "d"]
+    ]), new Set([
+        ["c", "d"],
+        ["a", "b"]
+    ])));
+    assert_1.assert(!same_3(new Set([
+        ["a", "b"],
+        ["c", "d"]
+    ]), new Set([
+        ["b", "a"],
+        ["c", "d"]
+    ])));
+    assert_1.assert(!same_3(new Set([
+        ["a", "b"],
+        ["c", "d"]
+    ]), new Set([
+        ["c", "d"],
+        ["b", "a"]
+    ])));
+    assert_1.assert(!same_3(new Set([
+        ["a", "b", "c"],
+        ["c", "d"]
+    ]), new Set([
+        ["c", "d"],
+        ["b", "a"]
+    ])));
+}
+{
+    var same_4 = same_1.sameFactory({ "takeIntoAccountArraysOrdering": false }).same;
+    assert_1.assert(same_4(new Map([
+        [["a", "b"], ["1", "2"]],
+        [["c", "d"], ["3", "4"]]
+    ]), new Map([
+        [["a", "b"], ["1", "2"]],
+        [["c", "d"], ["3", "4"]]
+    ])));
+    assert_1.assert(same_4(new Map([
+        [["b", "a"], ["1", "2"]],
+        [["c", "d"], ["3", "4"]]
+    ]), new Map([
+        [["a", "b"], ["1", "2"]],
+        [["c", "d"], ["3", "4"]]
+    ])));
+    assert_1.assert(same_4(new Map([
+        [["c", "d"], ["3", "4"]],
+        [["a", "b"], ["1", "2"]]
+    ]), new Map([
+        [["a", "b"], ["1", "2"]],
+        [["c", "d"], ["3", "4"]]
+    ])));
+    assert_1.assert(!same_4(new Map([
+        [["a", "b"], ["1", "2"]],
+        [["c", "d"], ["3", "4"]],
+        [["e", "f"], ["5", "6"]],
+    ]), new Map([
+        [["a", "b"], ["1", "2"]],
+        [["c", "d"], ["3", "4"]]
+    ])));
+    assert_1.assert(!same_4(new Map([
+        [["1", "2"], ["a", "b"]],
+        [["c", "d"], ["3", "4"]]
+    ]), new Map([
+        [["a", "b"], ["1", "2"]],
+        [["c", "d"], ["3", "4"]]
+    ])));
+}
+{
+    var same_5 = same_1.sameFactory({ "takeIntoAccountArraysOrdering": true }).same;
+    assert_1.assert(same_5(new Map([
+        [["a", "b"], ["1", "2"]],
+        [["c", "d"], ["3", "4"]]
+    ]), new Map([
+        [["a", "b"], ["1", "2"]],
+        [["c", "d"], ["3", "4"]]
+    ])));
+    assert_1.assert(!same_5(new Map([
+        [["b", "a"], ["1", "2"]],
+        [["c", "d"], ["3", "4"]]
+    ]), new Map([
+        [["a", "b"], ["1", "2"]],
+        [["c", "d"], ["3", "4"]]
+    ])));
+    assert_1.assert(same_5(new Map([
+        [["c", "d"], ["3", "4"]],
+        [["a", "b"], ["1", "2"]]
+    ]), new Map([
+        [["a", "b"], ["1", "2"]],
+        [["c", "d"], ["3", "4"]]
+    ])));
+    assert_1.assert(!same_5(new Map([
+        [["a", "b"], ["1", "2"]],
+        [["c", "d"], ["3", "4"]],
+        [["e", "f"], ["5", "6"]],
+    ]), new Map([
+        [["a", "b"], ["1", "2"]],
+        [["c", "d"], ["3", "4"]]
+    ])));
+    assert_1.assert(!same_5(new Map([
+        [["1", "2"], ["a", "b"]],
+        [["c", "d"], ["3", "4"]]
+    ]), new Map([
+        [["a", "b"], ["1", "2"]],
+        [["c", "d"], ["3", "4"]]
+    ])));
 }
 {
     var obj_1 = {};
@@ -239,5 +237,5 @@ try {
 }
 catch (_a) {
 }
-console.log("PASS");
+console.log("PASS in depth");
 //# sourceMappingURL=test.js.map

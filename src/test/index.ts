@@ -1,6 +1,6 @@
 import "colors";
 
-import "../tools/reducers";
+import "../tools/reducers/test";
 import "../tools/inDepth/test";
 
 process.once("unhandledRejection", error => {

@@ -1,6 +1,5 @@
 
-export function getPrototypeChain(obj: Object, i: number = 0): Object[] {
-
+export function getPrototypeChain(obj: Object, callback?: (proto: Object) => boolean): Object[] {
 
     const proto = Object.getPrototypeOf(obj);
 
@@ -8,20 +7,30 @@ export function getPrototypeChain(obj: Object, i: number = 0): Object[] {
         return [];
     }
 
+    const doContinue = callback?.(proto);
 
-    //return [proto, ...getPrototypeChain(proto, i+1)];
-    return [proto];
+    if (!doContinue) {
+        return [proto]
+    }
 
+    return [proto, ...getPrototypeChain(proto)];
 
 }
 export namespace getPrototypeChain {
 
     export function isMatched(obj: Object, regExp: RegExp): boolean {
 
+        let out = false;
 
-        return getPrototypeChain(obj)
-            .map(({ constructor }) => constructor.name).find(name => regExp.test(name)) !== undefined;
+        getPrototypeChain(
+            obj,
+            ({ constructor }) => {
+                out = regExp.test(constructor.name);
+                return !out;
+            }
+        );
 
+        return out;
 
 
     }

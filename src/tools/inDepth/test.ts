@@ -4,8 +4,6 @@ import { sameFactory, same } from "./same";
 import { assert } from "../typeSafety/assert";
 import { copy } from "./copy";
 
-if( 1 === 1 + 2 ){
-
 {
 
     const { same } = sameFactory({ "takeIntoAccountArraysOrdering": false });
@@ -292,8 +290,6 @@ if( 1 === 1 + 2 ){
         )
     );
 
-
-}
 
 }
 
@@ -433,5 +429,5 @@ try {
 } catch {
 }
 
-console.log("PASS");
+console.log("PASS in depth");
 
