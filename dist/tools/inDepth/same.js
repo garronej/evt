@@ -34,6 +34,7 @@ exports.__esModule = true;
 var Set_1 = require("minimal-polyfills/dist/lib/Set");
 var types_1 = require("./types");
 var allEquals_1 = require("../reducers/allEquals");
+require("../polyfill/Object.is");
 /**
  * Function that perform a in depth comparison of two things of arbitrary type T
  * to see if they represent the same date regardless of object references.

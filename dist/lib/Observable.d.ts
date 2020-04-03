@@ -1,6 +1,7 @@
 import { Evt } from "./Evt";
 import { NonPostable } from "./types/helper/NonPostable";
-import { from } from "./util/observableFrom";
+import { from, copy } from "./util/observableFrom";
+import "../tools/polyfill/Object.is";
 /**
  * https://docs.evt.land/api/observable
  *
@@ -22,7 +23,8 @@ export declare namespace IObservable {
 }
 /** https://docs.evt.land/api/observable */
 export declare class Observable<T> implements IObservable<T> {
-    private readonly same;
+    readonly same: (val1: T, val2: T) => boolean;
+    readonly copy?: ((val: T) => T) | undefined;
     /*** https://docs.evt.land/api/observable#observable-from */
     static readonly from: typeof from;
     private readonly evtChangeDiff_post;
@@ -30,7 +32,13 @@ export declare class Observable<T> implements IObservable<T> {
     readonly evt: IObservable<T>["evt"];
     readonly val: T;
     private setVal;
-    constructor(initialValue: T, same?: (currentValue: T, newValue: T) => boolean);
+    constructor(val: T, same?: (val1: T, val2: T) => boolean, copy?: ((val: T) => T) | undefined);
     /** Return true if the value have been changed */
     update(val: T): boolean;
+    forceUpdate(valWrap?: [T]): void;
+}
+export declare class ObservableCopy<T> extends Observable<T> {
+    /*** https://docs.evt.land/api/observable#observable-from */
+    static readonly from: typeof copy.from;
+    constructor(val: T);
 }

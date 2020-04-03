@@ -4,4 +4,5 @@ export declare const importProxy: {
     VoidCtx: typeof import("./Ctx").VoidCtx;
     Evt: typeof import("./Evt").Evt;
     Observable: typeof import("./Observable").Observable;
+    ObservableCopy: typeof import("./Observable").ObservableCopy;
 };

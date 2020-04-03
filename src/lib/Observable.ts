@@ -3,9 +3,9 @@ import { Evt } from "./Evt";
 import { overwriteReadonlyProp } from "../tools/overwriteReadonlyProp";
 import /*type*/ { NonPostable } from "./types/helper/NonPostable";
 import { importProxy } from "./importProxy";
-import { from } from "./util/observableFrom";
+import { from, copy } from "./util/observableFrom";
+import "../tools/polyfill/Object.is";
 import * as inDepth from "../tools/inDepth";
-
 
 /** 
  * https://docs.evt.land/api/observable
@@ -28,6 +28,7 @@ export namespace IObservable {
     }
 }
 
+
 /** https://docs.evt.land/api/observable */
 export class Observable<T> implements IObservable<T> {
 
@@ -47,13 +48,14 @@ export class Observable<T> implements IObservable<T> {
         return overwriteReadonlyProp(
             this,
             "val",
-            inDepth.copy(val, { "freeze": true })
+            this.copy ? this.copy(val) : val
         );
     }
 
     constructor(
-        initialValue: T,
-        private readonly same: (currentValue: T, newValue: T) => boolean = inDepth.same
+        val: T,
+        public readonly same: (val1: T, val2: T) => boolean = Object.is,
+        public readonly copy?: (val: T) => T
     ) {
 
         {
@@ -68,7 +70,7 @@ export class Observable<T> implements IObservable<T> {
 
         }
 
-        this.setVal(initialValue);
+        this.setVal(val);
 
 
     }
@@ -88,6 +90,47 @@ export class Observable<T> implements IObservable<T> {
 
     }
 
+
+    public forceUpdate(valWrap?: [T]): void {
+
+
+        if (valWrap === undefined) {
+
+            this.evtChangeDiff_post({
+                "prevVal": this.val,
+                "currVal": this.val
+            });
+
+        } else {
+
+            const [val] = valWrap;
+
+            if (this.same(this.val, val)) {
+                this.forceUpdate();
+                return;
+            }
+
+            this.update(val);
+
+        }
+
+    }
+
 }
 
 importProxy.Observable = Observable;
+
+export class ObservableCopy<T> extends Observable<T> {
+
+    /*** https://docs.evt.land/api/observable#observable-from */
+    public static readonly from = copy.from;
+
+    constructor(val: T) {
+        super(val, inDepth.same, inDepth.copy);
+    }
+
+}
+
+importProxy.ObservableCopy = ObservableCopy;
+
+

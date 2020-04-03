@@ -1,10 +1,12 @@
-import { ObservableCopy } from "../lib";
+import { Observable, ObservableCopy } from "../lib";
 import { diff } from "../tools/reducers";
 import { assert } from "../tools/typeSafety";
 import { same } from "../tools/inDepth";
 import { id } from "../tools/typeSafety";
 
-const obsUsers = new ObservableCopy(new Set(["Bob", "Alice"]));
+const obsUsersSrc= new Observable(new Set(["Bob", "Alice"]));
+
+const obsUsers = ObservableCopy.from(obsUsersSrc, set=> set);
 
 obsUsers.evtDiff.attach(
     ({ currVal, prevVal }) => {
@@ -18,7 +20,7 @@ obsUsers.evtDiff.attach(
 );
 
 //Nothing posted as representSameData(["Bob", "Alice"], ["Alice", "Bob") === true
-obsUsers.update(new Set(["Alice", "Bob"]));
+obsUsersSrc.update(new Set(["Alice", "Bob"]));
 
 assert(obsUsers.evtDiff.postCount === id<number>(0));
 assert(obsUsers.evtDiff.postCount === id<number>(0));
@@ -31,7 +33,7 @@ const updatedUsers = new Set([
 
 
 //Prints "Louis joined the chat" "Bob left the chat"
-obsUsers.update(updatedUsers);
+obsUsersSrc.update(updatedUsers);
 
 assert(obsUsers.evtDiff.postCount === id<number>(1));
 assert(obsUsers.evt.postCount === id<number>(1));
