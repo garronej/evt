@@ -8,42 +8,42 @@ In EVT `Observable` is a class of object that enclose an observed value and post
 import { Observable, IObservable } from "evt";
 import { assert } from "evt/dist/tools/typeSafety";
 
-const obsText= new Observable<string>("foo");
+const obsText= new Observable("foo");
 
-console.assert(obsText.value === "foo");
+console.assert(obsText.val === "foo");
 
-obsText.evtChange.attachOnce(
-    newText=> {
-        assert(newText === obsText.value);
-        console.log(`newValue: ${newText}`);
+obsText.evt.attachOnce(
+    text=> {
+        assert(text === obsText.val);
+        console.log(`currVal: ${text}`);
     }
 );
 
-obsText.evtChangeDiff.attachOnce(
-    ({ newValue, previousValue })=> {
+obsText.evtDiff.attachOnce(
+    ({ prevVal, currVal })=> {
 
-        assert(newValue === obsText.value);
+        assert(currVal === obsText.value);
 
-        console.log(`newValue: ${newValue}, previousValue ${previousValue}`);
+        console.log(`currVal: ${currVal}, prveVal ${prevVal}`);
 
     }
 );
 
 //Nothing will be printed as the value did not change.
-let hasChanged = obsText.onPotentialChange("foo");
+let hasChanged = obsText.update("foo");
 
 assert( hasChanged === false );
 
-hasChanged = obsText.onPotentialChange("bar");
-//"newValue: bar" have been printed to the console.
-//"newValue: bar, previousValue foo" have been printed to the console.
+hasChanged = obsText.udate("bar");
+//"currVal: bar" have been printed to the console.
+//"currVal: bar, prevVal: foo" have been printed to the console.
 
 assert(hasChanged === true);
 
-assert(obsText.value === "bar");
+assert(obsText.val === "bar");
 
 //Instance of Observable are assignable to IObservable but
-//the IObservable interface does not expose onPotentialChange().
+//the IObservable interface does not expose update().
 //The IObservable interface is used to expose an observable as read only.
 const exposedObsText: IObservable<string> = obsText;
 ```
