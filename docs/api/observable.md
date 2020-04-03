@@ -56,6 +56,38 @@ The only way to mutate .val is to call `.update()`. Consequently any mutation on
 It is possible to observe `Array`, `Set`, `Map`, `Date` and Object with circular references.
 {% endhint %}
 
+```typescript
+import { Observable } from "evt";
+
+type Circle= { radius: number; color: "RED" | "WHITE" };
+
+const circle: Circle = {
+    "radius": 33,
+    "color": "RED"
+};
+
+const obsCircle = new Observable<Circle>(circle);
+
+console.log(circle === obsCircle.val ); 
+//^ Prints "false", circle have been copied.
+
+circle.radius = 0;
+
+console.log(obsCircle.val.radius);
+//^ Prints "33"
+
+//Prints "ok", Assigning radius throw an error, .val is freezed.
+try{ obsCircle.val.radius = 0; }catch{ console.log("ok"); }
+
+obsCircle.evt.attach(circle=> console.log(circle.radius));
+
+obsCircle.update(circle); //Prints "0"
+
+```
+
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-rdvyvv?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
+
+  
 It is possible to define what qualifies as a change. By default an in depth sameness check is performed.  
 In this example for example we provide a same\(o1,o2\) that treat `Array`s as `Set`s \( ignoring ordering \)
 
@@ -83,14 +115,9 @@ obsUsers.evtChangeDiff.attach(
     }
 );
 
-//New array, "Bob" has been removed and "Louis" has been added.
-const updatedUsers = [
-    ...obsUsers.value.filter(name => name !== "Bob"),
-    "Louis"
-];
 
 //Prints "Louis joined the chat" "Bob left the chat"
-obsUsers.onPotentialChange(updatedUsers);
+obsUsers.onPotentialChange(["Alice", "Louis"]);
 ```
 
 \*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-ydvtrf?embed=1&file=index.ts&hideExplorer=1)  
@@ -105,16 +132,11 @@ The static method `Observable.from` allows to create a new observable from an Ev
 
 ```typescript
 import { Observable } from "evt";
-import { representsSameDataFactory } from "evt/dist/tools/inDepthComparison";
-
-
-const { representsSameData } = representsSameDataFactory({ "takeIntoAccountArraysOrdering": false });
 
 type Circle= { radius: number; color: "RED" | "WHITE" };
 
 const obsCircle= new Observable<Circle>(
-    {"radius": 3, color: "RED"},
-    representsSameData
+    {"radius": 3, color: "RED"}
 );
 
 //Observable<"RED"|"WHITE"> 
@@ -123,7 +145,7 @@ const obsCircleColor = Observable.from(
     circle=> circle.color
 );
 
-obsCircleColor.evtChange.attach(color => console.log(color));
+obsCircleColor.evt.attach(color => console.log(color));
 
 
 //Prints nothing the color of the circle has not changed.
@@ -156,17 +178,17 @@ const obsCharCount = Observable.from(
     0
 );
 
-console.log(obsCharCount.value); //Prints "0"
+console.log(obsCharCount.val); //Prints "0"
 
 evtText.post("Foo");
 
-console.log(obsCharCount.value); //Prints "3"
+console.log(obsCharCount.val); //Prints "3"
 
 ctx.done();
 
 evtText.post("Goodbye");
 
-console.log(obsCharCount.value); //Prints "3" ( unchanged )
+console.log(obsCharCount.val); //Prints "3" ( unchanged )
 ```
 
 \*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-2ak7kh?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
