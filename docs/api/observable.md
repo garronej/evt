@@ -59,34 +59,33 @@ It is possible to observe `Array`, `Set`, `Map`, `Date` and Object with circular
 ```typescript
 import { Observable } from "evt";
 
-type Circle = { type: "CIRCLE"; radius: number; };
-type Square = { type: "SQUARE"; sideLength: number; };
-type Shape = Circle | Square;
+type Circle= { radius: number; color: "RED" | "WHITE" };
 
 const circle: Circle = {
-    "type": "CRICLE", 
-    "radius": 33 
+    "radius": 33,
+    "color": "RED"
 };
 
-const obsShape = new Observable<Shape>(circle);
+const obsCircle = new Observable<Circle>(circle);
 
-console.log(circle === obsShape.val ); 
+console.log(circle === obsCircle.val ); 
 //^ Prints "false", circle have been copied.
 
 circle.radius = 0;
 
-console.log(obsShape.val.radius);
+console.log(obsCircle.val.radius);
 //^ Prints "33"
 
-//Assigning radius throw an error, .val is freezed.
-try{ obsShape.val.radius = 0; }catch{}
+//Prints "ok", Assigning radius throw an error, .val is freezed.
+try{ obsCircle.val.radius = 0; }catch{ console.log("ok"); }
 
-obsShape.evt.attach(shape=> console.log(shape.radius));
+obsCircle.evt.attach(circle=> console.log(circle.radius));
 
-obsShape.update({ ...obsShape.val, "radius": 43 }); //Prints "43"
-
+obsCircle.update(circle); //Prints "0"
 
 ```
+
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-rdvyvv?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
 
   
 It is possible to define what qualifies as a change. By default an in depth sameness check is performed.  
@@ -116,14 +115,9 @@ obsUsers.evtChangeDiff.attach(
     }
 );
 
-//New array, "Bob" has been removed and "Louis" has been added.
-const updatedUsers = [
-    ...obsUsers.value.filter(name => name !== "Bob"),
-    "Louis"
-];
 
 //Prints "Louis joined the chat" "Bob left the chat"
-obsUsers.onPotentialChange(updatedUsers);
+obsUsers.onPotentialChange(["Alice", "Louis"]);
 ```
 
 \*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-ydvtrf?embed=1&file=index.ts&hideExplorer=1)  
