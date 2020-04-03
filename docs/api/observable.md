@@ -2,59 +2,65 @@
 
 `Observable` in RxJS and in TS-EVT are **not** the same abstraction.
 
-In EVT `Observable` is a class of object that enclose an observed value and post `.evtChange` whenever this value is changed.
+In EVT `Observable` is a class of object that enclose an observed value and post  whenever the value is mutated.  
+  
+Basic example enclosing a `string`: 
 
 ```typescript
 import { Observable, IObservable } from "evt";
 import { assert } from "evt/dist/tools/typeSafety";
 
-const obsText= new Observable<string>("foo");
+const obsText= new Observable("foo");
 
-console.assert(obsText.value === "foo");
+console.assert(obsText.val === "foo");
 
-obsText.evtChange.attachOnce(
-    newText=> {
-        assert(newText === obsText.value);
-        console.log(`newValue: ${newText}`);
-    }
+obsText.evt.attachOnce(
+    text=> console.log(`currVal: ${text}`);
 );
 
-obsText.evtChangeDiff.attachOnce(
-    ({ newValue, previousValue })=> {
-
-        assert(newValue === obsText.value);
-
-        console.log(`newValue: ${newValue}, previousValue ${previousValue}`);
-
-    }
+obsText.evtDiff.attachOnce(
+    ({ prevVal, currVal })=>
+        console.log(`currVal: ${currVal}, prveVal ${prevVal}`);
 );
 
 //Nothing will be printed as the value did not change.
-let hasChanged = obsText.onPotentialChange("foo");
+let hasChanged = obsText.update("foo");
 
 assert( hasChanged === false );
 
-hasChanged = obsText.onPotentialChange("bar");
-//"newValue: bar" have been printed to the console.
-//"newValue: bar, previousValue foo" have been printed to the console.
+hasChanged = obsText.udate("bar");
+//"currVal: bar" have been printed to the console.
+//"currVal: bar, prevVal: foo" have been printed to the console.
 
 assert(hasChanged === true);
 
-assert(obsText.value === "bar");
+assert(obsText.val === "bar");
 
 //Instance of Observable are assignable to IObservable but
-//the IObservable interface does not expose onPotentialChange().
-//The IObservable interface is used to expose an observable as read only.
+//the IObservable interface does not expose update().
+//The IObservable interface is used to expose an observable that can't be
+//updated()
 const exposedObsText: IObservable<string> = obsText;
 ```
 
-\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-yffb9r?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
+[**Run the example**](https://stackblitz.com/edit/evt-yffb9r?embed=1&file=index.ts&hideExplorer=1)  
+****
 
-It is possible to define what qualifies as a change. Here for example we observe an array of names to see what values are being added and removed in real time.
+The object passed to the constructor and to the .update\(\) method are copied in depth and freezed before being assigned to .val. 
+
+{% hint style="success" %}
+The only way to mutate .val is to call `.update()`. Consequently any mutation on `.val` will trigger an event.
+{% endhint %}
+
+{% hint style="success" %}
+It is possible to observe `Array`, `Set`, `Map`, `Date` and Object with circular references.
+{% endhint %}
+
+It is possible to define what qualifies as a change. By default an in depth sameness check is performed.  
+In this example for example we provide a same\(o1,o2\) that treat `Array`s as `Set`s \( ignoring ordering \)
 
 ```typescript
-import { Observable } from "evt";
-import { representsSameDataFactory } from "evt/dist/tools/inDepthObjectComparison";
+import { Observable, inDepth } from "evt";
 import { diff } from "evt/dist/tools/reducers";
 
 const { representsSameData } = representsSameDataFactory(
@@ -63,13 +69,13 @@ const { representsSameData } = representsSameDataFactory(
 
 const obsUsers = new Observable<string[]>(
     ["Bob", "Alice"],
-    representsSameData
+    inDepth.sameFactory({ "takeIntoAccountArraysOrdering": false }).same
 );
 
 obsUsers.evtChangeDiff.attach(
-    ({ newValue, previousValue }) => {
+    ({ currVal, prevVal }) => {
 
-        const { added, removed } = previousValue.reduce(...diff(newValue))
+        const { added, removed } = previousValue.reduce(...diff(currVal))
 
         console.log(`${added.join(", ")} joined the chat`);
         console.log(`${removed.join(", ")} left the chat`);
@@ -136,6 +142,8 @@ obsCircle.onPotentialChange({
 \*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-ptfvd6?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
 
 ### From an `Evt`
+
+Usefull for example to save the last event data posted
 
 ```typescript
 import { Observable, Evt } from "evt";
