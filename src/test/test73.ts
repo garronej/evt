@@ -11,11 +11,11 @@ import { assert } from "../tools/typeSafety/assert";
         text => text.length
     );
 
-    assert(obsCharCount.value === obsText.value.length);
+    assert(obsCharCount.val === obsText.val.length);
 
-    obsText.onPotentialChange("foo bar");
+    obsText.update("foo bar");
 
-    assert(obsCharCount.value === obsText.value.length);
+    assert(obsCharCount.val === obsText.val.length);
 
 }
 
@@ -34,23 +34,23 @@ import { assert } from "../tools/typeSafety/assert";
         (a,b)=> { count++; return a===b; }
     );
 
-    assert(obsCharCount.value === obsText.value.length);
+    assert(obsCharCount.val === obsText.val.length);
 
-    obsText.onPotentialChange("foo bar");
+    obsText.update("foo bar");
 
     assert(count===1 as number);
 
-    assert(obsCharCount.value === obsText.value.length);
+    assert(obsCharCount.val === obsText.val.length);
 
-    const { value } = obsCharCount;
+    const { val } = obsCharCount;
 
     ctx.done();
 
-    obsText.onPotentialChange("foo bar baz");
+    obsText.update("foo bar baz");
 
     assert(count===1);
 
-    assert(value === obsCharCount.value);
+    assert(val === obsCharCount.val);
 
 }
 
@@ -60,14 +60,14 @@ import { assert } from "../tools/typeSafety/assert";
 
     const obsText = Observable.from(evtText, "foo bar");
 
-    assert(obsText.value === "foo bar" as string);
+    assert(obsText.val === "foo bar" as string);
 
     evtText.post("baz");
 
-    assert(obsText.evtChange.postCount === 1);
-    assert(obsText.evtChangeDiff.postCount === 1);
+    assert(obsText.evt.postCount === 1);
+    assert(obsText.evtDiff.postCount === 1);
 
-    assert(obsText.value === "baz");
+    assert(obsText.val === "baz");
 
 }
 
@@ -79,17 +79,17 @@ import { assert } from "../tools/typeSafety/assert";
 
     const obsText = Observable.from(evtText.pipe(ctx), "foo bar");
 
-    assert(obsText.value === "foo bar" as string);
+    assert(obsText.val === "foo bar" as string);
 
     evtText.post("baz");
 
-    assert(obsText.value === "baz" as string);
+    assert(obsText.val === "baz" as string);
 
     ctx.done();
 
     evtText.post("Hello");
 
-    assert(obsText.value !== "Hello");
+    assert(obsText.val !== "Hello");
 
 }
 

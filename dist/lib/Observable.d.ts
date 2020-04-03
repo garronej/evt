@@ -8,28 +8,29 @@ import { from } from "./util/observableFrom";
  * have read only access on the observable
  * */
 export interface IObservable<T> {
-    readonly value: T;
-    /** when value changed post the new value and the value it previously replaced */
-    readonly evtChangeDiff: NonPostable<Evt<IObservable.ChangeDiff<T>>>;
+    readonly val: T;
     /** when value changed post the new value */
-    readonly evtChange: NonPostable<Evt<T>>;
+    readonly evt: NonPostable<Evt<T>>;
+    /** when value changed post the new value and the value it previously replaced */
+    readonly evtDiff: NonPostable<Evt<IObservable.Diff<T>>>;
 }
 export declare namespace IObservable {
-    type ChangeDiff<T> = {
-        newValue: T;
-        previousValue: T;
+    type Diff<T> = {
+        currVal: T;
+        prevVal: T;
     };
 }
 /** https://docs.evt.land/api/observable */
 export declare class Observable<T> implements IObservable<T> {
-    private readonly areSame;
+    private readonly same;
     /*** https://docs.evt.land/api/observable#observable-from */
     static readonly from: typeof from;
     private readonly evtChangeDiff_post;
-    readonly evtChangeDiff: IObservable<T>["evtChangeDiff"];
-    readonly evtChange: IObservable<T>["evtChange"];
-    readonly value: T;
-    constructor(initialValue: T, areSame?: (currentValue: T, newValue: T) => boolean);
+    readonly evtDiff: IObservable<T>["evtDiff"];
+    readonly evt: IObservable<T>["evt"];
+    readonly val: T;
+    private setVal;
+    constructor(initialValue: T, same?: (currentValue: T, newValue: T) => boolean);
     /** Return true if the value have been changed */
-    onPotentialChange(newValue: T): boolean;
+    update(val: T): boolean;
 }

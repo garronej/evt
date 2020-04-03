@@ -3,6 +3,6 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 exports.__esModule = true;
-__export(require("./assertRepresentsSameData"));
-__export(require("./representsSameData"));
+__export(require("./same"));
+__export(require("./copy"));
 //# sourceMappingURL=index.js.map

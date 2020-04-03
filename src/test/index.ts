@@ -1,5 +1,7 @@
 import "colors";
 
+import "../tools/reducers";
+import "../tools/inDepth/test";
 
 process.once("unhandledRejection", error => {
 
@@ -15,6 +17,8 @@ console.assert = (condition: any, msg?: string) => {
 import { existsSync } from "fs";
 import { join } from "path";
 
+
+
 let n = process.argv[2];
 
 if (n) {
@@ -23,7 +27,7 @@ if (n) {
 
 } else {
 
-    const n = 73;
+    const n = 74;
 
     for (let i = 1; i <= n; i++) {
 

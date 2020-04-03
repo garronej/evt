@@ -13,4 +13,6 @@ __export(require("./types"));
 var Observable_1 = require("./Observable");
 exports.Observable = Observable_1.Observable;
 __export(require("./util"));
+var inDepth = require("../tools/inDepth");
+exports.inDepth = inDepth;
 //# sourceMappingURL=index.js.map

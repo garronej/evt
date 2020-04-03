@@ -3,7 +3,8 @@ import { Evt } from "./Evt";
 import { overwriteReadonlyProp } from "../tools/overwriteReadonlyProp";
 import /*type*/ { NonPostable } from "./types/helper/NonPostable";
 import { importProxy } from "./importProxy";
-import { from } from "./util/observableFrom";
+import { from } from "./util/observableFrom";
+import * as inDepth from "../tools/inDepth";
 
 
 /** 
@@ -13,17 +14,17 @@ import { from } from "./util/observableFrom";
  * have read only access on the observable 
  * */
 export interface IObservable<T> {
-    readonly value: T;
-    /** when value changed post the new value and the value it previously replaced */
-    readonly evtChangeDiff: NonPostable<Evt<IObservable.ChangeDiff<T>>>;
+    readonly val: T;
     /** when value changed post the new value */
-    readonly evtChange: NonPostable<Evt<T>>;
+    readonly evt: NonPostable<Evt<T>>;
+    /** when value changed post the new value and the value it previously replaced */
+    readonly evtDiff: NonPostable<Evt<IObservable.Diff<T>>>;
 };
 
 export namespace IObservable {
-    export type ChangeDiff<T> = {
-        newValue: T;
-        previousValue: T;
+    export type Diff<T> = {
+        currVal: T;
+        prevVal: T;
     }
 }
 
@@ -33,49 +34,55 @@ export class Observable<T> implements IObservable<T> {
     /*** https://docs.evt.land/api/observable#observable-from */
     public static readonly from = from;
 
-    private readonly evtChangeDiff_post: (data: IObservable.ChangeDiff<T>) => void;
+    private readonly evtChangeDiff_post: (data: IObservable.Diff<T>) => void;
 
-    public readonly evtChangeDiff: IObservable<T>["evtChangeDiff"];
-    public readonly evtChange: IObservable<T>["evtChange"];
+    public readonly evtDiff: IObservable<T>["evtDiff"];
+    public readonly evt: IObservable<T>["evt"];
 
     //NOTE: Not really readonly but we want to prevent user from setting the value
     //manually and we cant user accessor because we target es3.
-    public readonly value!: T;
+    public readonly val!: T;
+
+    private setVal(val: T): T {
+        return overwriteReadonlyProp(
+            this,
+            "val",
+            inDepth.copy(val, { "freeze": true })
+        );
+    }
 
     constructor(
         initialValue: T,
-        private readonly areSame: (currentValue: T, newValue: T) => boolean =
-            (currentValue, newValue) => currentValue === newValue
+        private readonly same: (currentValue: T, newValue: T) => boolean = inDepth.same
     ) {
 
         {
 
-            const evtChangeDiff: Evt<IObservable.ChangeDiff<T>> = new Evt();
+            const evtChangeDiff: Evt<IObservable.Diff<T>> = new Evt();
 
             this.evtChangeDiff_post = changeDiff => evtChangeDiff.post(changeDiff);
 
-            this.evtChange = evtChangeDiff.pipe(({ newValue }) => [newValue]);
+            this.evt = evtChangeDiff.pipe(({ currVal }) => [currVal]);
 
-            this.evtChangeDiff = evtChangeDiff;
+            this.evtDiff = evtChangeDiff;
 
         }
 
-        overwriteReadonlyProp(this, "value", initialValue);
+        this.setVal(initialValue);
+
 
     }
 
     /** Return true if the value have been changed */
-    public onPotentialChange(newValue: T): boolean {
+    public update(val: T): boolean {
 
-        if (this.areSame(this.value, newValue)) {
+        if (this.same(this.val, val)) {
             return false;
         }
 
-        const previousValue = this.value;
+        const prevVal = this.val;
 
-        overwriteReadonlyProp(this, "value", newValue);
-
-        this.evtChangeDiff_post({ previousValue, newValue });
+        this.evtChangeDiff_post({ prevVal, "currVal": this.setVal(val) });
 
         return true;
 

@@ -4,31 +4,34 @@ var Evt_2 = require("./Evt");
 var overwriteReadonlyProp_1 = require("../tools/overwriteReadonlyProp");
 var importProxy_1 = require("./importProxy");
 var observableFrom_1 = require("./util/observableFrom");
+var inDepth = require("../tools/inDepth");
 ;
 /** https://docs.evt.land/api/observable */
 var Observable = /** @class */ (function () {
-    function Observable(initialValue, areSame) {
-        if (areSame === void 0) { areSame = function (currentValue, newValue) { return currentValue === newValue; }; }
-        this.areSame = areSame;
+    function Observable(initialValue, same) {
+        if (same === void 0) { same = inDepth.same; }
+        this.same = same;
         {
             var evtChangeDiff_1 = new Evt_2.Evt();
             this.evtChangeDiff_post = function (changeDiff) { return evtChangeDiff_1.post(changeDiff); };
-            this.evtChange = evtChangeDiff_1.pipe(function (_a) {
-                var newValue = _a.newValue;
-                return [newValue];
+            this.evt = evtChangeDiff_1.pipe(function (_a) {
+                var currVal = _a.currVal;
+                return [currVal];
             });
-            this.evtChangeDiff = evtChangeDiff_1;
+            this.evtDiff = evtChangeDiff_1;
         }
-        overwriteReadonlyProp_1.overwriteReadonlyProp(this, "value", initialValue);
+        this.setVal(initialValue);
     }
+    Observable.prototype.setVal = function (val) {
+        return overwriteReadonlyProp_1.overwriteReadonlyProp(this, "val", inDepth.copy(val, { "freeze": true }));
+    };
     /** Return true if the value have been changed */
-    Observable.prototype.onPotentialChange = function (newValue) {
-        if (this.areSame(this.value, newValue)) {
+    Observable.prototype.update = function (val) {
+        if (this.same(this.val, val)) {
             return false;
         }
-        var previousValue = this.value;
-        overwriteReadonlyProp_1.overwriteReadonlyProp(this, "value", newValue);
-        this.evtChangeDiff_post({ previousValue: previousValue, newValue: newValue });
+        var prevVal = this.val;
+        this.evtChangeDiff_post({ prevVal: prevVal, "currVal": this.setVal(val) });
         return true;
     };
     /*** https://docs.evt.land/api/observable#observable-from */

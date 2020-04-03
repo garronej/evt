@@ -4,8 +4,8 @@ declare type EvtLike<T> = {
 declare type CtxLike<T> = import("../Ctx").CtxLike<T>;
 declare type Observable<T> = import("../Observable").Observable<T>;
 declare type ObservableLike<T> = {
-    value: T;
-    evtChange: {
+    val: T;
+    evt: {
         attach(ctx: CtxLike<any>, callback: (data: T) => void): void;
         attach(callback: (data: T) => void): void;
     };

@@ -15,11 +15,12 @@ exports.overwriteReadonlyProp = function (obj, propertyName, value) {
     try {
         obj[propertyName] = value;
         if (obj[propertyName] === value) {
-            return;
+            return value;
         }
     }
     catch (_a) {
     }
     Object.defineProperty(obj, propertyName, __assign(__assign({}, Object.getOwnPropertyDescriptor(obj, propertyName)), { value: value }));
+    return value;
 };
 //# sourceMappingURL=overwriteReadonlyProp.js.map

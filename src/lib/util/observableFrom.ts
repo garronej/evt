@@ -10,10 +10,10 @@ type CtxLike<T> = import("../Ctx").CtxLike<T>;
 type Observable<T> = import("../Observable").Observable<T>;
 
 type ObservableLike<T> = {
-    value: T;
-     evtChange: {
-         attach(ctx: CtxLike<any>, callback: (data: T) => void): void;
-         attach(callback: (data: T) => void): void;
+    val: T;
+    evt: {
+        attach(ctx: CtxLike<any>, callback: (data: T) => void): void;
+        attach(callback: (data: T) => void): void;
     };
 };
 
@@ -25,7 +25,7 @@ function fromEvtImpl<T>(
 
     const obs = new importProxy.Observable<T>(initialValue, areSame);
 
-    evt.attach((data: T) => obs.onPotentialChange(data));
+    evt.attach((data: T) => obs.update(data));
 
     return obs;
 
@@ -46,16 +46,16 @@ function fromObsImpl<T, U>(
 
         //NOTE: Not using pipe for types reasons.
         if (!!ctx) {
-            obs.evtChange.attach(ctx, callback);
+            obs.evt.attach(ctx, callback);
         } else {
-            obs.evtChange.attach(callback);
+            obs.evt.attach(callback);
         }
 
     }
 
     return fromEvtImpl(
         evtDelegate,
-        transform(obs.value),
+        transform(obs.val),
         areSame
     );
 

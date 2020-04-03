@@ -1,46 +1,42 @@
-import { Observable } from "../lib";
-import { representsSameDataFactory } from "../tools/inDepthComparison";
+import { Observable, inDepth } from "../lib";
 import { diff } from "../tools/reducers";
 import { assert } from "../tools/typeSafety";
-
-const { representsSameData } = representsSameDataFactory(
-    { "takeIntoAccountArraysOrdering": false }
-);
+import { id } from "../tools/typeSafety";
 
 const obsUsers = new Observable<string[]>(
-    ["Bob", "Alice"],
-    representsSameData
+    ["Bob", "Alice"], 
+    inDepth.sameFactory({ "takeIntoAccountArraysOrdering": false }).same
 );
 
-obsUsers.evtChangeDiff.attach(
-    ({ newValue, previousValue }) => {
+obsUsers.evtDiff.attach(
+    ({ currVal, prevVal }) => {
 
-        const { added, removed } = previousValue.reduce(...diff(newValue))
+        const { added, removed } = prevVal.reduce(...diff(currVal))
 
-        assert(representsSameData(added, ["Louis"]));
-        assert(representsSameData(removed, ["Bob"]));
+        assert(inDepth.same(added, ["Louis"]));
+        assert(inDepth.same(removed, ["Bob"]));
 
     }
 );
 
 //Nothing posted as representSameData(["Bob", "Alice"], ["Alice", "Bob") === true
-obsUsers.onPotentialChange(["Alice", "Bob" ]);
+obsUsers.update(["Alice", "Bob"]);
 
-assert(obsUsers.evtChangeDiff.postCount === 0+0 );
-assert(obsUsers.evtChange.postCount === 0+0 );
+assert(obsUsers.evtDiff.postCount === id<number>(0) );
+assert(obsUsers.evtDiff.postCount === id<number>(0) );
 
 //New array, "Bob" has been removed and "Louis" has been added.
 const updatedUsers = [
-    ...obsUsers.value.filter(name => name !== "Bob"),
+    ...obsUsers.val.filter(name => name !== "Bob"),
     "Louis"
 ];
 
 
 //Prints "Louis joined the chat" "Bob left the chat"
-obsUsers.onPotentialChange(updatedUsers);
+obsUsers.update(updatedUsers);
 
-assert(obsUsers.evtChangeDiff.postCount === 0+1 );
-assert(obsUsers.evtChange.postCount === 0+1 );
+assert(obsUsers.evtDiff.postCount === id<number>(1) );
+assert(obsUsers.evt.postCount === id<number>(1));
 
 console.log("PASS".green);
 

@@ -1,14 +1,17 @@
 
 
-import { representsSameDataFactory } from "./representsSameData";
+import { sameFactory, same } from "./same";
 import { assert } from "../typeSafety/assert";
+import { copy } from "./copy";
+
+if( 1 === 1 + 2 ){
 
 {
 
-    const { representsSameData } = representsSameDataFactory({ "takeIntoAccountArraysOrdering": false });
+    const { same } = sameFactory({ "takeIntoAccountArraysOrdering": false });
 
     assert(
-        representsSameData(
+        same(
             new Set<string[]>([
                 ["a", "b"],
                 ["c", "d"]
@@ -21,7 +24,7 @@ import { assert } from "../typeSafety/assert";
     );
 
     assert(
-        representsSameData(
+        same(
             new Set<string[]>([
                 ["a", "b"],
                 ["c", "d"]
@@ -34,7 +37,7 @@ import { assert } from "../typeSafety/assert";
     );
 
     assert(
-        representsSameData(
+        same(
             new Set<string[]>([
                 ["a", "b"],
                 ["c", "d"]
@@ -47,7 +50,7 @@ import { assert } from "../typeSafety/assert";
     );
 
     assert(
-        representsSameData(
+        same(
             new Set<string[]>([
                 ["a", "b"],
                 ["c", "d"]
@@ -60,7 +63,79 @@ import { assert } from "../typeSafety/assert";
     );
 
     assert(
-        !representsSameData(
+        !same(
+            new Set<string[]>([
+                ["a", "b", "c"],
+                ["c", "d"]
+            ]),
+            new Set<string[]>([
+                ["c", "d"],
+                ["b", "a"]
+            ])
+        )
+    );
+
+}
+
+
+{
+
+    const { same } = sameFactory({ "takeIntoAccountArraysOrdering": true });
+
+    assert(
+        same(
+            new Set<string[]>([
+                ["a", "b"],
+                ["c", "d"]
+            ]),
+            new Set<string[]>([
+                ["a", "b"],
+                ["c", "d"]
+            ])
+        )
+    );
+
+    assert(
+        same(
+            new Set<string[]>([
+                ["a", "b"],
+                ["c", "d"]
+            ]),
+            new Set<string[]>([
+                ["c", "d"],
+                ["a", "b"]
+            ])
+        )
+    );
+
+    assert(
+        !same(
+            new Set<string[]>([
+                ["a", "b"],
+                ["c", "d"]
+            ]),
+            new Set<string[]>([
+                ["b", "a"],
+                ["c", "d"]
+            ])
+        )
+    );
+
+    assert(
+        !same(
+            new Set<string[]>([
+                ["a", "b"],
+                ["c", "d"]
+            ]),
+            new Set<string[]>([
+                ["c", "d"],
+                ["b", "a"]
+            ])
+        )
+    );
+
+    assert(
+        !same(
             new Set<string[]>([
                 ["a", "b", "c"],
                 ["c", "d"]
@@ -76,81 +151,10 @@ import { assert } from "../typeSafety/assert";
 
 {
 
-    const { representsSameData } = representsSameDataFactory({ "takeIntoAccountArraysOrdering": true });
+    const { same } = sameFactory({ "takeIntoAccountArraysOrdering": false });
 
     assert(
-        representsSameData(
-            new Set<string[]>([
-                ["a", "b"],
-                ["c", "d"]
-            ]),
-            new Set<string[]>([
-                ["a", "b"],
-                ["c", "d"]
-            ])
-        )
-    );
-
-    assert(
-        representsSameData(
-            new Set<string[]>([
-                ["a", "b"],
-                ["c", "d"]
-            ]),
-            new Set<string[]>([
-                ["c", "d"],
-                ["a", "b"]
-            ])
-        )
-    );
-
-    assert(
-        !representsSameData(
-            new Set<string[]>([
-                ["a", "b"],
-                ["c", "d"]
-            ]),
-            new Set<string[]>([
-                ["b", "a"],
-                ["c", "d"]
-            ])
-        )
-    );
-
-    assert(
-        !representsSameData(
-            new Set<string[]>([
-                ["a", "b"],
-                ["c", "d"]
-            ]),
-            new Set<string[]>([
-                ["c", "d"],
-                ["b", "a"]
-            ])
-        )
-    );
-
-    assert(
-        !representsSameData(
-            new Set<string[]>([
-                ["a", "b", "c"],
-                ["c", "d"]
-            ]),
-            new Set<string[]>([
-                ["c", "d"],
-                ["b", "a"]
-            ])
-        )
-    );
-
-}
-
-{
-
-    const { representsSameData } = representsSameDataFactory({ "takeIntoAccountArraysOrdering": false });
-
-    assert(
-        representsSameData(
+        same(
             new Map<string[], string[]>([
                 [["a", "b"], ["1", "2"]],
                 [["c", "d"], ["3", "4"]]
@@ -163,7 +167,7 @@ import { assert } from "../typeSafety/assert";
     );
 
     assert(
-        representsSameData(
+        same(
             new Map<string[], string[]>([
                 [["b", "a"], ["1", "2"]],
                 [["c", "d"], ["3", "4"]]
@@ -176,7 +180,7 @@ import { assert } from "../typeSafety/assert";
     );
 
     assert(
-        representsSameData(
+        same(
             new Map<string[], string[]>([
                 [["c", "d"], ["3", "4"]],
                 [["a", "b"], ["1", "2"]]
@@ -189,7 +193,7 @@ import { assert } from "../typeSafety/assert";
     );
 
     assert(
-        !representsSameData(
+        !same(
             new Map<string[], string[]>([
                 [["a", "b"], ["1", "2"]],
                 [["c", "d"], ["3", "4"]],
@@ -203,7 +207,7 @@ import { assert } from "../typeSafety/assert";
     );
 
     assert(
-        !representsSameData(
+        !same(
             new Map<string[], string[]>([
                 [["1", "2"], ["a", "b"]],
                 [["c", "d"], ["3", "4"]]
@@ -220,10 +224,10 @@ import { assert } from "../typeSafety/assert";
 
 {
 
-    const { representsSameData } = representsSameDataFactory({ "takeIntoAccountArraysOrdering": true });
+    const { same } = sameFactory({ "takeIntoAccountArraysOrdering": true });
 
     assert(
-        representsSameData(
+        same(
             new Map<string[], string[]>([
                 [["a", "b"], ["1", "2"]],
                 [["c", "d"], ["3", "4"]]
@@ -236,7 +240,7 @@ import { assert } from "../typeSafety/assert";
     );
 
     assert(
-        !representsSameData(
+        !same(
             new Map<string[], string[]>([
                 [["b", "a"], ["1", "2"]],
                 [["c", "d"], ["3", "4"]]
@@ -249,7 +253,7 @@ import { assert } from "../typeSafety/assert";
     );
 
     assert(
-        representsSameData(
+        same(
             new Map<string[], string[]>([
                 [["c", "d"], ["3", "4"]],
                 [["a", "b"], ["1", "2"]]
@@ -262,7 +266,7 @@ import { assert } from "../typeSafety/assert";
     );
 
     assert(
-        !representsSameData(
+        !same(
             new Map<string[], string[]>([
                 [["a", "b"], ["1", "2"]],
                 [["c", "d"], ["3", "4"]],
@@ -276,7 +280,7 @@ import { assert } from "../typeSafety/assert";
     );
 
     assert(
-        !representsSameData(
+        !same(
             new Map<string[], string[]>([
                 [["1", "2"], ["a", "b"]],
                 [["c", "d"], ["3", "4"]]
@@ -291,6 +295,143 @@ import { assert } from "../typeSafety/assert";
 
 }
 
+}
+
+{
+
+    const obj: any = {};
+
+    Object.assign(obj, { "p": obj });
+
+
+    const clone: any = {};
+
+    Object.assign(clone, { "p": clone });
+
+    assert(same(obj, clone));
+
+}
+
+{
+
+    const map1 = new Map<any, any>();
+    const map2 = new Map<any, any>();
+
+    map1.set({ "p": "foo" }, { "q": "bar" });
+    map2.set({ "p": "foo" }, { "q": "bar" });
+
+    map1.set({ "p": "baz" }, { "q": 44 });
+    map2.set({ "p": "baz" }, { "q": 44 });
+
+    map1.set(33, ["a", 33, new Date(12), new Set<any>(["a", [map1], 55])]);
+    map2.set(33, ["a", 33, new Date(12), new Set<any>(["a", [map2], 55])]);
+
+    assert(same(map1, map2));
+
+}
+
+{
+
+    const map1 = new Map<any, any>();
+    const map2 = new Map<any, any>();
+
+    map1.set({ "p": "foo" }, { "q": "bar" });
+    map2.set({ "p": "foo" }, { "q": "bar" });
+
+    map1.set({ "p": "baz" }, { "q": 44 });
+    map2.set({ "p": "baz" }, { "q": 44 });
+
+    map1.set(33, ["a", 33, new Date(12), new Set<any>(["a", [map1], -1])]);
+    map2.set(33, ["a", 33, new Date(12), new Set<any>(["a", [map2], 55])]);
+
+    assert(!same(map1, map2));
+
+}
+
+{
+
+    const map1 = new Map<any, any>();
+    const map2 = new Map<any, any>();
+
+    map1.set({ "p": "foo" }, { "q": "bar" });
+    map2.set({ "p": "foo" }, { "q": "bar" });
+
+    map1.set({ "p": "baz" }, { "q": 44 });
+    map2.set({ "p": "baz" }, { "q": 44 });
+
+    map1.set(33, ["a", 33, new Date(12), new Set<any>(["a", [map1], -1])]);
+    map2.set(33, ["a", 33, new Date(12), new Set<any>(["a", [map2], 55])]);
+
+    assert(!same(map1, map2));
+
+}
+
+{
+
+    const map1 = new Map<any, any>();
+    const map2 = new Map<any, any>();
+
+    map1.set({ "p": "foo" }, { "q": "x" });
+    map2.set({ "p": "foo" }, { "q": "bar" });
+
+    map1.set({ "p": "baz" }, { "q": 44 });
+    map2.set({ "p": "baz" }, { "q": 44 });
+
+    map1.set(33, ["a", 33, new Date(12), new Set<any>(["a", [map1], 55])]);
+    map2.set(33, ["a", 33, new Date(12), new Set<any>(["a", [map2], 55])]);
+
+    assert(!same(map1, map2));
+
+}
+
+{
+
+    const map1 = new Map<any, any>();
+    const map2 = new Map<any, any>();
+
+    map1.set({ "p": "foo" }, { "q": "bar" });
+    map2.set({ "p": "foo" }, { "q": "bar" });
+
+    map1.set({ "p": "baz" }, { "q": 44 });
+    map2.set({ "p": "baz" }, { "q": 44 });
+
+    map1.set(33, ["a", 33, new Date(13), new Set<any>(["a", [map1], 55])]);
+    map2.set(33, ["a", 33, new Date(12), new Set<any>(["a", [map2], 55])]);
+
+    assert(!same(map1, map2));
+
+}
+
+
+
+import * as util from "util";
+
+const obj: any = { "p1": "FOO", "p2": new Set(["a", "b", "c"]), "p3": ["a", "b"], "p4": undefined, "p5": null };
+
+Object.assign(obj, { obj });
+
+const s1 = util.inspect(obj);
+
+const clone = copy(obj, { "freeze": true })
+
+assert(same(obj, clone));
+
+obj["p1"] = "changed";
+obj["p2"].add("changed");
+obj["p3"].push("changed");
+obj["p4"] = "changed";
+obj["p5"] = "changed";
+
+assert(util.inspect(clone) === s1);
+
+try {
+
+    clone.p1 = "BAR";
+
+    assert(false, "should have throw");
+
+} catch {
+}
 
 console.log("PASS");
 

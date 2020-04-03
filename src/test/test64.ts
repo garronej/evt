@@ -2,9 +2,9 @@
 import { Evt } from "../lib";
 
 import { chunksOf } from "../lib/util/genericOperators/chunksOf";
-import { assertRepresentsSameDataFactory } from "../tools/inDepthComparison";
+import { same } from "../tools/inDepth";
+import { assert } from "../tools/typeSafety"
 
-const { assertRepresentsSameData } = assertRepresentsSameDataFactory({ "takeIntoAccountArraysOrdering": true });
 
 {
 
@@ -24,14 +24,14 @@ const { assertRepresentsSameData } = assertRepresentsSameDataFactory({ "takeInto
     evt.post(new Uint8Array([3, 4]));
     evt.post(new Uint8Array([1, 2, 3, 4, 5, 6]));
 
-    assertRepresentsSameData({
-        "got": acc,
-        "expected": [
+    assert(same(
+        acc,
+        [
             new Uint8Array([1, 2, 3, 4, 5, 6]),
             new Uint8Array([0, 7, 1, 2, 3, 4]),
             new Uint8Array([1, 2, 3, 4, 5, 6])
         ]
-    });
+    ));
 
     console.log("PASS".green);
 

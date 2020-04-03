@@ -1,5 +1,7 @@
+import { assert } from "../tools/typeSafety";
 
 import { Observable } from "../lib/Observable";
+import { same } from "../tools/inDepth";
 
 const names1 = [
     "alice",
@@ -31,43 +33,44 @@ const obsNames = new Observable<string[]>(
     }
 );
 
-console.assert(obsNames.value === names1);
+assert(same(obsNames.val, names1));
 
 (async () => {
 
-    obsNames.evtChange.waitFor(10)
+
+    obsNames.evt.waitFor(10)
         .then(
-            ()=> console.assert(false, "never"),
-            ()=> {}
+            () => assert(false, "never"),
+            () => { }
         )
         ;
 
-    console.assert(
-        obsNames.onPotentialChange(names2)
+    assert(
+        obsNames.update(names2)
         ===
         false
     );
 
-    console.assert(obsNames.value === names1);
+    assert(same(obsNames.val, names1));
 
     await new Promise(resolve => setTimeout(resolve, 300));
 
-    obsNames.evtChange.waitFor(10)
+    obsNames.evt.waitFor(10)
         .then(newValue => {
-            console.assert(
-                newValue === obsNames.value &&
-                newValue === names3
+            assert(
+                newValue === obsNames.val &&
+                same(newValue,names3)
             );
         })
         ;
 
-    obsNames.evtChangeDiff.waitFor(10)
-        .then(({ previousValue, newValue }) => {
+    obsNames.evtDiff.waitFor(10)
+        .then(({ prevVal, currVal }) => {
 
-            console.assert(
-                newValue == obsNames.value &&
-                previousValue === names1 &&
-                newValue === names3
+            assert(
+                currVal === obsNames.val &&
+                same(prevVal,names1) &&
+                same(currVal,names3)
             );
 
             console.log("PASS".green);
@@ -75,13 +78,13 @@ console.assert(obsNames.value === names1);
         })
         ;
 
-    console.assert(
-        obsNames.onPotentialChange(names3)
+    assert(
+        obsNames.update(names3)
         ===
         true
     );
 
-    console.assert(obsNames.value === names3);
+    assert(same(obsNames.val, names3));
 
 })();
 

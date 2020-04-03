@@ -2,9 +2,9 @@
 import { Evt, UnpackEvt } from "../lib";
 import { UnpackPromise } from "../tools/typeSafety";
 
-import { assertRepresentsSameDataFactory } from "../tools/inDepthComparison";
+import { assert } from "../tools/typeSafety/assert";
+import { same } from "../tools/inDepth";
 
-const { assertRepresentsSameData } = assertRepresentsSameDataFactory({ "takeIntoAccountArraysOrdering": true });
 
 {
 
@@ -48,15 +48,15 @@ const { assertRepresentsSameData } = assertRepresentsSameDataFactory({ "takeInto
 
         evtAge.post(4444);
 
-        assertRepresentsSameData({
-            "got": arr,
-            "expected": [
+        assert(same(
+            arr,
+            [
                 [undefined, { "isFirst": true }, 0],
                 [null, { "isFirst": false, "data": null }, 1],
                 [text, { "isFirst": false, "data": text }, 2],
                 [age, { "isFirst": false, "data": age }, 3]
             ]
-        });
+        ));
 
     })();
 
@@ -107,15 +107,15 @@ const { assertRepresentsSameData } = assertRepresentsSameDataFactory({ "takeInto
 
         evtAge.post(4444);
 
-        assertRepresentsSameData({
-            "got": arr,
-            "expected": [
+        assert(same(
+            arr,
+            [
                 [initData, { "isFirst": true }, 0],
                 [null, { "isFirst": false, "data": null }, 1],
                 [text, { "isFirst": false, "data": text }, 2],
                 [age, { "isFirst": false, "data": age }, 3]
             ]
-        });
+        ));
 
     })();
 

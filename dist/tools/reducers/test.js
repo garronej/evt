@@ -25,8 +25,7 @@ var typeSafety_1 = require("../typeSafety");
 var index_1 = require("./index");
 var every_1 = require("./every");
 var partition_1 = require("./partition");
-var inDepthComparison_1 = require("../inDepthComparison");
-var assertRepresentsSameData = inDepthComparison_1.assertRepresentsSameDataFactory({ "takeIntoAccountArraysOrdering": false }).assertRepresentsSameData;
+var same_1 = require("../inDepth/same");
 if (typeof require !== "undefined" &&
     typeof module !== "undefined" &&
     require.main === module) {
@@ -113,13 +112,10 @@ if (typeof require !== "undefined" &&
     typeSafety_1.assert((_3 = ["a", "b"]).reduce.apply(_3, __spread(index_1.sameAs(["a", "b"]))) === true);
     typeSafety_1.assert((_4 = ["a", "b"]).reduce.apply(_4, __spread(index_1.sameAs(["a", "bc"]))) === false);
     typeSafety_1.assert((_5 = ["a", "b"]).reduce.apply(_5, __spread(index_1.sameAs(["a", "b", "c"]))) === false);
-    assertRepresentsSameData({
-        "got": (_6 = ["bob", "alice"]).reduce.apply(_6, __spread(index_1.diff(["bob", "louis"]))),
-        "expected": {
-            "added": ["louis"],
-            "removed": ["alice"]
-        }
-    });
+    typeSafety_1.assert(same_1.same((_6 = ["bob", "alice"]).reduce.apply(_6, __spread(index_1.diff(["bob", "louis"]))), {
+        "added": ["louis"],
+        "removed": ["alice"]
+    }, { "takeIntoAccountArraysOrdering": false }));
     console.log("PASS");
 }
 //# sourceMappingURL=test.js.map

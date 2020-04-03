@@ -1,11 +1,9 @@
 
 import { assert } from "../typeSafety";
-import {every, allEqualsTo, allEquals, removeDuplicates, partition, allUniq, and, count, includes, or, sameAs, diff} from "./index";
+import { every, allEqualsTo, allEquals, removeDuplicates, partition, allUniq, and, count, includes, or, sameAs, diff } from "./index";
 import { arrEvery } from "./every";
 import { arrPartition } from "./partition";
-import { assertRepresentsSameDataFactory } from "../inDepthComparison";
-
-const { assertRepresentsSameData } = assertRepresentsSameDataFactory({ "takeIntoAccountArraysOrdering": false });
+import { same } from "../inDepth/same";
 
 if (
     typeof require !== "undefined" &&
@@ -189,13 +187,16 @@ if (
     assert(["a", "b"].reduce(...sameAs<string>(["a", "bc"])) === false);
     assert(["a", "b"].reduce(...sameAs<string>(["a", "b", "c"])) === false);
 
-    assertRepresentsSameData({
-        "got": ["bob", "alice"].reduce(...diff<string>(["bob", "louis"])),
-        "expected": {
-            "added": [ "louis" ],
-            "removed": [ "alice" ]
-        }
-    });
+    assert(
+        same(
+            ["bob", "alice"].reduce(...diff<string>(["bob", "louis"])),
+            {
+                "added": ["louis"],
+                "removed": ["alice"]
+            },
+            { "takeIntoAccountArraysOrdering": false }
+        )
+    );
 
     console.log("PASS");
 

@@ -5,7 +5,7 @@ var typeGuard_1 = require("../../tools/typeSafety/typeGuard");
 var assert_1 = require("../../tools/typeSafety/assert");
 function fromEvtImpl(evt, initialValue, areSame) {
     var obs = new importProxy_1.importProxy.Observable(initialValue, areSame);
-    evt.attach(function (data) { return obs.onPotentialChange(data); });
+    evt.attach(function (data) { return obs.update(data); });
     return obs;
 }
 function fromObsImpl(ctx, obs, transform, areSame) {
@@ -14,13 +14,13 @@ function fromObsImpl(ctx, obs, transform, areSame) {
         var callback = function (data) { return evtDelegate.post(transform(data)); };
         //NOTE: Not using pipe for types reasons.
         if (!!ctx) {
-            obs.evtChange.attach(ctx, callback);
+            obs.evt.attach(ctx, callback);
         }
         else {
-            obs.evtChange.attach(callback);
+            obs.evt.attach(callback);
         }
     }
-    return fromEvtImpl(evtDelegate, transform(obs.value), areSame);
+    return fromEvtImpl(evtDelegate, transform(obs.val), areSame);
 }
 function from(p1, p2, p3, p4) {
     if ("abort" in p1) {

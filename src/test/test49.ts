@@ -2,12 +2,10 @@
 import { Evt, Handler, Ctx } from "../lib";
 import { assert } from "../tools/typeSafety";
 import { getPromiseAssertionApi } from "../tools/testing";
-import { assertRepresentsSameDataFactory } from "../tools/inDepthComparison";
+import { sameFactory } from "../tools/inDepth";
 
 
-const { assertRepresentsSameData } = assertRepresentsSameDataFactory({
-    "takeIntoAccountArraysOrdering": false
-});
+const { same } = sameFactory({ "takeIntoAccountArraysOrdering": false });
 
 const { mustResolve } = getPromiseAssertionApi();
 
@@ -27,10 +25,10 @@ const handlers_ = [
 
 mustResolve({
     "promise": ctx.getEvtDone().attachOnce(
-        ([,,handlers]) => assertRepresentsSameData({
-            "got": handlers,
-            "expected": handlers_
-        })
+        ([,,handlers]) => assert(same(
+            handlers,
+            handlers_
+        ))
     )
 });
 

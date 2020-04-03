@@ -3,14 +3,14 @@ export const overwriteReadonlyProp = <T extends { [key: string]: any; }, K exten
     obj: T,
     propertyName: K,
     value: T[K]
-): void => {
+): T[K] => {
 
     try {
 
         obj[propertyName] = value;
 
         if (obj[propertyName] === value) {
-            return;
+            return value;
         }
 
     } catch{
@@ -24,5 +24,7 @@ export const overwriteReadonlyProp = <T extends { [key: string]: any; }, K exten
             value
         }
     );
+
+    return value;
 
 };

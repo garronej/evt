@@ -1,19 +1,12 @@
 
 import { assert } from "../typeSafety";
-import { representsSameDataFactory } from "../inDepthComparison";
+import { sameFactory } from "../inDepth/same";
 
 export function getPromiseAssertionApi(
     params?: { takeIntoAccountArraysOrdering: boolean; }
 ) {
 
-    const areEquals: <T>(o1: T, o2: T) => boolean =
-        params === undefined ?
-            (o1, o2) => o1 === o2 :
-            representsSameDataFactory({
-                "takeIntoAccountArraysOrdering": params.takeIntoAccountArraysOrdering
-            }).representsSameData
-        ;
-
+    const is = !!params ? sameFactory(params).same : (<T>(o1: T, o2: T) => o1 === o2);
 
     function mustResolve<T>(
         params: {
@@ -30,7 +23,7 @@ export function getPromiseAssertionApi(
             if (!("expectedData" in params)) {
                 return data;
             }
-            assert(areEquals(data, params.expectedData), "Not equals expected value");
+            assert(is(data, params.expectedData), "Not equals expected value");
             return data;
         });
 
@@ -56,7 +49,7 @@ export function getPromiseAssertionApi(
                 if ("expectedRejectedValue" in params) {
 
                     assert(
-                        areEquals(
+                        is(
                             error,
                             params.expectedRejectedValue
                         )
