@@ -22,8 +22,10 @@ export namespace Trackable {
 }
 
 
+/** https://docs.evt.land/api/tracked */
 export class Tracked<T> implements Trackable<T> {
 
+    /** https://docs.evt.land/api/tracked#tracked-from */
     public static from = from;
 
     private _val: T;
