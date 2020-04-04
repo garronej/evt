@@ -153,7 +153,7 @@ ee.emit("text", "bar"); //Prints nothing
 
 \*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-niwafz?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
 
-## `ctc.waitFor([timeout])`
+## `ctx.waitFor([timeout])`
 
 Tracks via a Promise that resolves when `ctx.done()` or `ctx.abort()` is invoked.
 
