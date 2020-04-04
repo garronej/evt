@@ -8,7 +8,7 @@
     * [evt.\[$\]attach\*\(...\)](api/evt/attach.md)
     * [evt.post\*\(data\)](api/evt/post.md)
     * [evt.waitFor\(...\)](api/evt/waitfor.md)
-    * [evt.getEvt\[Attach\|Detach\]\(\)](api/evt/getevtattachdetach.md)
+    * [evt.evt\[Attach\|Detach\]](api/evt/evtattachdetach.md)
     * [evt.pipe\(...\)](api/evt/pipe.md)
     * [evt.getHandlers\(\)](api/evt/gethandler.md)
     * [evt.isHandled\(data\)](api/evt/ishandled.md)
