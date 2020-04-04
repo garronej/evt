@@ -12,7 +12,7 @@ exports.VoidCtx = Ctx_1.VoidCtx;
 __export(require("./types"));
 var Observable_1 = require("./Observable");
 exports.Observable = Observable_1.Observable;
-exports.ObservableCopy = Observable_1.ObservableCopy;
+exports.ObservableInDepth = Observable_1.ObservableInDepth;
 __export(require("./util"));
 var inDepth = require("../tools/inDepth");
 exports.inDepth = inDepth;

@@ -1,10 +1,10 @@
-import { ObservableCopy } from "../lib";
+import { ObservableInDepth } from "../lib";
 import { diff } from "../tools/reducers";
 import { assert } from "../tools/typeSafety";
 import { same } from "../tools/inDepth";
 import { id } from "../tools/typeSafety";
 
-const obsUsers = new ObservableCopy(new Set(["Bob", "Alice"]));
+const obsUsers = new ObservableInDepth(new Set(["Bob", "Alice"]));
 
 obsUsers.evtDiff.attach(
     ({ currVal, prevVal }) => {

@@ -32,7 +32,7 @@ exports.__esModule = true;
 var Evt_2 = require("./Evt");
 var overwriteReadonlyProp_1 = require("../tools/overwriteReadonlyProp");
 var importProxy_1 = require("./importProxy");
-var observableFrom_1 = require("./util/observableFrom");
+var staticFrom = require("./util/observableFrom");
 require("../tools/polyfill/Object.is");
 var inDepth = require("../tools/inDepth");
 ;
@@ -82,20 +82,20 @@ var Observable = /** @class */ (function () {
         }
     };
     /*** https://docs.evt.land/api/observable#observable-from */
-    Observable.from = observableFrom_1.from;
+    Observable.from = staticFrom.from;
     return Observable;
 }());
 exports.Observable = Observable;
 importProxy_1.importProxy.Observable = Observable;
-var ObservableCopy = /** @class */ (function (_super) {
-    __extends(ObservableCopy, _super);
-    function ObservableCopy(val) {
-        return _super.call(this, val, inDepth.same, inDepth.copy) || this;
+var ObservableInDepth = /** @class */ (function (_super) {
+    __extends(ObservableInDepth, _super);
+    function ObservableInDepth(val, same) {
+        return _super.call(this, val, same !== null && same !== void 0 ? same : inDepth.same, inDepth.copy) || this;
     }
     /*** https://docs.evt.land/api/observable#observable-from */
-    ObservableCopy.from = observableFrom_1.copy.from;
-    return ObservableCopy;
+    ObservableInDepth.from = staticFrom.inDepth.from;
+    return ObservableInDepth;
 }(Observable));
-exports.ObservableCopy = ObservableCopy;
-importProxy_1.importProxy.ObservableCopy = ObservableCopy;
+exports.ObservableInDepth = ObservableInDepth;
+importProxy_1.importProxy.ObservableInDepth = ObservableInDepth;
 //# sourceMappingURL=Observable.js.map

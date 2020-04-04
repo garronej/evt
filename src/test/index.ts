@@ -1,7 +1,5 @@
 import "colors";
 
-import "../tools/reducers/test";
-import "../tools/inDepth/test";
 
 process.once("unhandledRejection", error => {
 
@@ -27,7 +25,10 @@ if (n) {
 
 } else {
 
-    const n = 75;
+    require("../tools/reducers/test");
+    require("../tools/inDepth/test");
+
+    const n = 77;
 
     for (let i = 1; i <= n; i++) {
 

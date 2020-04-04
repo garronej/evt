@@ -138,38 +138,43 @@ export function from<T>(
 
 }
 
-export namespace copy {
+export namespace inDepth {
 
-    type ObservableCopy<T> = import("../Observable").ObservableCopy<T>;
+    type ObservableInDepth<T> = import("../Observable").ObservableInDepth<T>;
 
     export function from<T, U>(
         ctx: CtxLike<any>,
         obs: ObservableLike<T>,
-        transform: (val: T) => U
-    ): ObservableCopy<U>;
+        transform: (val: T) => U,
+        same?: (val1: T, val2: T) => boolean,
+    ): ObservableInDepth<U>;
     export function from<T, U>(
         obs: ObservableLike<T>,
-        transform: (val: T) => U
-    ): ObservableCopy<U>;
+        transform: (val: T) => U,
+        same?: (val1: U, val2: U) => boolean
+    ): ObservableInDepth<U>;
     export function from<T>(
         evt: EvtLike<T>,
-        initialValue: T
-    ): ObservableCopy<T>;
+        initialValue: T,
+        same?: (val1: T, val2: T) => boolean
+    ): ObservableInDepth<T>;
 
     export function from<T>(
         p1: CtxLike<any> | ObservableLike<T> | EvtLike<T>,
         p2: ObservableLike<T> | ((value: T) => any) | T,
-        p3?: (val: T) => any
-    ): ObservableCopy<any> {
+        p3?: ((val: T) => any) | ((val1: any, val2: any) => boolean) | ((val1: T, val2: T) => boolean),
+        p4?: (val1: T, val2: T) => boolean
+    ): ObservableInDepth<any> {
 
         if ("abort" in p1) {
 
             //1
             assert(typeGuard<ObservableLike<T>>(p2))
             assert(typeGuard<(val: T) => any>(p3))
+            assert(typeGuard<((val1: T, val2: T) => boolean) | undefined>(p4))
 
             return fromObsImpl(
-                val => new importProxy.ObservableCopy(val),
+                val => new importProxy.ObservableInDepth(val, p4),
                 p1, p2, p3
             );
 
@@ -182,9 +187,10 @@ export namespace copy {
                 //3
 
                 assert(typeGuard<T>(p2))
+                assert(typeGuard<((val1: T, val2: T) => boolean) | undefined>(p3))
 
                 return fromEvtImpl(
-                    val => new importProxy.ObservableCopy(val),
+                    val => new importProxy.ObservableInDepth(val, p3),
                     p1, p2
                 );
 
@@ -193,9 +199,10 @@ export namespace copy {
                 //2
 
                 assert(typeGuard<(value: T) => any>(p2))
+                assert(typeGuard<((val1: any, val2: any) => boolean) | undefined>(p3))
 
                 return fromObsImpl(
-                    val => new importProxy.ObservableCopy(val),
+                    val => new importProxy.ObservableInDepth(val, p3),
                     undefined, p1, p2
                 );
 

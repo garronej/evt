@@ -50,29 +50,32 @@ function from(p1, p2, p3, p4, p5) {
     }
 }
 exports.from = from;
-var copy;
-(function (copy) {
-    function from(p1, p2, p3) {
+var inDepth;
+(function (inDepth) {
+    function from(p1, p2, p3, p4) {
         if ("abort" in p1) {
             //1
             assert_1.assert(typeGuard_1.typeGuard(p2));
             assert_1.assert(typeGuard_1.typeGuard(p3));
-            return fromObsImpl(function (val) { return new importProxy_1.importProxy.ObservableCopy(val); }, p1, p2, p3);
+            assert_1.assert(typeGuard_1.typeGuard(p4));
+            return fromObsImpl(function (val) { return new importProxy_1.importProxy.ObservableInDepth(val, p4); }, p1, p2, p3);
         }
         else {
             //2 or 3
             if ("attach" in p1) {
                 //3
                 assert_1.assert(typeGuard_1.typeGuard(p2));
-                return fromEvtImpl(function (val) { return new importProxy_1.importProxy.ObservableCopy(val); }, p1, p2);
+                assert_1.assert(typeGuard_1.typeGuard(p3));
+                return fromEvtImpl(function (val) { return new importProxy_1.importProxy.ObservableInDepth(val, p3); }, p1, p2);
             }
             else {
                 //2
                 assert_1.assert(typeGuard_1.typeGuard(p2));
-                return fromObsImpl(function (val) { return new importProxy_1.importProxy.ObservableCopy(val); }, undefined, p1, p2);
+                assert_1.assert(typeGuard_1.typeGuard(p3));
+                return fromObsImpl(function (val) { return new importProxy_1.importProxy.ObservableInDepth(val, p3); }, undefined, p1, p2);
             }
         }
     }
-    copy.from = from;
-})(copy = exports.copy || (exports.copy = {}));
+    inDepth.from = from;
+})(inDepth = exports.inDepth || (exports.inDepth = {}));
 //# sourceMappingURL=observableFrom.js.map

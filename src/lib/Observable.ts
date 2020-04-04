@@ -3,7 +3,7 @@ import { Evt } from "./Evt";
 import { overwriteReadonlyProp } from "../tools/overwriteReadonlyProp";
 import /*type*/ { NonPostable } from "./types/helper/NonPostable";
 import { importProxy } from "./importProxy";
-import { from, copy } from "./util/observableFrom";
+import * as staticFrom from "./util/observableFrom";
 import "../tools/polyfill/Object.is";
 import * as inDepth from "../tools/inDepth";
 
@@ -33,7 +33,7 @@ export namespace IObservable {
 export class Observable<T> implements IObservable<T> {
 
     /*** https://docs.evt.land/api/observable#observable-from */
-    public static readonly from = from;
+    public static readonly from = staticFrom.from;
 
     private readonly evtChangeDiff_post: (data: IObservable.Diff<T>) => void;
 
@@ -120,17 +120,18 @@ export class Observable<T> implements IObservable<T> {
 
 importProxy.Observable = Observable;
 
-export class ObservableCopy<T> extends Observable<T> {
+export class ObservableInDepth<T> extends Observable<T> {
 
     /*** https://docs.evt.land/api/observable#observable-from */
-    public static readonly from = copy.from;
+    public static readonly from = staticFrom.inDepth.from;
 
-    constructor(val: T) {
-        super(val, inDepth.same, inDepth.copy);
+    constructor(
+        val: T,
+        same?: (val1: T, val2: T) => boolean
+    ) {
+        super(val, same ?? inDepth.same, inDepth.copy);
     }
 
 }
 
-importProxy.ObservableCopy = ObservableCopy;
-
-
+importProxy.ObservableInDepth = ObservableInDepth;
