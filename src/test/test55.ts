@@ -17,7 +17,7 @@ import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi"
 
         const evtUnion = Evt.merge(ctx, [evtText, evtAge]);
 
-        assert( ctx.getEvtAttach().postCount ===2  );
+        assert( ctx.evtAttach.postCount ===2  );
 
         const text = "ok";
 
@@ -66,7 +66,7 @@ import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi"
             .forEach(({ handler }) => handler.detach())
             ;
 
-        assert( ctx.getEvtDetach().postCount ===2  );
+        assert( ctx.evtDetach.postCount ===2  );
 
         assert(evtAge.getHandlers().length === 0);
 

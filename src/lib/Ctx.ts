@@ -19,32 +19,31 @@ export interface CtxLike<Result = any> {
 /** https://docs.evt.land/api/ctx */
 export class Ctx<Result> implements CtxLike<Result>{
 
-    /** 
-     * https://docs.evt.land/api/ctx#ctx-getevtdone
-     * 
-     * Posted every time ctx.done() is invoked, post the detached handler ( return value of evt.done()) 
-     */
-    public readonly getEvtDone: () => Evt<Ctx.DoneEvtData<Result>>;
+    private readonly getEvtDoneOrAborted: () => Evt<Ctx.DoneOrAborted<Result>>;
 
     /** 
-     * 
-     * https://docs.evt.land/api/ctx#ctx-getprdone-timeout 
+     * https://docs.evt.land/api/ctx#ctx-evtdoneoraborted
+     */
+    public get evtDoneOrAborted() { return this.getEvtDoneOrAborted(); };
+
+    /** 
+     * https://docs.evt.land/api/ctx#ctx-waitfor-timeout 
      * 
      * Return a promise that resolve next time ctx.done(result) is invoked
      * Reject if ctx.abort(error) is invoked.
      * Optionally a timeout can be passed, if so the returned promise will reject 
-     * with EvtError.Timeout if done(result) is not called * within [timeout]ms.
+     * with EvtError.Timeout if done(result) is not called within [timeout]ms.
      * If the timeout is reached ctx.abort(timeoutError) will be invoked.
      */
-    public getPrDone(timeout?: number): Promise<Result> {
-        return this.getEvtDone()
+    public waitFor(timeout?: number): Promise<Result> {
+        return this.getEvtDoneOrAborted()
             .waitFor(timeout)
             .then(
-                ([error, result]) => {
-                    if (!!error) {
-                        throw error;
+                data => {
+                    if (data.type === "ABORTED") {
+                        throw data.error;
                     }
-                    return result;
+                    return data.result;
                 },
                 timeoutError => {
                     this.abort(timeoutError);
@@ -54,21 +53,27 @@ export class Ctx<Result> implements CtxLike<Result>{
             ;
     }
 
+    private readonly getEvtAttach: () => Evt<Handler.WithEvt<any, Result>>;
+
+
     /** 
-     * https://docs.evt.land/api/ctx#ctx-getevtattach
+     * https://docs.evt.land/api/ctx#ctx-evtattach
      * 
      * Posted every time a handler is bound to this context 
      * */
-    public readonly getEvtAttach: () => Evt<Handler.WithEvt<any, Result>>;
+    public get evtAttach() { return this.getEvtAttach(); }
+
+    private readonly getEvtDetach: () => Evt<Handler.WithEvt<any, Result>>;
 
     /** 
-     * https://docs.evt.land/api/ctx#ctx-getevtdetach
+     * https://docs.evt.land/api/ctx#ctx-evtdetach
      * 
      * Posted every time a handler bound to this context is detached from it's Evt 
      * */
-    public readonly getEvtDetach: () => Evt<Handler.WithEvt<any, Result>>;
+    public get evtDetach() { return this.getEvtDetach(); }
 
-    private readonly onDone: (doneEvtData: Ctx.DoneEvtData<Result>) => void;
+
+    private readonly onDone: (doneEvtData: Ctx.DoneOrAborted<Result>) => void;
     private readonly onHandler: (isAttach: boolean, handler: Handler.WithEvt<any, Result>) => void;
 
     constructor() {
@@ -91,11 +96,11 @@ export class Ctx<Result> implements CtxLike<Result>{
 
         {
 
-            const lazyEvtDoneFactory = new LazyEvtFactory<Ctx.DoneEvtData<Result>>();
+            const lazyEvtDoneFactory = new LazyEvtFactory<Ctx.DoneOrAborted<Result>>();
 
             this.onDone = doneEvtData => lazyEvtDoneFactory.post(doneEvtData);
 
-            this.getEvtDone = () => lazyEvtDoneFactory.getEvt();
+            this.getEvtDoneOrAborted = () => lazyEvtDoneFactory.getEvt();
 
         }
 
@@ -142,11 +147,14 @@ export class Ctx<Result> implements CtxLike<Result>{
             handlers.push({ handler, evt });
         }
 
-        this.onDone([
-            error ?? null,
-            result as NonNullable<typeof result>,
+        this.onDone({
+            ...(!!error ?
+                { type: "ABORTED", error } :
+                { type: "DONE", "result": result as NonNullable<typeof result> }
+            ),
             handlers
-        ]);
+        });
+
 
         return handlers;
 
@@ -200,7 +208,30 @@ export class Ctx<Result> implements CtxLike<Result>{
 }
 
 export namespace Ctx {
-    export type DoneEvtData<Result> = [Error | null, Result, Handler.WithEvt<any, Result>[]];
+    export type DoneOrAborted<Result> = DoneOrAborted.Done<Result> | DoneOrAborted.Aborted<Result>;
+
+    export namespace DoneOrAborted {
+
+        type Common<Result> = {
+            handlers: Handler.WithEvt<any, Result>[];
+        }
+
+        export type Done<Result> = Common<Result> & {
+            type: "DONE";
+            result: Result;
+            error?: undefined;
+        };
+
+        export type Aborted<Result> = Common<Result> & {
+            type: "ABORTED";
+            error: Error;
+            result?: undefined;
+        };
+
+
+
+
+    }
 }
 
 importProxy.Ctx = Ctx;

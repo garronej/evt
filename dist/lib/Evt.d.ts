@@ -33,10 +33,12 @@ export declare class Evt<T> implements EvtLike<any> {
     static readonly from: typeof from;
     /** https://docs.evt.land/api/evt/use-effect */
     static readonly useEffect: typeof useEffect;
-    /** https://docs.evt.land/api/evt/getevtattachdetach */
-    readonly getEvtAttach: () => Evt<Handler<T, any>>;
-    /** https://docs.evt.land/api/evt/getevtattachdetach */
-    readonly getEvtDetach: () => Evt<Handler<T, any>>;
+    private readonly getEvtAttach;
+    /** https://docs.evt.land/api/evt/evtattachdetach */
+    get evtAttach(): Evt<Handler<T, any, import("./Ctx").CtxLike<any> | undefined>>;
+    private readonly getEvtDetach;
+    /** https://docs.evt.land/api/evt/evtattachdetach */
+    get evtDetach(): Evt<Handler<T, any, import("./Ctx").CtxLike<any> | undefined>>;
     private readonly onHandler;
     constructor();
     /** https://docs.evt.land/api/evt/post */

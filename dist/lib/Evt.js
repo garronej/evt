@@ -236,6 +236,18 @@ var Evt = /** @class */ (function () {
         this.getEvtDetach = function () { return lazyEvtDetachFactory.getEvt(); };
     }
     Evt.newCtx = function () { return new importProxy_1.importProxy.Ctx(); };
+    Object.defineProperty(Evt.prototype, "evtAttach", {
+        /** https://docs.evt.land/api/evt/evtattachdetach */
+        get: function () { return this.getEvtAttach(); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Evt.prototype, "evtDetach", {
+        /** https://docs.evt.land/api/evt/evtattachdetach */
+        get: function () { return this.getEvtDetach(); },
+        enumerable: true,
+        configurable: true
+    });
     /** https://docs.evt.land/api/evt/post */
     Evt.prototype.postAsyncOnceHandled = function (data) {
         var _this_1 = this;

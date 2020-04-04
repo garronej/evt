@@ -13,12 +13,12 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi({"takeIntoAccoun
     const evtText = new Evt<string>();
 
     mustResolve({
-        "promise": ctx.getEvtDone().attach(() => { }).then(([,res,handlers]) => [res, handlers.length]),
+        "promise": ctx.evtDoneOrAborted.attach(() => { }).then(data => [data.result, data.handlers.length]),
         "expectedData": [43, 1]
     });
 
     mustResolve({
-        "promise": ctx.getPrDone(),
+        "promise": ctx.waitFor(),
         "expectedData": 43,
     });
 
@@ -27,7 +27,7 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi({"takeIntoAccoun
     let last: string | {} = nothing;
 
     const prTest = mustResolve({
-        "promise": ctx.getEvtAttach().waitFor(
+        "promise": ctx.evtAttach.waitFor(
             ({ handler, evt }) => (
                 evt === evtText &&
                 handler.ctx === ctx &&
@@ -41,7 +41,7 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi({"takeIntoAccoun
     });
 
     mustStayPending(
-        ctx.getEvtAttach().waitFor(
+        ctx.evtAttach.waitFor(
             ({ handler, evt }) => !(
                 evt === evtText &&
                 handler.ctx === ctx &&
@@ -93,7 +93,7 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi({"takeIntoAccoun
     const evtText = new Evt<string>();
 
     mustResolve({
-        "promise": ctx.getEvtDone().attach(() => { }).then(([,,handlers])=> handlers.length),
+        "promise": ctx.evtDoneOrAborted.attach(() => { }).then(({handlers})=> handlers.length),
         "expectedData": 1
     });
 

@@ -10,7 +10,7 @@ function fromImpl(ctx, target, eventName, options) {
     if ("then" in target) {
         var evt_1 = new importProxy_1.importProxy.Evt();
         var isCtxDone_1 = (function () {
-            var getEvtDonePostCount = function () { return ctx === null || ctx === void 0 ? void 0 : ctx.getEvtDone().postCount; };
+            var getEvtDonePostCount = function () { return ctx === null || ctx === void 0 ? void 0 : ctx.evtDoneOrAborted.postCount; };
             var n = getEvtDonePostCount();
             return function () { return n !== getEvtDonePostCount(); };
         })();
@@ -57,12 +57,12 @@ function fromImpl(ctx, target, eventName, options) {
     }
     var evt = new importProxy_1.importProxy.Evt();
     var listener = function (data) { return evt.post(data); };
-    ctx === null || ctx === void 0 ? void 0 : ctx.getEvtDone().attachOnce(function () { return proxy.off(listener, eventName, options); });
+    ctx === null || ctx === void 0 ? void 0 : ctx.evtDoneOrAborted.attachOnce(function () { return proxy.off(listener, eventName, options); });
     proxy.on(listener, eventName, options);
     return evt;
 }
 function from(ctxOrTarget, targetOrEventName, eventNameOrOptions, options) {
-    if ("getEvtDone" in ctxOrTarget) {
+    if ("evtDoneOrAborted" in ctxOrTarget) {
         assert_1.assert(typeGuard_1.typeGuard(targetOrEventName) &&
             typeGuard_1.typeGuard(eventNameOrOptions) &&
             typeGuard_1.typeGuard(options));

@@ -24,8 +24,8 @@ const handlers_ = [
 ];
 
 mustResolve({
-    "promise": ctx.getEvtDone().attachOnce(
-        ([,,handlers]) => assert(same(
+    "promise": ctx.evtDoneOrAborted.attachOnce(
+        ({handlers}) => assert(same(
             handlers,
             handlers_
         ))
@@ -33,13 +33,13 @@ mustResolve({
 });
 
 mustResolve({
-    "promise": evtAge.getEvtDetach().attachOnce(handler => assert(handler.ctx === ctx)),
+    "promise": evtAge.evtDetach.attachOnce(handler => assert(handler.ctx === ctx)),
     "delay": 0
 });
 
 const prTest= Promise.all([
     mustResolve({
-        "promise": ctx.getEvtDetach().waitFor(
+        "promise": ctx.evtDetach.waitFor(
             ({ handler, evt }) => (
                 evt === evtText &&
                 handler.ctx === ctx &&
@@ -49,7 +49,7 @@ const prTest= Promise.all([
         )
     }),
     mustResolve({
-        "promise": ctx.getEvtDetach().waitFor(
+        "promise": ctx.evtDetach.waitFor(
             ({ handler, evt }) => (
                 evt === evtAge &&
                 handler.ctx === ctx &&

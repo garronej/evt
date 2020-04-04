@@ -12,21 +12,16 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __read = (this && this.__read) || function (o, n) {
-    var m = typeof Symbol === "function" && o[Symbol.iterator];
-    if (!m) return o;
-    var i = m.call(o), r, ar = [], e;
-    try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-    }
-    catch (error) { e = { error: error }; }
-    finally {
-        try {
-            if (r && !r.done && (m = i["return"])) m.call(i);
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
         }
-        finally { if (e) throw e.error; }
-    }
-    return ar;
+        return t;
+    };
+    return __assign.apply(this, arguments);
 };
 var __values = (this && this.__values) || function(o) {
     var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
@@ -65,34 +60,61 @@ var Ctx = /** @class */ (function () {
         {
             var lazyEvtDoneFactory_1 = new LazyEvtFactory_1.LazyEvtFactory();
             this.onDone = function (doneEvtData) { return lazyEvtDoneFactory_1.post(doneEvtData); };
-            this.getEvtDone = function () { return lazyEvtDoneFactory_1.getEvt(); };
+            this.getEvtDoneOrAborted = function () { return lazyEvtDoneFactory_1.getEvt(); };
         }
     }
+    Object.defineProperty(Ctx.prototype, "evtDoneOrAborted", {
+        /**
+         * https://docs.evt.land/api/ctx#ctx-evtdoneoraborted
+         */
+        get: function () { return this.getEvtDoneOrAborted(); },
+        enumerable: true,
+        configurable: true
+    });
+    ;
     /**
-     *
-     * https://docs.evt.land/api/ctx#ctx-getprdone-timeout
+     * https://docs.evt.land/api/ctx#ctx-waitfor-timeout
      *
      * Return a promise that resolve next time ctx.done(result) is invoked
      * Reject if ctx.abort(error) is invoked.
      * Optionally a timeout can be passed, if so the returned promise will reject
-     * with EvtError.Timeout if done(result) is not called * within [timeout]ms.
+     * with EvtError.Timeout if done(result) is not called within [timeout]ms.
      * If the timeout is reached ctx.abort(timeoutError) will be invoked.
      */
-    Ctx.prototype.getPrDone = function (timeout) {
+    Ctx.prototype.waitFor = function (timeout) {
         var _this_1 = this;
-        return this.getEvtDone()
+        return this.getEvtDoneOrAborted()
             .waitFor(timeout)
-            .then(function (_a) {
-            var _b = __read(_a, 2), error = _b[0], result = _b[1];
-            if (!!error) {
-                throw error;
+            .then(function (data) {
+            if (data.type === "ABORTED") {
+                throw data.error;
             }
-            return result;
+            return data.result;
         }, function (timeoutError) {
             _this_1.abort(timeoutError);
             throw timeoutError;
         });
     };
+    Object.defineProperty(Ctx.prototype, "evtAttach", {
+        /**
+         * https://docs.evt.land/api/ctx#ctx-evtattach
+         *
+         * Posted every time a handler is bound to this context
+         * */
+        get: function () { return this.getEvtAttach(); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Ctx.prototype, "evtDetach", {
+        /**
+         * https://docs.evt.land/api/ctx#ctx-evtdetach
+         *
+         * Posted every time a handler bound to this context is detached from it's Evt
+         * */
+        get: function () { return this.getEvtDetach(); },
+        enumerable: true,
+        configurable: true
+    });
     /**
      * https://docs.evt.land/api/ctx#ctx-abort-error
      *
@@ -136,11 +158,9 @@ var Ctx = /** @class */ (function () {
             }
             finally { if (e_1) throw e_1.error; }
         }
-        this.onDone([
-            error !== null && error !== void 0 ? error : null,
-            result,
-            handlers
-        ]);
+        this.onDone(__assign(__assign({}, (!!error ?
+            { type: "ABORTED", error: error } :
+            { type: "DONE", "result": result })), { handlers: handlers }));
         return handlers;
     };
     /** https://docs.evt.land/api/ctx#ctx-gethandlers */

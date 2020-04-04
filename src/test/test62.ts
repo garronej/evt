@@ -56,7 +56,7 @@ function downloadFile(
         .attach(rawFile => ctxDl.done(rawFile))
         ;
 
-    return ctxDl.getPrDone(timeout);
+    return ctxDl.waitFor(timeout);
 
 }
 

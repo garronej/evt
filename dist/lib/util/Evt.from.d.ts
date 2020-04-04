@@ -4,7 +4,7 @@ declare type Evt<T> = import("../Evt").Evt<T>;
 declare type EvtLike<T> = import("../Evt").EvtLike<T>;
 declare type OneOrMany<T> = T | ArrayLike<T>;
 declare type CtxLike<Result> = import("../Ctx").CtxLike<Result> & {
-    getEvtDone(): EvtLike<unknown> & {
+    evtDoneOrAborted: EvtLike<unknown> & {
         postCount: number;
         attachOnce(callback: () => void): void;
     };

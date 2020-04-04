@@ -67,8 +67,8 @@ console.log(ee.listenerCount("text")); //Print "1"
 assert(console.stdOut === "1");
 console.stdOut = "";
 
-ctx.getEvtDone().attachOnce(
-    ([,,handlers])=> {
+ctx.evtDoneOrAborted.attachOnce(
+    ({handlers})=> {
     
         console.log(
             handlers.filter(({ evt })=> evt === evtText).length +

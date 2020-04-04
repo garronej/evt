@@ -10,7 +10,7 @@ type EvtLike<T> = import("../Evt").EvtLike<T>;
 
 type OneOrMany<T> = T | ArrayLike<T>;
 type CtxLike<Result> = import("../Ctx").CtxLike<Result> & {
-      getEvtDone(): EvtLike<unknown> & { postCount: number; attachOnce(callback: ()=> void): void; };
+      evtDoneOrAborted: EvtLike<unknown> & { postCount: number; attachOnce(callback: ()=> void): void; };
 };
 
 function fromImpl<T>(
@@ -26,7 +26,7 @@ function fromImpl<T>(
 
         const isCtxDone = (()=>{
 
-            const getEvtDonePostCount = () => ctx?.getEvtDone().postCount;
+            const getEvtDonePostCount = () => ctx?.evtDoneOrAborted.postCount;
 
             const n = getEvtDonePostCount();
 
@@ -103,7 +103,7 @@ function fromImpl<T>(
 
     const listener = (data: T) => evt.post(data);
 
-    ctx?.getEvtDone().attachOnce(
+    ctx?.evtDoneOrAborted.attachOnce(
         () => proxy.off(
             listener,
             eventName!,
@@ -209,7 +209,7 @@ export function from<T>(
     options?: EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<T> {
 
-    if ("getEvtDone" in ctxOrTarget) {
+    if ("evtDoneOrAborted" in ctxOrTarget) {
 
         assert(
             typeGuard<OneOrMany<EventTargetLike<T>> | PromiseLike<T>>(targetOrEventName) &&

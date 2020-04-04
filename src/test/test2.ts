@@ -20,8 +20,8 @@ let evtProxy = new Evt<T>();
             map.set(data, Evt.newCtx());
         }
 
-        if (!evtProxy.getEvtAttach().postCount) {
-            evtProxy.getEvtAttach().attachOnce(map.get(data)!, () => evtProxy.post(data));
+        if (!evtProxy.evtAttach.postCount) {
+            evtProxy.evtAttach.attachOnce(map.get(data)!, () => evtProxy.post(data));
         } else {
             evtProxy.post(data);
         }

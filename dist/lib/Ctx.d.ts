@@ -1,6 +1,5 @@
 import { Handler } from "./types/Handler";
 declare type EvtLike<T> = import("./Evt").EvtLike<T>;
-declare type Evt<T> = import("./Evt").Evt<T>;
 export interface CtxLike<Result = any> {
     done(result: Result): void;
     abort(error: Error): void;
@@ -9,35 +8,35 @@ export interface CtxLike<Result = any> {
 }
 /** https://docs.evt.land/api/ctx */
 export declare class Ctx<Result> implements CtxLike<Result> {
+    private readonly getEvtDoneOrAborted;
     /**
-     * https://docs.evt.land/api/ctx#ctx-getevtdone
-     *
-     * Posted every time ctx.done() is invoked, post the detached handler ( return value of evt.done())
+     * https://docs.evt.land/api/ctx#ctx-evtdoneoraborted
      */
-    readonly getEvtDone: () => Evt<Ctx.DoneEvtData<Result>>;
+    get evtDoneOrAborted(): import("./Evt").Evt<Ctx.DoneOrAborted<Result>>;
     /**
-     *
-     * https://docs.evt.land/api/ctx#ctx-getprdone-timeout
+     * https://docs.evt.land/api/ctx#ctx-waitfor-timeout
      *
      * Return a promise that resolve next time ctx.done(result) is invoked
      * Reject if ctx.abort(error) is invoked.
      * Optionally a timeout can be passed, if so the returned promise will reject
-     * with EvtError.Timeout if done(result) is not called * within [timeout]ms.
+     * with EvtError.Timeout if done(result) is not called within [timeout]ms.
      * If the timeout is reached ctx.abort(timeoutError) will be invoked.
      */
-    getPrDone(timeout?: number): Promise<Result>;
+    waitFor(timeout?: number): Promise<Result>;
+    private readonly getEvtAttach;
     /**
-     * https://docs.evt.land/api/ctx#ctx-getevtattach
+     * https://docs.evt.land/api/ctx#ctx-evtattach
      *
      * Posted every time a handler is bound to this context
      * */
-    readonly getEvtAttach: () => Evt<Handler.WithEvt<any, Result>>;
+    get evtAttach(): import("./Evt").Evt<Handler.WithEvt<any, Result>>;
+    private readonly getEvtDetach;
     /**
-     * https://docs.evt.land/api/ctx#ctx-getevtdetach
+     * https://docs.evt.land/api/ctx#ctx-evtdetach
      *
      * Posted every time a handler bound to this context is detached from it's Evt
      * */
-    readonly getEvtDetach: () => Evt<Handler.WithEvt<any, Result>>;
+    get evtDetach(): import("./Evt").Evt<Handler.WithEvt<any, Result>>;
     private readonly onDone;
     private readonly onHandler;
     constructor();
@@ -75,7 +74,23 @@ export declare class Ctx<Result> implements CtxLike<Result> {
     zz__removeHandler<T>(handler: Handler<T, any, CtxLike<Result>>): void;
 }
 export declare namespace Ctx {
-    type DoneEvtData<Result> = [Error | null, Result, Handler.WithEvt<any, Result>[]];
+    type DoneOrAborted<Result> = DoneOrAborted.Done<Result> | DoneOrAborted.Aborted<Result>;
+    namespace DoneOrAborted {
+        type Common<Result> = {
+            handlers: Handler.WithEvt<any, Result>[];
+        };
+        export type Done<Result> = Common<Result> & {
+            type: "DONE";
+            result: Result;
+            error?: undefined;
+        };
+        export type Aborted<Result> = Common<Result> & {
+            type: "ABORTED";
+            error: Error;
+            result?: undefined;
+        };
+        export {};
+    }
 }
 export interface VoidCtxLike extends CtxLike<void> {
     done(): void;

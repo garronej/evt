@@ -5,7 +5,7 @@ const evtText = new Evt<string>();
 
 const text = "ok";
 
-evtText.getEvtAttach().attach(
+evtText.evtAttach.attach(
     ({ op }) => !!evtText.getStatelessOp(op)(text),
     () => evtText.post(text)
 );

@@ -9,7 +9,7 @@ const evtText = new Evt<string>();
 evtText.attachOnce(Evt.getCtx(evtText), () => { });
 
 mustResolve({
-    "promise": evtText.getEvtDetach()
+    "promise": evtText.evtDetach
         .attachOnce(handler => assert(Evt.getCtx(evtText) === handler.ctx))
 });
 
@@ -18,7 +18,7 @@ evtText.post("ok");
 const pr = mustReject({ "promise": evtText.waitFor(0), "delay": 150 });
 
 mustResolve({
-    "promise": evtText.getEvtDetach()
+    "promise": evtText.evtDetach
         .attach(handler => assert(handler.timeout === 0)),
     "delay": 150
 });

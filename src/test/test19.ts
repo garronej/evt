@@ -4,7 +4,7 @@ let evt = new Evt<{ init: boolean}>();
 
 const ctx= Evt.newCtx();
 
-evt.getEvtAttach().attachOnce(handler=> console.assert( !handler.once && handler.ctx === ctx));
+evt.evtAttach.attachOnce(handler=> console.assert( !handler.once && handler.ctx === ctx));
 
 
 evt.attach(ctx,({ init })=> {
@@ -15,7 +15,7 @@ evt.attach(ctx,({ init })=> {
 
 })
 
-evt.getEvtAttach().attachOnce(handler=> console.assert( handler.once && handler.prepend && !!handler.callback ));
+evt.evtAttach.attachOnce(handler=> console.assert( handler.once && handler.prepend && !!handler.callback ));
 
 evt.attachOncePrepend( wrap => wrap.init = true );
 

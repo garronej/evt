@@ -9,10 +9,10 @@ let evt = new Evt<null>();
 
 let handler_: Handler<any, any>;
 
-evt.getEvtAttach().attachOnce(handler => handler_ = handler);
+evt.evtAttach.attachOnce(handler => handler_ = handler);
 
 mustResolve({
-    "promise": evt.getEvtDetach().attachOnce(handler =>
+    "promise": evt.evtDetach.attachOnce(handler =>
         assert(handler === handler_)
     ),
     "delay": 0

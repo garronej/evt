@@ -55,11 +55,15 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
     /** https://docs.evt.land/api/evt/use-effect */
     public static readonly useEffect = useEffect;
 
-    /** https://docs.evt.land/api/evt/getevtattachdetach */
-    public readonly getEvtAttach: () => Evt<Handler<T, any>>;
+    private readonly getEvtAttach: () => Evt<Handler<T, any>>;
 
-    /** https://docs.evt.land/api/evt/getevtattachdetach */
-    public readonly getEvtDetach: () => Evt<Handler<T, any>>;
+    /** https://docs.evt.land/api/evt/evtattachdetach */
+    public get evtAttach(){ return this.getEvtAttach(); }
+
+    private readonly getEvtDetach: () => Evt<Handler<T, any>>;
+
+    /** https://docs.evt.land/api/evt/evtattachdetach */
+    public get evtDetach() { return this.getEvtDetach(); }
 
 
     private readonly onHandler: (isAttach: boolean, handler: Handler<T, any>) => void;
