@@ -19,7 +19,7 @@ var __spread = (this && this.__spread) || function () {
     for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
     return ar;
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 function getPrototypeChain(obj, callback) {
     var proto = Object.getPrototypeOf(obj);
     if (!proto) {

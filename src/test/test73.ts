@@ -1,21 +1,21 @@
 
-import { Observable, VoidCtx, Evt } from "../lib";
+import { Tracked, VoidCtx, Evt } from "../lib";
 import { assert } from "../tools/typeSafety/assert";
 
 {
 
-    const obsText = new Observable("foo");
+    const trkText = new Tracked("foo");
 
-    const obsCharCount = Observable.from(
-        obsText,
+    const obsCharCount = Tracked.from(
+        trkText,
         text => text.length
     );
 
-    assert(obsCharCount.val === obsText.val.length);
+    assert(obsCharCount.val === trkText.val.length);
 
-    obsText.update("foo bar");
+    trkText.val ="foo bar";
 
-    assert(obsCharCount.val === obsText.val.length);
+    assert(obsCharCount.val === trkText.val.length);
 
 }
 
@@ -23,32 +23,27 @@ import { assert } from "../tools/typeSafety/assert";
 
     const ctx = new VoidCtx();
 
-    const obsText = new Observable("foo");
+    const trkText = new Tracked("foo");
 
-    let count= 0;
-
-    const obsCharCount = Observable.from(
+    const obsCharCount = Tracked.from(
         ctx,
-        obsText,
-        text => text.length,
-        (a,b)=> { count++; return a===b; }
+        trkText,
+        text => text.length
     );
 
-    assert(obsCharCount.val === obsText.val.length);
 
-    obsText.update("foo bar");
 
-    assert(count===1 as number);
+    assert(obsCharCount.val === trkText.val.length);
 
-    assert(obsCharCount.val === obsText.val.length);
+    trkText.val = "foo bar";
+
+    assert(obsCharCount.val === trkText.val.length);
 
     const { val } = obsCharCount;
 
     ctx.done();
 
-    obsText.update("foo bar baz");
-
-    assert(count===1);
+    trkText.val= "foo bar baz";
 
     assert(val === obsCharCount.val);
 
@@ -58,16 +53,16 @@ import { assert } from "../tools/typeSafety/assert";
 
     const evtText = new Evt<string>();
 
-    const obsText = Observable.from(evtText, "foo bar");
+    const trkText = Tracked.from(evtText, "foo bar");
 
-    assert(obsText.val === "foo bar" as string);
+    assert(trkText.val === "foo bar" as string);
 
     evtText.post("baz");
 
-    assert(obsText.evt.postCount === 1);
-    assert(obsText.evtDiff.postCount === 1);
+    assert(trkText.evt.postCount === 1);
+    assert(trkText.evtDiff.postCount === 1);
 
-    assert(obsText.val === "baz");
+    assert(trkText.val === "baz");
 
 }
 
@@ -77,19 +72,19 @@ import { assert } from "../tools/typeSafety/assert";
 
     const evtText = new Evt<string>();
 
-    const obsText = Observable.from(evtText.pipe(ctx), "foo bar");
+    const trkText = Tracked.from(evtText.pipe(ctx), "foo bar");
 
-    assert(obsText.val === "foo bar" as string);
+    assert(trkText.val === "foo bar" as string);
 
     evtText.post("baz");
 
-    assert(obsText.val === "baz" as string);
+    assert(trkText.val === "baz" as string);
 
     ctx.done();
 
     evtText.post("Hello");
 
-    assert(obsText.val !== "Hello");
+    assert(trkText.val !== "Hello");
 
 }
 

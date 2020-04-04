@@ -90,7 +90,7 @@ var __values = (this && this.__values) || function(o) {
     };
     throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 require("minimal-polyfills/dist/lib/Array.prototype.find");
 var Map_1 = require("minimal-polyfills/dist/lib/Map");
 var WeakMap_1 = require("minimal-polyfills/dist/lib/WeakMap");
@@ -175,7 +175,8 @@ var Evt = /** @class */ (function () {
                     return "continue";
                 }
                 promises.push(new Promise(function (resolve) { return handler.promise
-                    .then(function () { return resolve(); })["catch"](function () { return resolve(); }); }));
+                    .then(function () { return resolve(); })
+                    .catch(function () { return resolve(); }); }));
                 handlerTrigger(opResult);
             };
             try {
@@ -187,7 +188,7 @@ var Evt = /** @class */ (function () {
             catch (e_1_1) { e_1 = { error: e_1_1 }; }
             finally {
                 try {
-                    if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
+                    if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
                 finally { if (e_1) throw e_1.error; }
             }
@@ -216,7 +217,7 @@ var Evt = /** @class */ (function () {
                 catch (e_2_1) { e_2 = { error: e_2_1 }; }
                 finally {
                     try {
-                        if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
+                        if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                     }
                     finally { if (e_2) throw e_2.error; }
                 }
@@ -297,7 +298,7 @@ var Evt = /** @class */ (function () {
             handler.ctx.zz__removeHandler(handler);
         }
         this.handlers.splice(index, 1);
-        this.handlerTriggers["delete"](handler);
+        this.handlerTriggers.delete(handler);
         if (wTimer[0] !== undefined) {
             clearTimeout(wTimer[0]);
             rejectPr(new EvtError_1.EvtError.Detached());
@@ -493,7 +494,7 @@ var Evt = /** @class */ (function () {
         catch (e_3_1) { e_3 = { error: e_3_1 }; }
         finally {
             try {
-                if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
+                if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
             }
             finally { if (e_3) throw e_3.error; }
         }
@@ -600,7 +601,7 @@ var Evt = /** @class */ (function () {
         catch (e_4_1) { e_4 = { error: e_4_1 }; }
         finally {
             try {
-                if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
+                if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
             }
             finally { if (e_4) throw e_4.error; }
         }

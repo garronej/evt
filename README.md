@@ -25,7 +25,7 @@ It enable and encourage **functional programming** and makes heavy use of **type
 **Browserify friendly:**
 
 * No polyfills needed ✅  
-* Transpiled down to ES3 ✅  
+* Transpiled down to ES5 ✅  
 * Light-weight, no dependencies ✅   
 
 # TL;DR*

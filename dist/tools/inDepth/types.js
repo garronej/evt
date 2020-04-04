@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var typeGuard_1 = require("../typeSafety/typeGuard");
 var getPrototypeChain_1 = require("./getPrototypeChain");
 var SetLike;

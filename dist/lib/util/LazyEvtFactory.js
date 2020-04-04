@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var overwriteReadonlyProp_1 = require("../../tools/overwriteReadonlyProp");
 var importProxy_1 = require("../importProxy");
 var LazyEvtFactory = /** @class */ (function () {

@@ -30,7 +30,7 @@ var __spread = (this && this.__spread) || function () {
     for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
     return ar;
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var Set_1 = require("minimal-polyfills/dist/lib/Set");
 var types_1 = require("./types");
 var allEquals_1 = require("../reducers/allEquals");
@@ -112,7 +112,7 @@ exports.same = (function () {
             catch (e_1_1) { e_1 = { error: e_1_1 }; }
             finally {
                 try {
-                    if (_e && !_e.done && (_b = _d["return"])) _b.call(_d);
+                    if (_e && !_e.done && (_b = _d.return)) _b.call(_d);
                 }
                 finally { if (e_1) throw e_1.error; }
             }
@@ -142,7 +142,7 @@ exports.same = (function () {
                     }
                     var val1 = o1[i];
                     if (o2Set.has(val1)) {
-                        o2Set["delete"](val1);
+                        o2Set.delete(val1);
                         continue;
                     }
                     var isFound = false;
@@ -153,14 +153,14 @@ exports.same = (function () {
                                 continue;
                             }
                             isFound = true;
-                            o2Set["delete"](val2);
+                            o2Set.delete(val2);
                             break;
                         }
                     }
                     catch (e_2_1) { e_2 = { error: e_2_1 }; }
                     finally {
                         try {
-                            if (_g && !_g.done && (_c = _f["return"])) _c.call(_f);
+                            if (_g && !_g.done && (_c = _f.return)) _c.call(_f);
                         }
                         finally { if (e_2) throw e_2.error; }
                     }

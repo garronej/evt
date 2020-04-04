@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var WeakMap_1 = require("minimal-polyfills/dist/lib/WeakMap");
 var importProxy_1 = require("../importProxy");
 function getCtxFactory() {

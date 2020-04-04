@@ -39,7 +39,7 @@ var __values = (this && this.__values) || function(o) {
     };
     throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var Set_1 = require("minimal-polyfills/dist/lib/Set");
 var WeakMap_1 = require("minimal-polyfills/dist/lib/WeakMap");
 var assert_1 = require("../tools/typeSafety/assert");
@@ -132,7 +132,7 @@ var Ctx = /** @class */ (function () {
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
+                if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
             }
             finally { if (e_1) throw e_1.error; }
         }
@@ -168,7 +168,7 @@ var Ctx = /** @class */ (function () {
         assert_1.assert(handler.ctx === this);
         assert_1.assert(typeGuard_1.typeGuard(handler));
         this.onHandler(false, { handler: handler, "evt": this.evtByHandler.get(handler) });
-        this.handlers["delete"](handler);
+        this.handlers.delete(handler);
     };
     return Ctx;
 }());

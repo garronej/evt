@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var typeSafety_1 = require("../../tools/typeSafety");
 var EventTargetLike;
 (function (EventTargetLike) {

@@ -1,21 +1,21 @@
 
-import { Observable } from "../lib";
+import { Tracked } from "../lib";
 import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi";
 
 const { mustResolve } = getPromiseAssertionApi();
 
 (async () => {
 
-    const obsText = new Observable("");
+    const trkText = new Tracked("");
 
     {
 
         const pr = mustResolve({
-            "promise": obsText.evt.waitFor(text => text === ""),
+            "promise": trkText.evt.waitFor(text => text === ""),
             "expectedData": ""
         });
 
-        obsText.forceUpdate();
+        trkText.forceUpdate(trkText.val);
 
         await pr;
 
@@ -23,11 +23,11 @@ const { mustResolve } = getPromiseAssertionApi();
     {
 
         const pr = mustResolve({
-            "promise": obsText.evt.waitFor(text => text === ""),
+            "promise": trkText.evt.waitFor(text => text === ""),
             "expectedData": ""
         });
 
-        obsText.forceUpdate([""]);
+        trkText.forceUpdate(trkText.val);
 
         await pr;
 

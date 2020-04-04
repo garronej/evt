@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var id_1 = require("../../tools/typeSafety/id");
 var assert_1 = require("../../tools/typeSafety/assert");
 var typeGuard_1 = require("../../tools/typeSafety/typeGuard");

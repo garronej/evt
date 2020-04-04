@@ -19,7 +19,7 @@ var __spread = (this && this.__spread) || function () {
     for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
     return ar;
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var compose_1 = require("../compose");
 var concatUint8Array_1 = require("../../../tools/concatUint8Array");
 /** Output Uint8Array of fixed size*/

@@ -10,7 +10,7 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.overwriteReadonlyProp = function (obj, propertyName, value) {
     try {
         obj[propertyName] = value;

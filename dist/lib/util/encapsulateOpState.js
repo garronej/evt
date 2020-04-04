@@ -15,7 +15,7 @@ var __read = (this && this.__read) || function (o, n) {
     }
     return ar;
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var id_1 = require("../../tools/typeSafety/id");
 var Operator_1 = require("../types/Operator");
 function encapsulateOpState(statefulFλOp) {

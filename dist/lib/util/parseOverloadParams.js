@@ -30,7 +30,7 @@ var __spread = (this && this.__spread) || function () {
     for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
     return ar;
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var id_1 = require("../../tools/typeSafety/id");
 var compose_1 = require("./compose");
 var typeGuard_1 = require("../../tools/typeSafety/typeGuard");

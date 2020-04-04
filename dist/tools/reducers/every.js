@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var reduceify_1 = require("./reduceify");
 function arrEvery(arr, test) {
     if (test === void 0) { test = function (e) { return !!e; }; }

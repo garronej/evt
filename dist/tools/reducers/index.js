@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var allEquals_1 = require("./allEquals");
 exports.allEquals = allEquals_1.allEquals;
 exports.allEqualsFactory = allEquals_1.allEqualsFactory;
