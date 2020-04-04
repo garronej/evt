@@ -8,14 +8,14 @@ import { encapsulateOpState } from "./util/encapsulateOpState";
 import { typeGuard } from "../tools/typeSafety/typeGuard";
 import { Operator } from "./types/Operator";
 import { invokeOperator } from "./util/invokeOperator";
-import { merge } from "./util/merge";
-import { from } from "./util/from";
-import { parseOverloadParamsFactory, matchAll } from "./util/parseOverloadParams";
+import { merge } from "./util/Evt.merge";
+import { from } from "./util/Evt.from";
+import { parseOverloadParamsFactory, matchAll } from "./util/parseEvtOverloadParams";
 import { getCtxFactory } from "./util/getCtxFactory";
 import { LazyEvtFactory } from "./util/LazyEvtFactory";
 import { importProxy } from "./importProxy";
 import /*type*/ { Handler } from "./types/Handler";
-import { useEffect } from "./util/useEffect";
+import { useEffect } from "./util/Evt.useEffect";
 
 type Ctx<Result> = import("./Ctx").Ctx<Result>;
 type VoidCtx = import("./Ctx").VoidCtx;

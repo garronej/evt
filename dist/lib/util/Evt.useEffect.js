@@ -6,4 +6,4 @@ function useEffect(effect, evt, dataFirst) {
     effect(dataFirst === null || dataFirst === void 0 ? void 0 : dataFirst[0], { "isFirst": true }, i++);
 }
 exports.useEffect = useEffect;
-//# sourceMappingURL=useEffect.js.map
+//# sourceMappingURL=Evt.useEffect.js.map

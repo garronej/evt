@@ -4,7 +4,7 @@ var id_1 = require("../../tools/typeSafety/id");
 var assert_1 = require("../../tools/typeSafety/assert");
 var typeGuard_1 = require("../../tools/typeSafety/typeGuard");
 var EventTargetLike_1 = require("../types/EventTargetLike");
-var merge_1 = require("./merge");
+var Evt_merge_1 = require("./Evt.merge");
 var importProxy_1 = require("../importProxy");
 function fromImpl(ctx, target, eventName, options) {
     if ("then" in target) {
@@ -23,7 +23,7 @@ function fromImpl(ctx, target, eventName, options) {
         return evt_1;
     }
     if ("length" in target) {
-        return merge_1.mergeImpl(ctx, Array.from(target).map(function (target) { return fromImpl(ctx, target, eventName, options); }));
+        return Evt_merge_1.mergeImpl(ctx, Array.from(target).map(function (target) { return fromImpl(ctx, target, eventName, options); }));
     }
     var proxy;
     if (EventTargetLike_1.EventTargetLike.NodeStyleEventEmitter.match(target)) {
@@ -75,4 +75,4 @@ function from(ctxOrTarget, targetOrEventName, eventNameOrOptions, options) {
     }
 }
 exports.from = from;
-//# sourceMappingURL=from.js.map
+//# sourceMappingURL=Evt.from.js.map

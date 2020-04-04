@@ -2,7 +2,7 @@ import { id } from "../../tools/typeSafety/id";
 import { assert } from "../../tools/typeSafety/assert";
 import { typeGuard } from "../../tools/typeSafety/typeGuard";
 import { EventTargetLike } from "../types/EventTargetLike";
-import { mergeImpl } from "./merge";
+import { mergeImpl } from "./Evt.merge";
 import { importProxy } from "../importProxy";
 import /*type*/ * as dom from "../types/lib.dom";
 type Evt<T>= import("../Evt").Evt<T>;

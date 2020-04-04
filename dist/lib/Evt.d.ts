@@ -1,9 +1,9 @@
 import "minimal-polyfills/dist/lib/Array.prototype.find";
 import { Operator } from "./types/Operator";
-import { merge } from "./util/merge";
-import { from } from "./util/from";
+import { merge } from "./util/Evt.merge";
+import { from } from "./util/Evt.from";
 import { Handler } from "./types/Handler";
-import { useEffect } from "./util/useEffect";
+import { useEffect } from "./util/Evt.useEffect";
 declare type Ctx<Result> = import("./Ctx").Ctx<Result>;
 declare type VoidCtx = import("./Ctx").VoidCtx;
 declare type CtxLike<Result> = import("./Ctx").CtxLike<Result>;

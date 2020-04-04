@@ -101,13 +101,13 @@ var encapsulateOpState_1 = require("./util/encapsulateOpState");
 var typeGuard_1 = require("../tools/typeSafety/typeGuard");
 var Operator_1 = require("./types/Operator");
 var invokeOperator_1 = require("./util/invokeOperator");
-var merge_1 = require("./util/merge");
-var from_1 = require("./util/from");
-var parseOverloadParams_1 = require("./util/parseOverloadParams");
+var Evt_merge_1 = require("./util/Evt.merge");
+var Evt_from_1 = require("./util/Evt.from");
+var parseEvtOverloadParams_1 = require("./util/parseEvtOverloadParams");
 var getCtxFactory_1 = require("./util/getCtxFactory");
 var LazyEvtFactory_1 = require("./util/LazyEvtFactory");
 var importProxy_1 = require("./importProxy");
-var useEffect_1 = require("./util/useEffect");
+var Evt_useEffect_1 = require("./util/Evt.useEffect");
 /** https://docs.evt.land/api/evt */
 var Evt = /** @class */ (function () {
     function Evt() {
@@ -224,7 +224,7 @@ var Evt = /** @class */ (function () {
                 releaseLock();
             });
         });
-        this.__parseOverloadParams = parseOverloadParams_1.parseOverloadParamsFactory();
+        this.__parseOverloadParams = parseEvtOverloadParams_1.parseOverloadParamsFactory();
         var lazyEvtAttachFactory = new LazyEvtFactory_1.LazyEvtFactory();
         var lazyEvtDetachFactory = new LazyEvtFactory_1.LazyEvtFactory();
         this.onHandler = function (isAttach, handler) {
@@ -393,7 +393,7 @@ var Evt = /** @class */ (function () {
             var ctx = _a.ctx, async = _a.async, once = _a.once, prepend = _a.prepend, extract = _a.extract, op = _a.op, callback = _a.callback;
             return (__assign(__assign({ "hasCtx": !!ctx, once: once,
                 prepend: prepend,
-                extract: extract, "isWaitFor": async }, (op === parseOverloadParams_1.matchAll ? {} : { "op": op.toString() })), (!callback ? {} : { "callback": callback.toString() })));
+                extract: extract, "isWaitFor": async }, (op === parseEvtOverloadParams_1.matchAll ? {} : { "op": op.toString() })), (!callback ? {} : { "callback": callback.toString() })));
         })
             .map(function (obj) {
             return "{\n" + Object.keys(obj)
@@ -716,11 +716,11 @@ var Evt = /** @class */ (function () {
      */
     Evt.getCtx = getCtxFactory_1.getCtxFactory();
     /** https://docs.evt.land/api/evt/merge */
-    Evt.merge = merge_1.merge;
+    Evt.merge = Evt_merge_1.merge;
     /** https://docs.evt.land/api/evt/from */
-    Evt.from = from_1.from;
+    Evt.from = Evt_from_1.from;
     /** https://docs.evt.land/api/evt/use-effect */
-    Evt.useEffect = useEffect_1.useEffect;
+    Evt.useEffect = Evt_useEffect_1.useEffect;
     Evt.__defaultMaxHandlers = 25;
     return Evt;
 }());
