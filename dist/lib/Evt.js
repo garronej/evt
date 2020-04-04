@@ -104,7 +104,7 @@ var invokeOperator_1 = require("./util/invokeOperator");
 var Evt_merge_1 = require("./util/Evt.merge");
 var Evt_from_1 = require("./util/Evt.from");
 var parseEvtOverloadParams_1 = require("./util/parseEvtOverloadParams");
-var getCtxFactory_1 = require("./util/getCtxFactory");
+var Evt_getCtxt_1 = require("./util/Evt.getCtxt");
 var LazyEvtFactory_1 = require("./util/LazyEvtFactory");
 var importProxy_1 = require("./importProxy");
 var Evt_useEffect_1 = require("./util/Evt.useEffect");
@@ -714,7 +714,7 @@ var Evt = /** @class */ (function () {
      * No strong reference to the object is created
      * when the object is no longer referenced it's associated Ctx will be freed from memory.
      */
-    Evt.getCtx = getCtxFactory_1.getCtxFactory();
+    Evt.getCtx = Evt_getCtxt_1.getCtxFactory();
     /** https://docs.evt.land/api/evt/merge */
     Evt.merge = Evt_merge_1.merge;
     /** https://docs.evt.land/api/evt/from */

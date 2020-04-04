@@ -11,7 +11,7 @@ import { invokeOperator } from "./util/invokeOperator";
 import { merge } from "./util/Evt.merge";
 import { from } from "./util/Evt.from";
 import { parseOverloadParamsFactory, matchAll } from "./util/parseEvtOverloadParams";
-import { getCtxFactory } from "./util/getCtxFactory";
+import { getCtxFactory } from "./util/Evt.getCtxt";
 import { LazyEvtFactory } from "./util/LazyEvtFactory";
 import { importProxy } from "./importProxy";
 import /*type*/ { Handler } from "./types/Handler";
