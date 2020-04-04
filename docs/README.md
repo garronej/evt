@@ -7,12 +7,12 @@ It enable and encourage **functional programming** and makes heavy use of **type
 
 Its main target is [**Deno**](https://github.com/denoland/deno)**\*** but it is cross compatible with **Node** and will run just about anywhere from **React Native** to the **web browser** of your grama.
 
-_\*The deno package hasn't been published yet but it will be very soon._
+_\*The deno package hasn't been published yet but it will be soon._
 
 **Browserify friendly:**
 
 * No polyfills needed ✅  
-* Transpiled down to ES3 ✅  
+* Transpiled down to ES5 ✅  
 * Light-weight, no dependencies ✅   
 
 Can be imported in TypeScript projects using version &gt;= **3.4** \(Mar 2019\) and in any plain JS projects.
@@ -33,5 +33,5 @@ Concerning RxJS:
 * It introduce lot of abstractions. It is a big jump from `EventEmitter`.
 * [The filter operator breaks the type inference](https://stackblitz.com/edit/evt-795plc?embed=1&file=index.ts&hideExplorer=1).
 
-EVT is an attempt to solve all these issues while trying to remain as accessible as `EventEmitter`.
+EVT is an attempt to sove these issues while trying to remain as accessible as `EventEmitter`.
 

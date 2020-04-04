@@ -2,7 +2,7 @@
 description: A way to avoid having to create a ctx variable.
 ---
 
-# evt.getCtx\(object\)
+# Evt.getCtx\(object\)
 
 `Evt.weakCtx(obj)` always return the same instance of `VoidCtx` for a given object.
 
