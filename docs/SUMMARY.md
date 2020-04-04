@@ -27,5 +27,5 @@
   * [VoidEvt \(class\)](api/voidevt.md)
   * [NonPostable&lt;Evt&lt;T&gt;&gt; \(type\)](api/nonpostable.md)
   * [UnpackEvt&lt;typeof evt&gt; \(type\)](api/unpackevt.md)
-  * [Observable&lt;T&gt; \(class\)](api/observable.md)
+  * [Tracked&lt;T&gt; \(class\)](api/tracked.md)
 
