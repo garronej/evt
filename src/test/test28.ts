@@ -7,6 +7,8 @@ let evt = new Evt<string>();
 
 (async () => {
 
+    const timeout = setTimeout(() => { throw new Error("fail 28"); }, 200);
+
     {
 
         const letter = await evt.waitFor();
@@ -23,6 +25,8 @@ let evt = new Evt<string>();
 
     }
 
+    clearTimeout(timeout);
+
     evt.post("never");
 
     {
@@ -31,7 +35,7 @@ let evt = new Evt<string>();
 
         try {
 
-            letter = await evt.waitFor(1000);
+            letter = await evt.waitFor(300);
 
             throw new Error(`fail ${letter}`);
 

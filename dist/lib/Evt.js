@@ -363,6 +363,7 @@ var Evt = /** @class */ (function () {
         }
         (_a = this.log) === null || _a === void 0 ? void 0 : _a.call(this, message + this.traceFormatter(data));
     };
+    //private test_pr: Promise<void> | undefined = undefined;
     /**
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
      *
@@ -374,8 +375,7 @@ var Evt = /** @class */ (function () {
         //NOTE: Must be before postSync.
         var postChronologyMark = this.getChronologyMark();
         var isExtracted = this.postSync(data);
-        //if (!isExtracted && this.asyncHandlerCount !== 0) {
-        if (!isExtracted) {
+        if (!isExtracted && (!!this.__postAsync || this.asyncHandlerCount !== 0)) {
             this.postAsync(data, postChronologyMark);
         }
         return this.postCount;
@@ -419,55 +419,57 @@ var Evt = /** @class */ (function () {
         var _this_1 = this;
         return runExclusive.buildMethodCb(function (data, postChronologyMark, releaseLock) {
             var e_2, _a;
+            if (_this_1.asyncHandlerCount === 0) {
+                releaseLock();
+                return;
+            }
             var promises = [];
             var chronologyMarkStartResolveTick;
             //NOTE: Must be before handlerTrigger call.
             Promise.resolve().then(function () { return chronologyMarkStartResolveTick = _this_1.getChronologyMark(); });
-            if (_this_1.asyncHandlerCount !== 0) {
-                var _loop_1 = function (handler) {
-                    if (!handler.async) {
-                        return "continue";
+            var _loop_1 = function (handler) {
+                if (!handler.async) {
+                    return "continue";
+                }
+                var opResult = invokeOperator_1.invokeOperator(_this_1.getStatelessOp(handler.op), data, true);
+                if (Operator_1.Operator.fλ.Result.NotMatched.match(opResult)) {
+                    Evt.doDetachIfNeeded(handler, opResult);
+                    return "continue";
+                }
+                var handlerTrigger = _this_1.handlerTriggers.get(handler);
+                if (!handlerTrigger) {
+                    return "continue";
+                }
+                var shouldCallHandlerTrigger = (function () {
+                    var handlerMark = _this_1.asyncHandlerChronologyMark.get(handler);
+                    if (postChronologyMark > handlerMark) {
+                        return true;
                     }
-                    var opResult = invokeOperator_1.invokeOperator(_this_1.getStatelessOp(handler.op), data, true);
-                    if (Operator_1.Operator.fλ.Result.NotMatched.match(opResult)) {
-                        Evt.doDetachIfNeeded(handler, opResult);
-                        return "continue";
-                    }
-                    var handlerTrigger = _this_1.handlerTriggers.get(handler);
-                    if (!handlerTrigger) {
-                        return "continue";
-                    }
-                    var shouldCallHandlerTrigger = (function () {
-                        var handlerMark = _this_1.asyncHandlerChronologyMark.get(handler);
-                        if (postChronologyMark > handlerMark) {
-                            return true;
-                        }
-                        var exceptionRange = _this_1.asyncHandlerChronologyExceptionRange.get(handler);
-                        return (exceptionRange !== undefined &&
-                            exceptionRange.lowerMark < postChronologyMark &&
-                            postChronologyMark < exceptionRange.upperMark &&
-                            handlerMark > exceptionRange.upperMark);
-                    })();
-                    if (!shouldCallHandlerTrigger) {
-                        return "continue";
-                    }
-                    promises.push(new Promise(function (resolve) { return handler.promise
-                        .then(function () { return resolve(); })["catch"](function () { return resolve(); }); }));
-                    handlerTrigger(opResult);
-                };
+                    var exceptionRange = _this_1.asyncHandlerChronologyExceptionRange.get(handler);
+                    return (exceptionRange !== undefined &&
+                        exceptionRange.lowerMark < postChronologyMark &&
+                        postChronologyMark < exceptionRange.upperMark &&
+                        handlerMark > exceptionRange.upperMark);
+                })();
+                if (!shouldCallHandlerTrigger) {
+                    return "continue";
+                }
+                promises.push(new Promise(function (resolve) { return handler.promise
+                    .then(function () { return resolve(); })["catch"](function () { return resolve(); }); }));
+                handlerTrigger(opResult);
+            };
+            try {
+                for (var _b = __values(__spread(_this_1.handlers)), _c = _b.next(); !_c.done; _c = _b.next()) {
+                    var handler = _c.value;
+                    _loop_1(handler);
+                }
+            }
+            catch (e_2_1) { e_2 = { error: e_2_1 }; }
+            finally {
                 try {
-                    for (var _b = __values(__spread(_this_1.handlers)), _c = _b.next(); !_c.done; _c = _b.next()) {
-                        var handler = _c.value;
-                        _loop_1(handler);
-                    }
+                    if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
                 }
-                catch (e_2_1) { e_2 = { error: e_2_1 }; }
-                finally {
-                    try {
-                        if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
-                    }
-                    finally { if (e_2) throw e_2.error; }
-                }
+                finally { if (e_2) throw e_2.error; }
             }
             if (promises.length === 0) {
                 releaseLock();

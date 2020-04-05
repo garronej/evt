@@ -564,6 +564,8 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
 
     }
 
+    //private test_pr: Promise<void> | undefined = undefined;
+
 
     /** 
      * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
@@ -581,8 +583,7 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
 
         const isExtracted = this.postSync(data);
 
-        //if (!isExtracted && this.asyncHandlerCount !== 0) {
-        if (!isExtracted) {
+        if (!isExtracted && (!!this.__postAsync || this.asyncHandlerCount !== 0)) {
 
             this.postAsync(
                 data,
@@ -643,6 +644,11 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
         return runExclusive.buildMethodCb(
             (data: T, postChronologyMark: number, releaseLock?) => {
 
+                if( this.asyncHandlerCount === 0 ){
+                    releaseLock();
+                    return;
+                }
+
                 const promises: Promise<void>[] = [];
 
                 let chronologyMarkStartResolveTick: number;
@@ -652,72 +658,69 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
                     () => chronologyMarkStartResolveTick = this.getChronologyMark()
                 );
 
-                if (this.asyncHandlerCount !== 0) {
 
-                    for (const handler of [...this.handlers]) {
+                for (const handler of [...this.handlers]) {
 
-                        if (!handler.async) {
-                            continue;
-                        }
+                    if (!handler.async) {
+                        continue;
+                    }
 
-                        const opResult = invokeOperator(
-                            this.getStatelessOp(handler.op),
-                            data,
-                            true
-                        );
+                    const opResult = invokeOperator(
+                        this.getStatelessOp(handler.op),
+                        data,
+                        true
+                    );
 
-                        if (Operator.fλ.Result.NotMatched.match(opResult)) {
+                    if (Operator.fλ.Result.NotMatched.match(opResult)) {
 
-                            Evt.doDetachIfNeeded(handler, opResult);
+                        Evt.doDetachIfNeeded(handler, opResult);
 
-                            continue;
-
-                        }
-
-                        const handlerTrigger = this.handlerTriggers.get(handler);
-
-                        if (!handlerTrigger) {
-                            continue;
-                        }
-
-                        const shouldCallHandlerTrigger = (() => {
-
-                            const handlerMark = this.asyncHandlerChronologyMark.get(handler)!;
-
-                            if (postChronologyMark > handlerMark) {
-                                return true;
-                            }
-
-                            const exceptionRange = this.asyncHandlerChronologyExceptionRange.get(handler);
-
-                            return (
-                                exceptionRange !== undefined &&
-                                exceptionRange.lowerMark < postChronologyMark &&
-                                postChronologyMark < exceptionRange.upperMark &&
-                                handlerMark > exceptionRange.upperMark
-                            );
-
-                        })();
-
-                        if (!shouldCallHandlerTrigger) {
-                            continue;
-                        }
-
-                        promises.push(
-                            new Promise<void>(
-                                resolve => handler.promise
-                                    .then(() => resolve())
-                                    .catch(() => resolve())
-                            )
-                        );
-
-                        handlerTrigger(opResult);
+                        continue;
 
                     }
 
+                    const handlerTrigger = this.handlerTriggers.get(handler);
+
+                    if (!handlerTrigger) {
+                        continue;
+                    }
+
+                    const shouldCallHandlerTrigger = (() => {
+
+                        const handlerMark = this.asyncHandlerChronologyMark.get(handler)!;
+
+                        if (postChronologyMark > handlerMark) {
+                            return true;
+                        }
+
+                        const exceptionRange = this.asyncHandlerChronologyExceptionRange.get(handler);
+
+                        return (
+                            exceptionRange !== undefined &&
+                            exceptionRange.lowerMark < postChronologyMark &&
+                            postChronologyMark < exceptionRange.upperMark &&
+                            handlerMark > exceptionRange.upperMark
+                        );
+
+                    })();
+
+                    if (!shouldCallHandlerTrigger) {
+                        continue;
+                    }
+
+                    promises.push(
+                        new Promise<void>(
+                            resolve => handler.promise
+                                .then(() => resolve())
+                                .catch(() => resolve())
+                        )
+                    );
+
+                    handlerTrigger(opResult);
+
                 }
 
-                if (promises.length === 0) {
+                if( promises.length === 0 ){
                     releaseLock();
                     return;
                 }
