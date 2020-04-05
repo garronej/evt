@@ -18,6 +18,7 @@ import { importProxy } from "./importProxy";
 import /*type*/ { Handler } from "./types/Handler";
 import { defineAccessors } from "../tools/defineAccessors";
 import { id } from "../tools/typeSafety/id";
+import { Deferred } from "../tools/Deferred";
 
 type Ctx<Result> = import("./Ctx").Ctx<Result>;
 type VoidCtx = import("./Ctx").VoidCtx;
@@ -335,7 +336,7 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
     private triggerHandler<U>(
         handler: Handler<T, U>,
         wTimer: [NodeJS.Timer | undefined],
-        resolvePr: (transformedData: any) => void,
+        resolvePr: ((transformedData: any) => void) | undefined,
         opResult: Operator.fλ.Result.Matched<any, any>
     ): void {
 
@@ -355,7 +356,7 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
             transformedData
         );
 
-        resolvePr(transformedData);
+        resolvePr?.(transformedData);
 
     }
 
@@ -373,12 +374,40 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
 
         }
 
+        const d = new Deferred<U>();
+
+        const wTimer: [NodeJS.Timer | undefined] = [undefined];
+
         const handler: Handler<T, U> = {
             ...propsFromArgs,
             ...propsFromMethodName,
-            "detach": null as any,
-            "promise": null as any
+            "detach": () => this.detachHandler(handler, wTimer, d.reject),
+            "promise": d.pr
         };
+
+        if (typeof handler.timeout === "number") {
+
+            wTimer[0] = setTimeout(() => {
+
+                wTimer[0] = undefined;
+
+                handler.detach();
+
+                d.reject(new EvtError.Timeout(handler.timeout!));
+
+            }, handler.timeout);
+
+        }
+
+        this.handlerTriggers.set(
+            handler,
+            opResult => this.triggerHandler(
+                handler,
+                wTimer,
+                d.isPending ? d.resolve : undefined,
+                opResult
+            )
+        );
 
         if (handler.async) {
 
@@ -388,43 +417,6 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
             );
 
         }
-
-        (handler.promise as (typeof handler)["promise"]) = new Promise<U>(
-            (resolve, reject) => {
-
-                const wTimer: [NodeJS.Timer | undefined] = [undefined];
-
-                if (typeof handler.timeout === "number") {
-
-                    wTimer[0] = setTimeout(() => {
-
-                        wTimer[0] = undefined;
-
-                        handler.detach();
-
-                        reject(new EvtError.Timeout(handler.timeout!));
-
-                    }, handler.timeout);
-
-                }
-
-                (handler.detach as (typeof handler)["detach"]) =
-                    () => this.detachHandler(handler, wTimer, reject)
-                    ;
-
-                this.handlerTriggers.set(
-                    handler,
-                    opResult => this.triggerHandler(
-                        handler,
-                        wTimer,
-                        resolve,
-                        opResult
-                    )
-                );
-
-            }
-        );
-
 
         if (handler.prepend) {
 
@@ -644,7 +636,7 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
         return runExclusive.buildMethodCb(
             (data: T, postChronologyMark: number, releaseLock?) => {
 
-                if( this.asyncHandlerCount === 0 ){
+                if (this.asyncHandlerCount === 0) {
                     releaseLock();
                     return;
                 }
@@ -720,7 +712,7 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
 
                 }
 
-                if( promises.length === 0 ){
+                if (promises.length === 0) {
                     releaseLock();
                     return;
                 }

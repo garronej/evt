@@ -110,6 +110,7 @@ var LazyEvtFactory_1 = require("./util/LazyEvtFactory");
 var importProxy_1 = require("./importProxy");
 var defineAccessors_1 = require("../tools/defineAccessors");
 var id_1 = require("../tools/typeSafety/id");
+var Deferred_1 = require("../tools/Deferred");
 /** https://docs.evt.land/api/evt */
 var Evt = /** @class */ (function () {
     function Evt() {
@@ -241,30 +242,27 @@ var Evt = /** @class */ (function () {
         Evt.doDetachIfNeeded(handler, opResult, once);
         var _a = __read(opResult, 1), transformedData = _a[0];
         callback === null || callback === void 0 ? void 0 : callback.call(this, transformedData);
-        resolvePr(transformedData);
+        resolvePr === null || resolvePr === void 0 ? void 0 : resolvePr(transformedData);
     };
     Evt.prototype.addHandler = function (propsFromArgs, propsFromMethodName) {
         var _this_1 = this;
         if (Operator_1.Operator.fλ.Stateful.match(propsFromArgs.op)) {
             this.statelessByStatefulOp.set(propsFromArgs.op, encapsulateOpState_1.encapsulateOpState(propsFromArgs.op));
         }
-        var handler = __assign(__assign(__assign({}, propsFromArgs), propsFromMethodName), { "detach": null, "promise": null });
+        var d = new Deferred_1.Deferred();
+        var wTimer = [undefined];
+        var handler = __assign(__assign(__assign({}, propsFromArgs), propsFromMethodName), { "detach": function () { return _this_1.detachHandler(handler, wTimer, d.reject); }, "promise": d.pr });
+        if (typeof handler.timeout === "number") {
+            wTimer[0] = setTimeout(function () {
+                wTimer[0] = undefined;
+                handler.detach();
+                d.reject(new EvtError_1.EvtError.Timeout(handler.timeout));
+            }, handler.timeout);
+        }
+        this.handlerTriggers.set(handler, function (opResult) { return _this_1.triggerHandler(handler, wTimer, d.isPending ? d.resolve : undefined, opResult); });
         if (handler.async) {
             this.asyncHandlerChronologyMark.set(handler, this.getChronologyMark());
         }
-        handler.promise = new Promise(function (resolve, reject) {
-            var wTimer = [undefined];
-            if (typeof handler.timeout === "number") {
-                wTimer[0] = setTimeout(function () {
-                    wTimer[0] = undefined;
-                    handler.detach();
-                    reject(new EvtError_1.EvtError.Timeout(handler.timeout));
-                }, handler.timeout);
-            }
-            handler.detach =
-                function () { return _this_1.detachHandler(handler, wTimer, reject); };
-            _this_1.handlerTriggers.set(handler, function (opResult) { return _this_1.triggerHandler(handler, wTimer, resolve, opResult); });
-        });
         if (handler.prepend) {
             var i = void 0;
             for (i = 0; i < this.handlers.length; i++) {
