@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var compose_1 = require("../compose");
 exports.throttleTime = function (duration) {
     return compose_1.compose([

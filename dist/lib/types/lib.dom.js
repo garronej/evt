@@ -10,5 +10,5 @@ the DOM ( ex Evt.from ) while not producing type error when
 EVT is imported in project that does not use 'lib DOM', typically
 projects that targets Node.JS.
 */
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 //# sourceMappingURL=lib.dom.js.map

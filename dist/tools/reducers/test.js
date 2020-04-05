@@ -20,7 +20,7 @@ var __spread = (this && this.__spread) || function () {
     return ar;
 };
 var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6;
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var typeSafety_1 = require("../typeSafety");
 var index_1 = require("./index");
 var every_1 = require("./every");

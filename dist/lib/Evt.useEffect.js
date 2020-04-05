@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 function useEffect(effect, evt, dataFirst) {
     var i = 0;
     evt.attach(function (data) { return effect(data, { "isFirst": false, data: data }, i++); });

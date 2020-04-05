@@ -34,44 +34,32 @@ var __values = (this && this.__values) || function(o) {
     };
     throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var Set_1 = require("minimal-polyfills/dist/lib/Set");
 var WeakMap_1 = require("minimal-polyfills/dist/lib/WeakMap");
 var assert_1 = require("../tools/typeSafety/assert");
 var typeGuard_1 = require("../tools/typeSafety/typeGuard");
 var LazyEvtFactory_1 = require("./util/LazyEvtFactory");
 var importProxy_1 = require("./importProxy");
+var defineAccessors_1 = require("../tools/defineAccessors");
+var id_1 = require("../tools/typeSafety/id");
 /** https://docs.evt.land/api/ctx */
 var Ctx = /** @class */ (function () {
     function Ctx() {
+        this.lazyEvtAttachFactory = new LazyEvtFactory_1.LazyEvtFactory();
+        this.lazyEvtDetachFactory = new LazyEvtFactory_1.LazyEvtFactory();
+        this.lazyEvtDoneOrAbortedFactory = new LazyEvtFactory_1.LazyEvtFactory();
         this.handlers = new Set_1.Polyfill();
         this.evtByHandler = new WeakMap_1.Polyfill();
-        {
-            var lazyEvtAttachFactory_1 = new LazyEvtFactory_1.LazyEvtFactory();
-            var lazyEvtDetachFactory_1 = new LazyEvtFactory_1.LazyEvtFactory();
-            this.onHandler = function (isAttach, handler) {
-                return isAttach ?
-                    lazyEvtAttachFactory_1.post(handler) :
-                    lazyEvtDetachFactory_1.post(handler);
-            };
-            this.getEvtAttach = function () { return lazyEvtAttachFactory_1.getEvt(); };
-            this.getEvtDetach = function () { return lazyEvtDetachFactory_1.getEvt(); };
-        }
-        {
-            var lazyEvtDoneFactory_1 = new LazyEvtFactory_1.LazyEvtFactory();
-            this.onDone = function (doneEvtData) { return lazyEvtDoneFactory_1.post(doneEvtData); };
-            this.getEvtDoneOrAborted = function () { return lazyEvtDoneFactory_1.getEvt(); };
-        }
     }
-    Object.defineProperty(Ctx.prototype, "evtDoneOrAborted", {
-        /**
-         * https://docs.evt.land/api/ctx#ctx-evtdoneoraborted
-         */
-        get: function () { return this.getEvtDoneOrAborted(); },
-        enumerable: true,
-        configurable: true
-    });
-    ;
+    Ctx.prototype.onDoneOrAborted = function (doneEvtData) {
+        this.lazyEvtDoneOrAbortedFactory.post(doneEvtData);
+    };
+    Ctx.prototype.onHandler = function (isAttach, handler) {
+        isAttach ?
+            this.lazyEvtAttachFactory.post(handler) :
+            this.lazyEvtDetachFactory.post(handler);
+    };
     /**
      * https://docs.evt.land/api/ctx#ctx-waitfor-timeout
      *
@@ -83,7 +71,7 @@ var Ctx = /** @class */ (function () {
      */
     Ctx.prototype.waitFor = function (timeout) {
         var _this_1 = this;
-        return this.getEvtDoneOrAborted()
+        return this.evtDoneOrAborted
             .waitFor(timeout)
             .then(function (data) {
             if (data.type === "ABORTED") {
@@ -95,26 +83,6 @@ var Ctx = /** @class */ (function () {
             throw timeoutError;
         });
     };
-    Object.defineProperty(Ctx.prototype, "evtAttach", {
-        /**
-         * https://docs.evt.land/api/ctx#ctx-evtattach
-         *
-         * Posted every time a handler is bound to this context
-         * */
-        get: function () { return this.getEvtAttach(); },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Ctx.prototype, "evtDetach", {
-        /**
-         * https://docs.evt.land/api/ctx#ctx-evtdetach
-         *
-         * Posted every time a handler bound to this context is detached from it's Evt
-         * */
-        get: function () { return this.getEvtDetach(); },
-        enumerable: true,
-        configurable: true
-    });
     /**
      * https://docs.evt.land/api/ctx#ctx-abort-error
      *
@@ -154,11 +122,11 @@ var Ctx = /** @class */ (function () {
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+                if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
             }
             finally { if (e_1) throw e_1.error; }
         }
-        this.onDone(__assign(__assign({}, (!!error ?
+        this.onDoneOrAborted(__assign(__assign({}, (!!error ?
             { type: "ABORTED", error: error } :
             { type: "DONE", "result": result })), { handlers: handlers }));
         return handlers;
@@ -188,8 +156,28 @@ var Ctx = /** @class */ (function () {
         assert_1.assert(handler.ctx === this);
         assert_1.assert(typeGuard_1.typeGuard(handler));
         this.onHandler(false, { handler: handler, "evt": this.evtByHandler.get(handler) });
-        this.handlers.delete(handler);
+        this.handlers["delete"](handler);
     };
+    Ctx.__1 = (function () {
+        if (false) {
+            Ctx.__1;
+        }
+        defineAccessors_1.defineAccessors(Ctx.prototype, "evtDoneOrAborted", {
+            "get": function () {
+                return id_1.id(this).lazyEvtDoneOrAbortedFactory.getEvt();
+            }
+        });
+        defineAccessors_1.defineAccessors(Ctx.prototype, "evtAttach", {
+            "get": function () {
+                return id_1.id(this).lazyEvtAttachFactory.getEvt();
+            }
+        });
+        defineAccessors_1.defineAccessors(Ctx.prototype, "evtDetach", {
+            "get": function () {
+                return id_1.id(this).lazyEvtDetachFactory.getEvt();
+            }
+        });
+    })();
     return Ctx;
 }());
 exports.Ctx = Ctx;

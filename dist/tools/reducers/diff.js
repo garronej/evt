@@ -19,7 +19,7 @@ var __spread = (this && this.__spread) || function () {
     for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
     return ar;
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var reduceify_1 = require("./reduceify");
 var contains_1 = require("./contains");
 var removeDuplicates_1 = require("./removeDuplicates");

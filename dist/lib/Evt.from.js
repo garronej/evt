@@ -1,11 +1,11 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var id_1 = require("../../tools/typeSafety/id");
-var assert_1 = require("../../tools/typeSafety/assert");
-var typeGuard_1 = require("../../tools/typeSafety/typeGuard");
-var EventTargetLike_1 = require("../types/EventTargetLike");
+exports.__esModule = true;
+var id_1 = require("../tools/typeSafety/id");
+var assert_1 = require("../tools/typeSafety/assert");
+var typeGuard_1 = require("../tools/typeSafety/typeGuard");
+var EventTargetLike_1 = require("./types/EventTargetLike");
 var Evt_merge_1 = require("./Evt.merge");
-var importProxy_1 = require("../importProxy");
+var importProxy_1 = require("./importProxy");
 function fromImpl(ctx, target, eventName, options) {
     if ("then" in target) {
         var evt_1 = new importProxy_1.importProxy.Evt();

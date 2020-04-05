@@ -1,8 +1,8 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var importProxy_1 = require("../importProxy");
-var typeGuard_1 = require("../../tools/typeSafety/typeGuard");
-var assert_1 = require("../../tools/typeSafety/assert");
+exports.__esModule = true;
+var importProxy_1 = require("./importProxy");
+var typeGuard_1 = require("../tools/typeSafety/typeGuard");
+var assert_1 = require("../tools/typeSafety/assert");
 function fromEvtImpl(evt, initialValue) {
     var trk = new importProxy_1.importProxy.Tracked(initialValue);
     evt.attach(function (data) { return trk.val = data; });

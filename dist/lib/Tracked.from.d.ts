@@ -1,8 +1,8 @@
 declare type EvtLike<T> = {
     attach(callback: (data: T) => void): void;
 };
-declare type CtxLike<T> = import("../Ctx").CtxLike<T>;
-declare type Tracked<T> = import("../Tracked").Tracked<T>;
+declare type CtxLike<T> = import("./Ctx").CtxLike<T>;
+declare type Tracked<T> = import("./Tracked").Tracked<T>;
 declare type TrackedLike<T> = {
     val: T;
     evt: {

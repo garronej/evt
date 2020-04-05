@@ -1,4 +1,4 @@
-declare type EvtLike<T> = import("../Evt").EvtLike<T> & {
+declare type EvtLike<T> = import("./Evt").EvtLike<T> & {
     attach(callback: (data: T) => void): void;
 };
 export declare function useEffect<T>(effect: (data: T, dataWrap: {

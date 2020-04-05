@@ -8,14 +8,16 @@ import { encapsulateOpState } from "./util/encapsulateOpState";
 import { typeGuard } from "../tools/typeSafety/typeGuard";
 import { Operator } from "./types/Operator";
 import { invokeOperator } from "./util/invokeOperator";
-import { merge } from "./util/Evt.merge";
-import { from } from "./util/Evt.from";
-import { parseOverloadParamsFactory, matchAll } from "./util/parseEvtOverloadParams";
-import { getCtxFactory } from "./util/Evt.getCtxt";
+import { merge } from "./Evt.merge";
+import { from } from "./Evt.from";
+import { getCtxFactory } from "./Evt.getCtx";
+import { useEffect } from "./Evt.useEffect";
+import { parseOverloadsArgs, matchAll } from "./Evt.parseOverloadsArgs";
 import { LazyEvtFactory } from "./util/LazyEvtFactory";
 import { importProxy } from "./importProxy";
 import /*type*/ { Handler } from "./types/Handler";
-import { useEffect } from "./util/Evt.useEffect";
+import { defineAccessors } from "../tools/defineAccessors";
+import { id } from "../tools/typeSafety/id";
 
 type Ctx<Result> = import("./Ctx").Ctx<Result>;
 type VoidCtx = import("./Ctx").VoidCtx;
@@ -55,34 +57,50 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
     /** https://docs.evt.land/api/evt/use-effect */
     public static readonly useEffect = useEffect;
 
-    private readonly getEvtAttach: () => Evt<Handler<T, any>>;
+    private static readonly parseOverloadsArgs = parseOverloadsArgs;
 
     /** https://docs.evt.land/api/evt/evtattachdetach */
-    public get evtAttach(){ return this.getEvtAttach(); }
-
-    private readonly getEvtDetach: () => Evt<Handler<T, any>>;
+    declare public readonly evtAttach: Evt<Handler<T, any>>;
 
     /** https://docs.evt.land/api/evt/evtattachdetach */
-    public get evtDetach() { return this.getEvtDetach(); }
+    declare public readonly evtDetach: Evt<Handler<T, any>>;
 
-
-    private readonly onHandler: (isAttach: boolean, handler: Handler<T, any>) => void;
-
-    constructor() {
-
-        const lazyEvtAttachFactory = new LazyEvtFactory<Handler<T, any>>();
-        const lazyEvtDetachFactory = new LazyEvtFactory<Handler<T, any>>();
-
-        this.onHandler = (isAttach, handler) =>
-            isAttach ?
-                lazyEvtAttachFactory.post(handler) :
-                lazyEvtDetachFactory.post(handler)
+    private onHandler(isAttach: boolean, handler: Handler<T, any>): void {
+        isAttach ?
+            this.lazyEvtAttachFactory.post(handler) :
+            this.lazyEvtDetachFactory.post(handler)
             ;
-
-        this.getEvtAttach = () => lazyEvtAttachFactory.getEvt();
-        this.getEvtDetach = () => lazyEvtDetachFactory.getEvt();
-
     }
+
+    private readonly lazyEvtAttachFactory = new LazyEvtFactory<Handler<T, any>>();
+    private readonly lazyEvtDetachFactory = new LazyEvtFactory<Handler<T, any>>();
+
+    private static __1: void = (() => {
+
+        if (false) { Evt.__1 }
+
+        defineAccessors(
+            Evt.prototype,
+            "evtAttach",
+            {
+                "get": function () {
+                    return id<Evt<any>>(this).lazyEvtAttachFactory.getEvt();
+                }
+            }
+        );
+
+        defineAccessors(
+            Evt.prototype,
+            "evtDetach",
+            {
+                "get": function () {
+                    return id<Evt<any>>(this).lazyEvtDetachFactory.getEvt();
+                }
+            }
+        );
+
+    })();
+
 
     /** https://docs.evt.land/api/evt/post */
     public postAsyncOnceHandled(data: T): number | Promise<number> {
@@ -94,7 +112,7 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
         let resolvePr: (postCount: number) => void;
         const pr = new Promise<number>(resolve => resolvePr = resolve);
 
-        this.getEvtAttach().attachOnce(
+        this.evtAttach.attachOnce(
             ({ op }) => !!invokeOperator(this.getStatelessOp(op), data),
             () => Promise.resolve().then(() => resolvePr(this.post(data)))
         );
@@ -103,14 +121,9 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
 
     }
 
-
-
-
-
-
     private static __defaultMaxHandlers = 25;
 
-    
+
     /** https://docs.evt.land/api/evt/setdefaultmaxhandlers */
     public static setDefaultMaxHandlers(n: number) {
         this.__defaultMaxHandlers = isFinite(n) ? n : 0;
@@ -184,36 +197,69 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
     //NOTE: An async handler ( attached with waitFor ) is only eligible to handle a post if the post
     //occurred after the handler was set. We don't want to waitFor event from the past.
     //private readonly asyncHandlerChronologyMark = new WeakMap<ImplicitParams.Async, number>();
-    private readonly asyncHandlerChronologyMark = new WeakMap<Handler.PropsFromMethodName.Async, number>();
+    declare private readonly asyncHandlerChronologyMark: WeakMap<Handler.PropsFromMethodName.Async, number>;
+    declare private __asyncHandlerChronologyMark: (typeof Evt.prototype.asyncHandlerChronologyMark) | undefined;
 
     //NOTE: There is an exception to the above rule, we want to allow async waitFor loop 
     //do so we have to handle the case where multiple event would be posted synchronously.
-    private readonly asyncHandlerChronologyExceptionRange = new WeakMap<
+    declare private readonly asyncHandlerChronologyExceptionRange: WeakMap<
         Handler.PropsFromMethodName.Async,
-        {
-            lowerMark: number;
-            upperMark: number;
-        }
-    >();
+        { lowerMark: number; upperMark: number; }
+    >;
+    declare private __asyncHandlerChronologyExceptionRange: (typeof Evt.prototype.asyncHandlerChronologyExceptionRange) | undefined;
+
+    declare private readonly statelessByStatefulOp: WeakMap<
+        Operator.fλ.Stateful<T, any, any>,
+        Operator.fλ.Stateless<T, any, any>
+    >;
+    declare private __statelessByStatefulOp: (typeof Evt.prototype.statelessByStatefulOp) | undefined;
+
+    private static __2: void = (() => {
+
+        if (false) { Evt.__2; }
+
+        Object.defineProperties(Evt.prototype,
+            ([
+                "__asyncHandlerChronologyMark",
+                "__asyncHandlerChronologyExceptionRange",
+                "__statelessByStatefulOp"
+            ] as const).map(key => [
+                key.substr(2),
+                {
+                    "get": function () {
+
+                        const self: Evt<any> = this;
+
+                        if (self[key] === undefined) {
+                            self[key] = new WeakMap<any, any>();
+                        }
+
+                        return self[key];
+
+                    }
+                }
+            ] as const).reduce<any>((prev, [key, obj]) => ({ ...prev, [key]: obj }), {})
+        );
+
+
+    })();
+
+
+
+
 
     /*
     NOTE: Used as Date.now() would be used to compare if an event is anterior 
     or posterior to an other. We don't use Date.now() because two call within
     less than a ms will return the same value unlike this function.
     */
-    private readonly getChronologyMark = (() => {
+    private __currentChronologyMark = 0;
+    private getChronologyMark() {
+        return this.__currentChronologyMark++;
+    }
 
-        let currentChronologyMark = 0;
 
-        return () => currentChronologyMark++;
-
-    })();
-
-    private readonly statelessByStatefulOp = new WeakMap<
-        Operator.fλ.Stateful<T, any, any>,
-        Operator.fλ.Stateless<T, any, any>
-    >();
-
+    private asyncHandlerCount: number = 0;
 
 
     private detachHandler(
@@ -234,6 +280,10 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
 
 
         this.handlers.splice(index, 1);
+
+        if (handler.async) {
+            this.asyncHandlerCount--;
+        }
 
         this.handlerTriggers.delete(handler);
 
@@ -398,6 +448,10 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
 
         }
 
+        if (handler.async) {
+            this.asyncHandlerCount++;
+        }
+
         this.checkForPotentialMemoryLeak();
 
         if (typeGuard<Handler<T, U, CtxLike<any>>>(handler, !!handler.ctx)) {
@@ -527,18 +581,19 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
 
         const isExtracted = this.postSync(data);
 
+        //if (!isExtracted && this.asyncHandlerCount !== 0) {
         if (!isExtracted) {
+
             this.postAsync(
                 data,
                 postChronologyMark
             );
+
         }
 
         return this.postCount;
 
     }
-
-
 
     /** Return isExtracted */
     private postSync(data: T): boolean {
@@ -584,114 +639,143 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
 
     }
 
-    private readonly postAsync = runExclusive.buildMethodCb(
-        (data: T, postChronologyMark: number, releaseLock?) => {
+    private __postAsyncFactory() {
+        return runExclusive.buildMethodCb(
+            (data: T, postChronologyMark: number, releaseLock?) => {
 
-            const promises: Promise<void>[] = [];
+                const promises: Promise<void>[] = [];
 
-            let chronologyMarkStartResolveTick: number;
+                let chronologyMarkStartResolveTick: number;
 
-            //NOTE: Must be before handlerTrigger call.
-            Promise.resolve().then(
-                () => chronologyMarkStartResolveTick = this.getChronologyMark()
-            );
-
-            for (const handler of [...this.handlers]) {
-
-                if (!handler.async) {
-                    continue;
-                }
-
-                const opResult = invokeOperator(
-                    this.getStatelessOp(handler.op),
-                    data,
-                    true
+                //NOTE: Must be before handlerTrigger call.
+                Promise.resolve().then(
+                    () => chronologyMarkStartResolveTick = this.getChronologyMark()
                 );
 
-                if (Operator.fλ.Result.NotMatched.match(opResult)) {
+                if (this.asyncHandlerCount !== 0) {
 
-                    Evt.doDetachIfNeeded(handler, opResult);
+                    for (const handler of [...this.handlers]) {
 
-                    continue;
-
-                }
-
-                const handlerTrigger = this.handlerTriggers.get(handler);
-
-                if (!handlerTrigger) {
-                    continue;
-                }
-
-                const shouldCallHandlerTrigger = (() => {
-
-                    const handlerMark = this.asyncHandlerChronologyMark.get(handler)!;
-
-                    if (postChronologyMark > handlerMark) {
-                        return true;
-                    }
-
-                    const exceptionRange = this.asyncHandlerChronologyExceptionRange.get(handler);
-
-                    return (
-                        exceptionRange !== undefined &&
-                        exceptionRange.lowerMark < postChronologyMark &&
-                        postChronologyMark < exceptionRange.upperMark &&
-                        handlerMark > exceptionRange.upperMark
-                    );
-
-                })();
-
-                if (!shouldCallHandlerTrigger) {
-                    continue;
-                }
-
-                promises.push(
-                    new Promise<void>(
-                        resolve => handler.promise
-                            .then(() => resolve())
-                            .catch(() => resolve())
-                    )
-                );
-
-                handlerTrigger(opResult);
-
-            }
-
-            if (promises.length === 0) {
-                releaseLock();
-                return;
-            }
-
-            const handlersDump = [...this.handlers];
-
-            Promise.all(promises).then(() => {
-
-                for (const handler of this.handlers) {
-
-                    if (!handler.async) {
-                        continue;
-                    }
-
-                    if (handlersDump.indexOf(handler) >= 0) {
-                        continue;
-                    }
-
-                    this.asyncHandlerChronologyExceptionRange.set(
-                        handler,
-                        {
-                            "lowerMark": postChronologyMark,
-                            "upperMark": chronologyMarkStartResolveTick
+                        if (!handler.async) {
+                            continue;
                         }
-                    );
+
+                        const opResult = invokeOperator(
+                            this.getStatelessOp(handler.op),
+                            data,
+                            true
+                        );
+
+                        if (Operator.fλ.Result.NotMatched.match(opResult)) {
+
+                            Evt.doDetachIfNeeded(handler, opResult);
+
+                            continue;
+
+                        }
+
+                        const handlerTrigger = this.handlerTriggers.get(handler);
+
+                        if (!handlerTrigger) {
+                            continue;
+                        }
+
+                        const shouldCallHandlerTrigger = (() => {
+
+                            const handlerMark = this.asyncHandlerChronologyMark.get(handler)!;
+
+                            if (postChronologyMark > handlerMark) {
+                                return true;
+                            }
+
+                            const exceptionRange = this.asyncHandlerChronologyExceptionRange.get(handler);
+
+                            return (
+                                exceptionRange !== undefined &&
+                                exceptionRange.lowerMark < postChronologyMark &&
+                                postChronologyMark < exceptionRange.upperMark &&
+                                handlerMark > exceptionRange.upperMark
+                            );
+
+                        })();
+
+                        if (!shouldCallHandlerTrigger) {
+                            continue;
+                        }
+
+                        promises.push(
+                            new Promise<void>(
+                                resolve => handler.promise
+                                    .then(() => resolve())
+                                    .catch(() => resolve())
+                            )
+                        );
+
+                        handlerTrigger(opResult);
+
+                    }
 
                 }
 
-                releaseLock();
+                if (promises.length === 0) {
+                    releaseLock();
+                    return;
+                }
 
-            });
+                const handlersDump = [...this.handlers];
 
-        }
-    );
+                Promise.all(promises).then(() => {
+
+                    for (const handler of this.handlers) {
+
+                        if (!handler.async) {
+                            continue;
+                        }
+
+                        if (handlersDump.indexOf(handler) >= 0) {
+                            continue;
+                        }
+
+                        this.asyncHandlerChronologyExceptionRange.set(
+                            handler,
+                            {
+                                "lowerMark": postChronologyMark,
+                                "upperMark": chronologyMarkStartResolveTick
+                            }
+                        );
+
+                    }
+
+                    releaseLock();
+
+                });
+
+            }
+        );
+    }
+
+    declare private readonly postAsync: (data: T, postChronologyMark: number) => void;
+    declare private __postAsync: typeof Evt.prototype.postAsync | undefined;
+
+    private static __3: void = (() => {
+
+        if (false) { Evt.__3; }
+
+        Object.defineProperty(Evt.prototype, "postAsync", {
+            "get": function () {
+                const self: Evt<any> = this;
+                if (self.__postAsync === undefined) {
+                    self.__postAsync = self.__postAsyncFactory();
+                }
+
+                return self.__postAsync;
+            }
+        });
+
+
+    })();
+
+
 
     private __waitFor<U>(attachParams: Handler.PropsFromArgs<T, U>): Promise<U> {
 
@@ -877,7 +961,6 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
 
 
 
-    private __parseOverloadParams = parseOverloadParamsFactory<T>();
 
     /** https://docs.evt.land/api/evt/pipe */
     public pipe(): Evt<T>;
@@ -1020,7 +1103,7 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
 
         this.__attach(
             {
-                ...this.__parseOverloadParams(inputs, "pipe"),
+                ...Evt.parseOverloadsArgs<T>(inputs, "pipe"),
                 "callback": (transformedData: any) => evtDelegate.post(transformedData)
             }
         );
@@ -1125,7 +1208,7 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
         timeout?: number
     ): Promise<T>;
     public waitFor(...inputs: any[]) {
-        return this.__waitFor(this.__parseOverloadParams(inputs, "waitFor"));
+        return this.__waitFor(Evt.parseOverloadsArgs<T>(inputs, "waitFor"));
     }
 
 
@@ -1357,7 +1440,7 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
         callback: (data: T) => void
     ): Promise<T>;
     public attach(...inputs: any[]) {
-        return this.__attach(this.__parseOverloadParams(inputs, "attach*"));
+        return this.__attach(Evt.parseOverloadsArgs<T>(inputs, "attach*"));
     }
 
 
@@ -1585,7 +1668,7 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
         callback: (data: T) => void
     ): Promise<T>;
     public attachOnce(...inputs: any[]) {
-        return this.__attachOnce(this.__parseOverloadParams(inputs, "attach*"));
+        return this.__attachOnce(Evt.parseOverloadsArgs<T>(inputs, "attach*"));
     }
 
 
@@ -1772,7 +1855,7 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
         callback: (data: T) => void
     ): Promise<T>;
     public attachExtract(...inputs: any[]) {
-        return this.__attachExtract(this.__parseOverloadParams(inputs, "attach*"));
+        return this.__attachExtract(Evt.parseOverloadsArgs<T>(inputs, "attach*"));
     }
 
 
@@ -2012,7 +2095,7 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
         callback: (data: T) => void
     ): Promise<T>;
     public attachPrepend(...inputs: any[]) {
-        return this.__attachPrepend(this.__parseOverloadParams(inputs, "attach*"));
+        return this.__attachPrepend(Evt.parseOverloadsArgs<T>(inputs, "attach*"));
     }
 
 
@@ -2246,7 +2329,7 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
         callback: (data: T) => void
     ): Promise<T>;
     public attachOncePrepend(...inputs: any[]) {
-        return this.__attachOncePrepend(this.__parseOverloadParams(inputs, "attach*"));
+        return this.__attachOncePrepend(Evt.parseOverloadsArgs<T>(inputs, "attach*"));
     }
 
 
@@ -2478,7 +2561,7 @@ export class Evt<T> implements EvtLike<any/*We can't use T, TypeScript bug ?*/>{
         callback: (data: T) => void
     ): Promise<T>;
     public attachOnceExtract(...inputs: any[]) {
-        return this.__attachOnceExtract(this.__parseOverloadParams(inputs, "attach*"));
+        return this.__attachOnceExtract(Evt.parseOverloadsArgs<T>(inputs, "attach*"));
     }
 
 

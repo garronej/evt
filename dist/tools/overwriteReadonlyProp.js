@@ -10,17 +10,34 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
+/**
+ * Assign a value to a property even if the object is freezed or if the property is not writable
+ * Throw if the assignation fail ( for example if the property is non configurable write: false )
+ * */
 exports.overwriteReadonlyProp = function (obj, propertyName, value) {
+    var _a;
     try {
         obj[propertyName] = value;
-        if (obj[propertyName] === value) {
-            return value;
-        }
     }
-    catch (_a) {
+    catch (_b) {
     }
-    Object.defineProperty(obj, propertyName, __assign(__assign({}, Object.getOwnPropertyDescriptor(obj, propertyName)), { value: value }));
+    if (obj[propertyName] === value) {
+        return value;
+    }
+    var errorDefineProperty = undefined;
+    try {
+        Object.defineProperty(obj, propertyName, __assign(__assign({}, ((_a = Object.getOwnPropertyDescriptor(obj, propertyName)) !== null && _a !== void 0 ? _a : {
+            "enumerable": true,
+            "configurable": true
+        })), { value: value }));
+    }
+    catch (error) {
+        errorDefineProperty = error;
+    }
+    if (obj[propertyName] !== value) {
+        throw errorDefineProperty !== null && errorDefineProperty !== void 0 ? errorDefineProperty : new Error("Can't assign");
+    }
     return value;
 };
 //# sourceMappingURL=overwriteReadonlyProp.js.map

@@ -15,7 +15,7 @@ var __read = (this && this.__read) || function (o, n) {
     }
     return ar;
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var compose_1 = require("../compose");
 exports.scan = function (accumulator, seed) { return compose_1.compose([
     function (data, _a) {

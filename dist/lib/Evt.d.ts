@@ -1,9 +1,9 @@
 import "minimal-polyfills/dist/lib/Array.prototype.find";
 import { Operator } from "./types/Operator";
-import { merge } from "./util/Evt.merge";
-import { from } from "./util/Evt.from";
+import { merge } from "./Evt.merge";
+import { from } from "./Evt.from";
+import { useEffect } from "./Evt.useEffect";
 import { Handler } from "./types/Handler";
-import { useEffect } from "./util/Evt.useEffect";
 declare type Ctx<Result> = import("./Ctx").Ctx<Result>;
 declare type VoidCtx = import("./Ctx").VoidCtx;
 declare type CtxLike<Result> = import("./Ctx").CtxLike<Result>;
@@ -33,14 +33,15 @@ export declare class Evt<T> implements EvtLike<any> {
     static readonly from: typeof from;
     /** https://docs.evt.land/api/evt/use-effect */
     static readonly useEffect: typeof useEffect;
-    private readonly getEvtAttach;
+    private static readonly parseOverloadsArgs;
     /** https://docs.evt.land/api/evt/evtattachdetach */
-    get evtAttach(): Evt<Handler<T, any, import("./Ctx").CtxLike<any> | undefined>>;
-    private readonly getEvtDetach;
+    readonly evtAttach: Evt<Handler<T, any>>;
     /** https://docs.evt.land/api/evt/evtattachdetach */
-    get evtDetach(): Evt<Handler<T, any, import("./Ctx").CtxLike<any> | undefined>>;
-    private readonly onHandler;
-    constructor();
+    readonly evtDetach: Evt<Handler<T, any>>;
+    private onHandler;
+    private readonly lazyEvtAttachFactory;
+    private readonly lazyEvtDetachFactory;
+    private static __1;
     /** https://docs.evt.land/api/evt/post */
     postAsyncOnceHandled(data: T): number | Promise<number>;
     private static __defaultMaxHandlers;
@@ -69,9 +70,15 @@ export declare class Evt<T> implements EvtLike<any> {
     private readonly handlers;
     private readonly handlerTriggers;
     private readonly asyncHandlerChronologyMark;
+    private __asyncHandlerChronologyMark;
     private readonly asyncHandlerChronologyExceptionRange;
-    private readonly getChronologyMark;
+    private __asyncHandlerChronologyExceptionRange;
     private readonly statelessByStatefulOp;
+    private __statelessByStatefulOp;
+    private static __2;
+    private __currentChronologyMark;
+    private getChronologyMark;
+    private asyncHandlerCount;
     private detachHandler;
     private static doDetachIfNeeded;
     private triggerHandler;
@@ -88,7 +95,10 @@ export declare class Evt<T> implements EvtLike<any> {
     post(data: T): number;
     /** Return isExtracted */
     private postSync;
+    private __postAsyncFactory;
     private readonly postAsync;
+    private __postAsync;
+    private static __3;
     private __waitFor;
     private __attach;
     private __attachExtract;
@@ -124,7 +134,6 @@ export declare class Evt<T> implements EvtLike<any> {
      * (unsafe) Detach every handlers from the Evt
      * */
     detach(): Handler<T, any>[];
-    private __parseOverloadParams;
     /** https://docs.evt.land/api/evt/pipe */
     pipe(): Evt<T>;
     pipe<U, CtxResult>(op: Operator.fλ<T, U, CtxResult>): Evt<U>;

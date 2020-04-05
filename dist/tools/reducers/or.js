@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var reduceify_1 = require("./reduceify");
 function arrOr(arr, conditions) {
     return !!conditions.find(function (condition) { return condition(arr); });

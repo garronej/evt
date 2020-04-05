@@ -1,6 +1,6 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var importProxy_1 = require("../importProxy");
+exports.__esModule = true;
+var importProxy_1 = require("./importProxy");
 //TODO: Fix interoperability between versions.
 function mergeImpl(ctx, evts) {
     var evtUnion = new importProxy_1.importProxy.Evt();

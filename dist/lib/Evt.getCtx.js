@@ -1,7 +1,7 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var WeakMap_1 = require("minimal-polyfills/dist/lib/WeakMap");
-var importProxy_1 = require("../importProxy");
+var importProxy_1 = require("./importProxy");
 function getCtxFactory() {
     var ctxByObj = new WeakMap_1.Polyfill();
     function getCtx(obj) {
@@ -15,4 +15,4 @@ function getCtxFactory() {
     return getCtx;
 }
 exports.getCtxFactory = getCtxFactory;
-//# sourceMappingURL=Evt.getCtxt.js.map
+//# sourceMappingURL=Evt.getCtx.js.map

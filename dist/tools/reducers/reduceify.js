@@ -19,7 +19,7 @@ var __spread = (this && this.__spread) || function () {
     for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
     return ar;
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 function toReduceArguments(arrOp) {
     var params = [];
     for (var _i = 1; _i < arguments.length; _i++) {

@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 /** NOTE: constructors are of type "function" but are not callable,
  * without the new keyword.
  * This function will return true if and only if the object passed is

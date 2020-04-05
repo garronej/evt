@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var typeSafety_1 = require("../typeSafety");
 var same_1 = require("../inDepth/same");
 function getPromiseAssertionApi(params) {

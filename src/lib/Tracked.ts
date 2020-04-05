@@ -2,8 +2,10 @@
 import "../tools/polyfill/Object.is";
 import { Evt } from "./Evt";
 import /*type*/ { NonPostable } from "./types/helper/NonPostable";
-import { from } from "./util/Tracked.from";
+import { from } from "./Tracked.from";
 import { importProxy } from "./importProxy";
+import { defineAccessors } from "../tools/defineAccessors";
+import { id  } from "../tools/typeSafety/id";
 
 
 export interface Trackable<T> {
@@ -21,63 +23,67 @@ export namespace Trackable {
 
 }
 
-
 /** https://docs.evt.land/api/tracked */
 export class Tracked<T> implements Trackable<T> {
 
     /** https://docs.evt.land/api/tracked#tracked-from */
     public static from = from;
 
-    private _val: T;
+    private __val: T;
+    declare public val: T;
 
-    public get val(): T {
-        return this._val;
-    }
+    private static __1: void = (() => {
 
-    public set val(newVal: T) {
+        if(false){ Tracked.__1; }
 
-        if (Object.is(this._val, newVal)) {
-            return;
-        }
+        defineAccessors(Tracked.prototype, "val", {
+            "get": function () { return id<Tracked<any>>(this).__val; },
+            "set": function (newVal: any) {
 
-        this._setValAndPost(newVal);
+                const self: Tracked<any>= this;
 
-    }
+                if (Object.is(self.__val, newVal)) {
+                    return;
+                }
+
+                self.__setValAndPost(newVal);
+
+            }
+        });
+
+
+    })();
+
 
     public forceUpdate(newVal: T): void {
-        this._setValAndPost(newVal);
+        this.__setValAndPost(newVal);
     }
 
-    private _setValAndPost(newVal: T) {
+    private __setValAndPost(newVal: T) {
 
-        const prevVal = this._val;
+        const prevVal = this.__val;
 
-        this._val = newVal;
+        this.__val = newVal;
 
-        this._postEvtChangeDiff({ prevVal, newVal });
+        this.__postEvtChangeDiff({ prevVal, newVal });
 
     }
 
     public readonly evtDiff: Trackable<T>["evtDiff"];
     public readonly evt: Trackable<T>["evt"];
-    private readonly _postEvtChangeDiff: (data: Trackable.Diff<T>) => void;
+    private readonly __postEvtChangeDiff: (data: Trackable.Diff<T>) => void;
 
     constructor(val: T) {
 
-        {
+        const evtChangeDiff: Evt<Trackable.Diff<T>> = new Evt();
 
-            const evtChangeDiff: Evt<Trackable.Diff<T>> = new Evt();
+        this.__postEvtChangeDiff = changeDiff => evtChangeDiff.post(changeDiff);
 
-            this._postEvtChangeDiff = changeDiff => evtChangeDiff.post(changeDiff);
+        this.evt = evtChangeDiff.pipe(({ newVal }) => [newVal]);
 
-            this.evt = evtChangeDiff.pipe(({ newVal }) => [newVal]);
+        this.evtDiff = evtChangeDiff;
 
-            this.evtDiff = evtChangeDiff;
-
-        }
-
-        this._val = val;
-
+        this.__val = val;
 
     }
 

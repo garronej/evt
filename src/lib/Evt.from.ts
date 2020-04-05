@@ -1,15 +1,15 @@
-import { id } from "../../tools/typeSafety/id";
-import { assert } from "../../tools/typeSafety/assert";
-import { typeGuard } from "../../tools/typeSafety/typeGuard";
-import { EventTargetLike } from "../types/EventTargetLike";
+import { id } from "../tools/typeSafety/id";
+import { assert } from "../tools/typeSafety/assert";
+import { typeGuard } from "../tools/typeSafety/typeGuard";
+import { EventTargetLike } from "./types/EventTargetLike";
 import { mergeImpl } from "./Evt.merge";
-import { importProxy } from "../importProxy";
-import /*type*/ * as dom from "../types/lib.dom";
-type Evt<T>= import("../Evt").Evt<T>;
-type EvtLike<T> = import("../Evt").EvtLike<T>;
+import { importProxy } from "./importProxy";
+import /*type*/ * as dom from "./types/lib.dom";
+type Evt<T>= import("./Evt").Evt<T>;
+type EvtLike<T> = import("./Evt").EvtLike<T>;
 
 type OneOrMany<T> = T | ArrayLike<T>;
-type CtxLike<Result> = import("../Ctx").CtxLike<Result> & {
+type CtxLike<Result> = import("./Ctx").CtxLike<Result> & {
       evtDoneOrAborted: EvtLike<unknown> & { postCount: number; attachOnce(callback: ()=> void): void; };
 };
 

@@ -1,13 +1,13 @@
 
-import { importProxy } from "../importProxy";
-import { typeGuard } from "../../tools/typeSafety/typeGuard";
-import { assert } from "../../tools/typeSafety/assert";
+import { importProxy } from "./importProxy";
+import { typeGuard } from "../tools/typeSafety/typeGuard";
+import { assert } from "../tools/typeSafety/assert";
 
 type EvtLike<T> = {
     attach(callback: (data: T) => void): void;
 };
-type CtxLike<T> = import("../Ctx").CtxLike<T>;
-type Tracked<T> = import("../Tracked").Tracked<T>;
+type CtxLike<T> = import("./Ctx").CtxLike<T>;
+type Tracked<T> = import("./Tracked").Tracked<T>;
 
 type TrackedLike<T> = {
     val: T;
@@ -23,7 +23,7 @@ function fromEvtImpl<T>(
     initialValue: T
 ): Tracked<T> {
 
-    const trk = new importProxy.Tracked<T>(initialValue)
+    const trk = new importProxy.Tracked<T>(initialValue);
 
     evt.attach((data: T) => trk.val = data);
 

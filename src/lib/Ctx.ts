@@ -5,6 +5,8 @@ import { typeGuard } from "../tools/typeSafety/typeGuard";
 import { LazyEvtFactory } from "./util/LazyEvtFactory";
 import { importProxy } from "./importProxy";
 import /*type*/ { Handler } from "./types/Handler";
+import { defineAccessors } from "../tools/defineAccessors";
+import { id } from "../tools/typeSafety/id";
 
 type EvtLike<T> = import("./Evt").EvtLike<T>;
 type Evt<T> = import("./Evt").Evt<T>;
@@ -19,12 +21,82 @@ export interface CtxLike<Result = any> {
 /** https://docs.evt.land/api/ctx */
 export class Ctx<Result> implements CtxLike<Result>{
 
-    private readonly getEvtDoneOrAborted: () => Evt<Ctx.DoneOrAborted<Result>>;
+
+
+
+
+    /** https://docs.evt.land/api/ctx#ctx-evtdoneoraborted */
+    declare public readonly evtDoneOrAborted: Evt<Ctx.DoneOrAborted<Result>>;
 
     /** 
-     * https://docs.evt.land/api/ctx#ctx-evtdoneoraborted
-     */
-    public get evtDoneOrAborted() { return this.getEvtDoneOrAborted(); };
+     * https://docs.evt.land/api/ctx#ctx-evtattach
+     * 
+     * Posted every time a handler is bound to this context 
+     * */
+    declare public readonly evtAttach: Evt<Handler.WithEvt<any, Result>>;
+
+    /** 
+     * https://docs.evt.land/api/ctx#ctx-evtdetach
+     * 
+     * Posted every time a handler bound to this context is detached from it's Evt 
+     * */
+    declare public readonly evtDetach: Evt<Handler.WithEvt<any, Result>>;
+
+
+    private lazyEvtAttachFactory = new LazyEvtFactory<Handler.WithEvt<any, Result>>();
+    private lazyEvtDetachFactory = new LazyEvtFactory<Handler.WithEvt<any, Result>>();
+    private lazyEvtDoneOrAbortedFactory = new LazyEvtFactory<Ctx.DoneOrAborted<Result>>();
+
+    private onDoneOrAborted(doneEvtData: Ctx.DoneOrAborted<Result>): void {
+        this.lazyEvtDoneOrAbortedFactory.post(doneEvtData);
+    }
+
+    private onHandler(isAttach: boolean, handler: Handler.WithEvt<any, Result>): void {
+        isAttach ?
+            this.lazyEvtAttachFactory.post(handler) :
+            this.lazyEvtDetachFactory.post(handler)
+            ;
+    }
+
+
+    private static __1: void = (() => {
+
+        if (false) { Ctx.__1 }
+
+        defineAccessors(
+            Ctx.prototype,
+            "evtDoneOrAborted",
+            {
+                "get": function () {
+                    return id<Ctx<any>>(this).lazyEvtDoneOrAbortedFactory.getEvt();
+                }
+            }
+        );
+
+        defineAccessors(
+            Ctx.prototype,
+            "evtAttach",
+            {
+                "get": function () {
+                    return id<Ctx<any>>(this).lazyEvtAttachFactory.getEvt();
+                }
+            }
+        );
+
+        defineAccessors(
+            Ctx.prototype,
+            "evtDetach",
+            {
+                "get": function () {
+                    return id<Ctx<any>>(this).lazyEvtDetachFactory.getEvt();
+                }
+            }
+        );
+
+
+
+
+    })();
 
     /** 
      * https://docs.evt.land/api/ctx#ctx-waitfor-timeout 
@@ -36,7 +108,7 @@ export class Ctx<Result> implements CtxLike<Result>{
      * If the timeout is reached ctx.abort(timeoutError) will be invoked.
      */
     public waitFor(timeout?: number): Promise<Result> {
-        return this.getEvtDoneOrAborted()
+        return this.evtDoneOrAborted
             .waitFor(timeout)
             .then(
                 data => {
@@ -53,58 +125,6 @@ export class Ctx<Result> implements CtxLike<Result>{
             ;
     }
 
-    private readonly getEvtAttach: () => Evt<Handler.WithEvt<any, Result>>;
-
-
-    /** 
-     * https://docs.evt.land/api/ctx#ctx-evtattach
-     * 
-     * Posted every time a handler is bound to this context 
-     * */
-    public get evtAttach() { return this.getEvtAttach(); }
-
-    private readonly getEvtDetach: () => Evt<Handler.WithEvt<any, Result>>;
-
-    /** 
-     * https://docs.evt.land/api/ctx#ctx-evtdetach
-     * 
-     * Posted every time a handler bound to this context is detached from it's Evt 
-     * */
-    public get evtDetach() { return this.getEvtDetach(); }
-
-
-    private readonly onDone: (doneEvtData: Ctx.DoneOrAborted<Result>) => void;
-    private readonly onHandler: (isAttach: boolean, handler: Handler.WithEvt<any, Result>) => void;
-
-    constructor() {
-
-        {
-
-            const lazyEvtAttachFactory = new LazyEvtFactory<Handler.WithEvt<any, Result>>();
-            const lazyEvtDetachFactory = new LazyEvtFactory<Handler.WithEvt<any, Result>>();
-
-            this.onHandler = (isAttach, handler) =>
-                isAttach ?
-                    lazyEvtAttachFactory.post(handler) :
-                    lazyEvtDetachFactory.post(handler)
-                ;
-
-            this.getEvtAttach = () => lazyEvtAttachFactory.getEvt();
-            this.getEvtDetach = () => lazyEvtDetachFactory.getEvt();
-
-        }
-
-        {
-
-            const lazyEvtDoneFactory = new LazyEvtFactory<Ctx.DoneOrAborted<Result>>();
-
-            this.onDone = doneEvtData => lazyEvtDoneFactory.post(doneEvtData);
-
-            this.getEvtDoneOrAborted = () => lazyEvtDoneFactory.getEvt();
-
-        }
-
-    }
 
     /** 
      * https://docs.evt.land/api/ctx#ctx-abort-error
@@ -147,7 +167,7 @@ export class Ctx<Result> implements CtxLike<Result>{
             handlers.push({ handler, evt });
         }
 
-        this.onDone({
+        this.onDoneOrAborted({
             ...(!!error ?
                 { type: "ABORTED", error } :
                 { type: "DONE", "result": result as NonNullable<typeof result> }

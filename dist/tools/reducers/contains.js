@@ -10,7 +10,7 @@ var __values = (this && this.__values) || function(o) {
     };
     throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var reduceify_1 = require("./reduceify");
 function arrContains(arr, matcher) {
     var e_1, _a;
@@ -26,7 +26,7 @@ function arrContains(arr, matcher) {
     catch (e_1_1) { e_1 = { error: e_1_1 }; }
     finally {
         try {
-            if (arr_1_1 && !arr_1_1.done && (_a = arr_1.return)) _a.call(arr_1);
+            if (arr_1_1 && !arr_1_1.done && (_a = arr_1["return"])) _a.call(arr_1);
         }
         finally { if (e_1) throw e_1.error; }
     }

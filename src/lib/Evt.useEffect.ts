@@ -1,6 +1,6 @@
 
 
-type EvtLike<T> = import("../Evt").EvtLike<T> & {
+type EvtLike<T> = import("./Evt").EvtLike<T> & {
     attach(callback: (data: T) => void): void;
 };
 

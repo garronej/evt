@@ -1,11 +1,11 @@
-import /*type*/ { UnpackEvt } from "../types/helper/UnpackEvt";
-import { importProxy } from "../importProxy";
+import /*type*/ { UnpackEvt } from "./types/helper/UnpackEvt";
+import { importProxy } from "./importProxy";
 
-type Evt<T>= import("../Evt").Evt<T>;
-type CtxLike<Result> = import("../Ctx").CtxLike<Result>;
+type Evt<T>= import("./Evt").Evt<T>;
+type CtxLike<Result> = import("./Ctx").CtxLike<Result>;
 
 
-type EvtLike<T> = import("../Evt").EvtLike<T> & {
+type EvtLike<T> = import("./Evt").EvtLike<T> & {
     attach(ctx: CtxLike<any>, callback: (data: T)=> void): void;
     attach(callback: (data: T)=> void): void;
 };

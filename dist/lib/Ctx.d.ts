@@ -1,5 +1,6 @@
 import { Handler } from "./types/Handler";
 declare type EvtLike<T> = import("./Evt").EvtLike<T>;
+declare type Evt<T> = import("./Evt").Evt<T>;
 export interface CtxLike<Result = any> {
     done(result: Result): void;
     abort(error: Error): void;
@@ -8,11 +9,26 @@ export interface CtxLike<Result = any> {
 }
 /** https://docs.evt.land/api/ctx */
 export declare class Ctx<Result> implements CtxLike<Result> {
-    private readonly getEvtDoneOrAborted;
+    /** https://docs.evt.land/api/ctx#ctx-evtdoneoraborted */
+    readonly evtDoneOrAborted: Evt<Ctx.DoneOrAborted<Result>>;
     /**
-     * https://docs.evt.land/api/ctx#ctx-evtdoneoraborted
-     */
-    get evtDoneOrAborted(): import("./Evt").Evt<Ctx.DoneOrAborted<Result>>;
+     * https://docs.evt.land/api/ctx#ctx-evtattach
+     *
+     * Posted every time a handler is bound to this context
+     * */
+    readonly evtAttach: Evt<Handler.WithEvt<any, Result>>;
+    /**
+     * https://docs.evt.land/api/ctx#ctx-evtdetach
+     *
+     * Posted every time a handler bound to this context is detached from it's Evt
+     * */
+    readonly evtDetach: Evt<Handler.WithEvt<any, Result>>;
+    private lazyEvtAttachFactory;
+    private lazyEvtDetachFactory;
+    private lazyEvtDoneOrAbortedFactory;
+    private onDoneOrAborted;
+    private onHandler;
+    private static __1;
     /**
      * https://docs.evt.land/api/ctx#ctx-waitfor-timeout
      *
@@ -23,23 +39,6 @@ export declare class Ctx<Result> implements CtxLike<Result> {
      * If the timeout is reached ctx.abort(timeoutError) will be invoked.
      */
     waitFor(timeout?: number): Promise<Result>;
-    private readonly getEvtAttach;
-    /**
-     * https://docs.evt.land/api/ctx#ctx-evtattach
-     *
-     * Posted every time a handler is bound to this context
-     * */
-    get evtAttach(): import("./Evt").Evt<Handler.WithEvt<any, Result>>;
-    private readonly getEvtDetach;
-    /**
-     * https://docs.evt.land/api/ctx#ctx-evtdetach
-     *
-     * Posted every time a handler bound to this context is detached from it's Evt
-     * */
-    get evtDetach(): import("./Evt").Evt<Handler.WithEvt<any, Result>>;
-    private readonly onDone;
-    private readonly onHandler;
-    constructor();
     /**
      * https://docs.evt.land/api/ctx#ctx-abort-error
      *

@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 exports.concatUint8Array = function (chunks, byteLength) {
     byteLength = byteLength !== null && byteLength !== void 0 ? byteLength : chunks.reduce(function (prev, _a) {
         var byteLength = _a.byteLength;

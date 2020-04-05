@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var scan_1 = require("./scan");
 exports.scan = scan_1.scan;
 var throttleTime_1 = require("./throttleTime");

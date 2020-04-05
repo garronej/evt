@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var same_1 = require("./same");
 var assert_1 = require("../typeSafety/assert");
 var copy_1 = require("./copy");

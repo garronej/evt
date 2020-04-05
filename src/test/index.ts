@@ -28,7 +28,7 @@ if (n) {
     require("../tools/reducers/test");
     require("../tools/inDepth/test");
 
-    const n = 77;
+    const n = 78;
 
     for (let i = 1; i <= n; i++) {
 

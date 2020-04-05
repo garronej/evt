@@ -19,7 +19,7 @@ var __spread = (this && this.__spread) || function () {
     for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
     return ar;
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var encapsulateOpState_1 = require("./encapsulateOpState");
 var invokeOperator_1 = require("./invokeOperator");
 var Operator_1 = require("../types/Operator");

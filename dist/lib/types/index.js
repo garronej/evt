@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var EvtError_1 = require("./EvtError");
 exports.EvtError = EvtError_1.EvtError;
 var Operator_1 = require("./Operator");
