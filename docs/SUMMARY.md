@@ -3,6 +3,7 @@
 * [Why EVT ?](README.md)
 * [Overview](overview.md)
 * [API Documentation](api/README.md)
+  * [Helper types](api/helpertypes.md)
   * [Operator&lt;T, U&gt; \(type\)](api/operator.md)
   * [Evt&lt;T&gt; \(class\)](api/evt/README.md)
     * [evt.\[$\]attach\*\(...\)](api/evt/attach.md)
