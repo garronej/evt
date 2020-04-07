@@ -3,7 +3,6 @@
 * [Why EVT ?](README.md)
 * [Overview](overview.md)
 * [API Documentation](api/README.md)
-  * [Helper types](api/helpertypes.md)
   * [Operator&lt;T, U&gt; \(type\)](api/operator.md)
   * [Evt&lt;T&gt; \(class\)](api/evt/README.md)
     * [evt.\[$\]attach\*\(...\)](api/evt/attach.md)
@@ -24,9 +23,8 @@
     * [Evt.merge\(\[ evt1, evt2, ... \]\)](api/evt/merge.md)
     * [Evt.setDefaultMaxHandlers\(n\)](api/evt/setdefaultmaxhandlers.md)
   * [Ctx&lt;T&gt; \(class\)](api/ctx.md)
+  * [Helper types](api/helpertypes.md)
   * [Handler&lt;T, U&gt; \(type\)](api/handler.md)
-  * [VoidEvt \(class\)](api/voidevt.md)
-  * [NonPostable&lt;Evt&lt;T&gt;&gt; \(type\)](api/nonpostable.md)
   * [UnpackEvt&lt;typeof evt&gt; \(type\)](api/unpackevt.md)
   * [Tracked&lt;T&gt; \(class\)](api/tracked.md)
 

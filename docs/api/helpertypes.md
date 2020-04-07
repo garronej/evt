@@ -29,6 +29,26 @@ const evt= new Evt<{ p1: string; p2: number; }>();
 const evtReadonly: ToNonPostable<typeof evt> = evt;
 ```
 
+Example use of the `NonPostableEvt` interface:
+
+```typescript
+import { Evt, NonPostableEvt } from "evt";
+
+const evtText= new Evt<string>();
+
+//Api to expose.
+export const api:{ evtText: NonPostableEvt<string>; } = { evtText };
+
+//evtText exposed by the api cannot be posted…
+api.evtText.post //<=== TS error 
+api.evtText.postOnceMatched //<===== TS error
+
+//…but we can post internally.
+evtText.post("good");
+```
+
+[**Run the example**](https://stackblitz.com/edit/evt-xc2eqj?embed=1&file=index.ts&hideExplorer=1)
+
 ## UnpackEvt&lt;E&gt;
 
 Extract the type argument of an Evt 
@@ -52,6 +72,33 @@ UnpackEvt<{
     type: "FOO"
 }
 ```
+
+#### Example:
+
+UnpackEvt is a helper type to infer the type argument of an Evt instance.
+
+```typescript
+import { Evt, UnpackEvt } from "evt";
+
+const evtHuman = new Evt<{
+    name: string;
+    age: number;
+    gender: "MALE" | "FEMALE"
+}>();
+
+
+type Human = UnpackEvt<typeof evtHuman>;
+
+const human: Human = {
+    "name": "bob",
+    "age": 89,
+    "gender": "MALE"
+};
+
+evtHuman.post(human);
+```
+
+[**Run the example**](https://stackblitz.com/edit/evt-ykjacd?embed=1&file=index.ts&hideExplorer=1)
 
 ## SwapEvtType&lt;E, T&gt;
 
