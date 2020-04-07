@@ -1,39 +1,59 @@
 
-import { Tracked } from "../lib";
+import { StatefulEvt } from "../lib";
 import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi";
 
-const { mustResolve } = getPromiseAssertionApi();
+const { mustResolve, mustStayPending } = getPromiseAssertionApi();
 
 (async () => {
 
-    const trkText = new Tracked("");
 
     {
 
-        const pr = mustResolve({
-            "promise": trkText.evt.waitFor(text => text === ""),
+        const sevText = new StatefulEvt("");
+
+        const pr1 = mustResolve({
+            "promise": sevText.waitFor(),
             "expectedData": ""
         });
 
-        trkText.forceUpdate(trkText.val);
+        const pr2 = mustResolve({
+            "promise": sevText.evtDiff.waitFor(({ newState }) => newState === "" ? [newState] : null),
+            "expectedData": ""
+        });
 
-        await pr;
+        mustStayPending(sevText.evtChange.waitFor());
+        mustStayPending(sevText.evtChangeDiff.waitFor());
+
+
+        sevText.post(sevText.state);
+
+        await Promise.all([pr1, pr2]);
 
     }
+
     {
 
-        const pr = mustResolve({
-            "promise": trkText.evt.waitFor(text => text === ""),
+        const sevText = new StatefulEvt("");
+
+        const pr1 = mustResolve({
+            "promise": sevText.waitFor(),
             "expectedData": ""
         });
 
-        trkText.forceUpdate(trkText.val);
+        const pr2 = mustResolve({
+            "promise": sevText.evtDiff.waitFor(({ newState }) => newState === "" ? [newState] : null),
+            "expectedData": ""
+        });
 
-        await pr;
+        mustStayPending(sevText.evtChange.waitFor());
+        mustStayPending(sevText.evtChangeDiff.waitFor());
+
+        sevText.state = sevText.state;
+
+        await Promise.all([pr1, pr2]);
 
     }
 
     console.log("PASS".green);
-
 
 })();

@@ -97,7 +97,6 @@ exports.copy = (function () {
                 var name = names_1_1.value;
                 var prop = __assign({}, Object.getOwnPropertyDescriptor(obj, name));
                 assert_1.assert(!prop.get && !prop.set, "can't clone getter and setter");
-                //TODO: Circular references.
                 prop.value = rec(prop.value);
                 Object.defineProperty(out, name, prop);
             }

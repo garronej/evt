@@ -1,5 +1,5 @@
 
-import { Evt, NonPostable } from "../lib";
+import { Evt, ToNonPostableEvt } from "../lib";
 import { id, assert } from "../tools/typeSafety";
 
 type Person = {
@@ -23,13 +23,13 @@ const startUi = (() => {
     const createPersonLogger = <T extends string>(
         { person, evtFieldChange }: {
             person: Readonly<Person>;
-            evtFieldChange: NonPostable<Evt<T>>;
+            evtFieldChange: ToNonPostableEvt<Evt<T>>;
         }
     ) => evtFieldChange.attach(
         field => acc += `${person.name} ${field} changed\n`
     );
 
-    return ({ evtPersonChange }: { evtPersonChange: NonPostable<Evt<PersonChange>> }) =>
+    return ({ evtPersonChange }: { evtPersonChange: ToNonPostableEvt<Evt<PersonChange>> }) =>
         evtPersonChange.$attach(
             personChange => personChange.eventType === "NEW" ?
                 [personChange.person] : null,

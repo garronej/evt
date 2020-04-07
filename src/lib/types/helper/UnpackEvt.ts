@@ -1,6 +1,18 @@
 
-type EvtLike<T> = import("../../Evt").EvtLike<T>;
+/** Minimal interface that an object have to implement
+ * to be considered as being most certainly an Evt instance */
+export interface EvtLike<T> {
+    isHandled(data?: T): void;
+}
 
-/** https://docs.evt.land/api/unpackevt */
-export type UnpackEvt<T extends EvtLike<any>> = T extends EvtLike<infer U> ? U : never;
+type UnpackEvtBase<T extends EvtLike<any>> = T extends EvtLike<infer U> ? U : never;
+
+type UnpackEvtRecord<T extends { [key: string]: any; }> = {
+    [P in keyof T]: T[P] extends EvtLike<any> ? UnpackEvtBase<T[P]> : T[P];
+};
+
+export type UnpackEvt<T extends ({ [key: string]: any; } | EvtLike<any>)> =
+    T extends EvtLike<any> ? UnpackEvtBase<T> :
+    UnpackEvtRecord<T>
+    ;
 

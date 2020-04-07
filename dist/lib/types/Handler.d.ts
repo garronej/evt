@@ -1,6 +1,6 @@
 import { Operator } from "./Operator";
-declare type EvtLike<T> = import("../Evt").EvtLike<T>;
-declare type CtxLike<Result> = import("../Ctx").CtxLike<Result>;
+declare type EvtLike<T> = import("../types/helper/UnpackEvt").EvtLike<T>;
+declare type CtxLike<Result> = import("../types/interfaces").CtxLike<Result>;
 /** https://docs.evt.land/api/handler */
 export declare type Handler<T, U, CtxProp extends CtxLike<any> | undefined = CtxLike<any> | undefined> = Handler.PropsFromArgs<T, U, CtxProp> & Handler.PropsFromMethodName & Readonly<{
     detach(): boolean;
@@ -14,7 +14,8 @@ export declare namespace Handler {
         op: Operator<T, U, CtxProp extends CtxLike<infer CtxResult> ? CtxResult : undefined>;
         callback: ((transformedData: U) => void) | undefined;
     };
-    /** Handlers params that are implicitly specified by the method used:
+    /**
+     * Handlers params that are implicitly specified by the method used:
      * attachOnce => once
      * attachOncePrepend => once + prepend
      * waitFor => once + async

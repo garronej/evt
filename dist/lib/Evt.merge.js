@@ -1,7 +1,6 @@
 "use strict";
 exports.__esModule = true;
 var importProxy_1 = require("./importProxy");
-//TODO: Fix interoperability between versions.
 function mergeImpl(ctx, evts) {
     var evtUnion = new importProxy_1.importProxy.Evt();
     var callback = function (data) { return evtUnion.post(data); };

@@ -26,11 +26,15 @@ exports.overwriteReadonlyProp = function (obj, propertyName, value) {
         return value;
     }
     var errorDefineProperty = undefined;
+    var propertyDescriptor = (_a = Object.getOwnPropertyDescriptor(obj, propertyName)) !== null && _a !== void 0 ? _a : {
+        "enumerable": true,
+        "configurable": true
+    };
+    if (!!propertyDescriptor.get) {
+        throw new Error("Probably a wrong ides to overwrite " + propertyName + " getter");
+    }
     try {
-        Object.defineProperty(obj, propertyName, __assign(__assign({}, ((_a = Object.getOwnPropertyDescriptor(obj, propertyName)) !== null && _a !== void 0 ? _a : {
-            "enumerable": true,
-            "configurable": true
-        })), { value: value }));
+        Object.defineProperty(obj, propertyName, __assign(__assign({}, propertyDescriptor), { value: value }));
     }
     catch (error) {
         errorDefineProperty = error;

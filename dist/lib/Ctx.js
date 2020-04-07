@@ -39,26 +39,21 @@ var Set_1 = require("minimal-polyfills/dist/lib/Set");
 var WeakMap_1 = require("minimal-polyfills/dist/lib/WeakMap");
 var assert_1 = require("../tools/typeSafety/assert");
 var typeGuard_1 = require("../tools/typeSafety/typeGuard");
-var LazyEvtFactory_1 = require("./util/LazyEvtFactory");
+var LazyEvt_1 = require("./LazyEvt");
 var importProxy_1 = require("./importProxy");
 var defineAccessors_1 = require("../tools/defineAccessors");
 var id_1 = require("../tools/typeSafety/id");
 /** https://docs.evt.land/api/ctx */
 var Ctx = /** @class */ (function () {
     function Ctx() {
-        this.lazyEvtAttachFactory = new LazyEvtFactory_1.LazyEvtFactory();
-        this.lazyEvtDetachFactory = new LazyEvtFactory_1.LazyEvtFactory();
-        this.lazyEvtDoneOrAbortedFactory = new LazyEvtFactory_1.LazyEvtFactory();
+        this.lazyEvtAttach = new LazyEvt_1.LazyEvt();
+        this.lazyEvtDetach = new LazyEvt_1.LazyEvt();
+        this.lazyEvtDoneOrAborted = new LazyEvt_1.LazyEvt();
         this.handlers = new Set_1.Polyfill();
         this.evtByHandler = new WeakMap_1.Polyfill();
     }
     Ctx.prototype.onDoneOrAborted = function (doneEvtData) {
-        this.lazyEvtDoneOrAbortedFactory.post(doneEvtData);
-    };
-    Ctx.prototype.onHandler = function (isAttach, handler) {
-        isAttach ?
-            this.lazyEvtAttachFactory.post(handler) :
-            this.lazyEvtDetachFactory.post(handler);
+        this.lazyEvtDoneOrAborted.post(doneEvtData);
     };
     /**
      * https://docs.evt.land/api/ctx#ctx-waitfor-timeout
@@ -146,7 +141,7 @@ var Ctx = /** @class */ (function () {
         assert_1.assert(typeGuard_1.typeGuard(handler));
         this.handlers.add(handler);
         this.evtByHandler.set(handler, evt);
-        this.onHandler(true, { handler: handler, evt: evt });
+        this.lazyEvtAttach.post({ handler: handler, evt: evt });
     };
     /**
      * Exposed to enable safe interoperability between EVT versions.
@@ -155,7 +150,10 @@ var Ctx = /** @class */ (function () {
     Ctx.prototype.zz__removeHandler = function (handler) {
         assert_1.assert(handler.ctx === this);
         assert_1.assert(typeGuard_1.typeGuard(handler));
-        this.onHandler(false, { handler: handler, "evt": this.evtByHandler.get(handler) });
+        this.lazyEvtDetach.post({
+            handler: handler,
+            "evt": this.evtByHandler.get(handler)
+        });
         this.handlers["delete"](handler);
     };
     Ctx.__1 = (function () {
@@ -164,17 +162,17 @@ var Ctx = /** @class */ (function () {
         }
         defineAccessors_1.defineAccessors(Ctx.prototype, "evtDoneOrAborted", {
             "get": function () {
-                return id_1.id(this).lazyEvtDoneOrAbortedFactory.getEvt();
+                return id_1.id(this).lazyEvtDoneOrAborted.evt;
             }
         });
         defineAccessors_1.defineAccessors(Ctx.prototype, "evtAttach", {
             "get": function () {
-                return id_1.id(this).lazyEvtAttachFactory.getEvt();
+                return id_1.id(this).lazyEvtAttach.evt;
             }
         });
         defineAccessors_1.defineAccessors(Ctx.prototype, "evtDetach", {
             "get": function () {
-                return id_1.id(this).lazyEvtDetachFactory.getEvt();
+                return id_1.id(this).lazyEvtDetach.evt;
             }
         });
     })();
@@ -188,11 +186,6 @@ var VoidCtx = /** @class */ (function (_super) {
     function VoidCtx() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    /**
-     * Detach all handlers.
-     * evtDone will post [ null, undefined, handlers (detached) ]
-     * If getPrDone() was invoked the promise will resolve
-     */
     VoidCtx.prototype.done = function () {
         return _super.prototype.done.call(this, undefined);
     };

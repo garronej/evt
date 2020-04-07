@@ -1,9 +1,10 @@
 
 
-type EvtLike<T> = import("./Evt").EvtLike<T> & {
+type EvtLike<T> = {
     attach(callback: (data: T) => void): void;
 };
 
+/** https://docs.evt.land/api/evt/use-effect */
 export function useEffect<T>(
     effect: (
         data: T,

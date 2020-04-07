@@ -1,6 +1,7 @@
-declare type EvtLike<T> = import("./Evt").EvtLike<T> & {
+declare type EvtLike<T> = {
     attach(callback: (data: T) => void): void;
 };
+/** https://docs.evt.land/api/evt/use-effect */
 export declare function useEffect<T>(effect: (data: T, dataWrap: {
     isFirst: true;
 } | {

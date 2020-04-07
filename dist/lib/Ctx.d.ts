@@ -1,14 +1,28 @@
 import { Handler } from "./types/Handler";
-declare type EvtLike<T> = import("./Evt").EvtLike<T>;
-declare type Evt<T> = import("./Evt").Evt<T>;
-export interface CtxLike<Result = any> {
-    done(result: Result): void;
-    abort(error: Error): void;
-    zz__addHandler<T>(handler: Handler<T, any, CtxLike<Result>>, evt: EvtLike<T>): void;
-    zz__removeHandler<T>(handler: Handler<T, any, CtxLike<Result>>): void;
+declare type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T>;
+declare type Evt<T> = import("./types/interfaces").Evt<T>;
+declare type CtxLike<T> = import("./types/interfaces").CtxLike<T>;
+export declare namespace Ctx {
+    type DoneOrAborted<Result> = DoneOrAborted.Done<Result> | DoneOrAborted.Aborted<Result>;
+    namespace DoneOrAborted {
+        type Common<Result> = {
+            handlers: Handler.WithEvt<any, Result>[];
+        };
+        export type Done<Result> = Common<Result> & {
+            type: "DONE";
+            result: Result;
+            error?: undefined;
+        };
+        export type Aborted<Result> = Common<Result> & {
+            type: "ABORTED";
+            error: Error;
+            result?: undefined;
+        };
+        export {};
+    }
 }
 /** https://docs.evt.land/api/ctx */
-export declare class Ctx<Result> implements CtxLike<Result> {
+export declare class Ctx<Result> {
     /** https://docs.evt.land/api/ctx#ctx-evtdoneoraborted */
     readonly evtDoneOrAborted: Evt<Ctx.DoneOrAborted<Result>>;
     /**
@@ -23,11 +37,10 @@ export declare class Ctx<Result> implements CtxLike<Result> {
      * Posted every time a handler bound to this context is detached from it's Evt
      * */
     readonly evtDetach: Evt<Handler.WithEvt<any, Result>>;
-    private lazyEvtAttachFactory;
-    private lazyEvtDetachFactory;
-    private lazyEvtDoneOrAbortedFactory;
+    private lazyEvtAttach;
+    private lazyEvtDetach;
+    private lazyEvtDoneOrAborted;
     private onDoneOrAborted;
-    private onHandler;
     private static __1;
     /**
      * https://docs.evt.land/api/ctx#ctx-waitfor-timeout
@@ -72,35 +85,8 @@ export declare class Ctx<Result> implements CtxLike<Result> {
      * */
     zz__removeHandler<T>(handler: Handler<T, any, CtxLike<Result>>): void;
 }
-export declare namespace Ctx {
-    type DoneOrAborted<Result> = DoneOrAborted.Done<Result> | DoneOrAborted.Aborted<Result>;
-    namespace DoneOrAborted {
-        type Common<Result> = {
-            handlers: Handler.WithEvt<any, Result>[];
-        };
-        export type Done<Result> = Common<Result> & {
-            type: "DONE";
-            result: Result;
-            error?: undefined;
-        };
-        export type Aborted<Result> = Common<Result> & {
-            type: "ABORTED";
-            error: Error;
-            result?: undefined;
-        };
-        export {};
-    }
-}
-export interface VoidCtxLike extends CtxLike<void> {
-    done(): void;
-}
 /** https://docs.evt.land/api/ctx */
-export declare class VoidCtx extends Ctx<void> implements VoidCtxLike {
-    /**
-     * Detach all handlers.
-     * evtDone will post [ null, undefined, handlers (detached) ]
-     * If getPrDone() was invoked the promise will resolve
-     */
+export declare class VoidCtx extends Ctx<void> {
     done(): Handler.WithEvt<any, void>[];
 }
 export {};

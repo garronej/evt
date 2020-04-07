@@ -2,61 +2,70 @@ import { Polyfill as Set } from "minimal-polyfills/dist/lib/Set";
 import { Polyfill as WeakMap } from "minimal-polyfills/dist/lib/WeakMap";
 import { assert } from "../tools/typeSafety/assert";
 import { typeGuard } from "../tools/typeSafety/typeGuard";
-import { LazyEvtFactory } from "./util/LazyEvtFactory";
+import { LazyEvt } from "./LazyEvt";
 import { importProxy } from "./importProxy";
 import /*type*/ { Handler } from "./types/Handler";
 import { defineAccessors } from "../tools/defineAccessors";
-import { id } from "../tools/typeSafety/id";
+import { id } from "../tools/typeSafety/id";
 
-type EvtLike<T> = import("./Evt").EvtLike<T>;
-type Evt<T> = import("./Evt").Evt<T>;
+type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T>;
+type Evt<T> = import("./types/interfaces").Evt<T>;
+type CtxLike<T> = import("./types/interfaces").CtxLike<T>;
 
-export interface CtxLike<Result = any> {
-    done(result: Result): void;
-    abort(error: Error): void;
-    zz__addHandler<T>(handler: Handler<T, any, CtxLike<Result>>, evt: EvtLike<T>): void;
-    zz__removeHandler<T>(handler: Handler<T, any, CtxLike<Result>>): void;
+export namespace Ctx {
+
+    export type DoneOrAborted<Result> = DoneOrAborted.Done<Result> | DoneOrAborted.Aborted<Result>;
+
+    export namespace DoneOrAborted {
+
+        type Common<Result> = {
+            handlers: Handler.WithEvt<any, Result>[];
+        }
+
+        export type Done<Result> = Common<Result> & {
+            type: "DONE";
+            result: Result;
+            error?: undefined;
+        };
+
+        export type Aborted<Result> = Common<Result> & {
+            type: "ABORTED";
+            error: Error;
+            result?: undefined;
+        };
+
+    }
 }
 
 /** https://docs.evt.land/api/ctx */
-export class Ctx<Result> implements CtxLike<Result>{
-
-
-
-
+export class Ctx<Result>{
 
     /** https://docs.evt.land/api/ctx#ctx-evtdoneoraborted */
-    declare public readonly evtDoneOrAborted: Evt<Ctx.DoneOrAborted<Result>>;
+    declare readonly evtDoneOrAborted: Evt<Ctx.DoneOrAborted<Result>>;
 
     /** 
      * https://docs.evt.land/api/ctx#ctx-evtattach
      * 
      * Posted every time a handler is bound to this context 
      * */
-    declare public readonly evtAttach: Evt<Handler.WithEvt<any, Result>>;
+    declare readonly evtAttach: Evt<Handler.WithEvt<any, Result>>;
 
     /** 
      * https://docs.evt.land/api/ctx#ctx-evtdetach
      * 
      * Posted every time a handler bound to this context is detached from it's Evt 
      * */
-    declare public readonly evtDetach: Evt<Handler.WithEvt<any, Result>>;
+    declare readonly evtDetach: Evt<Handler.WithEvt<any, Result>>;
 
 
-    private lazyEvtAttachFactory = new LazyEvtFactory<Handler.WithEvt<any, Result>>();
-    private lazyEvtDetachFactory = new LazyEvtFactory<Handler.WithEvt<any, Result>>();
-    private lazyEvtDoneOrAbortedFactory = new LazyEvtFactory<Ctx.DoneOrAborted<Result>>();
+    private lazyEvtAttach = new LazyEvt<Handler.WithEvt<any, Result>>();
+    private lazyEvtDetach = new LazyEvt<Handler.WithEvt<any, Result>>();
+    private lazyEvtDoneOrAborted = new LazyEvt<Ctx.DoneOrAborted<Result>>();
 
     private onDoneOrAborted(doneEvtData: Ctx.DoneOrAborted<Result>): void {
-        this.lazyEvtDoneOrAbortedFactory.post(doneEvtData);
+        this.lazyEvtDoneOrAborted.post(doneEvtData);
     }
 
-    private onHandler(isAttach: boolean, handler: Handler.WithEvt<any, Result>): void {
-        isAttach ?
-            this.lazyEvtAttachFactory.post(handler) :
-            this.lazyEvtDetachFactory.post(handler)
-            ;
-    }
 
 
     private static __1: void = (() => {
@@ -68,7 +77,7 @@ export class Ctx<Result> implements CtxLike<Result>{
             "evtDoneOrAborted",
             {
                 "get": function () {
-                    return id<Ctx<any>>(this).lazyEvtDoneOrAbortedFactory.getEvt();
+                    return id<Ctx<any>>(this).lazyEvtDoneOrAborted.evt;
                 }
             }
         );
@@ -78,7 +87,7 @@ export class Ctx<Result> implements CtxLike<Result>{
             "evtAttach",
             {
                 "get": function () {
-                    return id<Ctx<any>>(this).lazyEvtAttachFactory.getEvt();
+                    return id<Ctx<any>>(this).lazyEvtAttach.evt;
                 }
             }
         );
@@ -88,7 +97,7 @@ export class Ctx<Result> implements CtxLike<Result>{
             "evtDetach",
             {
                 "get": function () {
-                    return id<Ctx<any>>(this).lazyEvtDetachFactory.getEvt();
+                    return id<Ctx<any>>(this).lazyEvtDetach.evt;
                 }
             }
         );
@@ -107,7 +116,7 @@ export class Ctx<Result> implements CtxLike<Result>{
      * with EvtError.Timeout if done(result) is not called within [timeout]ms.
      * If the timeout is reached ctx.abort(timeoutError) will be invoked.
      */
-    public waitFor(timeout?: number): Promise<Result> {
+    waitFor(timeout?: number): Promise<Result> {
         return this.evtDoneOrAborted
             .waitFor(timeout)
             .then(
@@ -133,7 +142,7 @@ export class Ctx<Result> implements CtxLike<Result>{
      * evtDone will post [ error, undefined, handlers (detached) ]
      * if getPrDone() was invoked the promise will reject with the error
      */
-    public abort(error: Error) {
+    abort(error: Error) {
         return this.__done(error);
     }
 
@@ -144,7 +153,7 @@ export class Ctx<Result> implements CtxLike<Result>{
      * evtDone will post [ null, result, handlers (detached) ]
      * If getPrDone() was invoked the promise will result with result
      */
-    public done(result: Result) {
+    done(result: Result) {
         return this.__done(undefined, result);
     }
 
@@ -189,7 +198,7 @@ export class Ctx<Result> implements CtxLike<Result>{
     >();
 
     /** https://docs.evt.land/api/ctx#ctx-gethandlers */
-    public getHandlers(): Handler.WithEvt<any, Result>[] {
+    getHandlers(): Handler.WithEvt<any, Result>[] {
         return Array.from(this.handlers.values())
             .map(handler => ({ handler, "evt": this.evtByHandler.get(handler)! }))
             ;
@@ -200,7 +209,7 @@ export class Ctx<Result> implements CtxLike<Result>{
      * Exposed to enable safe interoperability between mismatching EVT versions. 
      * Should be considered private
      * */
-    public zz__addHandler<T>(
+    zz__addHandler<T>(
         handler: Handler<T, any, CtxLike<Result>>,
         evt: EvtLike<T>
     ) {
@@ -208,67 +217,35 @@ export class Ctx<Result> implements CtxLike<Result>{
         assert(typeGuard<Handler<T, any, Ctx<Result>>>(handler));
         this.handlers.add(handler);
         this.evtByHandler.set(handler, evt);
-        this.onHandler(true, { handler, evt });
+        this.lazyEvtAttach.post({ handler, evt });
     }
 
     /** 
      * Exposed to enable safe interoperability between EVT versions. 
      * Should be considered private
      * */
-    public zz__removeHandler<T>(
+    zz__removeHandler<T>(
         handler: Handler<T, any, CtxLike<Result>>,
     ) {
         assert(handler.ctx === this);
         assert(typeGuard<Handler<T, any, Ctx<Result>>>(handler));
 
-        this.onHandler(false, { handler, "evt": this.evtByHandler.get(handler)! });
+        this.lazyEvtDetach.post({
+            handler,
+            "evt": this.evtByHandler.get(handler)!
+        });
+
         this.handlers.delete(handler);
     }
 
 }
 
-export namespace Ctx {
-    export type DoneOrAborted<Result> = DoneOrAborted.Done<Result> | DoneOrAborted.Aborted<Result>;
-
-    export namespace DoneOrAborted {
-
-        type Common<Result> = {
-            handlers: Handler.WithEvt<any, Result>[];
-        }
-
-        export type Done<Result> = Common<Result> & {
-            type: "DONE";
-            result: Result;
-            error?: undefined;
-        };
-
-        export type Aborted<Result> = Common<Result> & {
-            type: "ABORTED";
-            error: Error;
-            result?: undefined;
-        };
-
-
-
-
-    }
-}
-
 importProxy.Ctx = Ctx;
 
-export interface VoidCtxLike extends CtxLike<void> {
-    done(): void;
-}
-
 /** https://docs.evt.land/api/ctx */
-export class VoidCtx extends Ctx<void> implements VoidCtxLike {
+export class VoidCtx extends Ctx<void> {
 
-    /**
-     * Detach all handlers.
-     * evtDone will post [ null, undefined, handlers (detached) ]
-     * If getPrDone() was invoked the promise will resolve
-     */
-    public done(): Handler.WithEvt<any, void>[] {
+    done(): Handler.WithEvt<any, void>[] {
         return super.done(undefined);
     }
 

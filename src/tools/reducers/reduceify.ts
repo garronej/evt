@@ -8,7 +8,7 @@ export type ReduceCallbackFunction<ArrOf, ReduceTo> = (
 export type ReduceArguments<ArrOf, ReduceTo> = [ReduceCallbackFunction<ArrOf, ReduceTo>, ReduceTo];
 
 export function toReduceArguments<ArrOf, ReduceTo, Params extends any[]>(
-    arrOp: (arr: readonly ArrOf[], ...params: Params) => ReduceTo,//TODO: readonly ArrOf[]
+    arrOp: (arr: readonly ArrOf[], ...params: Params) => ReduceTo,
     ...params: Params
 ): ReduceArguments<ArrOf, ReduceTo> {
 

@@ -1,50 +1,97 @@
 
-import { Tracked } from "../lib";
+import { StatefulEvt } from "../lib";
 import * as inDepth from "../tools/inDepth";
 import { diff } from "../tools/reducers";
-import { assert } from "../tools/typeSafety";
+import { assert } from "../tools/typeSafety";
 
-const users= [ "Bob", "Alice" ];
+{
 
-const { same } = inDepth.sameFactory({ "takeIntoAccountArraysOrdering": false });
+    const users = ["Bob", "Alice"];
 
-const trkUser = new Tracked<string[]>([...users]);
+    const { same } = inDepth.sameFactory({ "takeIntoAccountArraysOrdering": false });
 
-const update= (users: string[]) => {
+    const sevUser = new StatefulEvt<string[]>([...users]);
 
-    if( same( trkUser.val, users) ){
-        return;
-    }
+    const update = (users: string[]) => {
 
-    trkUser.val = inDepth.copy(users);
+        if (same(sevUser.state, users)) {
+            return;
+        }
 
-};
+        sevUser.post(inDepth.copy(users));
+
+    };
+
+    let stdout = "";
+
+    sevUser.evtDiff.attach(
+        ({ newState, prevState }) => {
+
+            const { added, removed } = prevState.reduce(...diff(newState))
+
+            stdout += `${added.join(", ")} joined the chat`;
+            stdout += `${removed.join(", ")} left the chat`;
+
+        }
+    );
 
 
+    update(users); //Print nothing
 
-let stdout= "";
+    users.splice(0, 1); //Remove Bob from the array.
 
-trkUser.evtDiff.attach(
-    ({ newVal, prevVal }) => {
+    users.push("Louis");
 
-        const { added, removed } = prevVal.reduce(...diff(newVal))
+    //Prints "Louis joined the chat" "Bob left the chat"
+    update(users);
 
-        stdout+= `${added.join(", ")} joined the chat`;
-        stdout+= `${removed.join(", ")} left the chat`;
+    assert("Louis joined the chatBob left the chat" === stdout);
 
-    }
-);
+}
+
+{
+
+    const users = ["Bob", "Alice"];
+
+    const { same } = inDepth.sameFactory({ "takeIntoAccountArraysOrdering": false });
+
+    const sevUser = new StatefulEvt<string[]>([...users]);
+
+    const update = (users: string[]) => {
+
+        if (same(sevUser.state, users)) {
+            return;
+        }
+
+        sevUser.state = inDepth.copy(users);
+
+    };
+
+    let stdout = "";
+
+    sevUser.evtDiff.attach(
+        ({ newState, prevState }) => {
+
+            const { added, removed } = prevState.reduce(...diff(newState))
+
+            stdout += `${added.join(", ")} joined the chat`;
+            stdout += `${removed.join(", ")} left the chat`;
+
+        }
+    );
 
 
-update(users); //Print nothing
+    update(users); //Print nothing
 
-users.splice(0,1); //Remove Bob from the array.
+    users.splice(0, 1); //Remove Bob from the array.
 
-users.push("Louis");
+    users.push("Louis");
 
-//Prints "Louis joined the chat" "Bob left the chat"
-update(users);
+    //Prints "Louis joined the chat" "Bob left the chat"
+    update(users);
 
-assert( "Louis joined the chatBob left the chat" === stdout);
+    assert("Louis joined the chatBob left the chat" === stdout);
+
+}
 
 console.log("PASS".green);

@@ -92,38 +92,31 @@ var __values = (this && this.__values) || function(o) {
 };
 exports.__esModule = true;
 require("minimal-polyfills/dist/lib/Array.prototype.find");
+var importProxy_1 = require("./importProxy");
+var Evt_getCtx_1 = require("./Evt.getCtx");
+var Evt_merge_1 = require("./Evt.merge");
+var Evt_from_1 = require("./Evt.from");
+var Evt_useEffect_1 = require("./Evt.useEffect");
+var Evt_parsePropsFromArgs_1 = require("./Evt.parsePropsFromArgs");
+var LazyEvt_1 = require("./LazyEvt");
+var defineAccessors_1 = require("../tools/defineAccessors");
+var id_1 = require("../tools/typeSafety/id");
+var invokeOperator_1 = require("./util/invokeOperator");
 var Map_1 = require("minimal-polyfills/dist/lib/Map");
 var WeakMap_1 = require("minimal-polyfills/dist/lib/WeakMap");
 var runExclusive = require("run-exclusive");
 var EvtError_1 = require("./types/EvtError");
 var overwriteReadonlyProp_1 = require("../tools/overwriteReadonlyProp");
-var encapsulateOpState_1 = require("./util/encapsulateOpState");
 var typeGuard_1 = require("../tools/typeSafety/typeGuard");
-var Operator_1 = require("./types/Operator");
-var invokeOperator_1 = require("./util/invokeOperator");
-var Evt_merge_1 = require("./Evt.merge");
-var Evt_from_1 = require("./Evt.from");
-var Evt_getCtx_1 = require("./Evt.getCtx");
-var Evt_useEffect_1 = require("./Evt.useEffect");
-var Evt_parseOverloadsArgs_1 = require("./Evt.parseOverloadsArgs");
-var LazyEvtFactory_1 = require("./util/LazyEvtFactory");
-var importProxy_1 = require("./importProxy");
-var defineAccessors_1 = require("../tools/defineAccessors");
-var id_1 = require("../tools/typeSafety/id");
+var encapsulateOpState_1 = require("./util/encapsulateOpState");
 var Deferred_1 = require("../tools/Deferred");
-/** https://docs.evt.land/api/evt */
-var Evt = /** @class */ (function () {
-    function Evt() {
-        this.lazyEvtAttachFactory = new LazyEvtFactory_1.LazyEvtFactory();
-        this.lazyEvtDetachFactory = new LazyEvtFactory_1.LazyEvtFactory();
+var Evt_loosenType_1 = require("./Evt.loosenType");
+var Operator_1 = require("./types/Operator");
+var EvtImpl = /** @class */ (function () {
+    function EvtImpl() {
+        this.lazyEvtAttach = new LazyEvt_1.LazyEvt();
+        this.lazyEvtDetach = new LazyEvt_1.LazyEvt();
         this.__maxHandlers = undefined;
-        //NOTE: Not really readonly but we want to prevent user from setting the value
-        //manually and we cant user accessor because we target es3.
-        /**
-         * https://docs.evt.land/api/evt/post
-         *
-         * Number of times .post(data) have been called.
-         */
         this.postCount = 0;
         this.traceId = null;
         this.handlers = [];
@@ -136,37 +129,26 @@ var Evt = /** @class */ (function () {
         this.__currentChronologyMark = 0;
         this.asyncHandlerCount = 0;
     }
-    Evt.newCtx = function () { return new importProxy_1.importProxy.Ctx(); };
-    Evt.prototype.onHandler = function (isAttach, handler) {
-        isAttach ?
-            this.lazyEvtAttachFactory.post(handler) :
-            this.lazyEvtDetachFactory.post(handler);
-    };
-    /** https://docs.evt.land/api/evt/post */
-    Evt.prototype.postAsyncOnceHandled = function (data) {
-        var _this_1 = this;
-        if (this.isHandled(data)) {
-            return this.post(data);
-        }
-        var resolvePr;
-        var pr = new Promise(function (resolve) { return resolvePr = resolve; });
-        this.evtAttach.attachOnce(function (_a) {
-            var op = _a.op;
-            return !!invokeOperator_1.invokeOperator(_this_1.getStatelessOp(op), data);
-        }, function () { return Promise.resolve().then(function () { return resolvePr(_this_1.post(data)); }); });
-        return pr;
-    };
-    /** https://docs.evt.land/api/evt/setdefaultmaxhandlers */
-    Evt.setDefaultMaxHandlers = function (n) {
+    EvtImpl.newCtx = function () { return new importProxy_1.importProxy.Ctx(); };
+    EvtImpl.setDefaultMaxHandlers = function (n) {
         this.__defaultMaxHandlers = isFinite(n) ? n : 0;
     };
-    /** https://docs.evt.land/api/evt/setmaxhandlers */
-    Evt.prototype.setMaxHandlers = function (n) {
+    EvtImpl.prototype.toStateful = function (initialState, ctx) {
+        var out = new importProxy_1.importProxy.StatefulEvt(initialState);
+        var callback = function (data) { return out.post(data); };
+        if (!!ctx) {
+            this.attach(ctx, callback);
+        }
+        else {
+            this.attach(callback);
+        }
+        return out;
+    };
+    EvtImpl.prototype.setMaxHandlers = function (n) {
         this.__maxHandlers = isFinite(n) ? n : 0;
         return this;
     };
-    /** https://docs.evt.land/api/evt/enabletrace */
-    Evt.prototype.enableTrace = function (params
+    EvtImpl.prototype.enableTrace = function (params
     //NOTE: Not typeof console.log as we don't want to expose types from node
     ) {
         var id = params.id, formatter = params.formatter, log = params.log;
@@ -190,15 +172,14 @@ var Evt = /** @class */ (function () {
                 }) :
                 log === false ? undefined : log;
     };
-    /** https://docs.evt.land/api/evt/enabletrace */
-    Evt.prototype.disableTrace = function () {
+    EvtImpl.prototype.disableTrace = function () {
         this.traceId = null;
+        return this;
     };
-    Evt.prototype.getChronologyMark = function () {
+    EvtImpl.prototype.getChronologyMark = function () {
         return this.__currentChronologyMark++;
     };
-    Evt.prototype.detachHandler = function (handler, wTimer, rejectPr) {
-        var _a;
+    EvtImpl.prototype.detachHandler = function (handler, wTimer, rejectPr) {
         var index = this.handlers.indexOf(handler);
         if (index < 0) {
             return false;
@@ -215,36 +196,21 @@ var Evt = /** @class */ (function () {
             clearTimeout(wTimer[0]);
             rejectPr(new EvtError_1.EvtError.Detached());
         }
-        (_a = this.onHandler) === null || _a === void 0 ? void 0 : _a.call(this, false, handler);
+        this.lazyEvtDetach.post(handler);
         return true;
     };
-    Evt.doDetachIfNeeded = function (handler, opResult, once) {
-        var detach = Operator_1.Operator.fλ.Result.getDetachArg(opResult);
-        if (typeof detach !== "boolean") {
-            var _a = __read(detach, 3), ctx = _a[0], error = _a[1], res = _a[2];
-            if (!!error) {
-                ctx.abort(error);
-            }
-            else {
-                ctx.done(res);
-            }
-        }
-        else if (detach || !!once) {
-            handler.detach();
-        }
-    };
-    Evt.prototype.triggerHandler = function (handler, wTimer, resolvePr, opResult) {
+    EvtImpl.prototype.triggerHandler = function (handler, wTimer, resolvePr, opResult) {
         var callback = handler.callback, once = handler.once;
         if (wTimer[0] !== undefined) {
             clearTimeout(wTimer[0]);
             wTimer[0] = undefined;
         }
-        Evt.doDetachIfNeeded(handler, opResult, once);
+        EvtImpl.doDetachIfNeeded(handler, opResult, once);
         var _a = __read(opResult, 1), transformedData = _a[0];
         callback === null || callback === void 0 ? void 0 : callback.call(this, transformedData);
         resolvePr === null || resolvePr === void 0 ? void 0 : resolvePr(transformedData);
     };
-    Evt.prototype.addHandler = function (propsFromArgs, propsFromMethodName) {
+    EvtImpl.prototype.addHandler = function (propsFromArgs, propsFromMethodName) {
         var _this_1 = this;
         if (Operator_1.Operator.fλ.Stateful.match(propsFromArgs.op)) {
             this.statelessByStatefulOp.set(propsFromArgs.op, encapsulateOpState_1.encapsulateOpState(propsFromArgs.op));
@@ -283,12 +249,12 @@ var Evt = /** @class */ (function () {
         if (typeGuard_1.typeGuard(handler, !!handler.ctx)) {
             handler.ctx.zz__addHandler(handler, this);
         }
-        this.onHandler(true, handler);
+        this.lazyEvtAttach.post(handler);
         return handler;
     };
-    Evt.prototype.checkForPotentialMemoryLeak = function () {
+    EvtImpl.prototype.checkForPotentialMemoryLeak = function () {
         var _a;
-        var maxHandlers = (_a = this.__maxHandlers) !== null && _a !== void 0 ? _a : Evt.__defaultMaxHandlers;
+        var maxHandlers = (_a = this.__maxHandlers) !== null && _a !== void 0 ? _a : EvtImpl.__defaultMaxHandlers;
         if (maxHandlers === 0 ||
             this.handlers.length % (maxHandlers + 1) !== 0) {
             return;
@@ -297,7 +263,7 @@ var Evt = /** @class */ (function () {
             "MaxHandlersExceededWarning: Possible Evt memory leak detected.",
             this.handlers.length + " handlers attached" + (this.traceId ? " to \"" + this.traceId + "\"" : "") + ".\n",
             "Use Evt.prototype.setMaxHandlers(n) to increase limit on a specific Evt.\n",
-            "Use Evt.setDefaultMaxHandlers(n) to change the default limit currently set to " + Evt.__defaultMaxHandlers + ".\n",
+            "Use Evt.setDefaultMaxHandlers(n) to change the default limit currently set to " + EvtImpl.__defaultMaxHandlers + ".\n",
         ].join("");
         var map = new Map_1.Polyfill();
         this.getHandlers()
@@ -305,7 +271,7 @@ var Evt = /** @class */ (function () {
             var ctx = _a.ctx, async = _a.async, once = _a.once, prepend = _a.prepend, extract = _a.extract, op = _a.op, callback = _a.callback;
             return (__assign(__assign({ "hasCtx": !!ctx, once: once,
                 prepend: prepend,
-                extract: extract, "isWaitFor": async }, (op === Evt_parseOverloadsArgs_1.matchAll ? {} : { "op": op.toString() })), (!callback ? {} : { "callback": callback.toString() })));
+                extract: extract, "isWaitFor": async }, (op === Evt_parsePropsFromArgs_1.matchAll ? {} : { "op": op.toString() })), (!callback ? {} : { "callback": callback.toString() })));
         })
             .map(function (obj) {
             return "{\n" + Object.keys(obj)
@@ -328,13 +294,12 @@ var Evt = /** @class */ (function () {
         catch (_b) {
         }
     };
-    /** https://docs.evt.land/api/evt/getstatelessop */
-    Evt.prototype.getStatelessOp = function (op) {
+    EvtImpl.prototype.getStatelessOp = function (op) {
         return Operator_1.Operator.fλ.Stateful.match(op) ?
             this.statelessByStatefulOp.get(op) :
             op;
     };
-    Evt.prototype.trace = function (data) {
+    EvtImpl.prototype.trace = function (data) {
         var _this_1 = this;
         var _a;
         if (this.traceId === null) {
@@ -361,25 +326,8 @@ var Evt = /** @class */ (function () {
         }
         (_a = this.log) === null || _a === void 0 ? void 0 : _a.call(this, message + this.traceFormatter(data));
     };
-    //private test_pr: Promise<void> | undefined = undefined;
-    /**
-     * https://garronej.github.io/ts-evt/#evtattach-evtattachonce-and-evtpost
-     *
-     * Returns post count
-     * */
-    Evt.prototype.post = function (data) {
-        this.trace(data);
-        overwriteReadonlyProp_1.overwriteReadonlyProp(this, "postCount", this.postCount + 1);
-        //NOTE: Must be before postSync.
-        var postChronologyMark = this.getChronologyMark();
-        var isExtracted = this.postSync(data);
-        if (!isExtracted && (!!this.__postAsync || this.asyncHandlerCount !== 0)) {
-            this.postAsync(data, postChronologyMark);
-        }
-        return this.postCount;
-    };
     /** Return isExtracted */
-    Evt.prototype.postSync = function (data) {
+    EvtImpl.prototype.postSync = function (data) {
         var e_1, _a;
         try {
             for (var _b = __values(__spread(this.handlers)), _c = _b.next(); !_c.done; _c = _b.next()) {
@@ -390,7 +338,7 @@ var Evt = /** @class */ (function () {
                 }
                 var opResult = invokeOperator_1.invokeOperator(this.getStatelessOp(op), data, true);
                 if (Operator_1.Operator.fλ.Result.NotMatched.match(opResult)) {
-                    Evt.doDetachIfNeeded(handler, opResult);
+                    EvtImpl.doDetachIfNeeded(handler, opResult);
                     continue;
                 }
                 var handlerTrigger = this.handlerTriggers.get(handler);
@@ -413,7 +361,7 @@ var Evt = /** @class */ (function () {
         }
         return false;
     };
-    Evt.prototype.__postAsyncFactory = function () {
+    EvtImpl.prototype.postAsyncFactory = function () {
         var _this_1 = this;
         return runExclusive.buildMethodCb(function (data, postChronologyMark, releaseLock) {
             var e_2, _a;
@@ -431,7 +379,7 @@ var Evt = /** @class */ (function () {
                 }
                 var opResult = invokeOperator_1.invokeOperator(_this_1.getStatelessOp(handler.op), data, true);
                 if (Operator_1.Operator.fλ.Result.NotMatched.match(opResult)) {
-                    Evt.doDetachIfNeeded(handler, opResult);
+                    EvtImpl.doDetachIfNeeded(handler, opResult);
                     return "continue";
                 }
                 var handlerTrigger = _this_1.handlerTriggers.get(handler);
@@ -502,76 +450,7 @@ var Evt = /** @class */ (function () {
             });
         });
     };
-    Evt.prototype.__waitFor = function (attachParams) {
-        return this.addHandler(attachParams, {
-            "async": true,
-            "extract": false,
-            "once": true,
-            "prepend": false
-        }).promise;
-    };
-    Evt.prototype.__attach = function (attachParams) {
-        return this.addHandler(attachParams, {
-            "async": false,
-            "extract": false,
-            "once": false,
-            "prepend": false
-        }).promise;
-    };
-    Evt.prototype.__attachExtract = function (attachParams) {
-        return this.addHandler(attachParams, {
-            "async": false,
-            "extract": true,
-            "once": false,
-            "prepend": true
-        }).promise;
-    };
-    Evt.prototype.__attachPrepend = function (attachParams) {
-        return this.addHandler(attachParams, {
-            "async": false,
-            "extract": false,
-            "once": false,
-            "prepend": true
-        }).promise;
-    };
-    Evt.prototype.__attachOnce = function (attachParams) {
-        return this.addHandler(attachParams, {
-            "async": false,
-            "extract": false,
-            "once": true,
-            "prepend": false
-        }).promise;
-    };
-    Evt.prototype.__attachOncePrepend = function (attachParams) {
-        return this.addHandler(attachParams, {
-            "async": false,
-            "extract": false,
-            "once": true,
-            "prepend": true
-        }).promise;
-    };
-    Evt.prototype.__attachOnceExtract = function (attachParams) {
-        return this.addHandler(attachParams, {
-            "async": false,
-            "extract": true,
-            "once": true,
-            "prepend": true
-        }).promise;
-    };
-    /**
-     * https://docs.evt.land/api/evt/ishandled
-     *
-     * Test if posting a given event data will have an effect.
-     *
-     * Return true if:
-     * -There is at least one handler matching
-     * this event data ( at least one handler's callback function
-     * will be invoked if the data is posted. )
-     * -Handlers could be will be detached
-     * if the event data is posted.
-     *
-     */
-    Evt.prototype.isHandled = function (data) {
+    EvtImpl.prototype.isHandled = function (data) {
         var _this_1 = this;
         return !!this.getHandlers()
             .find(function (_a) {
@@ -579,11 +458,10 @@ var Evt = /** @class */ (function () {
             return !!_this_1.getStatelessOp(op)(data);
         });
     };
-    /** https://docs.evt.land/api/evt/gethandler */
-    Evt.prototype.getHandlers = function () {
+    EvtImpl.prototype.getHandlers = function () {
         return __spread(this.handlers);
     };
-    Evt.prototype.detach = function (ctx) {
+    EvtImpl.prototype.detach = function (ctx) {
         var e_4, _a;
         var detachedHandlers = [];
         try {
@@ -609,142 +487,162 @@ var Evt = /** @class */ (function () {
         }
         return detachedHandlers;
     };
-    Evt.prototype.pipe = function () {
-        var inputs = [];
+    EvtImpl.prototype.pipe = function () {
+        var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            inputs[_i] = arguments[_i];
+            args[_i] = arguments[_i];
         }
-        var evtDelegate = new Evt();
-        this.__attach(__assign(__assign({}, Evt.parseOverloadsArgs(inputs, "pipe")), { "callback": function (transformedData) { return evtDelegate.post(transformedData); } }));
+        var evtDelegate = new EvtImpl();
+        this.addHandler(__assign(__assign({}, Evt_parsePropsFromArgs_1.parsePropsFromArgs(args, "pipe")), { "callback": function (transformedData) { return evtDelegate.post(transformedData); } }), EvtImpl.propsFormMethodNames.attach);
         return evtDelegate;
     };
-    Evt.prototype.waitFor = function () {
-        var inputs = [];
+    EvtImpl.prototype.waitFor = function () {
+        var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            inputs[_i] = arguments[_i];
+            args[_i] = arguments[_i];
         }
-        return this.__waitFor(Evt.parseOverloadsArgs(inputs, "waitFor"));
+        return this.addHandler(Evt_parsePropsFromArgs_1.parsePropsFromArgs(args, "waitFor"), EvtImpl.propsFormMethodNames.waitFor).promise;
     };
-    Evt.prototype.$attach = function () {
+    EvtImpl.prototype.$attach = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
         return this.attach.apply(this, __spread(inputs));
     };
-    Evt.prototype.attach = function () {
-        var inputs = [];
+    EvtImpl.prototype.attach = function () {
+        var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            inputs[_i] = arguments[_i];
+            args[_i] = arguments[_i];
         }
-        return this.__attach(Evt.parseOverloadsArgs(inputs, "attach*"));
+        return this.addHandler(Evt_parsePropsFromArgs_1.parsePropsFromArgs(args, "attach*"), EvtImpl.propsFormMethodNames.attach).promise;
     };
-    Evt.prototype.$attachOnce = function () {
+    EvtImpl.prototype.$attachOnce = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
         return this.attachOnce.apply(this, __spread(inputs));
     };
-    Evt.prototype.attachOnce = function () {
+    EvtImpl.prototype.attachOnce = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        return this.addHandler(Evt_parsePropsFromArgs_1.parsePropsFromArgs(args, "attach*"), EvtImpl.propsFormMethodNames.attachOnce).promise;
+    };
+    EvtImpl.prototype.$attachExtract = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
-        return this.__attachOnce(Evt.parseOverloadsArgs(inputs, "attach*"));
+        return this.attachExtract.apply(this, __spread(inputs));
     };
-    Evt.prototype.$attachExtract = function () {
-        var inputs = [];
+    EvtImpl.prototype.attachExtract = function () {
+        var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            inputs[_i] = arguments[_i];
+            args[_i] = arguments[_i];
         }
-        return this.attachOnceExtract.apply(this, __spread(inputs));
+        return this.addHandler(Evt_parsePropsFromArgs_1.parsePropsFromArgs(args, "attach*"), EvtImpl.propsFormMethodNames.attachExtract).promise;
     };
-    Evt.prototype.attachExtract = function () {
-        var inputs = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            inputs[_i] = arguments[_i];
-        }
-        return this.__attachExtract(Evt.parseOverloadsArgs(inputs, "attach*"));
-    };
-    Evt.prototype.$attachPrepend = function () {
+    EvtImpl.prototype.$attachPrepend = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
         return this.attachPrepend.apply(this, __spread(inputs));
     };
-    Evt.prototype.attachPrepend = function () {
-        var inputs = [];
+    EvtImpl.prototype.attachPrepend = function () {
+        var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            inputs[_i] = arguments[_i];
+            args[_i] = arguments[_i];
         }
-        return this.__attachPrepend(Evt.parseOverloadsArgs(inputs, "attach*"));
+        return this.addHandler(Evt_parsePropsFromArgs_1.parsePropsFromArgs(args, "attach*"), EvtImpl.propsFormMethodNames.attachPrepend).promise;
     };
-    Evt.prototype.$attachOncePrepend = function () {
+    EvtImpl.prototype.$attachOncePrepend = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
         return this.attachOncePrepend.apply(this, __spread(inputs));
     };
-    Evt.prototype.attachOncePrepend = function () {
-        var inputs = [];
+    EvtImpl.prototype.attachOncePrepend = function () {
+        var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            inputs[_i] = arguments[_i];
+            args[_i] = arguments[_i];
         }
-        return this.__attachOncePrepend(Evt.parseOverloadsArgs(inputs, "attach*"));
+        return this.addHandler(Evt_parsePropsFromArgs_1.parsePropsFromArgs(args, "attach*"), EvtImpl.propsFormMethodNames.attachOncePrepend).promise;
     };
-    Evt.prototype.$attachOnceExtract = function () {
+    EvtImpl.prototype.$attachOnceExtract = function () {
         var inputs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             inputs[_i] = arguments[_i];
         }
         return this.attachOnceExtract.apply(this, __spread(inputs));
     };
-    Evt.prototype.attachOnceExtract = function () {
-        var inputs = [];
+    EvtImpl.prototype.attachOnceExtract = function () {
+        var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            inputs[_i] = arguments[_i];
+            args[_i] = arguments[_i];
         }
-        return this.__attachOnceExtract(Evt.parseOverloadsArgs(inputs, "attach*"));
+        return this.addHandler(Evt_parsePropsFromArgs_1.parsePropsFromArgs(args, "attach*"), EvtImpl.propsFormMethodNames.attachOnceExtract).promise;
     };
-    /**
-     * https://docs.evt.land/api/evt/getctx
-     *
-     * Evt.weakCtx(obj) always return the same instance of VoidCtx for a given object.
-     * No strong reference to the object is created
-     * when the object is no longer referenced it's associated Ctx will be freed from memory.
-     */
-    Evt.getCtx = Evt_getCtx_1.getCtxFactory();
-    /** https://docs.evt.land/api/evt/merge */
-    Evt.merge = Evt_merge_1.merge;
-    /** https://docs.evt.land/api/evt/from */
-    Evt.from = Evt_from_1.from;
-    /** https://docs.evt.land/api/evt/use-effect */
-    Evt.useEffect = Evt_useEffect_1.useEffect;
-    Evt.parseOverloadsArgs = Evt_parseOverloadsArgs_1.parseOverloadsArgs;
-    Evt.__1 = (function () {
-        if (false) {
-            Evt.__1;
+    EvtImpl.prototype.postAsyncOnceHandled = function (data) {
+        var _this_1 = this;
+        if (this.isHandled(data)) {
+            return this.post(data);
         }
-        defineAccessors_1.defineAccessors(Evt.prototype, "evtAttach", {
+        var d = new Deferred_1.Deferred();
+        this.evtAttach.attachOnce(function (_a) {
+            var op = _a.op;
+            return !!invokeOperator_1.invokeOperator(_this_1.getStatelessOp(op), data);
+        }, function () { return Promise.resolve().then(function () { return d.resolve(_this_1.post(data)); }); });
+        return d.pr;
+    };
+    EvtImpl.prototype.post = function (data) {
+        this.trace(data);
+        overwriteReadonlyProp_1.overwriteReadonlyProp(this, "postCount", this.postCount + 1);
+        //NOTE: Must be before postSync.
+        var postChronologyMark = this.getChronologyMark();
+        var isExtracted = this.postSync(data);
+        if (isExtracted) {
+            return this.postCount;
+        }
+        if (this.postAsync === undefined) {
+            if (this.asyncHandlerCount === 0) {
+                return this.postCount;
+            }
+            this.postAsync = this.postAsyncFactory();
+        }
+        this.postAsync(data, postChronologyMark);
+        return this.postCount;
+    };
+    EvtImpl.merge = Evt_merge_1.merge;
+    EvtImpl.from = Evt_from_1.from;
+    EvtImpl.useEffect = Evt_useEffect_1.useEffect;
+    EvtImpl.getCtx = Evt_getCtx_1.getCtxFactory();
+    EvtImpl.loosenType = Evt_loosenType_1.loosenType;
+    EvtImpl.__defaultMaxHandlers = 25;
+    EvtImpl.__1 = (function () {
+        if (false) {
+            EvtImpl.__1;
+        }
+        defineAccessors_1.defineAccessors(EvtImpl.prototype, "evtAttach", {
             "get": function () {
-                return id_1.id(this).lazyEvtAttachFactory.getEvt();
+                return id_1.id(this).lazyEvtAttach.evt;
             }
         });
-        defineAccessors_1.defineAccessors(Evt.prototype, "evtDetach", {
+        defineAccessors_1.defineAccessors(EvtImpl.prototype, "evtDetach", {
             "get": function () {
-                return id_1.id(this).lazyEvtDetachFactory.getEvt();
+                return id_1.id(this).lazyEvtDetach.evt;
             }
         });
     })();
-    Evt.__defaultMaxHandlers = 25;
-    Evt.__2 = (function () {
+    EvtImpl.__2 = (function () {
         if (false) {
-            Evt.__2;
+            EvtImpl.__2;
         }
-        Object.defineProperties(Evt.prototype, [
+        Object.defineProperties(EvtImpl.prototype, [
             "__asyncHandlerChronologyMark",
             "__asyncHandlerChronologyExceptionRange",
             "__statelessByStatefulOp"
@@ -765,24 +663,37 @@ var Evt = /** @class */ (function () {
             return (__assign(__assign({}, prev), (_b = {}, _b[key] = obj, _b)));
         }, {}));
     })();
-    Evt.__3 = (function () {
-        if (false) {
-            Evt.__3;
-        }
-        Object.defineProperty(Evt.prototype, "postAsync", {
-            "get": function () {
-                var self = this;
-                if (self.__postAsync === undefined) {
-                    self.__postAsync = self.__postAsyncFactory();
-                }
-                return self.__postAsync;
-            }
-        });
-    })();
-    return Evt;
+    EvtImpl.propsFormMethodNames = {
+        "waitFor": { "async": true, "extract": false, "once": true, "prepend": false },
+        "attach": { "async": false, "extract": false, "once": false, "prepend": false },
+        "attachExtract": { "async": false, "extract": true, "once": false, "prepend": true },
+        "attachPrepend": { "async": false, "extract": false, "once": false, "prepend": true },
+        "attachOnce": { "async": false, "extract": false, "once": true, "prepend": false },
+        "attachOncePrepend": { "async": false, "extract": false, "once": true, "prepend": true },
+        "attachOnceExtract": { "async": false, "extract": true, "once": true, "prepend": true }
+    };
+    return EvtImpl;
 }());
-exports.Evt = Evt;
-importProxy_1.importProxy.Evt = Evt;
+(function (EvtImpl) {
+    function doDetachIfNeeded(handler, opResult, once) {
+        var detach = Operator_1.Operator.fλ.Result.getDetachArg(opResult);
+        if (typeof detach !== "boolean") {
+            var _a = __read(detach, 3), ctx = _a[0], error = _a[1], res = _a[2];
+            if (!!error) {
+                ctx.abort(error);
+            }
+            else {
+                ctx.done(res);
+            }
+        }
+        else if (detach || !!once) {
+            handler.detach();
+        }
+    }
+    EvtImpl.doDetachIfNeeded = doDetachIfNeeded;
+})(EvtImpl || (EvtImpl = {}));
+exports.Evt = EvtImpl;
+importProxy_1.importProxy.Evt = exports.Evt;
 /** https://docs.evt.land/api/voidevt */
 var VoidEvt = /** @class */ (function (_super) {
     __extends(VoidEvt, _super);
@@ -800,6 +711,6 @@ var VoidEvt = /** @class */ (function (_super) {
         });
     };
     return VoidEvt;
-}(Evt));
+}(exports.Evt));
 exports.VoidEvt = VoidEvt;
 //# sourceMappingURL=Evt.js.map

@@ -1,16 +1,14 @@
 import /*type*/ { UnpackEvt } from "./types/helper/UnpackEvt";
 import { importProxy } from "./importProxy";
 
-type Evt<T>= import("./Evt").Evt<T>;
-type CtxLike<Result> = import("./Ctx").CtxLike<Result>;
+type Evt<T>= import("./types/interfaces").Evt<T>;
+type CtxLike<Result> = import("./types/interfaces").CtxLike<Result>;
 
-
-type EvtLike<T> = import("./Evt").EvtLike<T> & {
+type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T> & {
     attach(ctx: CtxLike<any>, callback: (data: T)=> void): void;
     attach(callback: (data: T)=> void): void;
 };
 
-//TODO: Fix interoperability between versions.
 export function mergeImpl<EvtUnion extends EvtLike<any>>(
     ctx: CtxLike<any> | undefined,
     evts: readonly EvtUnion[]
@@ -37,6 +35,8 @@ export function mergeImpl<EvtUnion extends EvtLike<any>>(
 }
 
 
+
+/* https://docs.evt.land/api/evt/merge */
 export function merge<EvtUnion extends EvtLike<any>>(
     ctx: CtxLike<any>,
     evts: readonly EvtUnion[]

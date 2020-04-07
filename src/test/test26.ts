@@ -1,6 +1,6 @@
 
 import { Evt } from "../lib";
-import { UnpackEvt, NonPostable } from "../lib/types/helper";
+import { UnpackEvt, ToNonPostableEvt } from "../lib/types/helper";
 type UnpackEvt_<T> = import("../lib/types/helper").UnpackEvt<T>;
 
 {
@@ -29,7 +29,7 @@ type UnpackEvt_<T> = import("../lib/types/helper").UnpackEvt<T>;
 
 {
 
-    const evt: NonPostable<Evt<string>> = new Evt();
+    const evt: ToNonPostableEvt<Evt<string>> = new Evt();
 
     const str: UnpackEvt<typeof evt> = "ok";
 

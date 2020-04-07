@@ -1,5 +1,5 @@
-declare type CtxLike<Result> = import("../Ctx").CtxLike<Result>;
-declare type VoidCtxLike = import("../Ctx").VoidCtxLike;
+declare type CtxLike<Result> = import("./interfaces").CtxLike<Result>;
+declare type VoidCtxLike = import("./interfaces").VoidCtxLike;
 /** https://docs.evt.land/api/operator */
 export declare type Operator<T, U, CtxResult = any> = Operator.fλ<T, U, CtxResult> | ((data: U) => boolean) | //Filter
 (U extends T ? (data: T) => data is U : never);

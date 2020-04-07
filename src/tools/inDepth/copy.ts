@@ -123,7 +123,6 @@ export const copy = (() => {
 
             assert(!prop.get && !prop.set, "can't clone getter and setter");
 
-            //TODO: Circular references.
             prop.value = rec(prop.value);
 
             Object.defineProperty(out, name, prop);

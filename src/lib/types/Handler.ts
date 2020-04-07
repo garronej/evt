@@ -1,6 +1,6 @@
 import /*type*/ { Operator } from "./Operator";
-type EvtLike<T>= import("../Evt").EvtLike<T>;
-type CtxLike<Result> = import("../Ctx").CtxLike<Result>;
+type EvtLike<T>= import("../types/helper/UnpackEvt").EvtLike<T>;
+type CtxLike<Result> = import("../types/interfaces").CtxLike<Result>;
 
 /** https://docs.evt.land/api/handler */
 export type Handler<T, U, CtxProp extends CtxLike<any> | undefined = CtxLike<any> | undefined> =
@@ -21,7 +21,8 @@ export namespace Handler {
         callback: ((transformedData: U) => void) | undefined;
     };
 
-    /** Handlers params that are implicitly specified by the method used: 
+    /** 
+     * Handlers params that are implicitly specified by the method used: 
      * attachOnce => once
      * attachOncePrepend => once + prepend
      * waitFor => once + async

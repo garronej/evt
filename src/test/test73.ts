@@ -1,90 +1,182 @@
 
-import { Tracked, VoidCtx, Evt } from "../lib";
+import { StatefulEvt, VoidCtx, Evt } from "../lib";
 import { assert } from "../tools/typeSafety/assert";
 
 {
 
-    const trkText = new Tracked("foo");
+    {
 
-    const obsCharCount = Tracked.from(
-        trkText,
-        text => text.length
-    );
+        const sevText = new StatefulEvt("foo");
 
-    assert(obsCharCount.val === trkText.val.length);
+        const sevCharCount = sevText.statefulPipe(text => [text.length]);
 
-    trkText.val ="foo bar";
+        assert(sevCharCount.state === sevText.state.length);
 
-    assert(obsCharCount.val === trkText.val.length);
+        sevText.post("foo bar");
+
+        assert(sevCharCount.state === sevText.state.length);
+
+    }
+
+    {
+
+        const ctx = new VoidCtx();
+
+        const sevText = new StatefulEvt("foo");
+
+        const sevCharCount = sevText.statefulPipe(ctx, text => [text.length]);
+
+        assert(sevCharCount.state === sevText.state.length);
+
+        sevText.post("foo bar");
+
+        assert(sevCharCount.state === sevText.state.length);
+
+        const { state } = sevCharCount;
+
+        ctx.done();
+
+        sevText.post("foo bar baz");
+
+        assert(state === sevCharCount.state);
+
+    }
+
+    {
+
+        const evtText = new Evt<string>();
+
+        const sevText = evtText.toStateful("foo bar");
+
+        assert(sevText.state === "foo bar" as string);
+
+        evtText.post("foo bar");
+
+        assert(sevText.postCount === 1 as number);
+        assert(sevText.evtChange.postCount === 0 as number);
+        assert(sevText.evtDiff.postCount === 1 as number);
+        assert(sevText.evtChangeDiff.postCount === 0 as number);
+
+        evtText.post("baz");
+
+        assert(sevText.postCount === 2);
+        assert(sevText.evtChange.postCount === 1);
+        assert(sevText.evtDiff.postCount === 2);
+        assert(sevText.evtChangeDiff.postCount === 1);
+
+        assert(sevText.state === "baz");
+    }
+
+    {
+
+        const ctx = Evt.newCtx();
+
+        const evtText = new Evt<string>();
+
+        const sevText = evtText.toStateful("foo bar", ctx);
+
+        assert(sevText.state === "foo bar" as string);
+
+        evtText.post("baz");
+
+        assert(sevText.state === "baz" as string);
+
+        ctx.done();
+
+        evtText.post("Hello");
+
+        assert(sevText.state !== "Hello");
+
+    }
 
 }
 
 {
 
-    const ctx = new VoidCtx();
+    {
 
-    const trkText = new Tracked("foo");
+        const sevText = new StatefulEvt("foo");
 
-    const obsCharCount = Tracked.from(
-        ctx,
-        trkText,
-        text => text.length
-    );
+        const sevCharCount = sevText.statefulPipe(text => [text.length]);
 
+        assert(sevCharCount.state === sevText.state.length);
 
+        sevText.state = "foo bar";
 
-    assert(obsCharCount.val === trkText.val.length);
+        assert(sevCharCount.state === sevText.state.length);
 
-    trkText.val = "foo bar";
+    }
 
-    assert(obsCharCount.val === trkText.val.length);
+    {
 
-    const { val } = obsCharCount;
+        const ctx = new VoidCtx();
 
-    ctx.done();
+        const sevText = new StatefulEvt("foo");
 
-    trkText.val= "foo bar baz";
+        const sevCharCount = sevText.statefulPipe(ctx, text => [text.length]);
 
-    assert(val === obsCharCount.val);
+        assert(sevCharCount.state === sevText.state.length);
 
-}
+        sevText.state= "foo bar";
 
-{
+        assert(sevCharCount.state === sevText.state.length);
 
-    const evtText = new Evt<string>();
+        const { state } = sevCharCount;
 
-    const trkText = Tracked.from(evtText, "foo bar");
+        ctx.done();
 
-    assert(trkText.val === "foo bar" as string);
+        sevText.state= "foo bar baz";
 
-    evtText.post("baz");
+        assert(state === sevCharCount.state);
 
-    assert(trkText.evt.postCount === 1);
-    assert(trkText.evtDiff.postCount === 1);
+    }
 
-    assert(trkText.val === "baz");
+    {
 
-}
+        const evtText = new Evt<string>();
 
-{
+        const sevText = evtText.toStateful("foo bar");
 
-    const ctx = new VoidCtx();
+        assert(sevText.state === "foo bar" as string);
 
-    const evtText = new Evt<string>();
+        evtText.post("foo bar");
 
-    const trkText = Tracked.from(evtText.pipe(ctx), "foo bar");
+        assert(sevText.postCount === 1 as number);
+        assert(sevText.evtChange.postCount === 0 as number);
+        assert(sevText.evtDiff.postCount === 1 as number);
+        assert(sevText.evtChangeDiff.postCount === 0 as number);
 
-    assert(trkText.val === "foo bar" as string);
+        evtText.post("baz");
 
-    evtText.post("baz");
+        assert(sevText.postCount === 2);
+        assert(sevText.evtChange.postCount === 1);
+        assert(sevText.evtDiff.postCount === 2);
+        assert(sevText.evtChangeDiff.postCount === 1);
 
-    assert(trkText.val === "baz" as string);
+        assert(sevText.state === "baz");
+    }
 
-    ctx.done();
+    {
 
-    evtText.post("Hello");
+        const ctx = Evt.newCtx();
 
-    assert(trkText.val !== "Hello");
+        const evtText = new Evt<string>();
+
+        const sevText = evtText.toStateful("foo bar", ctx);
+
+        assert(sevText.state === "foo bar" as string);
+
+        evtText.post("baz");
+
+        assert(sevText.state === "baz" as string);
+
+        ctx.done();
+
+        evtText.post("Hello");
+
+        assert(sevText.state !== "Hello");
+
+    }
 
 }
 

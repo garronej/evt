@@ -5,11 +5,11 @@ import { EventTargetLike } from "./types/EventTargetLike";
 import { mergeImpl } from "./Evt.merge";
 import { importProxy } from "./importProxy";
 import /*type*/ * as dom from "./types/lib.dom";
-type Evt<T>= import("./Evt").Evt<T>;
-type EvtLike<T> = import("./Evt").EvtLike<T>;
+type Evt<T>= import("./types/interfaces/Evt").Evt<T>;
+type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T>;
 
 type OneOrMany<T> = T | ArrayLike<T>;
-type CtxLike<Result> = import("./Ctx").CtxLike<Result> & {
+type CtxLike<Result> = import("./types/interfaces").CtxLike<Result> & {
       evtDoneOrAborted: EvtLike<unknown> & { postCount: number; attachOnce(callback: ()=> void): void; };
 };
 
@@ -118,6 +118,7 @@ function fromImpl<T>(
 }
 
 
+/** https://docs.evt.land/api/evt/from */
 export function from<K extends keyof dom.HTMLElementEventMap>(
     ctx: CtxLike<any>,
     target: EventTargetLike.HTMLElement,

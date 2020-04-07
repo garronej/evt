@@ -22,16 +22,24 @@ export const overwriteReadonlyProp = <T extends { [key: string]: any; }, K exten
 
     let errorDefineProperty: Error | undefined = undefined;
 
+    const propertyDescriptor: PropertyDescriptor =
+        Object.getOwnPropertyDescriptor(obj, propertyName) ?? {
+            "enumerable": true,
+            "configurable": true
+        };
+
+    if (!!propertyDescriptor.get) {
+        throw new Error(`Probably a wrong ides to overwrite ${propertyName} getter`);
+    }
+
+
     try {
 
         Object.defineProperty(
             obj,
             propertyName,
             {
-                ...(Object.getOwnPropertyDescriptor(obj, propertyName) ?? {
-                    "enumerable": true,
-                    "configurable": true
-                }),
+                ...propertyDescriptor,
                 value
             }
         );
@@ -39,7 +47,6 @@ export const overwriteReadonlyProp = <T extends { [key: string]: any; }, K exten
     } catch (error) {
 
         errorDefineProperty = error;
-
 
     }
 

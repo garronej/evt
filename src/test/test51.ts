@@ -1,7 +1,7 @@
 
 import { Evt } from "../lib";
 import { assert } from "../tools/typeSafety/assert";
-import { scan } from "../lib/util";
+import { scan } from "../lib/util/genericOperators/scan";
 import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi";
 
 const { mustResolve, mustStayPending } = getPromiseAssertionApi({"takeIntoAccountArraysOrdering": true});

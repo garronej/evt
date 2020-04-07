@@ -1,7 +1,7 @@
 import { UnpackEvt } from "./types/helper/UnpackEvt";
-declare type Evt<T> = import("./Evt").Evt<T>;
-declare type CtxLike<Result> = import("./Ctx").CtxLike<Result>;
-declare type EvtLike<T> = import("./Evt").EvtLike<T> & {
+declare type Evt<T> = import("./types/interfaces").Evt<T>;
+declare type CtxLike<Result> = import("./types/interfaces").CtxLike<Result>;
+declare type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T> & {
     attach(ctx: CtxLike<any>, callback: (data: T) => void): void;
     attach(callback: (data: T) => void): void;
 };
