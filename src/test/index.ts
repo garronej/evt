@@ -16,6 +16,7 @@ import { existsSync } from "fs";
 import { join } from "path";
 
 
+(async ()=>{
 
 let n = process.argv[2];
 
@@ -28,9 +29,21 @@ if (n) {
     require("../tools/reducers/test");
     require("../tools/inDepth/test");
 
-    const n = 78;
+    require("../test/test52");
+
+    await new Promise(resolve => setTimeout(resolve, 2400));
+
+    const n = 79;
+
+    console.log({ n });
 
     for (let i = 1; i <= n; i++) {
+
+        if( i === 52 ){
+            continue;
+        }
+
+
 
         const filePath = join(__dirname,"./test" + i);
 
@@ -53,3 +66,6 @@ if (n) {
 
     }
 }
+
+
+})();

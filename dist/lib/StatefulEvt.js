@@ -53,11 +53,17 @@ var StatefulEvtImpl = /** @class */ (function (_super) {
         return _this_1;
     }
     StatefulEvtImpl.prototype.post = function (data) {
+        return this.__post(data, false);
+    };
+    StatefulEvtImpl.prototype.postForceChange = function (wData) {
+        return this.__post(!!wData ? wData[0] : this.state, true);
+    };
+    StatefulEvtImpl.prototype.__post = function (data, forceChange) {
         var prevState = this.state;
         this.__state = data;
         var diff = { prevState: prevState, "newState": this.state };
         this.lazyEvtDiff.post(diff);
-        if (!Object.is(prevState, this.state)) {
+        if (forceChange || !Object.is(prevState, this.state)) {
             this.lazyEvtChange.post(this.state);
             this.lazyEvtChangeDiff.post(diff);
         }

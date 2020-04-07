@@ -8,10 +8,7 @@ let evt= new VoidEvt();
 
 //evt.enableTrace("evt");
 
-process.nextTick(()=> console.assert(++count ===5, "m1"));
-
-
-evt.waitFor().then(str=> console.assert(++count===6, "m2"));
+evt.waitFor().then(str=> console.assert(++count===5, "m2"));
 
 
 console.assert(++count === 1, "m3");

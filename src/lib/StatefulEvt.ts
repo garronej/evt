@@ -39,8 +39,8 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
             StatefulEvtImpl.prototype,
             "state",
             {
-                "get": function(){ return id<StatefulEvtImpl<any>>(this).__state; },
-                "set": function(state){ id<StatefulEvtImpl<any>>(this).post(state); }
+                "get": function () { return id<StatefulEvtImpl<any>>(this).__state; },
+                "set": function (state) { id<StatefulEvtImpl<any>>(this).post(state); }
             }
         );
 
@@ -65,16 +65,24 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
     })();
 
     post(data: T): number {
+        return this.__post(data, false);
+    }
+
+    postForceChange(wData?: readonly [T]): number {
+        return this.__post( !!wData ? wData[0] : this.state, true);
+    }
+
+    private __post(data: T, forceChange: boolean): number {
 
         const prevState = this.state;
 
-        this.__state= data;
+        this.__state = data;
 
         const diff = { prevState, "newState": this.state };
 
         this.lazyEvtDiff.post(diff);
 
-        if (!Object.is(prevState, this.state)) {
+        if (forceChange || !Object.is(prevState, this.state)) {
             this.lazyEvtChange.post(this.state);
             this.lazyEvtChangeDiff.post(diff);
         }

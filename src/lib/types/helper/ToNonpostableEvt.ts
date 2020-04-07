@@ -1,6 +1,6 @@
 
 type EvtLike<T> = import("./UnpackEvt").EvtLike<T>;
-type Postable<T> = import("../interfaces").Postable<T>;
+type StatefulPostable<T> = import("../interfaces").StatefulPostable<T>;
 
 //NOTE: Omit only introduced in 3.5
 /**
@@ -14,7 +14,7 @@ type StatefulNonPostableEvt<T> = import("../interfaces").StatefulNonPostableEvt<
 type ToNonPostableEvtBase<T extends EvtLike<any>> =
     T extends StatefulNonPostableEvt<infer U> ? StatefulNonPostableEvt<U> :
     T extends NonPostableEvt<infer U> ? NonPostableEvt<U> :
-    Omit<T, keyof Postable<any>>
+    Omit<T, Exclude<keyof StatefulPostable<any>, "state">>
     ;
 
 type ToNonPostableEvtRecord<T extends { [key: string]: any; }> = {

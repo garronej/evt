@@ -1,6 +1,6 @@
 declare type StatefulNonPostableEvt<T> = import("./StatefulNonPostableEvt").StatefulNonPostableEvt<T>;
-declare type Postable<T> = import("./Postable").Postable<T>;
-export interface StatefulEvt<T> extends StatefulNonPostableEvt<T>, Postable<T> {
+declare type StatefulPostable<T> = import("./StatefulPostable").StatefulPostable<T>;
+export interface StatefulEvt<T> extends StatefulNonPostableEvt<T>, StatefulPostable<T> {
     state: T;
 }
 export {};

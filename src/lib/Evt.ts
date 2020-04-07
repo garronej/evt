@@ -22,9 +22,8 @@ import { loosenType } from "./Evt.loosenType";
 import /*type*/ { Handler } from "./types/Handler";
 import /*type*/ { Operator } from "./types/Operator";
 type NonPostableEvt<T> = import("./types/interfaces").NonPostableEvt<T>;
-type Postable<T> = import("./types/interfaces").Postable<T>;
 type CtxLike<Result = any> = import("./types/interfaces").CtxLike<Result>;
-type StatefulEvt<T> = import("./types/interfaces").StatefulNonPostableEvt<T> & Postable<T>;
+type StatefulEvt<T> = import("./types/interfaces").StatefulEvt<T>;
 type Ctx<Result = any> = import("./Ctx").Ctx<Result>;
 type VoidCtx = import("./Ctx").VoidCtx;
 
