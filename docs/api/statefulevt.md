@@ -11,9 +11,9 @@ Property type: `T`
 reading the property gives the last event data posted. Setting the property \(`evt.state = data`\) is equivalent of calling invoking  `.post(data)`.
 
 ```typescript
-import { StatefulEvt } from "evt";
+import { Evt } from "evt";
 
-const evtCount = new StatefulEvt(0);
+const evtCount = Evt.create(0); // Equivalent wit new StatefulEvt<number>(0)
 
 evtCount.attach(console.log);
 
@@ -35,9 +35,9 @@ Property type: `NonPostableEvt<T>`
 The `.evtChange` property is an `Evt` that post only when the `.state` has changed. \( or when post is made via `.postForceChange()` \)
 
 ```typescript
-import { StatefulEvt } from "evt";
+import { Evt } from "evt";
 
-const evtIsConnected = new StatefulEvt(false);
+const evtIsConnected = Evt.create(false);
 
 evtIsConnected.attach(console.log);
 
@@ -52,9 +52,9 @@ Property type: `NonPostableEvt<{prevState:T; newState: T}>`
 Posted every time the Evt is posted. Used to compare the previous state with the new state.
 
 ```typescript
-import { StatefulEvt } from "evt";
+import { Evt } from "evt";
 
-const evtColor = new StatefulEvt<"BLUE"|"RED"|"WHITE">("BLUE");
+const evtColor = Evt.create<"BLUE"|"RED"|"WHITE">("BLUE");
 evtColor.evtDiff.attach(
     ({ prevState, newState})=> console.log(`${prevState}=>${newState}`)
 );
@@ -70,9 +70,9 @@ Property type: `NonPostableEvt<{prevState:T; newState: T}>`
 Same than .evtDiff but post only when .evtChang post.
 
 ```typescript
-import { StatefulEvt } from "evt";
+import { Evt } from "evt";
 
-const evtColor = new StatefulEvt<"BLUE"|"RED"|"WHITE">("BLUE");
+const evtColor = Evt.create<"BLUE"|"RED"|"WHITE">("BLUE");
 evtColor.evtChangeDiff.attach(
     ({ prevState, newState})=> console.log(`${prevState}=>${newState}`)
 );
@@ -86,14 +86,14 @@ evtColor.state= "WHITE"; //Prints "BLUE=>WHITE"
 Same as [`evt.pipe(...)`](https://docs.evt.land/api/evt/pipe) but return a `StatefulEvt`.
 
 ```typescript
-import { StatefulEvt } from "evt";
+import { Evt } from "evt";
 
 type Circle = { 
     color: "WHITE" | "RED";
     radius: number;
 };
 
-const evtSelectedCircle = StatefulEvt<Circle>({ "color": "RED", "radius": 3 });
+const evtSelectedCircle = Evt.create<Circle>({ "color": "RED", "radius": 3 });
 
 const evtSelectedCricleColor = 
     evtSelectedCircle.statefulPipe(circle=> [ cicle.color ]);
