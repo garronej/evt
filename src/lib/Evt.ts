@@ -27,6 +27,7 @@ type NonPostableEvt<T> = import("./types/interfaces").NonPostableEvt<T>;
 type CtxLike<Result = any> = import("./types/interfaces").CtxLike<Result>;
 type StatefulEvt<T> = import("./types/interfaces").StatefulEvt<T>;
 export type Evt<T> = import("./types/interfaces").Evt<T>;
+export type VoidEvt = import("./types/interfaces").VoidEvt;
 
 class EvtImpl<T> implements Evt<T> {
 
@@ -904,15 +905,8 @@ export const Evt: {
 
 importProxy.Evt = Evt;
 
-/** https://docs.evt.land/api/voidevt */
-export class VoidEvt extends Evt<void> {
-
-    public post(): number {
-        return super.post(undefined);
-    }
-
-    public async postAsyncOnceHandled() {
-        return super.postAsyncOnceHandled(undefined);
-    }
-
-}
+/** https://docs.evt.land/api/evt */
+export const VoidEvt: {
+    new (): VoidEvt;
+    readonly prototype: VoidEvt;
+} = EvtImpl as any;

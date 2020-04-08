@@ -61,7 +61,7 @@ function downloadFile(
 }
 
 const evtChunk = new Evt<Uint8Array>();
-const evtBtnCancelClick = new VoidEvt();
+const evtBtnCancelClick = Evt.create();
 const evtSocketError = new Evt<Error>();
 
 (async () => {

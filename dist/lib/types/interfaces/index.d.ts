@@ -5,3 +5,4 @@ export { Postable } from "./Postable";
 export { StatefulEvt } from "./StatefulEvt";
 export { StatefulReadonlyEvt, StateDiff as Diff } from "./StatefulReadonlyEvt";
 export { StatefulPostable } from "./StatefulPostable";
+export { VoidEvt } from "./VoidEvt";

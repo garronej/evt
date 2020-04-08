@@ -1,8 +1,8 @@
 
-import { VoidEvt } from "../lib";
+import { Evt } from "../lib";
 import { assert } from "../tools/typeSafety/assert";
 
-const evtClick = new VoidEvt();
+const evtClick = Evt.create();
 
 const evtClickCount = evtClick
     .pipe([(...[, count]) => [count + 1], 0])

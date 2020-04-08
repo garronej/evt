@@ -2,8 +2,14 @@
 import { importProxy } from "./importProxy";
 
 type Evt<T> = import("./types/interfaces").Evt<T>;
+type VoidEvt= import("./types/interfaces").VoidEvt;
 type StatefulEvt<T> = import("./types/interfaces").StatefulEvt<T>;
 
+/** 
+ * https://docs.evt.land/api/evt/create
+ * Return a new VoidEvt instance.
+ */
+export function create(): VoidEvt;
 /** 
  * https://docs.evt.land/api/evt/create
  * Return a new Evt<T> instance.

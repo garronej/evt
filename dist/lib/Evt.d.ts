@@ -7,6 +7,7 @@ import { useEffect } from "./Evt.useEffect";
 import { newCtx } from "./Evt.newCtx";
 import { loosenType } from "./Evt.loosenType";
 export declare type Evt<T> = import("./types/interfaces").Evt<T>;
+export declare type VoidEvt = import("./types/interfaces").VoidEvt;
 export declare const Evt: {
     new <T>(): Evt<T>;
     readonly prototype: Evt<any>;
@@ -20,8 +21,8 @@ export declare const Evt: {
     /** https://docs.evt.land/api/evt/setdefaultmaxhandlers */
     setDefaultMaxHandlers(n: number): void;
 };
-/** https://docs.evt.land/api/voidevt */
-export declare class VoidEvt extends Evt<void> {
-    post(): number;
-    postAsyncOnceHandled(): Promise<number>;
-}
+/** https://docs.evt.land/api/evt */
+export declare const VoidEvt: {
+    new (): VoidEvt;
+    readonly prototype: VoidEvt;
+};

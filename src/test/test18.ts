@@ -1,10 +1,8 @@
-import {
-    VoidEvt
-} from "../lib/index";
+import { Evt } from "../lib";
 
 let count= 0;
 
-let evt= new VoidEvt();
+let evt= Evt.create();
 
 //evt.enableTrace("evt");
 
