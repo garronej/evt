@@ -1,12 +1,12 @@
 
-import { StatefulEvt, VoidCtx, Evt } from "../lib";
+import { VoidCtx, Evt } from "../lib";
 import { assert } from "../tools/typeSafety/assert";
 
 {
 
     {
 
-        const sevText = new StatefulEvt("foo");
+        const sevText = Evt.create("foo");
 
         const sevCharCount = sevText.statefulPipe(text => [text.length]);
 
@@ -22,7 +22,7 @@ import { assert } from "../tools/typeSafety/assert";
 
         const ctx = new VoidCtx();
 
-        const sevText = new StatefulEvt("foo");
+        const sevText = Evt.create("foo");
 
         const sevCharCount = sevText.statefulPipe(ctx, text => [text.length]);
 
@@ -44,7 +44,7 @@ import { assert } from "../tools/typeSafety/assert";
 
     {
 
-        const evtText = new Evt<string>();
+        const evtText = Evt.create<string>();
 
         const sevText = evtText.toStateful("foo bar");
 
@@ -71,7 +71,7 @@ import { assert } from "../tools/typeSafety/assert";
 
         const ctx = Evt.newCtx();
 
-        const evtText = new Evt<string>();
+        const evtText = Evt.create<string>();
 
         const sevText = evtText.toStateful("foo bar", ctx);
 
@@ -95,7 +95,7 @@ import { assert } from "../tools/typeSafety/assert";
 
     {
 
-        const sevText = new StatefulEvt("foo");
+        const sevText = Evt.create("foo");
 
         const sevCharCount = sevText.statefulPipe(text => [text.length]);
 
@@ -111,7 +111,7 @@ import { assert } from "../tools/typeSafety/assert";
 
         const ctx = new VoidCtx();
 
-        const sevText = new StatefulEvt("foo");
+        const sevText = Evt.create("foo");
 
         const sevCharCount = sevText.statefulPipe(ctx, text => [text.length]);
 
@@ -133,7 +133,7 @@ import { assert } from "../tools/typeSafety/assert";
 
     {
 
-        const evtText = new Evt<string>();
+        const evtText = Evt.create<string>();
 
         const sevText = evtText.toStateful("foo bar");
 

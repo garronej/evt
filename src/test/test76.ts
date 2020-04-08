@@ -1,5 +1,5 @@
 
-import { StatefulEvt } from "../lib";
+import { Evt } from "../lib";
 import * as inDepth from "../tools/inDepth";
 import { diff } from "../tools/reducers";
 import { assert } from "../tools/typeSafety";
@@ -10,7 +10,7 @@ import { assert } from "../tools/typeSafety";
 
     const { same } = inDepth.sameFactory({ "takeIntoAccountArraysOrdering": false });
 
-    const sevUser = new StatefulEvt<string[]>([...users]);
+    const sevUser = Evt.create<string[]>([...users]);
 
     const update = (users: string[]) => {
 
@@ -55,7 +55,7 @@ import { assert } from "../tools/typeSafety";
 
     const { same } = inDepth.sameFactory({ "takeIntoAccountArraysOrdering": false });
 
-    const sevUser = new StatefulEvt<string[]>([...users]);
+    const sevUser = Evt.create<string[]>([...users]);
 
     const update = (users: string[]) => {
 

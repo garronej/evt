@@ -1,5 +1,5 @@
 
-import { StatefulEvt } from "../lib";
+import { Evt } from "../lib";
 import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi";
 
 const { mustResolve, mustStayPending } = getPromiseAssertionApi();
@@ -9,7 +9,7 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi();
 
     {
 
-        const sevText = new StatefulEvt("");
+        const sevText = Evt.create("");
 
         const pr1 = mustResolve({
             "promise": sevText.waitFor(),
@@ -33,7 +33,7 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi();
 
     {
 
-        const sevText = new StatefulEvt("");
+        const sevText = Evt.create("");
 
         const pr1 = mustResolve({
             "promise": sevText.waitFor(),

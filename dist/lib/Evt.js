@@ -93,11 +93,13 @@ var __values = (this && this.__values) || function(o) {
 exports.__esModule = true;
 require("minimal-polyfills/dist/lib/Array.prototype.find");
 var importProxy_1 = require("./importProxy");
+var Evt_create_1 = require("./Evt.create");
 var Evt_getCtx_1 = require("./Evt.getCtx");
 var Evt_merge_1 = require("./Evt.merge");
 var Evt_from_1 = require("./Evt.from");
 var Evt_useEffect_1 = require("./Evt.useEffect");
 var Evt_parsePropsFromArgs_1 = require("./Evt.parsePropsFromArgs");
+var Evt_newCtx_1 = require("./Evt.newCtx");
 var LazyEvt_1 = require("./LazyEvt");
 var defineAccessors_1 = require("../tools/defineAccessors");
 var id_1 = require("../tools/typeSafety/id");
@@ -129,7 +131,6 @@ var EvtImpl = /** @class */ (function () {
         this.__currentChronologyMark = 0;
         this.asyncHandlerCount = 0;
     }
-    EvtImpl.newCtx = function () { return new importProxy_1.importProxy.Ctx(); };
     EvtImpl.setDefaultMaxHandlers = function (n) {
         this.__defaultMaxHandlers = isFinite(n) ? n : 0;
     };
@@ -617,6 +618,8 @@ var EvtImpl = /** @class */ (function () {
         this.postAsync(data, postChronologyMark);
         return this.postCount;
     };
+    EvtImpl.create = Evt_create_1.create;
+    EvtImpl.newCtx = Evt_newCtx_1.newCtx;
     EvtImpl.merge = Evt_merge_1.merge;
     EvtImpl.from = Evt_from_1.from;
     EvtImpl.useEffect = Evt_useEffect_1.useEffect;

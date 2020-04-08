@@ -1,10 +1,12 @@
 import "minimal-polyfills/dist/lib/Array.prototype.find";
 import { importProxy } from "./importProxy";
+import { create } from "./Evt.create";
 import { getCtxFactory } from "./Evt.getCtx";
 import { merge } from "./Evt.merge";
 import { from } from "./Evt.from";
 import { useEffect } from "./Evt.useEffect";
 import { parsePropsFromArgs, matchAll } from "./Evt.parsePropsFromArgs";
+import { newCtx } from "./Evt.newCtx";
 import { LazyEvt } from "./LazyEvt";
 import { defineAccessors } from "../tools/defineAccessors";
 import { id } from "../tools/typeSafety/id";
@@ -24,17 +26,13 @@ import /*type*/ { Operator } from "./types/Operator";
 type NonPostableEvt<T> = import("./types/interfaces").NonPostableEvt<T>;
 type CtxLike<Result = any> = import("./types/interfaces").CtxLike<Result>;
 type StatefulEvt<T> = import("./types/interfaces").StatefulEvt<T>;
-type Ctx<Result = any> = import("./Ctx").Ctx<Result>;
-type VoidCtx = import("./Ctx").VoidCtx;
-
 export type Evt<T> = import("./types/interfaces").Evt<T>;
-
 
 class EvtImpl<T> implements Evt<T> {
 
-    static newCtx(): VoidCtx;
-    static newCtx<T>(): Ctx<T>;
-    static newCtx(): Ctx<any> { return new importProxy.Ctx(); }
+    static readonly create = create;
+
+    static readonly newCtx = newCtx;
 
     static readonly merge = merge;
 
@@ -885,13 +883,9 @@ export const Evt: {
     new <T>(): Evt<T>;
     readonly prototype: Evt<any>;
 
-    /** 
-     * https://docs.evt.land/api/evt/newctx
-     * 
-     * return a new Ctx instance
-     * */
-    newCtx(): VoidCtx;
-    newCtx<T>(): Ctx<T>;
+    readonly create: typeof create;
+
+    readonly newCtx: typeof newCtx;
 
     readonly merge: typeof merge;
 
