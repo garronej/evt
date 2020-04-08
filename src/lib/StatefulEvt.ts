@@ -26,7 +26,6 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
     declare public readonly evtDiff: NonPostableEvt<Diff<T>>;
 
     private readonly lazyEvtChange = new LazyEvt<T>();
-    /** https://docs.evt.land/api/statefulevt#evtchange-nonpostableevt-less-than-t-greater-than */
     declare public readonly evtChange: NonPostableEvt<T>;
 
     private readonly lazyEvtChangeDiff = new LazyEvt<Diff<T>>();
