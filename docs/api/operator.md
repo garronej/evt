@@ -549,38 +549,39 @@ In `Operator<T, U>` , `T` design the type of the event data and `U` design the t
 ```typescript
 import { Operator } from "evt";
 
-const myFilterOp: Operator<string,string> = 
-    data => data.startsWith("H");
+//A function that take an EVT operator as argument.
+declare function f<T, U>(op: Operator<T, U>): void;
 
-const myTypeGuardOp: Operator<Shape,Circle> = 
-    (data): data is Circle => data.type ==="CIRCLE";
+//Les's say you know you want to create an operator that take string
+//and spit out number you can use the type alias as scaffolding.
+const myStatelessFλOp: Operator.fλ<string, number> =
+    str => str.startsWith("H")? null : [ str.length ];
+//The shape argument is inferred as being a string and TS control that you
+//are returning a number (str.length) as you should.
 
-const myStatelessFλOp: Operator.fλ.Stateless<Shape, number> = 
-    shape => shape.type !== "CIRCLE" ? null : [ circle.radius ];
+f(myStatelessFλOp); //OK, f<Shape,number> Operator.fλ is assignable to Operator.
 
-const myStatefulFλOp: Operator.fλ.Stateful<string, number> =
+//An other example creating an stateful operator
+const myStatefulFλOp: Operator.fλ<string, number> =
     [
-        (data, prev)=> [ prev + data.length ],
-        0 
+        (data, prev) => [prev + data.length],
+        0
     ];
 
-//Operator.fλ.Stateless<T, U> and Operator.fλ.Stateful<T, U>
-//are subtype of Operator.fλ<T,U> which is in turn a subtype
-//of Operator<T,U>
+f(myStatefulFλOp); //OK, f<string, number>
 
-declare function f1<T,U>(op: Operator.fλ<T,U>): void;
-declare function f2<T,U>(op: Operator<T,U>): void;
+//Filter and TypeGuard don't need scaffolding but they are valid Operator
 
-f1(myStatelessFλOp); //OK
-f1(myStatefulFλOp);  //OK
-f2(myStatelessFλOp); //OK
-f2(myStatefulFλOp);  //OK
+f((data: string) => data.startsWith("H")); // OK, TS infer f<string, string>
+f((n: number): n is 0 | 1 => n === 0 || n === 1); // OK, TS infer f<number, 0 | 1>
 ```
+
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-agatnh?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
 
 ## Generic operators built in
 
 {% hint style="warning" %}
-Generic operators such as `bufferTime` `debounceTime`, `skip`, `take`, `switchMap`, `mergeMap` and `reduce`. Will be added in the next release alongside with creators. To implement those we need a third type of operator called `AutonomousOperators` that will ship in the next release.
+Generic operators such as `bufferTime` `debounceTime`, `skip`, `take`, `switchMap`, `mergeMap` and `reduce`Will be added later on alongside creators. To implement those we need a third type of operator called `AutonomousOperators` that will ship in the next major release.
 {% endhint %}
 
 Some generic operators are provided in `"evt/dist/lib/util/genericOperators"` such as `scan`, `throttleTime` or `to` but that's about it.
