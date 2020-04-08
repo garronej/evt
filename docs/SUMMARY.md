@@ -18,6 +18,7 @@
     * [evt.setMaxHandlers\(n\)](api/evt/setmaxhandlers.md)
     * [toStateful\(initialState\)](api/evt/tostateful.md)
     * [evt.getStatelessOp\(op\)](api/evt/getstatelessop.md)
+    * [Evt.create\(initalState?\)](api/evt/create.md)
     * [Evt.newCtx&lt;T&gt;\(\)](api/evt/newctx.md)
     * [Evt.from&lt;T&gt;\(...\)](api/evt/from.md)
     * [Evt.useEffect\(...\)](api/evt/use-effect.md)
