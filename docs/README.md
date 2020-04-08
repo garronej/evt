@@ -12,7 +12,7 @@ _\*The deno package hasn't been published yet but it will be soon._
 **Browserify friendly:**
 
 * No polyfills needed ✅  
-* Transpiled down to ES5 ✅  
+* Transpiled down to ES3 ✅  
 * Light-weight, no dependencies ✅   
 
 Can be imported in TypeScript projects using version &gt;= **3.4** \(Mar 2019\) and in any plain JS projects.
