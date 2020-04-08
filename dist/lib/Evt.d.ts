@@ -6,7 +6,9 @@ import { from } from "./Evt.from";
 import { useEffect } from "./Evt.useEffect";
 import { newCtx } from "./Evt.newCtx";
 import { loosenType } from "./Evt.loosenType";
+/** https://docs.evt.land/api/evt */
 export declare type Evt<T> = import("./types/interfaces").Evt<T>;
+/** https://docs.evt.land/api/evt/create */
 export declare type VoidEvt = import("./types/interfaces").VoidEvt;
 export declare const Evt: {
     new <T>(): Evt<T>;
@@ -21,7 +23,6 @@ export declare const Evt: {
     /** https://docs.evt.land/api/evt/setdefaultmaxhandlers */
     setDefaultMaxHandlers(n: number): void;
 };
-/** https://docs.evt.land/api/evt */
 export declare const VoidEvt: {
     new (): VoidEvt;
     readonly prototype: VoidEvt;

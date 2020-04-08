@@ -26,7 +26,11 @@ import /*type*/ { Operator } from "./types/Operator";
 type NonPostableEvt<T> = import("./types/interfaces").NonPostableEvt<T>;
 type CtxLike<Result = any> = import("./types/interfaces").CtxLike<Result>;
 type StatefulEvt<T> = import("./types/interfaces").StatefulEvt<T>;
+
+/** https://docs.evt.land/api/evt */
 export type Evt<T> = import("./types/interfaces").Evt<T>;
+
+/** https://docs.evt.land/api/evt/create */
 export type VoidEvt = import("./types/interfaces").VoidEvt;
 
 class EvtImpl<T> implements Evt<T> {
@@ -905,7 +909,6 @@ export const Evt: {
 
 importProxy.Evt = Evt;
 
-/** https://docs.evt.land/api/evt */
 export const VoidEvt: {
     new (): VoidEvt;
     readonly prototype: VoidEvt;

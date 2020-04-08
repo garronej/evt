@@ -85,10 +85,10 @@ export declare class Ctx<Result> {
      * */
     zz__removeHandler<T>(handler: Handler<T, any, CtxLike<Result>>): void;
 }
+/** https://docs.evt.land/api/evt/ctx */
 export interface VoidCtx extends Ctx<void> {
     done(): Handler.WithEvt<any, void>[];
 }
-/** https://docs.evt.land/api/ctx */
 export declare const VoidCtx: {
     new (): VoidCtx;
     readonly prototype: VoidCtx;

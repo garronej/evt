@@ -648,6 +648,5 @@ var EvtImpl = /** @class */ (function () {
 })(EvtImpl || (EvtImpl = {}));
 exports.Evt = EvtImpl;
 importProxy_1.importProxy.Evt = exports.Evt;
-/** https://docs.evt.land/api/evt */
 exports.VoidEvt = EvtImpl;
 //# sourceMappingURL=Evt.js.map

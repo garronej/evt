@@ -168,7 +168,6 @@ var Ctx = /** @class */ (function () {
 exports.Ctx = Ctx;
 importProxy_1.importProxy.Ctx = Ctx;
 ;
-/** https://docs.evt.land/api/ctx */
 exports.VoidCtx = Ctx;
 importProxy_1.importProxy.VoidCtx = exports.VoidCtx;
 //# sourceMappingURL=Ctx.js.map

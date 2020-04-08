@@ -10,6 +10,7 @@ type Diff<T> = import("./types/interfaces").Diff<T>;
 type NonPostableEvt<T> = import("./types/interfaces").NonPostableEvt<T>;
 import { Evt } from "./Evt";
 
+/** https://docs.evt.land/api/statefulevt */
 export type StatefulEvt<T> = import("./types/interfaces").StatefulEvt<T>;
 
 class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
@@ -121,7 +122,6 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
 
 }
 
-/** https://docs.evt.land/api/statefulevt */
 export const StatefulEvt: {
     new <T>(initialState: T): StatefulEvt<T>;
     readonly prototype: StatefulEvt<any>;

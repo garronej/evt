@@ -242,11 +242,11 @@ export class Ctx<Result>{
 
 importProxy.Ctx = Ctx;
 
+/** https://docs.evt.land/api/evt/ctx */
 export interface VoidCtx extends Ctx<void> {
     done(): Handler.WithEvt<any, void>[];
 };
 
-/** https://docs.evt.land/api/ctx */
 export const VoidCtx: {
     new (): VoidCtx;
     readonly prototype: VoidCtx;
