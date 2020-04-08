@@ -110,5 +110,28 @@ const evtClickCount= Evt.from(document,"click")
 console.log(evtClickCount.state); //Prints "3"
 ```
 
+## Make a `StatefulEvt` readonly
 
+To prevent a StatefulEvt to be posted by parts of the code that is not supposed to StatefulEvt can be exposed as `StatefulReadonlyEvt`.
+
+```typescript
+import { StatefulEvt, StatefulReadonlyEvt } from "evt";
+
+//Return an event that post every second.
+function generateEvtTick(delay: number): StatefulReadonlyEvt<number> {
+    
+    const evtTick= new StatefulEvt(0);
+    
+    setInterval(()=> evtTick.state++, delay);
+    
+    retrun evtTick;
+    
+}
+
+const evtTick= generateTick(1000);
+
+
+evtTick.state++; // TS ERROR
+evtTick.post(2); // TS ERROR
+```
 
