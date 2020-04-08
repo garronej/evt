@@ -1,7 +1,7 @@
 # evt.getStatelessOp\(op\)
 
 {% hint style="warning" %}
-This is a very advanced feature, it you are new to EVT do not bother.
+This is an advanced feature, it you are new to EVT you can skip this for now.
 {% endhint %}
 
 It is not always possible to manually invoke an operator attached to an Handler that you got using `evt.getHandlers()`. Indeed if the operator is stateful you can't provide the `prev` value. This function gives access to this state.

@@ -4,7 +4,9 @@ A `StatefulEvt` is an Evt stat keep a reference to the last value posted.
 
 You can think of it as way to observe when a value is changed.
 
-## `.state: T`
+## `.state`
+
+Property type: `T`
 
 reading the property gives the last event data posted. Setting the property \(`evt.state = data`\) is equivalent of calling invoking  `.post(data)`.
 
@@ -26,7 +28,9 @@ evtCount.state++; //Prints "2"
 console.log(evtCount.state); //Pints "2";
 ```
 
-## `.evtChange: NonPostableEvt<T>`
+## `.evtChange`
+
+Property type: `NonPostableEvt<T>`
 
 The `.evtChange` property is an `Evt` that post only when the `.state` has changed. \( or when post is made via `.postForceChange()` \)
 
@@ -41,7 +45,9 @@ evtIsConnected.state = false; //Prints nothing .state was already false.
 evtIsConnected.state = true; //Prints "true";
 ```
 
-## `.evtDiff: NonPostableEvt<{prevState:T; newState: T}>`
+## `.evtDiff`
+
+Property type: `NonPostableEvt<{prevState:T; newState: T}>`
 
 Posted every time the Evt is posted. Used to compare the previous state with the new state.
 
@@ -57,7 +63,9 @@ evtColor.state= "BLUE"; //Prints "BLUE=>BLUE"
 evtColor.state= "WHITE"; //Prints "BLUE=>WHITE"
 ```
 
-## `.evtChangeDiff: NonPostableEvt<{prevState:T; newState: T}>`
+## `.evtChangeDiff`
+
+Property type: `NonPostableEvt<{prevState:T; newState: T}>`
 
 Same than .evtDiff but post only when .evtChang post.
 
@@ -110,5 +118,42 @@ const evtClickCount= Evt.from(document,"click")
 console.log(evtClickCount.state); //Prints "3"
 ```
 
+## Make a `StatefulEvt` readonly
 
+To prevent a StatefulEvt to be posted by parts of the code that is not supposed to StatefulEvt can be exposed as `StatefulReadonlyEvt`.
+
+```typescript
+import { StatefulEvt, StatefulReadonlyEvt } from "evt";
+
+//Return an event that post every second.
+function generateEvtTick(delay: number): StatefulReadonlyEvt<number> {
+    
+    const evtTick= new StatefulEvt(0);
+    
+    setInterval(()=> evtTick.state++, delay);
+    
+    retrun evtTick;
+    
+}
+
+const evtTick= generateTick(1000);
+
+
+evtTick.state++; // TS ERROR
+evtTick.post(2); // TS ERROR
+```
+
+## `.postFoceChange()`
+
+```typescript
+ /** 
+  * Post and enforce that .evtChange and .evtChangeDiff 
+  * be posted even if the state has not changed.
+  * 
+  * If no argument is passed the post is performed with the current state.
+  * 
+  * Returns post count 
+  **/
+  postForceChange(wData?: readonly [T]): number;
+```
 

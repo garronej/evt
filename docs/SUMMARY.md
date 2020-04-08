@@ -16,6 +16,7 @@
     * [evt.enableTrace\(...\)](api/evt/enabletrace.md)
     * [Evt.getCtx\(object\)](api/evt/getctx.md)
     * [evt.setMaxHandlers\(n\)](api/evt/setmaxhandlers.md)
+    * [toStateful\(initialState\)](api/evt/tostateful.md)
     * [evt.getStatelessOp\(op\)](api/evt/getstatelessop.md)
     * [Evt.newCtx&lt;T&gt;\(\)](api/evt/newctx.md)
     * [Evt.from&lt;T&gt;\(...\)](api/evt/from.md)

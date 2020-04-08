@@ -3,7 +3,7 @@
 ## ToNonPostableEvt&lt;E&gt;
 
 {% hint style="info" %}
-NonPostableEvt&lt;T&gt; and StatefulNonPostableEvt&lt;T&gt; are interfaces implemented respectively by the classes `Evt<T>` and `StatefulEvt<T>`. They contains all the methods but the ones used to post events, namely: `.post()` and`.postOnceHandled()`
+`NonPostableEvt<T>` and `StatefulReadonlyEvt<T>` are interfaces implemented respectively by the classes `Evt<T>` and `StatefulEvt<T>`. They contains all the methods but the ones used to post events, namely: `.post(), .postOnceHandled()` and the `.state` setter for `StatefulReadonlyEvt`
 {% endhint %}
 
 ```typescript
