@@ -5,6 +5,7 @@
 * [API Documentation](api/README.md)
   * [Operator&lt;T, U&gt; \(type\)](api/operator.md)
   * [Evt&lt;T&gt;](api/evt/README.md)
+    * [toStateful\(initialState\)](api/evt/tostateful.md)
     * [evt.\[$\]attach\*\(...\)](api/evt/attach.md)
     * [evt.post\*\(data\)](api/evt/post.md)
     * [evt.waitFor\(...\)](api/evt/waitfor.md)

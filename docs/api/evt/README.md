@@ -6,8 +6,6 @@ description: >-
 
 # Evt&lt;T&gt;
 
-The Evt&lt;T&gt; class implements the NonpostableEvt&lt;T&gt; and the Postable&lt;T&gt; interfaces.
-
 #### Note the existance of `VoidEvt`
 
 When you create an Evt with a void argument, TypeScript forces you to pass `undefined` to `post()`.  
