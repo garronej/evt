@@ -36,7 +36,7 @@ Let us consider the example use of an operator that filters out every word that 
 ```typescript
 import { Evt } from "evt";
 
-const evtText= new Evt<string>();
+const evtText= Evt.create<string>();
 
 evtText.attach(
     text=> text.startsWith("H"), 
@@ -87,7 +87,7 @@ The `matchCircle` type guard can be used to attach a callback to an `Evt<Shape>`
 ```typescript
 import { Evt } from "evt";
 
-const evtShape = new Evt<Shape>();
+const evtShape = Evt.create<Shape>();
 
 evtShape.attach(
     matchCircle,
@@ -129,7 +129,7 @@ Stateless fλ operator only takes the event data as arguments.
 ```typescript
 import { Evt } from "evt";
 
-const evtShape = new Evt<Shape>();
+const evtShape = Evt.create<Shape>();
 
 /*
  * Filter: 
@@ -162,7 +162,7 @@ Other example using `"DETACH"`
 ```typescript
 import { Evt } from "evt";
 
-const evtText= new Evt<"TICK" | "END">();
+const evtText= Evt.create<"TICK" | "END">();
 
 /*
  * Only handle events that are not "END".
@@ -182,7 +182,7 @@ evtText.post("TICK"); //Nothing is printed to the console.
 Example use of `[U,null|"DETACH"]`, handling the event that causes the handler to be detached.
 
 ```typescript
-const evtText= new Evt<"TICK" | "END">();
+const evtText= Evt.create<"TICK" | "END">();
 
 evtText.$attach(
     text => [ text, text === "END" ? "DETACH" : null ],
@@ -197,10 +197,10 @@ evtText.post("TICK"); //Nothing is printed to the console the handler has been d
 Example use of `{ DETACH:`[`Ctx`](https://docs.ts-evt.dev/api-doc/ctx)`}`, detaching a group of handlers bound to a given context.
 
 ```typescript
-const evtBtnClick = new Evt<"OK" | "QUIT">();
+const evtBtnClick = Evt.create<"OK" | "QUIT">();
 
-const evtMessage = new Evt<string>();
-const evtNotification = new Evt<string>();
+const evtMessage = Evt.create<string>();
+const evtNotification = Evt.create<string>();
 
 const ctx= Evt.newCtx();
 
@@ -240,7 +240,7 @@ The result of the previously matched event is passed as argument to the operator
 ```typescript
 import { Evt } from "evt";
 
-const evtText= new Evt<string>();
+const evtText= Evt.create<string>();
 
 evtText.$attach(
     [ 
@@ -267,7 +267,7 @@ The first thing that you might be tempted to do is to use a variable available i
 The following example **seems equivalent from the previous one** but it is **not**.
 
 ```typescript
-const evtText= new Evt<string>();
+const evtText= Evt.create<string>();
 
 //🚨 DO NOT do that 🚨...
 evtText.$attach(
@@ -302,7 +302,7 @@ If state is needed stat full fλ have to be used.
 ```typescript
 import { Evt } from "evt";
 
-const evtText= new Evt<string>();
+const evtText= Evt.create<string>();
 
 //Do not modify the accumulator value.
 evtText.$attach(
@@ -333,7 +333,7 @@ evtText.$attach(
 The TypeScript [const assertion features](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#const-assertions) come in handy if you introduce closures, for example. The following example does not compile without the use of `as const`.
 
 ```typescript
-const evtShapeOrUndefined = new Evt<Shape | undefined>();
+const evtShapeOrUndefined = Evt.create<Shape | undefined>();
 
 evtShapeOrUndefined.$attach(
     shape => !shape ?
@@ -353,7 +353,7 @@ Generally const assertions can help you narrow down the return type of your oper
 ```typescript
 import { Evt } from "evt";
 
-const evtN = new Evt<number>();
+const evtN = Evt.create<number>();
 
 evtN.$attach(
     n => [ n>43 ? "TOO LARGE" as const : n ], 
@@ -374,7 +374,7 @@ Here is the previous example using explicit returns just to show you that the re
 ```typescript
 import { Evt } from "evt";
 
-const evtN = new Evt<number>();
+const evtN = Evt.create<number>();
 
 //🚨 This is NOT recomanded 🚨...
 evtN.$attach(
@@ -401,7 +401,7 @@ Example composing type guards with fλ:
 ```typescript
 import { Evt, compose } from "evt";
 
-const evtShape= new Evt<Shape>();
+const evtShape= Evt.create<Shape>();
 
 evtShape.$attach(
     compose(
@@ -422,7 +422,7 @@ Example with [`on`](https://docs.evt.land/overview#eventemitter-comparison) \( o
 ```typescript
 import { Evt, to, compose } from "evt";
 
-const evt = new Evt<
+const evt = Evt.create<
     ["text", string] |
     ["time", number]
 >();
@@ -443,7 +443,7 @@ Example composing three fλ to count the number of different words in a sentence
 ```typescript
 import { Evt, compose } from "evt";
 
-const evtSentence = new Evt<string>();
+const evtSentence = Evt.create<string>();
 
 evtSentence.$attach(
     compose(
@@ -476,7 +476,7 @@ const throttleTime = <T>(duration: number) =>
     )
     ;
 
-const evtText = new Evt<string>();
+const evtText = Evt.create<string>();
 
 evtText.$attach(
     throttleTime(1000), //<= At most one event per second is handled.
@@ -509,7 +509,7 @@ const op= compose<string,string, number>(
     str=> [str.length]
 );
 
-const evtText= new Evt<string>();
+const evtText= Evt.create<string>();
 
 evtText.$attach(op, n=> console.log(n));
 evtText.$attach(op, n=> console.log(n));
@@ -528,7 +528,7 @@ const getOp= ()=> compose<string,string, number>(
     str=> [str.length]
 );
 
-const evtText= new Evt<string>();
+const evtText= Evt.create<string>();
 
 evtText.$attach(getOp(), n=> console.log(n));
 evtText.$attach(getOp(), n=> console.log(n));
