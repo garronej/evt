@@ -5,8 +5,8 @@ declare type StatefulPostable<T> = import("../interfaces").StatefulPostable<T>;
  */
 declare type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
 declare type NonPostableEvt<T> = import("../interfaces").NonPostableEvt<T>;
-declare type StatefulNonPostableEvt<T> = import("../interfaces").StatefulNonPostableEvt<T>;
-declare type ToNonPostableEvtBase<T extends EvtLike<any>> = T extends StatefulNonPostableEvt<infer U> ? StatefulNonPostableEvt<U> : T extends NonPostableEvt<infer U> ? NonPostableEvt<U> : Omit<T, Exclude<keyof StatefulPostable<any>, "state">>;
+declare type StatefulReadonlyEvt<T> = import("../interfaces").StatefulReadonlyEvt<T>;
+declare type ToNonPostableEvtBase<T extends EvtLike<any>> = T extends StatefulReadonlyEvt<infer U> ? StatefulReadonlyEvt<U> : T extends NonPostableEvt<infer U> ? NonPostableEvt<U> : Omit<T, Exclude<keyof StatefulPostable<any>, "state">>;
 declare type ToNonPostableEvtRecord<T extends {
     [key: string]: any;
 }> = {

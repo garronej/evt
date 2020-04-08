@@ -1,9 +1,9 @@
-import { StatefulEvt, StatefulNonPostableEvt } from "../lib";
+import { StatefulEvt, StatefulReadonlyEvt } from "../lib";
 import { assert } from "../tools/typeSafety";
 
 
 const evtCount = new StatefulEvt<number>(0);
-{ const evtCountReadonly: StatefulNonPostableEvt<number> = evtCount; evtCountReadonly; }
+{ const evtCountReadonly: StatefulReadonlyEvt<number> = evtCount; evtCountReadonly; }
 
 let std_out = "";
 

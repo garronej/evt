@@ -9,10 +9,10 @@ type StatefulPostable<T> = import("../interfaces").StatefulPostable<T>;
 type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
 
 type NonPostableEvt<T> = import("../interfaces").NonPostableEvt<T>;
-type StatefulNonPostableEvt<T> = import("../interfaces").StatefulNonPostableEvt<T>;
+type StatefulReadonlyEvt<T> = import("../interfaces").StatefulReadonlyEvt<T>;
 
 type ToNonPostableEvtBase<T extends EvtLike<any>> =
-    T extends StatefulNonPostableEvt<infer U> ? StatefulNonPostableEvt<U> :
+    T extends StatefulReadonlyEvt<infer U> ? StatefulReadonlyEvt<U> :
     T extends NonPostableEvt<infer U> ? NonPostableEvt<U> :
     Omit<T, Exclude<keyof StatefulPostable<any>, "state">>
     ;

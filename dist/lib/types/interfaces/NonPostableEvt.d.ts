@@ -4,6 +4,7 @@ declare type StatefulEvt<T> = import("./StatefulEvt").StatefulEvt<T>;
 declare type CtxLike<Result = any> = import("./CtxLike").CtxLike<Result>;
 declare type Evt<T> = import("./Evt").Evt<T>;
 export interface NonPostableEvt<T> {
+    /** https://docs.evt.land/api/statefulevt#converting-an-evt-into-a-statefulevt */
     toStateful(initialState: T, ctx?: CtxLike): StatefulEvt<T>;
     /** https://docs.evt.land/api/evt/evtattachdetach */
     readonly evtAttach: Evt<Handler<T, any>>;

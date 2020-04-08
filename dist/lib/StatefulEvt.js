@@ -100,6 +100,7 @@ var StatefulEvtImpl = /** @class */ (function (_super) {
     })();
     return StatefulEvtImpl;
 }(Evt_2.Evt));
+/** https://docs.evt.land/api/statefulevt */
 exports.StatefulEvt = StatefulEvtImpl;
 importProxy_1.importProxy.StatefulEvt = exports.StatefulEvt;
 //# sourceMappingURL=StatefulEvt.js.map

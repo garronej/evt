@@ -1,7 +1,10 @@
 
-type StatefulNonPostableEvt<T> = import("./StatefulNonPostableEvt").StatefulNonPostableEvt<T>;
+type StatefulReadonlyEvt<T> = import("./StatefulReadonlyEvt").StatefulReadonlyEvt<T>;
 type StatefulPostable<T> = import("./StatefulPostable").StatefulPostable<T>;
 
-export interface StatefulEvt<T> extends StatefulNonPostableEvt<T>, StatefulPostable<T> {
+export interface StatefulEvt<T> extends StatefulReadonlyEvt<T>, StatefulPostable<T> {
+
+     /** https://docs.evt.land/api/statefulevt#state */
     state: T;
+
 };

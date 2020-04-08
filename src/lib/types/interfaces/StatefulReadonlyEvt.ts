@@ -7,14 +7,21 @@ type StatefulEvt<T> = import("./StatefulEvt").StatefulEvt<T>;
 
 export type StateDiff<T> = { prevState: T, newState: T };
 
-export interface StatefulNonPostableEvt<T> extends NonPostableEvt<T> {
+export interface StatefulReadonlyEvt<T> extends NonPostableEvt<T> {
 
     readonly state: T;
 
+    /** https://docs.evt.land/api/statefulevt#evtdiff */
     readonly evtDiff: NonPostableEvt<StateDiff<T>>;
+
+    /** https://docs.evt.land/api/statefulevt#evtchange */
     readonly evtChange: NonPostableEvt<T>;
+
+
+    /** https://docs.evt.land/api/statefulevt#evtchangediff */
     readonly evtChangeDiff: NonPostableEvt<StateDiff<T>>;
 
+    /** https://docs.evt.land/api/statefulevt#statefulpipe */
     statefulPipe(): StatefulEvt<T>;
 
     statefulPipe<U, CtxResult>(

@@ -28,7 +28,7 @@ type Okkk = NonPostable<{ p1: number, p2: Evt<string> }>;
 
 const x: SwapEvtType<Evt<string>, number> = null as any; x;
 const y: SwapEvtType<StatefulEvt<string>, number> = null as any; y;
-const z: SwapEvtType<StatefulNonPostableEvt<string>, number> = null as any; z;
+const z: SwapEvtType<StatefulReadonlyEvt<string>, number> = null as any; z;
 
 */
 
@@ -37,7 +37,7 @@ const evtIsConnected: StatefulEvt<boolean> = null as any;
 
 evtIsConnected.state = true;
 
-const evtIsBlue: StatefulNonPostableEvt<boolean> = null as any;
+const evtIsBlue: StatefulReadonlyEvt<boolean> = null as any;
 
 evtIsBlue.state= false
 */
