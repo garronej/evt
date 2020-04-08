@@ -1,4 +1,4 @@
-# Ctx&lt;T&gt; \(class\)
+# Ctx&lt;T&gt;
 
 `Ctx` helps detach all `Handler`s that were attached in the goal of acompishing a certain task once the said task is done or aborted.
 

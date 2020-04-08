@@ -4,7 +4,7 @@ description: >-
   Subject<T> in "rxjs"
 ---
 
-# Evt&lt;T&gt; \(class\)
+# Evt&lt;T&gt;
 
 The Evt&lt;T&gt; class implements the NonpostableEvt&lt;T&gt; and the Postable&lt;T&gt; interfaces.
 
