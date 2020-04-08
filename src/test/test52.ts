@@ -16,8 +16,6 @@ evtCount
 
 (async () => {
 
-    const start = Date.now();
-
     let count = 0;
 
     while (true) {
@@ -35,8 +33,6 @@ evtCount
     }
 
     assert(internalCount === 3 );
-
-    console.log(Date.now() - start);
 
     console.log("PASS".green);
 
