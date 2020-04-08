@@ -143,7 +143,7 @@ evtTick.state++; // TS ERROR
 evtTick.post(2); // TS ERROR
 ```
 
-## `.postForceUpdate()`
+## `.postFoceChange()`
 
 ```typescript
  /** 
