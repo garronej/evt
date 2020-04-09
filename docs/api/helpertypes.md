@@ -10,7 +10,8 @@
 import { ToNonPostableEvt } from "evt";
 
 ToNonPostableEvt<Evt<T>>         → NonPostableEvt<T>
-ToNonPostableEvt<SatefulEvt<T>>  → StatefulNonpostableEvt<T>
+ToNonPostableEvt<SatefulEvt<T>>  → StatefulReadonlyEvt<T>
+ToNonPostable<VoidEvt>           → NonPostable<Void>
 ToNonPostable<NonpostableEvt<T>> → NonPostableEvt<T>
 
 ToNonPostableEvt<{ 
@@ -25,8 +26,6 @@ ToNonPostableEvt<{
     type: "FOO"
 }
 
-const evt= new Evt<{ p1: string; p2: number; }>();
-const evtReadonly: ToNonPostable<typeof evt> = evt;
 ```
 
 Example use of the `NonPostableEvt` interface:
@@ -48,6 +47,31 @@ evtText.post("good");
 ```
 
 [**Run the example**](https://stackblitz.com/edit/evt-xc2eqj?embed=1&file=index.ts&hideExplorer=1)
+
+## **ToPostableEvt&lt;E&gt;**
+
+Invert of `ToNonPostableEvt`
+
+```typescript
+import { Evt, Void } from "evt";
+
+ToPostableEvt<NonPostableEvt<T>>         → Evt<T>
+ToPostableEvt<StatefulReadonlyEvt<T>>    → StatefulEvt<T>
+ToPostable<NonPostable<Void>>            → VoidEvt
+ToPostable<Evt<T>>                       → Evt<T>
+
+ToPostableEvt<{ 
+    evtText: NonPostableEvt<string>; 
+    evtCount: StatefulReadonlyEvt<number>; 
+    type: "FOO" 
+}> 
+ → 
+{ 
+    evtText: Evt<string>; 
+    evtCount: StatefulEvt<number>; 
+    type: "FOO"
+}
+```
 
 ## UnpackEvt&lt;E&gt;
 

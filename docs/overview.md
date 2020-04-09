@@ -26,8 +26,8 @@ In EVT the recommended approach is to give every event it's `Evt` instance. Tran
 ```typescript
 import { Evt } from "evt";
 
-const evtText = new Evt<string>();
-const evtTime = new Evt<number>();
+const evtText = Evt.create<string>();
+const evtTime = Evt.create<number>();
 
 evtText.attach(text => console.log(text));
 evtTime.attachOnce(time => console.log(time));
@@ -42,7 +42,7 @@ However, the traditional approach that consists of gathering all the events in a
 ```typescript
 import { Evt, to } from "evt";
 
-const evt = new Evt<
+const evt = Evt.create<
     [ "text",  string ] | 
     [ "time",  number ]
 >();

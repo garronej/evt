@@ -23,6 +23,7 @@
     * [Evt.from&lt;T&gt;\(...\)](api/evt/from.md)
     * [Evt.useEffect\(...\)](api/evt/use-effect.md)
     * [Evt.merge\(\[ evt1, evt2, ... \]\)](api/evt/merge.md)
+    * [Evt.loosenType\(evt\)](api/evt/loosentype.md)
     * [Evt.setDefaultMaxHandlers\(n\)](api/evt/setdefaultmaxhandlers.md)
   * [Ctx&lt;T&gt;](api/ctx.md)
   * [StatefulEvt&lt;T&gt;](api/statefulevt.md)
