@@ -6,7 +6,7 @@ type StatefulReadonlyEvt<T> = import("../interfaces").StatefulReadonlyEvt<T>;
 type StatefulEvt<T> = import("../interfaces").StatefulEvt<T>;
 type Evt<T> = import("../interfaces").Evt<T>;
 type VoidEvt = import("../interfaces").VoidEvt;
-type Void = import("../interfaces/VoidEvt").Void;
+type Void = import("../interfaces/Void").Void;
 
 type UseVoidEvt<E> = E extends Evt<Void> ? VoidEvt : E;
 

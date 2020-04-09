@@ -46,6 +46,8 @@ require("minimal-polyfills/dist/lib/Array.prototype.find");
 var importProxy_1 = require("./importProxy");
 var Evt_create_1 = require("./Evt.create");
 var Evt_getCtx_1 = require("./Evt.getCtx");
+var Evt_isVoid_1 = require("./Evt.isVoid");
+var Evt_factorize_1 = require("./Evt.factorize");
 var Evt_merge_1 = require("./Evt.merge");
 var Evt_from_1 = require("./Evt.from");
 var Evt_useEffect_1 = require("./Evt.useEffect");
@@ -64,6 +66,7 @@ var typeGuard_1 = require("../tools/typeSafety/typeGuard");
 var encapsulateOpState_1 = require("./util/encapsulateOpState");
 var Deferred_1 = require("../tools/Deferred");
 var Evt_loosenType_1 = require("./Evt.loosenType");
+var Void_1 = require("./types/interfaces/Void");
 var Operator_1 = require("./types/Operator");
 var EvtImpl = /** @class */ (function () {
     function EvtImpl() {
@@ -539,8 +542,14 @@ var EvtImpl = /** @class */ (function () {
         }
         return this.addHandler(Evt_parsePropsFromArgs_1.parsePropsFromArgs(args, "attach*"), EvtImpl.propsFormMethodNames.attachOnceExtract).promise;
     };
-    EvtImpl.prototype.postAsyncOnceHandled = function (data) {
+    EvtImpl.prototype.postAsyncOnceHandled = function () {
         var _this_1 = this;
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        var data = id_1.id(args.length) === 0 ?
+            Void_1.Void.instance : args[0];
         if (this.isHandled(data)) {
             return this.post(data);
         }
@@ -551,7 +560,13 @@ var EvtImpl = /** @class */ (function () {
         }, function () { return Promise.resolve().then(function () { return d.resolve(_this_1.post(data)); }); });
         return d.pr;
     };
-    EvtImpl.prototype.post = function (data) {
+    EvtImpl.prototype.post = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        var data = id_1.id(args.length) === 0 ?
+            Void_1.Void.instance : args[0];
         this.trace(data);
         overwriteReadonlyProp_1.overwriteReadonlyProp(this, "postCount", this.postCount + 1);
         //NOTE: Must be before postSync.
@@ -576,6 +591,8 @@ var EvtImpl = /** @class */ (function () {
     EvtImpl.useEffect = Evt_useEffect_1.useEffect;
     EvtImpl.getCtx = Evt_getCtx_1.getCtxFactory();
     EvtImpl.loosenType = Evt_loosenType_1.loosenType;
+    EvtImpl.factorize = Evt_factorize_1.factorize;
+    EvtImpl.isVoid = Evt_isVoid_1.isVoid;
     EvtImpl.__defaultMaxHandlers = 25;
     EvtImpl.__1 = (function () {
         if (false) {

@@ -3,7 +3,7 @@ declare type StatefulReadonlyEvt<T> = import("../interfaces").StatefulReadonlyEv
 declare type Evt<T> = import("../interfaces").Evt<T>;
 declare type NonPostableEvt<T> = import("../interfaces").NonPostableEvt<T>;
 declare type EvtLike<T> = import("./UnpackEvt").EvtLike<T>;
-declare type Void = import("../interfaces/VoidEvt").Void;
+declare type Void = import("../interfaces/Void").Void;
 declare type VoidEvt = import("../interfaces").VoidEvt;
 declare type UseVoidEvt<E> = E extends Evt<Void> ? VoidEvt : E;
 /** https://docs.evt.land/api/helpertypes#swapevttype-less-than-e-t-greater-than */

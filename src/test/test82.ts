@@ -34,4 +34,7 @@ const j: NonPostableEvt<Void>= null as any as J;j;
 type K = SwapEvtType<Evt<undefined | number>, Void>;
 const k : VoidEvt = null as any as K; k;
 
+type L = SwapEvtType<Evt<any>, Void | number>;
+const l : Evt<number | Void> = null as any as L; l;
+
 console.log("PASS".green);
