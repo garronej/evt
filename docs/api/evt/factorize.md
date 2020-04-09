@@ -4,9 +4,9 @@
 This is the identity function with special type annotations. 
 {% endhint %}
 
-If you have an event that post `A` or an `Evt` that post `B` you have an event that post `A or B`.
+If you have a variable that is either an `Evt` that post `A` or an `Evt` that post `B` you have an event that post `A or B`.
 
-In other words `Evt<A> | Evt<B>` is assignable to `Evt<A | B >`
+In other words `Evt<A> | Evt<B>` is assignable to `Evt<A | B >.` This method implement this proerty.
 
 ```typescript
 import { Evt, VoidEvt } from "evt";
