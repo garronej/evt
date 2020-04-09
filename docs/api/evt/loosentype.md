@@ -4,9 +4,11 @@
 This is the identity function with special type annotations.
 {% endhint %}
 
-Swipe the type argument with a superset without giving up type safety.  Indeed if `A` is assignable to `B` ⇒ `Evt<A>` is assignable to `Evt<B>`; e.g:`Evt<1|2|3>` is assignable to `Evt<number>`It is true but typescript does not realise it.
+Swipe the type argument with a superset without giving up type safety.
 
-Consider the example: 
+If `A` is assignable to `B` ⇒ `Evt<A>` is assignable to `Evt<B>`
+
+e.g:`Evt<1|2|3>` is assignable to `Evt<number>` however typescript wont let you do this assignation. This is where `Evt.loosenType` come in handy. 
 
 ```typescript
 import { Evt } from "evt";
