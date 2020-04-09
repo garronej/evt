@@ -1,10 +1,10 @@
 import {
-    VoidEvt, EvtError
+    Evt, EvtError
 } from "../lib/index";
 
 let pass= false;
 
-let evt = new VoidEvt();
+let evt = Evt.create();
 
 
 

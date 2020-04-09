@@ -1,4 +1,4 @@
-import { Evt, Ctx } from "../lib/index";
+import { Evt, Ctx, Void } from "../lib/index";
 
 type T = string;
 
@@ -12,7 +12,7 @@ let evtProxy = new Evt<T>();
 
 {
 
-    const map = new Map<string, Ctx<void>>();
+    const map = new Map<string, Ctx<Void>>();
 
     evt.attach(data => {
 

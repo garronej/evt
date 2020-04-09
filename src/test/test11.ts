@@ -1,8 +1,8 @@
-import { Evt, VoidEvt } from "../lib";
+import { Evt } from "../lib";
 
 let evt = Evt.create();
 
-let evtProxy= new VoidEvt();
+let evtProxy= Evt.create();
 
 evt.attach(()=>{
 

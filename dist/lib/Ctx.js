@@ -30,28 +30,20 @@ var LazyEvt_1 = require("./LazyEvt");
 var importProxy_1 = require("./importProxy");
 var defineAccessors_1 = require("../tools/defineAccessors");
 var id_1 = require("../tools/typeSafety/id");
-/** https://docs.evt.land/api/ctx */
-var Ctx = /** @class */ (function () {
-    function Ctx() {
+var overwriteReadonlyProp_1 = require("../tools/overwriteReadonlyProp");
+var Void_1 = require("./types/interfaces/Void");
+var CtxImpl = /** @class */ (function () {
+    function CtxImpl() {
         this.lazyEvtAttach = new LazyEvt_1.LazyEvt();
         this.lazyEvtDetach = new LazyEvt_1.LazyEvt();
         this.lazyEvtDoneOrAborted = new LazyEvt_1.LazyEvt();
         this.handlers = new Set_1.Polyfill();
         this.evtByHandler = new WeakMap_1.Polyfill();
     }
-    Ctx.prototype.onDoneOrAborted = function (doneEvtData) {
+    CtxImpl.prototype.onDoneOrAborted = function (doneEvtData) {
         this.lazyEvtDoneOrAborted.post(doneEvtData);
     };
-    /**
-     * https://docs.evt.land/api/ctx#ctx-waitfor-timeout
-     *
-     * Return a promise that resolve next time ctx.done(result) is invoked
-     * Reject if ctx.abort(error) is invoked.
-     * Optionally a timeout can be passed, if so the returned promise will reject
-     * with EvtError.Timeout if done(result) is not called within [timeout]ms.
-     * If the timeout is reached ctx.abort(timeoutError) will be invoked.
-     */
-    Ctx.prototype.waitFor = function (timeout) {
+    CtxImpl.prototype.waitFor = function (timeout) {
         var _this_1 = this;
         return this.evtDoneOrAborted
             .waitFor(timeout)
@@ -65,28 +57,20 @@ var Ctx = /** @class */ (function () {
             throw timeoutError;
         });
     };
-    /**
-     * https://docs.evt.land/api/ctx#ctx-abort-error
-     *
-     * All the handler will be detached.
-     * evtDone will post [ error, undefined, handlers (detached) ]
-     * if getPrDone() was invoked the promise will reject with the error
-     */
-    Ctx.prototype.abort = function (error) {
+    CtxImpl.prototype.abort = function (error) {
         return this.__done(error);
     };
-    /**
-     * https://docs.evt.land/api/ctx#ctx-done-result
-     *
-     * Detach all handlers.
-     * evtDone will post [ null, result, handlers (detached) ]
-     * If getPrDone() was invoked the promise will result with result
-     */
-    Ctx.prototype.done = function (result) {
+    CtxImpl.prototype.done = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        var result = id_1.id(args.length) === 0 ?
+            Void_1.Void.instance : args[0];
         return this.__done(undefined, result);
     };
     /** Detach all handler bound to this context from theirs respective Evt and post getEvtDone() */
-    Ctx.prototype.__done = function (error, result) {
+    CtxImpl.prototype.__done = function (error, result) {
         var e_1, _a;
         var handlers = [];
         try {
@@ -113,28 +97,19 @@ var Ctx = /** @class */ (function () {
             { type: "DONE", "result": result })), { handlers: handlers }));
         return handlers;
     };
-    /** https://docs.evt.land/api/ctx#ctx-gethandlers */
-    Ctx.prototype.getHandlers = function () {
+    CtxImpl.prototype.getHandlers = function () {
         var _this_1 = this;
         return Array.from(this.handlers.values())
             .map(function (handler) { return ({ handler: handler, "evt": _this_1.evtByHandler.get(handler) }); });
     };
-    /**
-     * Exposed to enable safe interoperability between mismatching EVT versions.
-     * Should be considered private
-     * */
-    Ctx.prototype.zz__addHandler = function (handler, evt) {
+    CtxImpl.prototype.zz__addHandler = function (handler, evt) {
         assert_1.assert(handler.ctx === this);
         assert_1.assert(typeGuard_1.typeGuard(handler));
         this.handlers.add(handler);
         this.evtByHandler.set(handler, evt);
         this.lazyEvtAttach.post({ handler: handler, evt: evt });
     };
-    /**
-     * Exposed to enable safe interoperability between EVT versions.
-     * Should be considered private
-     * */
-    Ctx.prototype.zz__removeHandler = function (handler) {
+    CtxImpl.prototype.zz__removeHandler = function (handler) {
         assert_1.assert(handler.ctx === this);
         assert_1.assert(typeGuard_1.typeGuard(handler));
         this.lazyEvtDetach.post({
@@ -143,31 +118,32 @@ var Ctx = /** @class */ (function () {
         });
         this.handlers["delete"](handler);
     };
-    Ctx.__1 = (function () {
+    CtxImpl.__1 = (function () {
         if (false) {
-            Ctx.__1;
+            CtxImpl.__1;
         }
-        defineAccessors_1.defineAccessors(Ctx.prototype, "evtDoneOrAborted", {
+        defineAccessors_1.defineAccessors(CtxImpl.prototype, "evtDoneOrAborted", {
             "get": function () {
                 return id_1.id(this).lazyEvtDoneOrAborted.evt;
             }
         });
-        defineAccessors_1.defineAccessors(Ctx.prototype, "evtAttach", {
+        defineAccessors_1.defineAccessors(CtxImpl.prototype, "evtAttach", {
             "get": function () {
                 return id_1.id(this).lazyEvtAttach.evt;
             }
         });
-        defineAccessors_1.defineAccessors(Ctx.prototype, "evtDetach", {
+        defineAccessors_1.defineAccessors(CtxImpl.prototype, "evtDetach", {
             "get": function () {
                 return id_1.id(this).lazyEvtDetach.evt;
             }
         });
     })();
-    return Ctx;
+    return CtxImpl;
 }());
-exports.Ctx = Ctx;
-importProxy_1.importProxy.Ctx = Ctx;
-;
-exports.VoidCtx = Ctx;
-importProxy_1.importProxy.VoidCtx = exports.VoidCtx;
+exports.Ctx = CtxImpl;
+try {
+    overwriteReadonlyProp_1.overwriteReadonlyProp(exports.Ctx, "name", "Ctx");
+}
+catch (_a) { }
+importProxy_1.importProxy.Ctx = exports.Ctx;
 //# sourceMappingURL=Ctx.js.map

@@ -7,10 +7,8 @@ __export(require("./types"));
 __export(require("./util"));
 var Ctx_1 = require("./Ctx");
 exports.Ctx = Ctx_1.Ctx;
-exports.VoidCtx = Ctx_1.VoidCtx;
 var Evt_2 = require("./Evt");
 exports.Evt = Evt_2.Evt;
-exports.VoidEvt = Evt_2.VoidEvt;
 var StatefulEvt_1 = require("./StatefulEvt");
 exports.StatefulEvt = StatefulEvt_1.StatefulEvt;
 //# sourceMappingURL=index.js.map

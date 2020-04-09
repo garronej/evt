@@ -14,7 +14,7 @@ function getCtxFactory() {
     function getCtx(obj) {
         var ctx = ctxByObj.get(obj);
         if (ctx === undefined) {
-            ctx = new importProxy_1.importProxy.VoidCtx();
+            ctx = (new importProxy_1.importProxy.Ctx());
             ctxByObj.set(obj, ctx);
         }
         return ctx;

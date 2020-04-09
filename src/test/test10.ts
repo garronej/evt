@@ -1,8 +1,6 @@
-import {
-    VoidEvt
-} from "../lib/index";
+import { Evt } from "../lib/index";
 
-let evt = new VoidEvt();
+let evt = Evt.create();
 
 let i = 0;
 

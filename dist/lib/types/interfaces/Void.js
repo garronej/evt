@@ -2,7 +2,7 @@
 exports.__esModule = true;
 var Void;
 (function (Void) {
-    Void.instance = {};
+    Void.instance = { __evtVoidBrand: true };
     function match(o) {
         return o === Void.instance;
     }

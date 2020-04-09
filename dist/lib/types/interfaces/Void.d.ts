@@ -4,7 +4,7 @@
  * which cause inference problem using ToPostable<E>
  * */
 export interface Void {
-    __voidBrand: any;
+    readonly __evtVoidBrand: true;
 }
 export declare namespace Void {
     const instance: Void;

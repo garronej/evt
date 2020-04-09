@@ -1,7 +1,7 @@
 
-import { VoidEvt } from "../lib";
+import { Evt } from "../lib";
 
-const evt= new VoidEvt();
+const evt= Evt.create();
 
 evt.waitFor(0);
 

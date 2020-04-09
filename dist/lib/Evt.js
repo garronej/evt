@@ -664,6 +664,9 @@ var EvtImpl = /** @class */ (function () {
     EvtImpl.doDetachIfNeeded = doDetachIfNeeded;
 })(EvtImpl || (EvtImpl = {}));
 exports.Evt = EvtImpl;
+try {
+    overwriteReadonlyProp_1.overwriteReadonlyProp(exports.Evt, "name", "Evt");
+}
+catch (_a) { }
 importProxy_1.importProxy.Evt = exports.Evt;
-exports.VoidEvt = EvtImpl;
 //# sourceMappingURL=Evt.js.map

@@ -10,7 +10,7 @@ let count = 0;
 
 Evt.factorize(evt).attach(data => {
 
-    if (VoidEvt.isVoid(data)) {
+    if (Evt.isVoid(data)) {
 
         count++;
         return;

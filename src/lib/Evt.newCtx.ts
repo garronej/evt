@@ -1,7 +1,7 @@
 import { importProxy } from "./importProxy";
 
 type Ctx<Result = any> = import("./Ctx").Ctx<Result>;
-type VoidCtx = import("./Ctx").VoidCtx;
+type VoidCtx = import("./types/interfaces").VoidCtx;
 
 /** 
  * https://docs.evt.land/api/evt/newctx

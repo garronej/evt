@@ -5,4 +5,4 @@
  * No strong reference to the object is created
  * when the object is no longer referenced it's associated Ctx will be freed from memory.
  */
-export declare function getCtxFactory(): (obj: object) => import("./Ctx").VoidCtx;
+export declare function getCtxFactory(): (obj: object) => import("./types/interfaces").VoidCtx;

@@ -1,6 +1,7 @@
 
 import /*type*/ { Handler } from "../Handler";
-type EvtLike<T>= import("../helper/UnpackEvt").EvtLike<T>;
+type EvtLike<T> = import("../helper/UnpackEvt").EvtLike<T>;
+type Void = import("./Void").Void;
 
 /** 
  * Minimal interface that an object must implement to be a valid context argument 
@@ -14,6 +15,6 @@ export interface CtxLike<Result = any> {
 }
 
 
-export interface VoidCtxLike extends CtxLike<void> {
+export interface VoidCtxLike extends CtxLike<Void> {
     done(): void;
 }

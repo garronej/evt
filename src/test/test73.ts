@@ -1,5 +1,5 @@
 
-import { VoidCtx, Evt } from "../lib";
+import { Evt } from "../lib";
 import { assert } from "../tools/typeSafety/assert";
 
 {
@@ -20,7 +20,7 @@ import { assert } from "../tools/typeSafety/assert";
 
     {
 
-        const ctx = new VoidCtx();
+        const ctx = Evt.newCtx();
 
         const sevText = Evt.create("foo");
 
@@ -109,7 +109,7 @@ import { assert } from "../tools/typeSafety/assert";
 
     {
 
-        const ctx = new VoidCtx();
+        const ctx = Evt.newCtx();
 
         const sevText = Evt.create("foo");
 

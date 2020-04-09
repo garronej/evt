@@ -1,5 +1,5 @@
 declare type Ctx<Result = any> = import("./Ctx").Ctx<Result>;
-declare type VoidCtx = import("./Ctx").VoidCtx;
+declare type VoidCtx = import("./types/interfaces").VoidCtx;
 /**
  * https://docs.evt.land/api/evt/newctx
  *
