@@ -132,8 +132,12 @@ evtHuman.post(human);
 ## SwapEvtType&lt;E, T&gt;
 
 ```typescript
+import { SwapEvtType, Void } from "evt";
+
 SwapEvtType<Evt<string>, number>          → Evt<number>
 SwapEvtType<SatefulEvt<string>, number>   → SatefulEvt<number>
+SwapEvtType<Evt<number>, Void>            → VoidEvt
+SwapEvtType<StatefulEvt<number>, Void>    → VoidEvt
 ```
 
 
