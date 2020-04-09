@@ -1,6 +1,5 @@
 import "colors";
 
-
 process.once("unhandledRejection", error => {
 
     throw error;
@@ -33,7 +32,7 @@ if (n) {
 
     await new Promise(resolve => setTimeout(resolve, 2400));
 
-    const n = 81;
+    const n = 82;
 
     console.log({ n });
 
@@ -42,8 +41,6 @@ if (n) {
         if( i === 52 ){
             continue;
         }
-
-
 
         const filePath = join(__dirname,"./test" + i);
 
