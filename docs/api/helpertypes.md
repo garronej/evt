@@ -53,7 +53,12 @@ evtText.post("good");
 Invert of `ToNonPostableEvt`
 
 ```typescript
-import { Evt, Void } from "evt";
+import { 
+    ToPostableEvt, 
+    NonPostableEvt, 
+    StatefulReadonlyEvt, 
+    Void 
+} from "evt";
 
 ToPostableEvt<NonPostableEvt<T>>         → Evt<T>
 ToPostableEvt<StatefulReadonlyEvt<T>>    → StatefulEvt<T>
