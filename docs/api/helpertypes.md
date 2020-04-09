@@ -140,5 +140,14 @@ SwapEvtType<Evt<number>, Void>            → VoidEvt
 SwapEvtType<StatefulEvt<number>, Void>    → VoidEvt
 ```
 
+## FactorizeEvt&lt;E&gt;
+
+```typescript
+import { FactorizeEvt } from "evt";
+
+FactorizeEvt<Evt<string> | Evt<number>>     → Evt<string | number>
+//...Work as well with StatefulEvt, NonPostable ect
+```
+
 
 
