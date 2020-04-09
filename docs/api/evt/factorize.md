@@ -29,5 +29,5 @@ Evt.factorize(evt) // OK return Evt<string | number | Void>
     ;
 ```
 
-See also `FactorizeEvt<E>`, helper type that this method levrage.
+See also [`FactorizeEvt<E>`](https://docs.evt.land/api/helpertypes#swapevttype-less-than-e-t-greater-than), helper type that this method levrage.
 
