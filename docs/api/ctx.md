@@ -7,7 +7,7 @@ Get Ctx instance using[`Evt.newCtx<T>()`](https://docs.evt.land/api/evt/newctx) 
 {% endhint %}
 
 {% hint style="info" %}
-The only difference between `CtxVoid` and `Ctx<void>` is that `ctxVoid.done()` can be called without argument when `ctx<void>.done()`must be called with `undefined`.
+The only difference between `CtxVoid` and `Ctx<Void>` is that `ctxVoid.done()` can be called without argument when `ctx<void>.done()`must be called with an argument \(`null` or `undefined`\).
 {% endhint %}
 
 ## `ctx.done([result])`
