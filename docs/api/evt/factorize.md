@@ -15,15 +15,15 @@ declare evt: Evt<string> | Evt<number> | VoidEvt = Evt.create<any>();
 
 evt.attach(data=> { }); // TS ERROR
 
-Evt.factorize(evt) // OK return Evt<string | number | Void>
-    .attach(data=> {
+Evt.factorize(evt) // OK, return Evt<string | number | void>
+    .attach(data=> { // data is string | number | void
     
-        //To test if data is Void
+        //To test if data is void
         if( matchVoid(data) ){
             return;
         }
         
-        //Here data is string or number.
+        //Here data is string | number.
     
     })
     ;
