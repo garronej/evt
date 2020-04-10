@@ -8,7 +8,9 @@ There is multiple flavor of the attach method: `attachOnce`, `atachPrepend`, `at
 
 ## Returned Value
 
-A `Promise<U>` that resolves with the first event data matched by the operator. By default of operator, all the events are matched.
+It no timeout argument have been passed all attach methods return `this`.
+
+If a timeout arguement was passed a `Promise<U>` that resolves with the first event data matched by the operator. By default of operator, all the events are matched.
 
 The returned promise can reject **only** if a timeout parameter was passed to the `attach*` method.
 
@@ -50,9 +52,9 @@ When the method contains the keyword "**once**": Adds a **one-time** [handler](h
 When the method contains the keyword "**prepend**": Same as .attach\(\) but the [`handler`](https://docs.ts-evt.dev/api/handler) is added at the _beginning_ of the handler array.
 
 ```typescript
-import { VoidEvt } from "evt";
+import { Evt } from "evt";
 
-const evtConnect = new VoidEvt();
+const evtConnect = Evt.create();
 
 evtConnect.attach(() => console.log("B"));
 evtConnect.attach(() => console.log("C"));
