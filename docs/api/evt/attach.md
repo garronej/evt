@@ -8,7 +8,9 @@ There is multiple flavor of the attach method: `attachOnce`, `atachPrepend`, `at
 
 ## Returned Value
 
-A `Promise<U>` that resolves with the first event data matched by the operator. By default of operator, all the events are matched.
+It no timeout argument have been passed all attach methods return `this`.
+
+If a timeout arguement was passed a `Promise<U>` that resolves with the first event data matched by the operator. By default of operator, all the events are matched.
 
 The returned promise can reject **only** if a timeout parameter was passed to the `attach*` method.
 
