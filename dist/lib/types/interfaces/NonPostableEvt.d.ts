@@ -179,7 +179,7 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attach<U, CtxResult = any>(op: Operator.fλ<T, U, CtxResult>, ctx: CtxLike<CtxResult>, callback: (transformedData: U) => void): Promise<U>;
+    $attach<U, CtxResult = any>(op: Operator.fλ<T, U, CtxResult>, ctx: CtxLike<CtxResult>, callback: (transformedData: U) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -203,7 +203,7 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attach<U, R>(op: Operator.fλ<T, U, R>, callback: (transformedData: U) => void): Promise<U>;
+    $attach<U, R>(op: Operator.fλ<T, U, R>, callback: (transformedData: U) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -247,7 +247,7 @@ export interface NonPostableEvt<T> {
      * NOTE: If you whish to use a fλ operator ( an operator that do not return a boolean )
      * the '$' prefix should be used ( use the $attach() method )
      */
-    attach<Q extends T>(op: (data: T) => data is Q, ctx: CtxLike, callback: (data: Q) => void): Promise<Q>;
+    attach<Q extends T>(op: (data: T) => data is Q, ctx: CtxLike, callback: (data: Q) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -260,7 +260,7 @@ export interface NonPostableEvt<T> {
      * NOTE: If you whish to use a fλ operator ( an operator that do not return a boolean )
      * the '$' prefix should be used ( use the $attach() method )
      */
-    attach(op: (data: T) => boolean, ctx: CtxLike, callback: (data: T) => void): Promise<T>;
+    attach(op: (data: T) => boolean, ctx: CtxLike, callback: (data: T) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -307,7 +307,7 @@ export interface NonPostableEvt<T> {
      * NOTE: If you whish to use a fλ operator ( an operator that do not return a boolean )
      * the '$' prefix should be used ( use the $attach() method )
      */
-    attach<Q extends T>(op: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
+    attach<Q extends T>(op: (data: T) => data is Q, callback: (data: Q) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -318,7 +318,7 @@ export interface NonPostableEvt<T> {
      * NOTE: If you whish to use a fλ operator ( an operator that do not return a boolean )
      * the '$' prefix should be used ( use the $attach() method )
      */
-    attach(op: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
+    attach(op: (data: T) => boolean, callback: (data: T) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -326,7 +326,7 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attach(ctx: CtxLike, callback: (data: T) => void): Promise<T>;
+    attach(ctx: CtxLike, callback: (data: T) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -340,7 +340,7 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attach(callback: (data: T) => void): Promise<T>;
+    attach(callback: (data: T) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -368,7 +368,7 @@ export interface NonPostableEvt<T> {
      * NOTE: $attachOnce() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attachOnce() without the '$' prefix.
      */
-    $attachOnce<U, CtxResult = any>(op: Operator.fλ.Stateless<T, U, CtxResult>, ctx: CtxLike, callback: (transformedData: U) => void): Promise<U>;
+    $attachOnce<U, CtxResult = any>(op: Operator.fλ.Stateless<T, U, CtxResult>, ctx: CtxLike, callback: (transformedData: U) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -392,7 +392,7 @@ export interface NonPostableEvt<T> {
      * NOTE: $attachOnce() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attachOnce() without the '$' prefix.
      */
-    $attachOnce<U, CtxResult = any>(op: Operator.fλ.Stateless<T, U, CtxResult>, callback: (transformedData: U) => void): Promise<U>;
+    $attachOnce<U, CtxResult = any>(op: Operator.fλ.Stateless<T, U, CtxResult>, callback: (transformedData: U) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -435,7 +435,7 @@ export interface NonPostableEvt<T> {
      * NOTE: If you whish to use a fλ operator ( an operator that do not return a boolean )
      * the '$' prefix should be used ( use the $attachOnce() method )
      */
-    attachOnce<Q extends T>(op: (data: T) => data is Q, ctx: CtxLike, callback: (data: Q) => void): Promise<Q>;
+    attachOnce<Q extends T>(op: (data: T) => data is Q, ctx: CtxLike, callback: (data: Q) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -448,7 +448,7 @@ export interface NonPostableEvt<T> {
      * NOTE: If you whish to use a fλ operator ( an operator that do not return a boolean )
      * the '$' prefix should be used ( use the $attachOnce() method )
      */
-    attachOnce(op: (data: T) => boolean, ctx: CtxLike, callback: (data: T) => void): Promise<T>;
+    attachOnce(op: (data: T) => boolean, ctx: CtxLike, callback: (data: T) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -495,7 +495,7 @@ export interface NonPostableEvt<T> {
      * NOTE: If you whish to use a fλ operator ( an operator that do not return a boolean )
      * the '$' prefix should be used ( use the $attachOnce() method )
      */
-    attachOnce<Q extends T>(op: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
+    attachOnce<Q extends T>(op: (data: T) => data is Q, callback: (data: Q) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -506,7 +506,7 @@ export interface NonPostableEvt<T> {
      * NOTE: If you whish to use a fλ operator ( an operator that do not return a boolean )
      * the '$' prefix should be used ( use the $attachOnce() method )
      */
-    attachOnce(op: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
+    attachOnce(op: (data: T) => boolean, callback: (data: T) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -514,7 +514,7 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attachOnce(ctx: CtxLike, callback: (data: T) => void): Promise<T>;
+    attachOnce(ctx: CtxLike, callback: (data: T) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -528,7 +528,7 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attachOnce(callback: (data: T) => void): Promise<T>;
+    attachOnce(callback: (data: T) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -556,7 +556,7 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attachExtract<U, CtxResult>(op: Operator.fλ<T, U, CtxResult>, ctx: CtxLike, callback: (transformedData: U) => void): Promise<U>;
+    $attachExtract<U, CtxResult>(op: Operator.fλ<T, U, CtxResult>, ctx: CtxLike, callback: (transformedData: U) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -580,7 +580,7 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attachExtract<U, CtxResult = any>(op: Operator.fλ<T, U, CtxResult>, callback: (transformedData: U) => void): Promise<U>;
+    $attachExtract<U, CtxResult = any>(op: Operator.fλ<T, U, CtxResult>, callback: (transformedData: U) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -614,7 +614,7 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attachExtract<Q extends T>(op: (data: T) => data is Q, ctx: CtxLike, callback: (data: Q) => void): Promise<Q>;
+    attachExtract<Q extends T>(op: (data: T) => data is Q, ctx: CtxLike, callback: (data: Q) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -624,7 +624,7 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attachExtract(op: (data: T) => boolean, ctx: CtxLike, callback: (data: T) => void): Promise<T>;
+    attachExtract(op: (data: T) => boolean, ctx: CtxLike, callback: (data: T) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -652,7 +652,7 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attachExtract<Q extends T>(op: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
+    attachExtract<Q extends T>(op: (data: T) => data is Q, callback: (data: Q) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -660,7 +660,7 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attachExtract(op: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
+    attachExtract(op: (data: T) => boolean, callback: (data: T) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -688,7 +688,7 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attachPrepend<U, CtxResult = any>(op: Operator.fλ<T, U, CtxResult>, ctx: CtxLike, callback: (transformedData: U) => void): Promise<U>;
+    $attachPrepend<U, CtxResult = any>(op: Operator.fλ<T, U, CtxResult>, ctx: CtxLike, callback: (transformedData: U) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -712,7 +712,7 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attachPrepend<U, CtxResult = any>(op: Operator.fλ<T, U, CtxResult>, callback: (transformedData: U) => void): Promise<U>;
+    $attachPrepend<U, CtxResult = any>(op: Operator.fλ<T, U, CtxResult>, callback: (transformedData: U) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -746,7 +746,7 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attachPrepend<Q extends T>(op: (data: T) => data is Q, ctx: CtxLike, callback: (data: Q) => void): Promise<Q>;
+    attachPrepend<Q extends T>(op: (data: T) => data is Q, ctx: CtxLike, callback: (data: Q) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -756,7 +756,7 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attachPrepend(op: (data: T) => boolean, ctx: CtxLike, callback: (data: T) => void): Promise<T>;
+    attachPrepend(op: (data: T) => boolean, ctx: CtxLike, callback: (data: T) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -794,7 +794,7 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attachPrepend<Q extends T>(op: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
+    attachPrepend<Q extends T>(op: (data: T) => data is Q, callback: (data: Q) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -802,7 +802,7 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attachPrepend(op: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
+    attachPrepend(op: (data: T) => boolean, callback: (data: T) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -810,7 +810,7 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attachPrepend(ctx: CtxLike, callback: (data: T) => void): Promise<T>;
+    attachPrepend(ctx: CtxLike, callback: (data: T) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -824,7 +824,7 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attachPrepend(callback: (data: T) => void): Promise<T>;
+    attachPrepend(callback: (data: T) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -852,7 +852,7 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attachOncePrepend<U, CtxResult = any>(op: Operator.fλ.Stateless<T, U, CtxResult>, ctx: CtxLike, callback: (transformedData: U) => void): Promise<U>;
+    $attachOncePrepend<U, CtxResult = any>(op: Operator.fλ.Stateless<T, U, CtxResult>, ctx: CtxLike, callback: (transformedData: U) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -876,7 +876,7 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attachOncePrepend<U, CtxResult = any>(op: Operator.fλ.Stateless<T, U, CtxResult>, callback: (transformedData: U) => void): Promise<U>;
+    $attachOncePrepend<U, CtxResult = any>(op: Operator.fλ.Stateless<T, U, CtxResult>, callback: (transformedData: U) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -910,7 +910,7 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attachOncePrepend<Q extends T>(op: (data: T) => data is Q, ctx: CtxLike, callback: (data: Q) => void): Promise<Q>;
+    attachOncePrepend<Q extends T>(op: (data: T) => data is Q, ctx: CtxLike, callback: (data: Q) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -920,7 +920,7 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attachOncePrepend(op: (data: T) => boolean, ctx: CtxLike, callback: (data: T) => void): Promise<T>;
+    attachOncePrepend(op: (data: T) => boolean, ctx: CtxLike, callback: (data: T) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -958,7 +958,7 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attachOncePrepend<Q extends T>(op: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
+    attachOncePrepend<Q extends T>(op: (data: T) => data is Q, callback: (data: Q) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -966,7 +966,7 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attachOncePrepend(op: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
+    attachOncePrepend(op: (data: T) => boolean, callback: (data: T) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -974,7 +974,7 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attachOncePrepend(ctx: CtxLike, callback: (data: T) => void): Promise<T>;
+    attachOncePrepend(ctx: CtxLike, callback: (data: T) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -988,7 +988,7 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attachOncePrepend(callback: (data: T) => void): Promise<T>;
+    attachOncePrepend(callback: (data: T) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -1016,7 +1016,7 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attachOnceExtract<U, CtxResult = any>(op: Operator.fλ.Stateless<T, U, CtxResult>, ctx: CtxLike, callback: (transformedData: U) => void): Promise<U>;
+    $attachOnceExtract<U, CtxResult = any>(op: Operator.fλ.Stateless<T, U, CtxResult>, ctx: CtxLike, callback: (transformedData: U) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -1040,7 +1040,7 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attachOnceExtract<U, CtxResult = any>(op: Operator.fλ.Stateless<T, U, CtxResult>, callback: (transformedData: U) => void): Promise<U>;
+    $attachOnceExtract<U, CtxResult = any>(op: Operator.fλ.Stateless<T, U, CtxResult>, callback: (transformedData: U) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -1074,7 +1074,7 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attachOnceExtract<Q extends T>(op: (data: T) => data is Q, ctx: CtxLike, callback: (data: Q) => void): Promise<Q>;
+    attachOnceExtract<Q extends T>(op: (data: T) => data is Q, ctx: CtxLike, callback: (data: Q) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -1084,7 +1084,7 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attachOnceExtract(op: (data: T) => boolean, ctx: CtxLike, callback: (data: T) => void): Promise<T>;
+    attachOnceExtract(op: (data: T) => boolean, ctx: CtxLike, callback: (data: T) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -1120,7 +1120,7 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attachOnceExtract<Q extends T>(op: (data: T) => data is Q, callback: (data: Q) => void): Promise<Q>;
+    attachOnceExtract<Q extends T>(op: (data: T) => data is Q, callback: (data: Q) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -1128,7 +1128,7 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attachOnceExtract(op: (data: T) => boolean, callback: (data: T) => void): Promise<T>;
+    attachOnceExtract(op: (data: T) => boolean, callback: (data: T) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -1136,7 +1136,7 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attachOnceExtract(ctx: CtxLike, callback: (data: T) => void): Promise<T>;
+    attachOnceExtract(ctx: CtxLike, callback: (data: T) => void): this;
     /**
      * https://docs.evt.land/api/evt/attach
      *
@@ -1150,6 +1150,6 @@ export interface NonPostableEvt<T> {
      *
      * callback
      */
-    attachOnceExtract(callback: (data: T) => void): Promise<T>;
+    attachOnceExtract(callback: (data: T) => void): this;
 }
 export {};

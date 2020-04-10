@@ -345,7 +345,7 @@ export interface NonPostableEvt<T> {
         op: Operator.fλ<T, U, CtxResult>,
         ctx: CtxLike<CtxResult>,
         callback: (transformedData: U) => void
-    ): Promise<U>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -376,7 +376,7 @@ export interface NonPostableEvt<T> {
     $attach<U, R>(
         op: Operator.fλ<T, U, R>,
         callback: (transformedData: U) => void
-    ): Promise<U>;
+    ): this;
 
 
 
@@ -441,7 +441,7 @@ export interface NonPostableEvt<T> {
         op: (data: T) => data is Q,
         ctx: CtxLike,
         callback: (data: Q) => void
-    ): Promise<Q>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -458,7 +458,7 @@ export interface NonPostableEvt<T> {
         op: (data: T) => boolean,
         ctx: CtxLike,
         callback: (data: T) => void
-    ): Promise<T>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -520,7 +520,7 @@ export interface NonPostableEvt<T> {
     attach<Q extends T>(
         op: (data: T) => data is Q,
         callback: (data: Q) => void
-    ): Promise<Q>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -534,7 +534,7 @@ export interface NonPostableEvt<T> {
     attach(
         op: (data: T) => boolean,
         callback: (data: T) => void
-    ): Promise<T>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -545,7 +545,7 @@ export interface NonPostableEvt<T> {
     attach(
         ctx: CtxLike,
         callback: (data: T) => void
-    ): Promise<T>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -564,7 +564,7 @@ export interface NonPostableEvt<T> {
      */
     attach(
         callback: (data: T) => void
-    ): Promise<T>;
+    ): this;
 
 
 
@@ -605,7 +605,7 @@ export interface NonPostableEvt<T> {
         op: Operator.fλ.Stateless<T, U, CtxResult>,
         ctx: CtxLike,
         callback: (transformedData: U) => void
-    ): Promise<U>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -636,7 +636,7 @@ export interface NonPostableEvt<T> {
     $attachOnce<U, CtxResult = any>(
         op: Operator.fλ.Stateless<T, U, CtxResult>,
         callback: (transformedData: U) => void
-    ): Promise<U>;
+    ): this;
 
 
 
@@ -699,7 +699,7 @@ export interface NonPostableEvt<T> {
         op: (data: T) => data is Q,
         ctx: CtxLike,
         callback: (data: Q) => void
-    ): Promise<Q>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -716,7 +716,7 @@ export interface NonPostableEvt<T> {
         op: (data: T) => boolean,
         ctx: CtxLike,
         callback: (data: T) => void
-    ): Promise<T>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -778,7 +778,7 @@ export interface NonPostableEvt<T> {
     attachOnce<Q extends T>(
         op: (data: T) => data is Q,
         callback: (data: Q) => void
-    ): Promise<Q>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -792,7 +792,7 @@ export interface NonPostableEvt<T> {
     attachOnce(
         op: (data: T) => boolean,
         callback: (data: T) => void
-    ): Promise<T>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -803,7 +803,7 @@ export interface NonPostableEvt<T> {
     attachOnce(
         ctx: CtxLike,
         callback: (data: T) => void
-    ): Promise<T>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -822,7 +822,7 @@ export interface NonPostableEvt<T> {
      */
     attachOnce(
         callback: (data: T) => void
-    ): Promise<T>;
+    ): this;
 
 
 
@@ -864,7 +864,7 @@ export interface NonPostableEvt<T> {
         op: Operator.fλ<T, U, CtxResult>,
         ctx: CtxLike,
         callback: (transformedData: U) => void
-    ): Promise<U>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -895,7 +895,7 @@ export interface NonPostableEvt<T> {
     $attachExtract<U, CtxResult = any>(
         op: Operator.fλ<T, U, CtxResult>,
         callback: (transformedData: U) => void
-    ): Promise<U>;
+    ): this;
 
 
 
@@ -951,7 +951,7 @@ export interface NonPostableEvt<T> {
         op: (data: T) => data is Q,
         ctx: CtxLike,
         callback: (data: Q) => void
-    ): Promise<Q>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -965,7 +965,7 @@ export interface NonPostableEvt<T> {
         op: (data: T) => boolean,
         ctx: CtxLike,
         callback: (data: T) => void
-    ): Promise<T>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -1004,7 +1004,7 @@ export interface NonPostableEvt<T> {
     attachExtract<Q extends T>(
         op: (data: T) => data is Q,
         callback: (data: Q) => void
-    ): Promise<Q>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -1015,7 +1015,7 @@ export interface NonPostableEvt<T> {
     attachExtract(
         op: (data: T) => boolean,
         callback: (data: T) => void
-    ): Promise<T>;
+    ): this;
 
 
 
@@ -1063,7 +1063,7 @@ export interface NonPostableEvt<T> {
         op: Operator.fλ<T, U, CtxResult>,
         ctx: CtxLike,
         callback: (transformedData: U) => void
-    ): Promise<U>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -1094,7 +1094,7 @@ export interface NonPostableEvt<T> {
     $attachPrepend<U, CtxResult = any>(
         op: Operator.fλ<T, U, CtxResult>,
         callback: (transformedData: U) => void
-    ): Promise<U>;
+    ): this;
 
 
 
@@ -1153,7 +1153,7 @@ export interface NonPostableEvt<T> {
         op: (data: T) => data is Q,
         ctx: CtxLike,
         callback: (data: Q) => void
-    ): Promise<Q>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -1167,7 +1167,7 @@ export interface NonPostableEvt<T> {
         op: (data: T) => boolean,
         ctx: CtxLike,
         callback: (data: T) => void
-    ): Promise<T>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -1220,7 +1220,7 @@ export interface NonPostableEvt<T> {
     attachPrepend<Q extends T>(
         op: (data: T) => data is Q,
         callback: (data: Q) => void
-    ): Promise<Q>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -1231,7 +1231,7 @@ export interface NonPostableEvt<T> {
     attachPrepend(
         op: (data: T) => boolean,
         callback: (data: T) => void
-    ): Promise<T>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -1242,7 +1242,7 @@ export interface NonPostableEvt<T> {
     attachPrepend(
         ctx: CtxLike,
         callback: (data: T) => void
-    ): Promise<T>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -1261,7 +1261,7 @@ export interface NonPostableEvt<T> {
      */
     attachPrepend(
         callback: (data: T) => void
-    ): Promise<T>;
+    ): this;
 
 
 
@@ -1305,7 +1305,7 @@ export interface NonPostableEvt<T> {
         op: Operator.fλ.Stateless<T, U, CtxResult>,
         ctx: CtxLike,
         callback: (transformedData: U) => void
-    ): Promise<U>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -1336,7 +1336,7 @@ export interface NonPostableEvt<T> {
     $attachOncePrepend<U, CtxResult = any>(
         op: Operator.fλ.Stateless<T, U, CtxResult>,
         callback: (transformedData: U) => void
-    ): Promise<U>;
+    ): this;
 
 
 
@@ -1393,7 +1393,7 @@ export interface NonPostableEvt<T> {
         op: (data: T) => data is Q,
         ctx: CtxLike,
         callback: (data: Q) => void
-    ): Promise<Q>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -1407,7 +1407,7 @@ export interface NonPostableEvt<T> {
         op: (data: T) => boolean,
         ctx: CtxLike,
         callback: (data: T) => void
-    ): Promise<T>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -1460,7 +1460,7 @@ export interface NonPostableEvt<T> {
     attachOncePrepend<Q extends T>(
         op: (data: T) => data is Q,
         callback: (data: Q) => void
-    ): Promise<Q>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -1471,7 +1471,7 @@ export interface NonPostableEvt<T> {
     attachOncePrepend(
         op: (data: T) => boolean,
         callback: (data: T) => void
-    ): Promise<T>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -1482,7 +1482,7 @@ export interface NonPostableEvt<T> {
     attachOncePrepend(
         ctx: CtxLike,
         callback: (data: T) => void
-    ): Promise<T>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -1501,7 +1501,7 @@ export interface NonPostableEvt<T> {
      */
     attachOncePrepend(
         callback: (data: T) => void
-    ): Promise<T>;
+    ): this;
 
 
 
@@ -1546,7 +1546,7 @@ export interface NonPostableEvt<T> {
         op: Operator.fλ.Stateless<T, U, CtxResult>,
         ctx: CtxLike,
         callback: (transformedData: U) => void
-    ): Promise<U>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -1577,7 +1577,7 @@ export interface NonPostableEvt<T> {
     $attachOnceExtract<U, CtxResult = any>(
         op: Operator.fλ.Stateless<T, U, CtxResult>,
         callback: (transformedData: U) => void
-    ): Promise<U>;
+    ): this;
 
 
 
@@ -1633,7 +1633,7 @@ export interface NonPostableEvt<T> {
         op: (data: T) => data is Q,
         ctx: CtxLike,
         callback: (data: Q) => void
-    ): Promise<Q>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -1647,7 +1647,7 @@ export interface NonPostableEvt<T> {
         op: (data: T) => boolean,
         ctx: CtxLike,
         callback: (data: T) => void
-    ): Promise<T>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -1698,7 +1698,7 @@ export interface NonPostableEvt<T> {
     attachOnceExtract<Q extends T>(
         op: (data: T) => data is Q,
         callback: (data: Q) => void
-    ): Promise<Q>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -1709,7 +1709,7 @@ export interface NonPostableEvt<T> {
     attachOnceExtract(
         op: (data: T) => boolean,
         callback: (data: T) => void
-    ): Promise<T>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -1720,7 +1720,7 @@ export interface NonPostableEvt<T> {
     attachOnceExtract(
         ctx: CtxLike,
         callback: (data: T) => void
-    ): Promise<T>;
+    ): this;
     /**
      * https://docs.evt.land/api/evt/attach
      * 
@@ -1739,7 +1739,7 @@ export interface NonPostableEvt<T> {
      */
     attachOnceExtract(
         callback: (data: T) => void
-    ): Promise<T>;
+    ): this;
 
 }
 

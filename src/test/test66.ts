@@ -1,6 +1,7 @@
 
 
 import { Evt } from "../lib";
+import { getHandlerPr } from "./getHandlerPr";
 import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi";
 
 const { mustStayPending } = getPromiseAssertionApi();
@@ -9,10 +10,11 @@ const evt = new Evt<string | string[]>();
 
 
 mustStayPending(
-    evt.$attach(
-        (data): [string] | null => typeof data !== "string" ? undefined as unknown as null : [data],
-        () => { }
-    )
+    getHandlerPr(evt, () =>
+        evt.$attach(
+            (data): [string] | null => typeof data !== "string" ? undefined as unknown as null : [data],
+            () => { }
+        ))
 )
 
 mustStayPending(

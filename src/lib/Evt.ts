@@ -736,66 +736,67 @@ class EvtImpl<T> implements Evt<T> {
         return (this.attach as any)(...inputs);
     }
 
-    attach(...args: any[]): Promise<any> {
-        return this.addHandler(
-            parsePropsFromArgs<T>(args, "attach*"),
-            EvtImpl.propsFormMethodNames.attach
-        ).promise
+    attach(...args: any[]) {
+        return this.__attachX(args, "attach");
     }
 
     $attachOnce(...inputs: any[]) {
         return (this.attachOnce as any)(...inputs);
     }
 
-    attachOnce(...args: any[]): Promise<any> {
-        return this.addHandler(
-            parsePropsFromArgs<T>(args, "attach*"),
-            EvtImpl.propsFormMethodNames.attachOnce
-        ).promise;
+    attachOnce(...args: any[]) {
+        return this.__attachX(args, "attachOnce");
     }
 
     $attachExtract(...inputs: any[]) {
         return (this.attachExtract as any)(...inputs);
     }
 
-    attachExtract(...args: any[]): Promise<any> {
-        return this.addHandler(
-            parsePropsFromArgs<T>(args, "attach*"),
-            EvtImpl.propsFormMethodNames.attachExtract
-        ).promise;
+    attachExtract(...args: any[]) {
+        return this.__attachX(args, "attachExtract");
     }
 
-    $attachPrepend(...inputs: any[]): Promise<any> {
+    $attachPrepend(...inputs: any[]) {
         return (this.attachPrepend as any)(...inputs);
     }
 
-    attachPrepend(...args: any[]): Promise<any> {
-        return this.addHandler(
-            parsePropsFromArgs<T>(args, "attach*"),
-            EvtImpl.propsFormMethodNames.attachPrepend
-        ).promise;
+    attachPrepend(...args: any[]) {
+        return this.__attachX(args, "attachPrepend");
     }
 
-    $attachOncePrepend(...inputs: any[]): Promise<any> {
+    $attachOncePrepend(...inputs: any[]) {
         return (this.attachOncePrepend as any)(...inputs);
     }
 
-    attachOncePrepend(...args: any[]): Promise<any> {
-        return this.addHandler(
-            parsePropsFromArgs<T>(args, "attach*"),
-            EvtImpl.propsFormMethodNames.attachOncePrepend
-        ).promise;
+    attachOncePrepend(...args: any[]) {
+        return this.__attachX(args, "attachOncePrepend");
     }
 
-    $attachOnceExtract(...inputs: any[]): Promise<any> {
+    $attachOnceExtract(...inputs: any[]) {
         return (this.attachOnceExtract as any)(...inputs);
     }
 
-    attachOnceExtract(...args: any[]): Promise<any> {
-        return this.addHandler(
-            parsePropsFromArgs<T>(args, "attach*"),
-            EvtImpl.propsFormMethodNames.attachOnceExtract
-        ).promise;
+    attachOnceExtract(...args: any[]) {
+        return this.__attachX(args, "attachOnceExtract");
+    }
+
+    private __attachX(
+        args: any[], 
+        methodName: keyof typeof EvtImpl.propsFormMethodNames
+    ): any {
+
+        const propsFromArgs = parsePropsFromArgs<T>(args, "attach*");
+
+        const handler = this.addHandler(
+            propsFromArgs,
+            EvtImpl.propsFormMethodNames[methodName]
+        );
+
+        return  propsFromArgs.timeout === undefined ? 
+            this : 
+            handler.promise
+            ;
+
     }
 
     postAsyncOnceHandled(...args: readonly [T]): number | Promise<number> {

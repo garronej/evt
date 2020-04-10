@@ -2,9 +2,10 @@
 import { Evt } from "../lib";
 import { assert } from "../tools/typeSafety/assert";
 import { scan } from "../lib/util/genericOperators/scan";
+import { getHandlerPr } from "./getHandlerPr";
 import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi";
 
-const { mustResolve, mustStayPending } = getPromiseAssertionApi({"takeIntoAccountArraysOrdering": true});
+const { mustResolve, mustStayPending } = getPromiseAssertionApi({ "takeIntoAccountArraysOrdering": true });
 
 (async () => {
 
@@ -13,7 +14,11 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi({"takeIntoAccoun
     const evtText = new Evt<string>();
 
     mustResolve({
-        "promise": ctx.evtDoneOrAborted.attach(() => { }).then(data => [data.result, data.handlers.length]),
+        "promise":
+            getHandlerPr(
+                ctx.evtDoneOrAborted, () =>
+                ctx.evtDoneOrAborted.attach(() => { })
+            ).then(data => [data.result, data.handlers.length]),
         "expectedData": [43, 1]
     });
 
@@ -93,7 +98,11 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi({"takeIntoAccoun
     const evtText = new Evt<string>();
 
     mustResolve({
-        "promise": ctx.evtDoneOrAborted.attach(() => { }).then(({handlers})=> handlers.length),
+        "promise":
+            getHandlerPr(
+                ctx.evtDoneOrAborted, () =>
+                ctx.evtDoneOrAborted.attach(() => { })
+            ).then(({ handlers }) => handlers.length),
         "expectedData": 1
     });
 

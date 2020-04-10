@@ -470,7 +470,7 @@ var EvtImpl = /** @class */ (function () {
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
-        return this.addHandler(Evt_parsePropsFromArgs_1.parsePropsFromArgs(args, "attach*"), EvtImpl.propsFormMethodNames.attach).promise;
+        return this.__attachX(args, "attach");
     };
     EvtImpl.prototype.$attachOnce = function () {
         var inputs = [];
@@ -484,7 +484,7 @@ var EvtImpl = /** @class */ (function () {
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
-        return this.addHandler(Evt_parsePropsFromArgs_1.parsePropsFromArgs(args, "attach*"), EvtImpl.propsFormMethodNames.attachOnce).promise;
+        return this.__attachX(args, "attachOnce");
     };
     EvtImpl.prototype.$attachExtract = function () {
         var inputs = [];
@@ -498,7 +498,7 @@ var EvtImpl = /** @class */ (function () {
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
-        return this.addHandler(Evt_parsePropsFromArgs_1.parsePropsFromArgs(args, "attach*"), EvtImpl.propsFormMethodNames.attachExtract).promise;
+        return this.__attachX(args, "attachExtract");
     };
     EvtImpl.prototype.$attachPrepend = function () {
         var inputs = [];
@@ -512,7 +512,7 @@ var EvtImpl = /** @class */ (function () {
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
-        return this.addHandler(Evt_parsePropsFromArgs_1.parsePropsFromArgs(args, "attach*"), EvtImpl.propsFormMethodNames.attachPrepend).promise;
+        return this.__attachX(args, "attachPrepend");
     };
     EvtImpl.prototype.$attachOncePrepend = function () {
         var inputs = [];
@@ -526,7 +526,7 @@ var EvtImpl = /** @class */ (function () {
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
-        return this.addHandler(Evt_parsePropsFromArgs_1.parsePropsFromArgs(args, "attach*"), EvtImpl.propsFormMethodNames.attachOncePrepend).promise;
+        return this.__attachX(args, "attachOncePrepend");
     };
     EvtImpl.prototype.$attachOnceExtract = function () {
         var inputs = [];
@@ -540,7 +540,14 @@ var EvtImpl = /** @class */ (function () {
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
-        return this.addHandler(Evt_parsePropsFromArgs_1.parsePropsFromArgs(args, "attach*"), EvtImpl.propsFormMethodNames.attachOnceExtract).promise;
+        return this.__attachX(args, "attachOnceExtract");
+    };
+    EvtImpl.prototype.__attachX = function (args, methodName) {
+        var propsFromArgs = Evt_parsePropsFromArgs_1.parsePropsFromArgs(args, "attach*");
+        var handler = this.addHandler(propsFromArgs, EvtImpl.propsFormMethodNames[methodName]);
+        return propsFromArgs.timeout === undefined ?
+            this :
+            handler.promise;
     };
     EvtImpl.prototype.postAsyncOnceHandled = function () {
         var _this_1 = this;

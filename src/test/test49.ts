@@ -3,6 +3,7 @@ import { Evt, Handler, Ctx } from "../lib";
 import { assert } from "../tools/typeSafety";
 import { getPromiseAssertionApi } from "../tools/testing";
 import { sameFactory } from "../tools/inDepth";
+import { getHandlerPr } from "./getHandlerPr";
 
 
 const { same } = sameFactory({ "takeIntoAccountArraysOrdering": false });
@@ -15,8 +16,8 @@ const evtAge = new Evt<number>();
 
 const ctx = Evt.newCtx();
 
-const prText = evtText.attach(ctx, () => assert(false));
-const prAge = evtAge.attach(ctx, () => assert(false));
+const prText = getHandlerPr(evtText,()=> evtText.attach(ctx, () => assert(false)));
+const prAge = getHandlerPr(evtAge, ()=> evtAge.attach(ctx, () => assert(false)));
 
 const handlers_ = [
     ...(evtText.getHandlers() as Handler<string, any, Ctx<any>>[]).map(handler => ({ handler, "evt": evtText })),
@@ -24,20 +25,27 @@ const handlers_ = [
 ];
 
 mustResolve({
-    "promise": ctx.evtDoneOrAborted.attachOnce(
-        ({handlers}) => assert(same(
-            handlers,
-            handlers_
-        ))
-    )
+    "promise":
+        getHandlerPr(
+            ctx.evtDoneOrAborted,
+            () =>
+                ctx.evtDoneOrAborted.attachOnce(
+                    ({ handlers }) => assert(same(
+                        handlers,
+                        handlers_
+                    ))
+                ))
 });
 
 mustResolve({
-    "promise": evtAge.evtDetach.attachOnce(handler => assert(handler.ctx === ctx)),
+    "promise": getHandlerPr(
+        evtAge.evtDetach,
+        ()=> evtAge.evtDetach.attachOnce(handler => assert(handler.ctx === ctx))
+    ),
     "delay": 0
 });
 
-const prTest= Promise.all([
+const prTest = Promise.all([
     mustResolve({
         "promise": ctx.evtDetach.waitFor(
             ({ handler, evt }) => (
@@ -69,5 +77,5 @@ assert(evtAge.getHandlers().length === 0);
 evtText.post("nothing");
 evtAge.post(0);
 
-prTest.then(()=> console.log("PASS".green));
+prTest.then(() => console.log("PASS".green));
 

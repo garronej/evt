@@ -1,6 +1,7 @@
 
 import { Evt } from "../lib";
 import { getPromiseAssertionApi } from "../tools/testing";
+import {getHandlerPr } from "./getHandlerPr";
 const { mustResolve, mustReject } = getPromiseAssertionApi();
 
 let op = (object: Object): object is Array<any> => object instanceof Array;
@@ -65,6 +66,7 @@ function mkCb(expect: Object[]) {
 
 })();
 
+
 (() => {
 
     let evt = new Evt<Object>();
@@ -76,7 +78,10 @@ function mkCb(expect: Object[]) {
     let expect = posts.filter(op);
 
     mustResolve({
-        "promise": evt.attach(op, mkCb(expect)),
+        "promise": getHandlerPr(
+            evt, 
+            ()=>evt.attach(op, mkCb(expect))
+        ),
         "expectedData": expect[0],
         "delay": 2000
     });
@@ -98,7 +103,7 @@ function mkCb(expect: Object[]) {
     let expect = [...posts];
 
     mustResolve({
-        "promise": evt.attach(mkCb(expect)),
+        "promise": getHandlerPr(evt, () => evt.attach(mkCb(expect))),
         "expectedData": expect[0],
         "delay": 2000
     });
@@ -142,7 +147,7 @@ function mkCb(expect: Object[]) {
     let expect = [...posts];
 
     mustResolve({
-        "promise": evt.attach(boundTo, mkCb(expect)),
+        "promise": getHandlerPr(evt, ()=> evt.attach(boundTo, mkCb(expect))), 
         "expectedData": expect[0],
         "delay": 2000
     });
@@ -278,7 +283,7 @@ function mkCb(expect: Object[]) {
     let expect = posts.filter(op);
 
     mustResolve({
-        "promise": evt.attachPrepend(op, mkCb(expect)),
+        "promise": getHandlerPr(evt, ()=> evt.attachPrepend(op, mkCb(expect))),
         "expectedData": expect[0],
         "delay": 2000
     });
@@ -301,7 +306,7 @@ function mkCb(expect: Object[]) {
     let expect = [...posts];
 
     mustResolve({
-        "promise": evt.attachPrepend(mkCb(expect)),
+        "promise": getHandlerPr(evt, ()=> evt.attachPrepend(mkCb(expect))),
         "expectedData": expect[0],
         "delay": 2000
     });
@@ -347,7 +352,7 @@ function mkCb(expect: Object[]) {
     let expect = [...posts];
 
     mustResolve({
-        "promise": evt.attachPrepend(boundTo, mkCb(expect)),
+        "promise": getHandlerPr(evt, ()=>evt.attachPrepend(boundTo, mkCb(expect))),
         "expectedData": expect[0],
         "delay": 2000
     });
@@ -484,7 +489,7 @@ function mkCb(expect: Object[]) {
     let expect = posts.filter(op);
 
     mustResolve({
-        "promise": evt.attachOnce(op, mkCb([expect[0]])),
+        "promise": getHandlerPr(evt, ()=> evt.attachOnce(op, mkCb([expect[0]]))),
         "expectedData": expect[0],
         "delay": 2000
     });
@@ -506,7 +511,7 @@ function mkCb(expect: Object[]) {
     let expect = [...posts];
 
     mustResolve({
-        "promise": evt.attachOnce(mkCb([expect[0]])),
+        "promise": getHandlerPr(evt,()=> evt.attachOnce(mkCb([expect[0]]))),
         "expectedData": expect[0],
         "delay": 2000
     });
@@ -550,7 +555,7 @@ function mkCb(expect: Object[]) {
     let expect = [...posts];
 
     mustResolve({
-        "promise": evt.attachOnce(boundTo, mkCb([expect[0]])),
+        "promise": getHandlerPr(evt, () => evt.attachOnce(boundTo, mkCb([expect[0]]))),
         "expectedData": expect[0],
         "delay": 2000
     });
@@ -698,13 +703,13 @@ function mkCb(expect: Object[]) {
     let expect = posts.filter(op);
 
     mustResolve({
-        "promise": evt.attachOnce(op, mkCb([expect[1]])),
+        "promise": getHandlerPr(evt,()=> evt.attachOnce(op, mkCb([expect[1]]))),
         "expectedData": expect[1],
         "delay": 2000
     });
 
     mustResolve({
-        "promise": evt.attachOnceExtract(op, mkCb([expect[0]])),
+        "promise": getHandlerPr(evt, () => evt.attachOnceExtract(op, mkCb([expect[0]]))),
         "expectedData": expect[0],
         "delay": 2000
     });
@@ -727,13 +732,13 @@ function mkCb(expect: Object[]) {
     let expect = [...posts];
 
     mustResolve({
-        "promise": evt.attachOnce(mkCb([expect[1]])),
+        "promise": getHandlerPr(evt,()=> evt.attachOnce(mkCb([expect[1]]))),
         "expectedData": expect[1],
         "delay": 2000
     });
 
     mustResolve({
-        "promise": evt.attachOnceExtract(mkCb([expect[0]])),
+        "promise": getHandlerPr(evt,()=> evt.attachOnceExtract(mkCb([expect[0]]))),
         "expectedData": expect[0],
         "delay": 2000
     });
@@ -785,13 +790,13 @@ function mkCb(expect: Object[]) {
     let expect = [...posts];
 
     mustResolve({
-        "promise": evt.attachOnce(boundTo, mkCb([expect[1]])),
+        "promise": getHandlerPr(evt, ()=> evt.attachOnce(boundTo, mkCb([expect[1]]))),
         "expectedData": expect[1],
         "delay": 2000
     });
 
     mustResolve({
-        "promise": evt.attachOnceExtract(boundTo, mkCb([expect[0]])),
+        "promise": getHandlerPr(evt, ()=> evt.attachOnceExtract(boundTo, mkCb([expect[0]]))),
         "expectedData": expect[0],
         "delay": 2000
     });

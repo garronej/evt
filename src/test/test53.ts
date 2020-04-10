@@ -1,6 +1,7 @@
 
 import { Evt, Handler } from "../lib";
 import { assert } from "../tools/typeSafety";
+import { getHandlerPr } from "./getHandlerPr";
 import { getPromiseAssertionApi } from "../tools/testing";
 
 const { mustResolve } = getPromiseAssertionApi();
@@ -12,9 +13,11 @@ let handler_: Handler<any, any>;
 evt.evtAttach.attachOnce(handler => handler_ = handler);
 
 mustResolve({
-    "promise": evt.evtDetach.attachOnce(handler =>
-        assert(handler === handler_)
-    ),
+    "promise":
+        getHandlerPr(evt.evtDetach, () =>
+            evt.evtDetach.attachOnce(handler =>
+                assert(handler === handler_)
+            )),
     "delay": 0
 
 });

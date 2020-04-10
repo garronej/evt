@@ -1,6 +1,7 @@
 import { Evt, compose } from "../lib";
 import { assert } from "../tools/typeSafety";
 import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi";
+import { getHandlerPr } from "./getHandlerPr";
 
 const { mustResolve, mustStayPending } = getPromiseAssertionApi();
 
@@ -29,13 +30,15 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi();
     const evtText = new Evt<string>();
 
     mustResolve({
-        "promise": evtText.$attach(
-            compose(
-                text => [text, "DETACH"],
-                text => [text]
-            ),
-            text => text.toLowerCase()
-        )
+        "promise":
+            getHandlerPr(evtText, () =>
+                evtText.$attach(
+                    compose(
+                        text => [text, "DETACH"],
+                        text => [text]
+                    ),
+                    text => text.toLowerCase()
+                ))
     });
 
     evtText.post("foo");
@@ -51,14 +54,16 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi();
     const ctx = Evt.newCtx();
 
     mustResolve({
-        "promise": evtText.$attach(
-            compose(
-                text => [text, { "DETACH": ctx }],
-                text => [text]
-            ),
-            ctx,
-            text => text.toLowerCase()
-        )
+        "promise":
+            getHandlerPr(evtText, () =>
+                evtText.$attach(
+                    compose(
+                        text => [text, { "DETACH": ctx }],
+                        text => [text]
+                    ),
+                    ctx,
+                    text => text.toLowerCase()
+                ))
     });
 
     evtText.post("foo");
@@ -73,13 +78,14 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi();
 
 
     mustStayPending(
-        evtText.$attach(
-            compose(
-                text => [text, "DETACH"],
-                () => null
-            ),
-            () => { }
-        )
+        getHandlerPr(evtText, () =>
+            evtText.$attach(
+                compose(
+                    text => [text, "DETACH"],
+                    () => null
+                ),
+                () => { }
+            ))
     );
 
     evtText.post("foo");
@@ -95,13 +101,17 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi();
     const ctx = Evt.newCtx();
 
     mustStayPending(
-        evtText.$attach(
-            compose(
-                text => [text, { "DETACH": ctx }],
-                str => { str.toLowerCase(); return null; }
-            ),
-            ctx,
-            () => { }
+        getHandlerPr(
+            evtText, () =>
+
+            evtText.$attach(
+                compose(
+                    text => [text, { "DETACH": ctx }],
+                    str => { str.toLowerCase(); return null; }
+                ),
+                ctx,
+                () => { }
+            )
         )
     );
 

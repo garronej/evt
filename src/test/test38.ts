@@ -1,6 +1,7 @@
 //NOTE: This test do not perform any actual check at runtime.
 
 import { Evt } from "../lib";
+import { getHandlerPr } from "./getHandlerPr";
 
 type Circle = {
     type: "CIRCLE";
@@ -105,19 +106,23 @@ export class Deferred<T> {
     );
 
     const dRadius = new Deferred<number>();
-    const prRadius = evtShape[methodName](
-        matchCircle,
-        circle => dRadius.resolve(circle.radius)
-    ).then(({ radius }) => radius);
+    const prRadius = getHandlerPr(
+        evtShape,
+        () => evtShape[methodName](
+            matchCircle,
+            circle => dRadius.resolve(circle.radius)
+        )).then(({ radius }) => radius);
 
     const dBigCircle = new Deferred<Circle>();
-    const prBigCircle = evtShape[methodName](
-        shape => shape.type === "CIRCLE" && shape.radius > 100,
-        bigCircle => {
-            //Here big circle is a shape with ts 3.3.4 but it is not usable.
-            dBigCircle.resolve(bigCircle as Circle);
-        }
-    ).then(bigCircle => id<Shape>(bigCircle) as Circle);
+    const prBigCircle = getHandlerPr(
+        evtShape,
+        () => evtShape[methodName](
+            shape => shape.type === "CIRCLE" && shape.radius > 100,
+            bigCircle => {
+                //Here big circle is a shape with ts 3.3.4 but it is not usable.
+                dBigCircle.resolve(bigCircle as Circle);
+            }
+        )).then(bigCircle => id<Shape>(bigCircle) as Circle);
 
     const dBigShape = new Deferred<Shape>();
     const prBigShape = evtShape[methodName](

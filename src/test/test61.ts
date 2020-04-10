@@ -1,4 +1,5 @@
 import { Evt } from "../lib";
+import { getHandlerPr } from "./getHandlerPr";
 import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi";
 import { assert } from "../tools/typeSafety";
 
@@ -9,8 +10,12 @@ const evtText = new Evt<string>();
 evtText.attachOnce(Evt.getCtx(evtText), () => { });
 
 mustResolve({
-    "promise": evtText.evtDetach
-        .attachOnce(handler => assert(Evt.getCtx(evtText) === handler.ctx))
+    "promise":
+        getHandlerPr(
+            evtText.evtDetach,
+            () => evtText.evtDetach
+                .attachOnce(handler => assert(Evt.getCtx(evtText) === handler.ctx))
+        )
 });
 
 evtText.post("ok");
@@ -18,8 +23,11 @@ evtText.post("ok");
 const pr = mustReject({ "promise": evtText.waitFor(0), "delay": 150 });
 
 mustResolve({
-    "promise": evtText.evtDetach
-        .attach(handler => assert(handler.timeout === 0)),
+    "promise":
+        getHandlerPr(
+            evtText.evtDetach,
+            () => evtText.evtDetach
+                .attach(handler => assert(handler.timeout === 0))),
     "delay": 150
 });
 

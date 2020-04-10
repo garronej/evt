@@ -2,6 +2,7 @@ import { Evt } from "../lib";
 //import { Evt as EvtNext } from "../lib/Evt";
 import { id } from "../tools/typeSafety";
 import { getPromiseAssertionApi } from "../tools/testing";
+import { getHandlerPr } from "./getHandlerPr";
 const { mustResolve, mustStayPending } = getPromiseAssertionApi();
 
 
@@ -157,34 +158,42 @@ for (const methodName of ["$attachOnce", "$attach", "$attachOncePrepend", "$atta
             const evtShape = new Evt<Shape>();
 
             const dCircle = new Deferred<Circle>();
-            const prCircle = evtShape[methodName](
-                shape => matchCircle(shape) ? [shape] : null,
-                circle => dCircle.resolve(circle)
-            );
+            const prCircle = getHandlerPr(
+                evtShape,
+                () => evtShape[methodName](
+                    shape => matchCircle(shape) ? [shape] : null,
+                    circle => dCircle.resolve(circle)
+                ));
 
             const dRadius = new Deferred<number>();
-            const prRadius = evtShape[methodName](
-                shape => shape.type === "CIRCLE" ? [shape.radius] : null,
-                radius => dRadius.resolve(radius)
-            );
+            const prRadius = getHandlerPr(
+                evtShape,
+                () => evtShape[methodName](
+                    shape => shape.type === "CIRCLE" ? [shape.radius] : null,
+                    radius => dRadius.resolve(radius)
+                ));
 
             const dBigCircle = new Deferred<Circle>();
-            const prBigCircle = evtShape[methodName](
-                shape => shape.type === "CIRCLE" && shape.radius > 100 ? [shape] : null,
-                bigCircle => dBigCircle.resolve(bigCircle)
-            );
+            const prBigCircle = getHandlerPr(
+                evtShape,
+                () => evtShape[methodName](
+                    shape => shape.type === "CIRCLE" && shape.radius > 100 ? [shape] : null,
+                    bigCircle => dBigCircle.resolve(bigCircle)
+                ));
 
             const dBigShape = new Deferred<Shape>();
-            const prBigShape = evtShape[methodName](
-                shape => {
-                    switch (shape.type) {
-                        //NOTE: We have to give a hint to typescript on what we will return.
-                        case "SQUARE": return (shape.sideLength > 100) ? [id<Shape>(shape)] : null;
-                        case "CIRCLE": return (shape.radius > 100) ? [shape] : null;
-                    }
-                },
-                shape => dBigShape.resolve(shape)
-            );
+            const prBigShape = getHandlerPr(
+                evtShape,
+                () => evtShape[methodName](
+                    shape => {
+                        switch (shape.type) {
+                            //NOTE: We have to give a hint to typescript on what we will return.
+                            case "SQUARE": return (shape.sideLength > 100) ? [id<Shape>(shape)] : null;
+                            case "CIRCLE": return (shape.radius > 100) ? [shape] : null;
+                        }
+                    },
+                    shape => dBigShape.resolve(shape)
+                ));
 
             switch (variant) {
                 case "CALLBACK":
