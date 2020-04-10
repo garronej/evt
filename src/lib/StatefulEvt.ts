@@ -1,6 +1,6 @@
 import "../tools/polyfill/Object.is";
 import { id } from "../tools/typeSafety/id";
-import { defineAccessors } from "../tools/defineAccessors";
+import { defineAccessors } from "../tools/typeSafety/defineAccessors";
 import { LazyEvt } from "./LazyEvt";
 import { importProxy } from "./importProxy";
 import { invokeOperator } from "./util/invokeOperator";

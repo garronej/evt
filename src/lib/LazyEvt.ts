@@ -1,7 +1,7 @@
-import { overwriteReadonlyProp } from "../tools/overwriteReadonlyProp";
+import { overwriteReadonlyProp } from "../tools/typeSafety/overwriteReadonlyProp";
 import { importProxy } from "./importProxy";
 type Evt<T> = import("./types/interfaces/Evt").Evt<T>;
-import { defineAccessors } from "../tools/defineAccessors";
+import { defineAccessors } from "../tools/typeSafety/defineAccessors";
 
 export class LazyEvt<T> {
 

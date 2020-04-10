@@ -1,5 +1,4 @@
 declare type Evt<T> = import("./Evt").Evt<T>;
-declare type Void = import("./Void").Void;
 /**
  * https://docs.evt.land/api/evt/create#why-voidevt-and-not-evt-less-than-void-greater-than
  * https://docs.evt.land/api/evt/create
@@ -7,7 +6,7 @@ declare type Void = import("./Void").Void;
  * This is only an interface, not a class.
  * get an instance using Evt.create()
  * */
-export interface VoidEvt extends Evt<Void> {
+export interface VoidEvt extends Evt<void> {
     post(): number;
     postAsyncOnceHandled(): Promise<number>;
 }

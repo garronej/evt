@@ -1,10 +1,6 @@
-
-import { typeGuard } from "./typeGuard";
-
 /**
  * 
- * To test if an object is void,
- * unlike undefined or null, testing o !== void
+ * Unlike undefined or null, testing o !== void
  * will not restrict the type.
  * 
  * Example:
@@ -15,8 +11,11 @@ import { typeGuard } from "./typeGuard";
  * 
  * Match void
  * @param o type of o should be a union of type containing void
- * @returns true if o is void'ish ( null or undefined )
+ * @returns true if o is undefined
  */
-export function matchVoid(o: any): o is void {
-    return typeGuard<void>(o, o === undefined || o === null );
+export function matchVoid(o: any): o is void | undefined {
+    return o === undefined;
 }
+
+
+

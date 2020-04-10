@@ -3,10 +3,9 @@ type StatefulReadonlyEvt<T> = import("../interfaces").StatefulReadonlyEvt<T>;
 type Evt<T> = import("../interfaces").Evt<T>;
 type NonPostableEvt<T> = import("../interfaces").NonPostableEvt<T>;
 type EvtLike<T> = import("./UnpackEvt").EvtLike<T>;
-type Void = import("../interfaces/Void").Void;
 type VoidEvt = import("../interfaces").VoidEvt;
 
-type UseVoidEvt<E> = E extends Evt<Void> ? VoidEvt : E;
+type UseVoidEvt<E> = E extends Evt<void> ? VoidEvt : E;
 
 /** https://docs.evt.land/api/helpertypes#swapevttype-less-than-e-t-greater-than */
 export type SwapEvtType<E extends EvtLike<any>, T> =

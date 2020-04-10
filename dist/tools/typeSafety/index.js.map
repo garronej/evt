@@ -1,1 +1,1 @@
-{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../src/tools/typeSafety/index.ts"],"names":[],"mappings":";;;;;AAGA,0BAAqB;AACrB,iCAA4B;AAC5B,8BAAyB;AACzB,iCAA4B"}
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../src/tools/typeSafety/index.ts"],"names":[],"mappings":";;AAAA,mCAAkC;AAAzB,0BAAA,MAAM,CAAA;AAEf,qCAAoC;AAA3B,4BAAA,OAAO,CAAA;AAChB,2BAA0B;AAAjB,kBAAA,EAAE,CAAA;AACX,yCAAwC;AAA/B,gCAAA,SAAS,CAAA;AAClB,2CAA0C;AAAjC,kCAAA,UAAU,CAAA;AACnB,yCAAwC;AAA/B,gCAAA,SAAS,CAAA"}

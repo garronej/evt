@@ -1,5 +1,5 @@
 
-import { Evt, VoidEvt } from "../lib";
+import { Evt, VoidEvt, matchVoid } from "../lib";
 import { assert } from "../tools/typeSafety";
 
 const voidEvt = Evt.create();
@@ -10,7 +10,7 @@ let count = 0;
 
 Evt.factorize(evt).attach(data => {
 
-    if (Evt.isVoid(data)) {
+    if (matchVoid(data)) {
 
         count++;
         return;

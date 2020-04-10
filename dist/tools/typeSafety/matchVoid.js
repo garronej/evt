@@ -1,10 +1,8 @@
 "use strict";
 exports.__esModule = true;
-var typeGuard_1 = require("./typeGuard");
 /**
  *
- * To test if an object is void,
- * unlike undefined or null, testing o !== void
+ * Unlike undefined or null, testing o !== void
  * will not restrict the type.
  *
  * Example:
@@ -15,10 +13,10 @@ var typeGuard_1 = require("./typeGuard");
  *
  * Match void
  * @param o type of o should be a union of type containing void
- * @returns true if o is void'ish ( null or undefined )
+ * @returns true if o is undefined
  */
 function matchVoid(o) {
-    return typeGuard_1.typeGuard(o, o === undefined || o === null);
+    return o === undefined;
 }
 exports.matchVoid = matchVoid;
 //# sourceMappingURL=matchVoid.js.map

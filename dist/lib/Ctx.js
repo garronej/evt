@@ -28,10 +28,9 @@ var assert_1 = require("../tools/typeSafety/assert");
 var typeGuard_1 = require("../tools/typeSafety/typeGuard");
 var LazyEvt_1 = require("./LazyEvt");
 var importProxy_1 = require("./importProxy");
-var defineAccessors_1 = require("../tools/defineAccessors");
+var defineAccessors_1 = require("../tools/typeSafety/defineAccessors");
 var id_1 = require("../tools/typeSafety/id");
-var overwriteReadonlyProp_1 = require("../tools/overwriteReadonlyProp");
-var Void_1 = require("./types/interfaces/Void");
+var overwriteReadonlyProp_1 = require("../tools/typeSafety/overwriteReadonlyProp");
 var CtxImpl = /** @class */ (function () {
     function CtxImpl() {
         this.lazyEvtAttach = new LazyEvt_1.LazyEvt();
@@ -60,13 +59,7 @@ var CtxImpl = /** @class */ (function () {
     CtxImpl.prototype.abort = function (error) {
         return this.__done(error);
     };
-    CtxImpl.prototype.done = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var result = id_1.id(args.length) === 0 ?
-            Void_1.Void.instance : args[0];
+    CtxImpl.prototype.done = function (result) {
         return this.__done(undefined, result);
     };
     /** Detach all handler bound to this context from theirs respective Evt and post getEvtDone() */

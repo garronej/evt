@@ -5,10 +5,9 @@ import { typeGuard } from "../tools/typeSafety/typeGuard";
 import { LazyEvt } from "./LazyEvt";
 import { importProxy } from "./importProxy";
 import /*type*/ { Handler } from "./types/Handler";
-import { defineAccessors } from "../tools/defineAccessors";
+import { defineAccessors } from "../tools/typeSafety/defineAccessors";
 import { id } from "../tools/typeSafety/id";
-import { overwriteReadonlyProp } from "../tools/overwriteReadonlyProp";
-import { Void } from "./types/interfaces/Void";
+import { overwriteReadonlyProp } from "../tools/typeSafety/overwriteReadonlyProp";
 
 type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T>;
 type Evt<T> = import("./types/interfaces").Evt<T>;
@@ -93,12 +92,7 @@ class CtxImpl<Result> implements Ctx<Result>{
         return this.__done(error);
     }
 
-    done(...args: [ Result ]) {
-
-        const result = id<number>(args.length) === 0 ? 
-            (Void.instance as any as Result) : args[0]
-            ;
-
+    done(result: Result) {
         return this.__done(undefined, result);
     }
 

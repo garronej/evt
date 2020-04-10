@@ -35,7 +35,7 @@ var __spread = (this && this.__spread) || function () {
 exports.__esModule = true;
 require("../tools/polyfill/Object.is");
 var id_1 = require("../tools/typeSafety/id");
-var defineAccessors_1 = require("../tools/defineAccessors");
+var defineAccessors_1 = require("../tools/typeSafety/defineAccessors");
 var LazyEvt_1 = require("./LazyEvt");
 var importProxy_1 = require("./importProxy");
 var invokeOperator_1 = require("./util/invokeOperator");

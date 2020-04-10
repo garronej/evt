@@ -1,9 +1,9 @@
 //NOTE: Type only
-import { Evt, StatefulEvt, ToPostableEvt, ToNonPostableEvt, VoidEvt, Void, NonPostableEvt, StatefulReadonlyEvt } from "../lib";
+import { Evt, StatefulEvt, ToPostableEvt, ToNonPostableEvt, VoidEvt, NonPostableEvt, StatefulReadonlyEvt } from "../lib";
 
 {
 
-    type T = Void; type Source = VoidEvt;
+    type T = void; type Source = VoidEvt;
 
     type A = ToNonPostableEvt<Source>;
 

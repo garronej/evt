@@ -1,8 +1,8 @@
 "use strict";
 exports.__esModule = true;
-var overwriteReadonlyProp_1 = require("../tools/overwriteReadonlyProp");
+var overwriteReadonlyProp_1 = require("../tools/typeSafety/overwriteReadonlyProp");
 var importProxy_1 = require("./importProxy");
-var defineAccessors_1 = require("../tools/defineAccessors");
+var defineAccessors_1 = require("../tools/typeSafety/defineAccessors");
 var LazyEvt = /** @class */ (function () {
     function LazyEvt() {
         this.initialPostCount = 0;

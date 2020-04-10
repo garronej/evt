@@ -6,8 +6,7 @@ declare type StatefulReadonlyEvt<T> = import("../interfaces").StatefulReadonlyEv
 declare type StatefulEvt<T> = import("../interfaces").StatefulEvt<T>;
 declare type Evt<T> = import("../interfaces").Evt<T>;
 declare type VoidEvt = import("../interfaces").VoidEvt;
-declare type Void = import("../interfaces/Void").Void;
-declare type UseVoidEvt<E> = E extends Evt<Void> ? VoidEvt : E;
+declare type UseVoidEvt<E> = E extends Evt<void> ? VoidEvt : E;
 declare type ToPostableEvtBase<E extends EvtLike<any>> = UseVoidEvt<E extends StatefulReadonlyEvt<infer U> ? StatefulEvt<U> : E extends NonPostableEvt<infer U> ? Evt<U> : E extends {
     state: infer U;
 } ? E & StatefulPostable<U> : E & Postable<E>>;

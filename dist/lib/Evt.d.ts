@@ -1,7 +1,6 @@
 import "minimal-polyfills/dist/lib/Array.prototype.find";
 import { create } from "./Evt.create";
 import { getCtxFactory } from "./Evt.getCtx";
-import { isVoid } from "./Evt.isVoid";
 import { factorize } from "./Evt.factorize";
 import { merge } from "./Evt.merge";
 import { from } from "./Evt.from";
@@ -21,7 +20,6 @@ export declare const Evt: {
     readonly getCtx: ReturnType<typeof getCtxFactory>;
     readonly loosenType: typeof loosenType;
     readonly factorize: typeof factorize;
-    readonly isVoid: typeof isVoid;
     /** https://docs.evt.land/api/evt/setdefaultmaxhandlers */
     setDefaultMaxHandlers(n: number): void;
 };

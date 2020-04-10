@@ -25,7 +25,7 @@ exports.__esModule = true;
 var assert_1 = require("../typeSafety/assert");
 var Map_1 = require("minimal-polyfills/dist/lib/Map");
 var types_1 = require("./types");
-var overwriteReadonlyProp_1 = require("../overwriteReadonlyProp");
+var overwriteReadonlyProp_1 = require("../typeSafety/overwriteReadonlyProp");
 /** Will work with:
  * Array
  * Set

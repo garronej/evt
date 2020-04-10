@@ -2,7 +2,6 @@ import "minimal-polyfills/dist/lib/Array.prototype.find";
 import { importProxy } from "./importProxy";
 import { create } from "./Evt.create";
 import { getCtxFactory } from "./Evt.getCtx";
-import { isVoid } from "./Evt.isVoid";
 import { factorize } from "./Evt.factorize";
 import { merge } from "./Evt.merge";
 import { from } from "./Evt.from";
@@ -10,19 +9,18 @@ import { useEffect } from "./Evt.useEffect";
 import { parsePropsFromArgs, matchAll } from "./Evt.parsePropsFromArgs";
 import { newCtx } from "./Evt.newCtx";
 import { LazyEvt } from "./LazyEvt";
-import { defineAccessors } from "../tools/defineAccessors";
+import { defineAccessors } from "../tools/typeSafety/defineAccessors";
 import { id } from "../tools/typeSafety/id";
 import { invokeOperator } from "./util/invokeOperator";
 import { Polyfill as Map, LightMap } from "minimal-polyfills/dist/lib/Map";
 import { Polyfill as WeakMap } from "minimal-polyfills/dist/lib/WeakMap";
 import * as runExclusive from "run-exclusive";
 import { EvtError } from "./types/EvtError";
-import { overwriteReadonlyProp } from "../tools/overwriteReadonlyProp";
+import { overwriteReadonlyProp } from "../tools/typeSafety/overwriteReadonlyProp";
 import { typeGuard } from "../tools/typeSafety/typeGuard";
 import { encapsulateOpState } from "./util/encapsulateOpState";
 import { Deferred } from "../tools/Deferred";
 import { loosenType } from "./Evt.loosenType";
-import { Void } from "./types/interfaces/Void";
 
 import /*type*/ { Handler } from "./types/Handler";
 import /*type*/ { Operator } from "./types/Operator";
@@ -50,8 +48,6 @@ class EvtImpl<T> implements Evt<T> {
     static readonly loosenType = loosenType;
 
     static readonly factorize = factorize;
-
-    static readonly isVoid = isVoid;
 
     private static __defaultMaxHandlers = 25;
 
@@ -799,11 +795,7 @@ class EvtImpl<T> implements Evt<T> {
 
     }
 
-    postAsyncOnceHandled(...args: readonly [T]): number | Promise<number> {
-
-        const data = id<number>(args.length) === 0 ? 
-            (Void.instance as any as T) : args[0]
-            ;
+    postAsyncOnceHandled(data: T): number | Promise<number> {
 
         if (this.isHandled(data)) {
             return this.post(data);
@@ -818,14 +810,9 @@ class EvtImpl<T> implements Evt<T> {
 
         return d.pr;
 
-
     }
 
-    post(...args: readonly [T]): number {
-
-        const data = id<number>(args.length) === 0 ? 
-            (Void.instance as any as T) : args[0]
-            ;
+    post(data: T): number {
 
         this.trace(data);
 
@@ -916,8 +903,6 @@ export const Evt: {
     readonly loosenType: typeof loosenType;
 
     readonly factorize: typeof factorize;
-
-    readonly isVoid: typeof isVoid;
 
     /** https://docs.evt.land/api/evt/setdefaultmaxhandlers */
     setDefaultMaxHandlers(n: number): void;

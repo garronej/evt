@@ -1,1 +1,1 @@
-{"version":3,"file":"matchVoid.js","sourceRoot":"","sources":["../../../src/tools/typeSafety/matchVoid.ts"],"names":[],"mappings":";;AACA,yCAAwC;AAExC;;;;;;;;;;;;;;;GAeG;AACH,SAAgB,SAAS,CAAC,CAAM;IAC5B,OAAO,qBAAS,CAAO,CAAC,EAAE,CAAC,KAAK,SAAS,IAAI,CAAC,KAAK,IAAI,CAAE,CAAC;AAC9D,CAAC;AAFD,8BAEC"}
+{"version":3,"file":"matchVoid.js","sourceRoot":"","sources":["../../../src/tools/typeSafety/matchVoid.ts"],"names":[],"mappings":";;AAAA;;;;;;;;;;;;;;GAcG;AACH,SAAgB,SAAS,CAAC,CAAM;IAC5B,OAAO,CAAC,KAAK,SAAS,CAAC;AAC3B,CAAC;AAFD,8BAEC"}

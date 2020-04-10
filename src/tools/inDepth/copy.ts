@@ -3,7 +3,7 @@ import { assert } from "../typeSafety/assert";
 import { Polyfill as Map, LightMap } from "minimal-polyfills/dist/lib/Map";
 import { LightSet } from "minimal-polyfills/dist/lib/Set";
 import { MapLike, SetLike, ArrayLike, DateLike } from "./types";
-import { overwriteReadonlyProp } from "../overwriteReadonlyProp";
+import { overwriteReadonlyProp } from "../typeSafety/overwriteReadonlyProp";
 
 /** Will work with:
  * Array

@@ -1,5 +1,5 @@
 
-import { overwriteReadonlyProp } from "./overwriteReadonlyProp";
+import { overwriteReadonlyProp } from "./typeSafety/overwriteReadonlyProp";
 
 export class Deferred<T> {
 
