@@ -25,7 +25,7 @@ Evt.create(false)        ⇔     new StatefulEvt<boolean>(false)
 When you instantiate an `Evt` with a void argument \( `new Evt<void>()` \), TypeScript forces you to pass `undefined` or `null` to  the post method \( it does not allows to call `evt.post()` \).  
 `VoidEvt` \( and respectively `VoidCtx` \) is a workaround for this annoyance.
 
-`VoidEvt` object are instances of `Evt<Void>` that you can post without passing argument.
+`VoidEvt` object are instances of `Evt<void>` that you can post without passing argument.
 
 ```typescript
 import { Evt } from "evt";

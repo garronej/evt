@@ -9,7 +9,7 @@ If you have a variable that is either an `Evt` that post `A` or an `Evt` that po
 In other words `Evt<A> | Evt<B>` is assignable to `Evt<A | B >.` This method implement this proerty.
 
 ```typescript
-import { Evt, VoidEvt } from "evt";
+import { Evt, VoidEvt, matchVoid } from "evt";
 
 declare evt: Evt<string> | Evt<number> | VoidEvt = Evt.create<any>();
 
@@ -19,7 +19,7 @@ Evt.factorize(evt) // OK return Evt<string | number | Void>
     .attach(data=> {
     
         //To test if data is Void
-        if( Evt.isVoid(data) ){
+        if( matchVoid(data) ){
             return;
         }
         
