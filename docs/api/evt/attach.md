@@ -54,14 +54,15 @@ When the method contains the keyword "**prepend**": Same as .attach\(\) but the 
 ```typescript
 import { Evt } from "evt";
 
-const evtConnect = Evt.create();
+const evtLetter = Evt.create();
 
-evtConnect.attach(() => console.log("B"));
-evtConnect.attach(() => console.log("C"));
+evtLetter
+  .attach(() => console.log("B"))
+  .attach(() => console.log("C"))
+  .attachPrepend(() => console.log("A"))
+  ;
 
-evtConnect.attachPrepend(() => console.log("A"));
-
-evtConnect.post();
+evtLetter.post();
 //"A", "B", "C" is printed to the console.
 ```
 
