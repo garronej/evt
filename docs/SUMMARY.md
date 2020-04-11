@@ -25,6 +25,8 @@
     * [Evt.merge\(\[ evt1, evt2, ... \]\)](api/evt/merge.md)
     * [Evt.loosenType\(evt\)](api/evt/loosentype.md)
     * [Evt.factorize\(evt\)](api/evt/factorize.md)
+    * [Evt.asPostable\(evt\)](api/evt/aspospable.md)
+    * [Evt.asNonPostable\(evt\)](api/evt/asnonpostable.md)
     * [Evt.setDefaultMaxHandlers\(n\)](api/evt/setdefaultmaxhandlers.md)
   * [Ctx&lt;T&gt;](api/ctx.md)
   * [StatefulEvt&lt;T&gt;](api/statefulevt.md)

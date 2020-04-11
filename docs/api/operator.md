@@ -117,7 +117,7 @@ The type of values that a fλ operator sole determine what it does:
 * `null` If the event should be ignored and nothing passed to the callback.
 * `[ U ]` or `[ U, null ]` When the event should be handled, wrapped into the singleton is the value will be passed to the callback.
 * `"DETACH"` If the event should be ignored and the handler detached from the `Evt`
-* `{ DETACH: Ctx<Void> }` If the event should be ignored and a group of handlers bound to a certain context be detached. See [`Ctx<T>`](https://docs.ts-evt.dev/api/ctx)
+* `{ DETACH: Ctx<void> }` If the event should be ignored and a group of handlers bound to a certain context be detached. See [`Ctx<T>`](https://docs.ts-evt.dev/api/ctx)
 * `{ DETACH: Ctx<V>, res: V }`  See [`Ctx<T>`](https://docs.ts-evt.dev/api/ctx)\`\`
 * `{ DETACH: Ctx; err: Error }`  See [`Ctx<T>`](https://docs.ts-evt.dev/api/ctx)\`\`
 * `[ U, "DETACH" ]` / `[ U, {DETACH:Ctx, ...} ]` If the event should be handled AND some detach be performed.

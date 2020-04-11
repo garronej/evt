@@ -56,13 +56,12 @@ Invert of `ToNonPostableEvt`
 import { 
     ToPostableEvt, 
     NonPostableEvt, 
-    StatefulReadonlyEvt, 
-    Void 
+    StatefulReadonlyEvt
 } from "evt";
 
 ToPostableEvt<NonPostableEvt<T>>         → Evt<T>
 ToPostableEvt<StatefulReadonlyEvt<T>>    → StatefulEvt<T>
-ToPostable<NonPostable<Void>>            → VoidEvt
+ToPostable<NonPostable<void>>            → VoidEvt
 ToPostable<Evt<T>>                       → Evt<T>
 
 ToPostableEvt<{ 
@@ -132,12 +131,12 @@ evtHuman.post(human);
 ## SwapEvtType&lt;E, T&gt;
 
 ```typescript
-import { SwapEvtType, Void } from "evt";
+import { SwapEvtType } from "evt";
 
 SwapEvtType<Evt<string>, number>          → Evt<number>
 SwapEvtType<SatefulEvt<string>, number>   → SatefulEvt<number>
-SwapEvtType<Evt<number>, Void>            → VoidEvt
-SwapEvtType<StatefulEvt<number>, Void>    → VoidEvt
+SwapEvtType<Evt<number>, void>            → VoidEvt
+SwapEvtType<StatefulEvt<number>, void>    → VoidEvt
 ```
 
 ## FactorizeEvt&lt;E&gt;
