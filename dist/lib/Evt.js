@@ -50,6 +50,8 @@ var Evt_factorize_1 = require("./Evt.factorize");
 var Evt_merge_1 = require("./Evt.merge");
 var Evt_from_1 = require("./Evt.from");
 var Evt_useEffect_1 = require("./Evt.useEffect");
+var Evt_asPostable_1 = require("./Evt.asPostable");
+var Evt_asNonPostable_1 = require("./Evt.asNonPostable");
 var Evt_parsePropsFromArgs_1 = require("./Evt.parsePropsFromArgs");
 var Evt_newCtx_1 = require("./Evt.newCtx");
 var LazyEvt_1 = require("./LazyEvt");
@@ -585,6 +587,8 @@ var EvtImpl = /** @class */ (function () {
     EvtImpl.getCtx = Evt_getCtx_1.getCtxFactory();
     EvtImpl.loosenType = Evt_loosenType_1.loosenType;
     EvtImpl.factorize = Evt_factorize_1.factorize;
+    EvtImpl.asPostable = Evt_asPostable_1.asPostable;
+    EvtImpl.asNonPostable = Evt_asNonPostable_1.asNonPostable;
     EvtImpl.__defaultMaxHandlers = 25;
     EvtImpl.__1 = (function () {
         if (false) {

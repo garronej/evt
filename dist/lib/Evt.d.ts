@@ -5,6 +5,8 @@ import { factorize } from "./Evt.factorize";
 import { merge } from "./Evt.merge";
 import { from } from "./Evt.from";
 import { useEffect } from "./Evt.useEffect";
+import { asPostable } from "./Evt.asPostable";
+import { asNonPostable } from "./Evt.asNonPostable";
 import { newCtx } from "./Evt.newCtx";
 import { loosenType } from "./Evt.loosenType";
 /** https://docs.evt.land/api/evt */
@@ -20,6 +22,8 @@ export declare const Evt: {
     readonly getCtx: ReturnType<typeof getCtxFactory>;
     readonly loosenType: typeof loosenType;
     readonly factorize: typeof factorize;
+    readonly asPostable: typeof asPostable;
+    readonly asNonPostable: typeof asNonPostable;
     /** https://docs.evt.land/api/evt/setdefaultmaxhandlers */
     setDefaultMaxHandlers(n: number): void;
 };
