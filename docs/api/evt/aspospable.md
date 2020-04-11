@@ -4,13 +4,19 @@ description: Cast the passed event as portable.
 
 # Evt.asPostable\(evt\)
 
-To invoke post\(\) on a NonPostableEvt or a StatefullReadonlyEvt. 
+{% hint style="info" %}
+Evt.asNonPostable\(\) is the identity function with special type annotation
+{% endhint %}
 
-This is unsafe and is to use only if you know you are allowed to do it:
+{% hint style="warning" %}
+Use this method only on`Evt` you instantiated yourself. Not as a hack to trigger events on `Evt` that have been exposed as non-postable by an API.
+{% endhint %}
 
-Usecase:
+To invoke `post()` on a `NonPostableEvt` or a `StatefullReadonlyEvt`. 
 
-Without this method this would be the way for a class to expose Evt that are posted internally and exposed to be listened. 
+#### Usecase:
+
+Without this method this would be the way for a class to expose `Evt` that are posted internally and exposed to be listened. 
 
 ```typescript
 import { Evt } from "evt";
