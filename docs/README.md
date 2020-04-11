@@ -7,7 +7,7 @@ It enable and encourage **functional programming** and makes heavy use of **type
 
 Its main target is [**Deno**](https://github.com/denoland/deno)**\*** but it is cross compatible with **Node** and will run just about anywhere from **React Native** to the **web browser** of your grama.
 
-_\*The deno package hasn't been published yet but it will be soon._
+_\*The deno package hasn't been published yet but it will be by May 13 2020,1.0 release date_ [🚀](https://apps.timwhitlock.info/emoji/tables/unicode#emoji-modal)_._
 
 **Browserify friendly:**
 
