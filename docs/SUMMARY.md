@@ -5,6 +5,7 @@
 * [API Documentation](api/README.md)
   * [Operator&lt;T, U&gt; \(type\)](api/operator.md)
   * [Evt&lt;T&gt;](api/evt/README.md)
+    * [Evt.asNonPostable\(evt\)](api/evt/asnonpostable.md)
     * [Evt.asPostable\(evt\)](api/evt/aspospable.md)
     * [evt.\[$\]attach\*\(...\)](api/evt/attach.md)
     * [evt.post\*\(data\)](api/evt/post.md)
