@@ -32,6 +32,7 @@ Concerning RxJS:
 
 * It introduce lot of abstractions. It is a big jump from `EventEmitter`.
 * [The filter operator breaks the type inference](https://stackblitz.com/edit/evt-795plc?embed=1&file=index.ts&hideExplorer=1).
+* It's not available on Deno.
 
 EVT is an attempt to sove these issues while trying to remain as accessible as `EventEmitter`.
 
