@@ -2,7 +2,7 @@
 import { Evt } from "../lib";
 import { assert } from "../tools/typeSafety";
 
-const obj1: never[] = [];
+const obj1: never[] = [] as any;
 const obj2 = {};
 const obj3 = () => { };
 
@@ -16,5 +16,5 @@ assert(Evt.getCtx(obj1) !== Evt.getCtx(obj2));
 assert(Evt.getCtx(obj1) !== Evt.getCtx(obj3));
 assert(Evt.getCtx(obj2) !== Evt.getCtx(obj3));
 
-console.log("PASS".green);
+console.log("PASS");
 

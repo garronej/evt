@@ -23,7 +23,7 @@ setTimeout(()=> {
 
     console.assert(pass);
 
-    console.log("PASS".green);
+    console.log("PASS");
 
 }, 2000);
 

@@ -19,5 +19,5 @@ evtCount.postForceChange();
 
 assert(std_out === "1222");
 
-console.log("PASS".green);
+console.log("PASS");
 

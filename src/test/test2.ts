@@ -49,4 +49,4 @@ for (let char of ["f", "g", "h"])
 console.assert(alphabet === "abcdefgh");
 //cSpell: enable
 
-console.log("PASS".green);
+console.log("PASS");

@@ -121,4 +121,4 @@ assert(console.stdOut === "");
 ee.emit("text", "bar"); //Prints nothing
 assert(console.stdOut === "");
 
-log("PASS".green);
+log("PASS");

@@ -118,6 +118,6 @@ import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi"
 
     }
 
-    console.log("PASS".green);
+    console.log("PASS");
 
 })();

@@ -56,5 +56,5 @@ if (1 + 0 === 2) {
 
 }
 
-console.log("PASS".green);
+console.log("PASS");
 

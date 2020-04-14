@@ -12,7 +12,6 @@ import { parsePropsFromArgs, matchAll } from "./Evt.parsePropsFromArgs";
 import { newCtx } from "./Evt.newCtx";
 import { LazyEvt } from "./LazyEvt";
 import { defineAccessors } from "../tools/typeSafety/defineAccessors";
-import { id } from "../tools/typeSafety/id";
 import { invokeOperator } from "./util/invokeOperator";
 import { Polyfill as Map, LightMap } from "minimal-polyfills/dist/lib/Map";
 import { Polyfill as WeakMap } from "minimal-polyfills/dist/lib/WeakMap";
@@ -24,11 +23,16 @@ import { encapsulateOpState } from "./util/encapsulateOpState";
 import { Deferred } from "../tools/Deferred";
 import { loosenType } from "./Evt.loosenType";
 
-import /*type*/ { Handler } from "./types/Handler";
-import /*type*/ { Operator } from "./types/Operator";
+import { Handler } from "./types/Handler";
+import { Operator } from "./types/Operator";
 type NonPostableEvt<T> = import("./types/interfaces").NonPostableEvt<T>;
 type CtxLike<Result = any> = import("./types/interfaces").CtxLike<Result>;
 type StatefulEvt<T> = import("./types/interfaces").StatefulEvt<T>;
+
+//NOTE: Deno can't use NodeJS type def ( obviously )
+type Timer= { _timerBrand: any; };
+const safeSetTimeout = (callback: () => void, ms: number): Timer => setTimeout(callback, ms) as any;
+const safeClearTimeout = (timer: Timer): void => clearTimeout(timer as any);
 
 /** https://docs.evt.land/api/evt */
 export type Evt<T> = import("./types/interfaces").Evt<T>;
@@ -91,8 +95,8 @@ class EvtImpl<T> implements Evt<T> {
             EvtImpl.prototype,
             "evtAttach",
             {
-                "get": function () {
-                    return id<EvtImpl<any>>(this).lazyEvtAttach.evt;
+                "get": function (this: EvtImpl<any>) {
+                    return this.lazyEvtAttach.evt;
                 }
             }
         );
@@ -101,8 +105,8 @@ class EvtImpl<T> implements Evt<T> {
             EvtImpl.prototype,
             "evtDetach",
             {
-                "get": function () {
-                    return id<EvtImpl<any>>(this).lazyEvtDetach.evt;
+                "get": function (this: EvtImpl<any>) {
+                    return this.lazyEvtDetach.evt;
                 }
             }
         );
@@ -203,15 +207,13 @@ class EvtImpl<T> implements Evt<T> {
             ] as const).map(key => [
                 key.substr(2),
                 {
-                    "get": function () {
+                    "get": function (this: EvtImpl<any>) {
 
-                        const self: EvtImpl<any> = this;
-
-                        if (self[key] === undefined) {
-                            self[key] = new WeakMap<any, any>();
+                        if (this[key] === undefined) {
+                            this[key] = new WeakMap<any, any>();
                         }
 
-                        return self[key];
+                        return this[key];
 
                     }
                 }
@@ -236,7 +238,7 @@ class EvtImpl<T> implements Evt<T> {
 
     private detachHandler(
         handler: Handler<T, any>,
-        wTimer: [NodeJS.Timer | undefined],
+        wTimer: [Timer | undefined],
         rejectPr: (error: EvtError.Detached) => void
     ) {
 
@@ -261,7 +263,7 @@ class EvtImpl<T> implements Evt<T> {
 
         if (wTimer[0] !== undefined) {
 
-            clearTimeout(wTimer[0]);
+            safeClearTimeout(wTimer[0]);
 
             rejectPr(new EvtError.Detached());
 
@@ -276,7 +278,7 @@ class EvtImpl<T> implements Evt<T> {
 
     private triggerHandler<U>(
         handler: Handler<T, U>,
-        wTimer: [NodeJS.Timer | undefined],
+        wTimer: [Timer | undefined],
         resolvePr: ((transformedData: any) => void) | undefined,
         opResult: Operator.fλ.Result.Matched<any, any>
     ): void {
@@ -284,7 +286,7 @@ class EvtImpl<T> implements Evt<T> {
         const { callback, once } = handler;
 
         if (wTimer[0] !== undefined) {
-            clearTimeout(wTimer[0]);
+            safeClearTimeout(wTimer[0]);
             wTimer[0] = undefined;
         }
 
@@ -317,7 +319,7 @@ class EvtImpl<T> implements Evt<T> {
 
         const d = new Deferred<U>();
 
-        const wTimer: [NodeJS.Timer | undefined] = [undefined];
+        const wTimer: [Timer | undefined] = [undefined];
 
         const handler: Handler<T, U> = {
             ...propsFromArgs,
@@ -328,7 +330,7 @@ class EvtImpl<T> implements Evt<T> {
 
         if (typeof handler.timeout === "number") {
 
-            wTimer[0] = setTimeout(() => {
+            wTimer[0] = safeSetTimeout(() => {
 
                 wTimer[0] = undefined;
 

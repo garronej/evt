@@ -121,5 +121,5 @@ import { same } from "../tools/inDepth";
 
 }
 
-setTimeout(() => console.log("PASS".green), 0);
+setTimeout(() => console.log("PASS"), 0);
 

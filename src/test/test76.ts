@@ -94,4 +94,4 @@ import { assert } from "../tools/typeSafety";
 
 }
 
-console.log("PASS".green);
+console.log("PASS");

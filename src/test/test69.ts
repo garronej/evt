@@ -10,4 +10,4 @@ const ctxBool = Evt.newCtx<boolean>();
 ctxBool.done(true);
 ctxBool.done(false);
 
-console.log("PASS".green);
+console.log("PASS");

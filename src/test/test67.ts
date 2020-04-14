@@ -121,5 +121,5 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi();
 
 }
 
-console.log("PASS".green);
+console.log("PASS");
 

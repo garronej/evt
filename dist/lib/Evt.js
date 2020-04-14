@@ -56,7 +56,6 @@ var Evt_parsePropsFromArgs_1 = require("./Evt.parsePropsFromArgs");
 var Evt_newCtx_1 = require("./Evt.newCtx");
 var LazyEvt_1 = require("./LazyEvt");
 var defineAccessors_1 = require("../tools/typeSafety/defineAccessors");
-var id_1 = require("../tools/typeSafety/id");
 var invokeOperator_1 = require("./util/invokeOperator");
 var Map_1 = require("minimal-polyfills/dist/lib/Map");
 var WeakMap_1 = require("minimal-polyfills/dist/lib/WeakMap");
@@ -68,6 +67,8 @@ var encapsulateOpState_1 = require("./util/encapsulateOpState");
 var Deferred_1 = require("../tools/Deferred");
 var Evt_loosenType_1 = require("./Evt.loosenType");
 var Operator_1 = require("./types/Operator");
+var safeSetTimeout = function (callback, ms) { return setTimeout(callback, ms); };
+var safeClearTimeout = function (timer) { return clearTimeout(timer); };
 var EvtImpl = /** @class */ (function () {
     function EvtImpl() {
         this.lazyEvtAttach = new LazyEvt_1.LazyEvt();
@@ -148,7 +149,7 @@ var EvtImpl = /** @class */ (function () {
         }
         this.handlerTriggers["delete"](handler);
         if (wTimer[0] !== undefined) {
-            clearTimeout(wTimer[0]);
+            safeClearTimeout(wTimer[0]);
             rejectPr(new EvtError_1.EvtError.Detached());
         }
         this.lazyEvtDetach.post(handler);
@@ -157,7 +158,7 @@ var EvtImpl = /** @class */ (function () {
     EvtImpl.prototype.triggerHandler = function (handler, wTimer, resolvePr, opResult) {
         var callback = handler.callback, once = handler.once;
         if (wTimer[0] !== undefined) {
-            clearTimeout(wTimer[0]);
+            safeClearTimeout(wTimer[0]);
             wTimer[0] = undefined;
         }
         EvtImpl.doDetachIfNeeded(handler, opResult, once);
@@ -174,7 +175,7 @@ var EvtImpl = /** @class */ (function () {
         var wTimer = [undefined];
         var handler = __assign(__assign(__assign({}, propsFromArgs), propsFromMethodName), { "detach": function () { return _this_1.detachHandler(handler, wTimer, d.reject); }, "promise": d.pr });
         if (typeof handler.timeout === "number") {
-            wTimer[0] = setTimeout(function () {
+            wTimer[0] = safeSetTimeout(function () {
                 wTimer[0] = undefined;
                 handler.detach();
                 d.reject(new EvtError_1.EvtError.Timeout(handler.timeout));
@@ -596,12 +597,12 @@ var EvtImpl = /** @class */ (function () {
         }
         defineAccessors_1.defineAccessors(EvtImpl.prototype, "evtAttach", {
             "get": function () {
-                return id_1.id(this).lazyEvtAttach.evt;
+                return this.lazyEvtAttach.evt;
             }
         });
         defineAccessors_1.defineAccessors(EvtImpl.prototype, "evtDetach", {
             "get": function () {
-                return id_1.id(this).lazyEvtDetach.evt;
+                return this.lazyEvtDetach.evt;
             }
         });
     })();
@@ -617,11 +618,10 @@ var EvtImpl = /** @class */ (function () {
             key.substr(2),
             {
                 "get": function () {
-                    var self = this;
-                    if (self[key] === undefined) {
-                        self[key] = new WeakMap_1.Polyfill();
+                    if (this[key] === undefined) {
+                        this[key] = new WeakMap_1.Polyfill();
                     }
-                    return self[key];
+                    return this[key];
                 }
             }
         ]; }).reduce(function (prev, _a) {

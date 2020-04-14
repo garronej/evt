@@ -11,7 +11,7 @@ evt.attach(ctx,({ init })=> {
 
     console.assert(init);
 
-    console.log("PASS".green);
+    console.log("PASS");
 
 })
 

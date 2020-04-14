@@ -1,4 +1,4 @@
-import /*type*/ { UnpackEvt } from "./types/helper/UnpackEvt";
+import { UnpackEvt } from "./types/helper/UnpackEvt";
 import { importProxy } from "./importProxy";
 
 type Evt<T>= import("./types/interfaces").Evt<T>;

@@ -1,5 +1,4 @@
-import "../tools/polyfill/Object.is";
-import { id } from "../tools/typeSafety/id";
+import "minimal-polyfills/dist/lib/Object.is";
 import { defineAccessors } from "../tools/typeSafety/defineAccessors";
 import { LazyEvt } from "./LazyEvt";
 import { importProxy } from "./importProxy";
@@ -40,27 +39,27 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
             StatefulEvtImpl.prototype,
             "state",
             {
-                "get": function () { return id<StatefulEvtImpl<any>>(this).__state; },
-                "set": function (state) { id<StatefulEvtImpl<any>>(this).post(state); }
+                "get": function (this: StatefulEvtImpl<any>) { return this.__state; },
+                "set": function (this: StatefulEvtImpl<any>, state) { this.post(state); }
             }
         );
 
         defineAccessors(
             StatefulEvtImpl.prototype,
             "evtDiff",
-            { "get": function () { return id<StatefulEvtImpl<any>>(this).lazyEvtDiff.evt; } }
+            { "get": function (this: StatefulEvtImpl<any>) { return this.lazyEvtDiff.evt; } }
         );
 
         defineAccessors(
             StatefulEvtImpl.prototype,
             "evtChange",
-            { "get": function () { return id<StatefulEvtImpl<any>>(this).lazyEvtChange.evt; } }
+            { "get": function (this: StatefulEvtImpl<any>) { return this.lazyEvtChange.evt; } }
         );
 
         defineAccessors(
             StatefulEvtImpl.prototype,
             "evtChangeDiff",
-            { "get": function () { return id<StatefulEvtImpl<any>>(this).lazyEvtChangeDiff.evt; } }
+            { "get": function (this: StatefulEvtImpl<any>) { return this.lazyEvtChangeDiff.evt; } }
         );
 
     })();

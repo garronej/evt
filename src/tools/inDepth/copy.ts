@@ -101,7 +101,7 @@ export const copy = (() => {
 
         if( DateLike.match(obj) ){
 
-            const Date: { new <T>(time: number): DateLike; } = Object.getPrototypeOf(obj).constructor;
+            const Date: { new (time: number): DateLike; } = Object.getPrototypeOf(obj).constructor;
 
             const out = onCreate(new Date(obj.getTime()));
 

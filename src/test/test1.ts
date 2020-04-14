@@ -30,4 +30,4 @@ console.assert(evt.postCount === 3, "m5");
 
 console.assert(i === 3, "m6");
 
-console.log("PASS".green);
+console.log("PASS");

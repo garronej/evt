@@ -45,7 +45,7 @@ evtAnimal.attachExtract(
 
         if (!cats.length) evtAnimal.detach(ctx);
 
-        console.log("PASS".green);
+        console.log("PASS");
 
     }
 );

@@ -69,7 +69,7 @@ setTimeout(()=>{
 
     console.assert(success === 3);
 
-    console.log("PASS".green);
+    console.log("PASS");
 
 },2000);
 

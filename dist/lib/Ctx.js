@@ -29,7 +29,6 @@ var typeGuard_1 = require("../tools/typeSafety/typeGuard");
 var LazyEvt_1 = require("./LazyEvt");
 var importProxy_1 = require("./importProxy");
 var defineAccessors_1 = require("../tools/typeSafety/defineAccessors");
-var id_1 = require("../tools/typeSafety/id");
 var overwriteReadonlyProp_1 = require("../tools/typeSafety/overwriteReadonlyProp");
 var CtxImpl = /** @class */ (function () {
     function CtxImpl() {
@@ -117,17 +116,17 @@ var CtxImpl = /** @class */ (function () {
         }
         defineAccessors_1.defineAccessors(CtxImpl.prototype, "evtDoneOrAborted", {
             "get": function () {
-                return id_1.id(this).lazyEvtDoneOrAborted.evt;
+                return this.lazyEvtDoneOrAborted.evt;
             }
         });
         defineAccessors_1.defineAccessors(CtxImpl.prototype, "evtAttach", {
             "get": function () {
-                return id_1.id(this).lazyEvtAttach.evt;
+                return this.lazyEvtAttach.evt;
             }
         });
         defineAccessors_1.defineAccessors(CtxImpl.prototype, "evtDetach", {
             "get": function () {
-                return id_1.id(this).lazyEvtDetach.evt;
+                return this.lazyEvtDetach.evt;
             }
         });
     })();

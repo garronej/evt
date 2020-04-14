@@ -1,4 +1,3 @@
-import "colors";
 
 process.once("unhandledRejection", error => {
 
@@ -54,7 +53,7 @@ if (n) {
 
         } catch (error) {
 
-            console.log(`Fail test ${i}`.red);
+            console.log(`Fail test ${i}`);
 
             throw error;
 

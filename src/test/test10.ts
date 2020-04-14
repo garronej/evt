@@ -28,4 +28,4 @@ console.assert(i === 3);
 
 console.assert(success);
 
-console.log("PASS".green);
+console.log("PASS");

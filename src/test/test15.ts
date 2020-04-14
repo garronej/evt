@@ -98,7 +98,7 @@ let result_count= 0;
 
         evt.post(data);
 
-        await new Promise<void>(resolve=> setTimeout(resolve,40));
+        await new Promise<void>(resolve=> setTimeout(()=>resolve(),40));
 
     }
 
@@ -110,6 +110,6 @@ setTimeout(()=>{
 
     console.assert(result_count === 4 );
 
-    console.log("PASS".green);
+    console.log("PASS");
 
 },2000);

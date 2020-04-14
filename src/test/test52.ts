@@ -34,6 +34,6 @@ evtCount
 
     assert(internalCount === 3 );
 
-    console.log("PASS".green);
+    console.log("PASS");
 
 })();

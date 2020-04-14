@@ -95,7 +95,7 @@ import { Evt, StatefulEvt, ToPostableEvt, ToNonPostableEvt, VoidEvt, NonPostable
 
 }
 
-console.log("PASS".green);
+console.log("PASS");
 
 
 

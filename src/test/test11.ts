@@ -32,4 +32,4 @@ for( let i in [ "f", "g", "h" ])
 
 console.assert(count === 8);
 
-console.log("PASS".green);
+console.log("PASS");

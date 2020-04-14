@@ -20,5 +20,5 @@ evtAge.post(1);
 
 assert(p_! === 3);
 
-console.log("PASS".green);
+console.log("PASS");
 

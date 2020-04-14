@@ -27,7 +27,7 @@ voidEvt.postAsyncOnceHandled();
 
 assert(count === 2);
 
-console.log("PASS".green);
+console.log("PASS");
 
 
 

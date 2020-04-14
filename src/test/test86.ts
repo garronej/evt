@@ -31,5 +31,5 @@ Evt.create<number>()
 
 assert(std_out === "333" as string);
 
-console.log("PASS".green);
+console.log("PASS");
 

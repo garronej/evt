@@ -15,5 +15,5 @@ evtClick.post();
 
 assert(evtClickCount.state === 3);
 
-console.log("PASS".green);
+console.log("PASS");
 

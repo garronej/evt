@@ -21,7 +21,7 @@ for (let i = 1; i <= 60; i++) {
 
     }
 
-    evt.attach(() => {
+    evt.attach(function () {
         /** my handler */
         console.log("identification from source");
     });
@@ -69,5 +69,5 @@ Use Evt.setDefaultMaxHandlers(n) to change the default limit currently set to 25
 
 assert(warn_str === warn_str_expected);
 
-console.log("PASS".green);
+console.log("PASS");
 

@@ -16,4 +16,4 @@ evtText.attachOnce(str_ => str = str_);
 
 assert(str === "ok");
 
-console.log("PASS".green);
+console.log("PASS");

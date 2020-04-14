@@ -19,12 +19,11 @@ var LazyEvt = /** @class */ (function () {
         }
         defineAccessors_1.defineAccessors(LazyEvt.prototype, "evt", {
             "get": function () {
-                var self = this;
-                if (self.__evt === undefined) {
-                    self.__evt = new importProxy_1.importProxy.Evt();
-                    overwriteReadonlyProp_1.overwriteReadonlyProp(self.__evt, "postCount", self.initialPostCount);
+                if (this.__evt === undefined) {
+                    this.__evt = new importProxy_1.importProxy.Evt();
+                    overwriteReadonlyProp_1.overwriteReadonlyProp(this.__evt, "postCount", this.initialPostCount);
                 }
-                return self.__evt;
+                return this.__evt;
             }
         });
     })();

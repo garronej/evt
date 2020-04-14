@@ -58,7 +58,7 @@ evtAnimal.attachExtract(
     for (let animal of animals)
         evtAnimal.post(animal);
 
-    console.log("PASS".green);
+    console.log("PASS");
 
 
 })();

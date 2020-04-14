@@ -21,7 +21,7 @@ evt.attachOnce(
 
         console.assert(evtData === 666);
 
-        console.log("PASS".green);
+        console.log("PASS");
 
     }
 );

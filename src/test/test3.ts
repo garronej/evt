@@ -27,5 +27,5 @@ evt.post("ok");
 
 console.assert(success, "m2");
 
-console.log("PASS".green);
+console.log("PASS");
 

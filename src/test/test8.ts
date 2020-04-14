@@ -102,4 +102,4 @@ evt.post({
 
 console.assert(testCount === 3, "m8");
 
-console.log("PASS".green);
+console.log("PASS");

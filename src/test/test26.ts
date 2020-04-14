@@ -37,4 +37,4 @@ type UnpackEvt_<T> = import("../lib/types/helper").UnpackEvt<T>;
 
 }
 
-console.log("PASS".green);
+console.log("PASS");

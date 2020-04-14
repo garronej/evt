@@ -16,4 +16,4 @@ console.assert( detachedHandlers.length === 4, "m1" );
 
 console.assert( !evt.getHandlers().length ,"m2");
 
-console.log("PASS".green);
+console.log("PASS");

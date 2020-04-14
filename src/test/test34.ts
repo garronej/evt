@@ -43,4 +43,4 @@ import { assert } from "../tools/typeSafety/assert"
 }
 
 
-console.log("PASS".green);
+console.log("PASS");

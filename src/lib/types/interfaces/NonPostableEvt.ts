@@ -1,5 +1,5 @@
-import /*type*/ { Handler } from "../Handler";
-import /*type*/ { Operator } from "../Operator";
+import { Handler } from "../Handler";
+import { Operator } from "../Operator";
 
 type StatefulEvt<T> = import("./StatefulEvt").StatefulEvt<T>;
 type CtxLike<Result = any> = import("./CtxLike").CtxLike<Result>;

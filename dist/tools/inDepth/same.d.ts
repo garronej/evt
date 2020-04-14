@@ -1,4 +1,4 @@
-import "../polyfill/Object.is";
+import "minimal-polyfills/dist/lib/Object.is";
 /**
  * Function that perform a in depth comparison of two things of arbitrary type T
  * to see if they represent the same date regardless of object references.

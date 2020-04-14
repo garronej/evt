@@ -142,4 +142,4 @@ export class Deferred<T> {
 
 }
 
-console.log("PASS".green);
+console.log("PASS");

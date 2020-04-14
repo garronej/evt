@@ -3,6 +3,7 @@
 import { sameFactory, same } from "./same";
 import { assert } from "../typeSafety/assert";
 import { copy } from "./copy";
+import * as util from "util";
 
 {
 
@@ -400,7 +401,6 @@ import { copy } from "./copy";
 
 
 
-import * as util from "util";
 
 const obj: any = { "p1": "FOO", "p2": new Set(["a", "b", "c"]), "p3": ["a", "b"], "p4": undefined, "p5": null };
 

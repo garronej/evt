@@ -24,4 +24,4 @@ mustResolve({
 
 evtText.post(obj);
 
-setTimeout(() => console.log("PASS".green), 0);
+setTimeout(() => console.log("PASS"), 0);

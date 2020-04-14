@@ -17,4 +17,4 @@ evtText.post("TICK");
 
 console.assert(acc === " TICK TICK END");
 
-console.log("PASS".green);
+console.log("PASS");

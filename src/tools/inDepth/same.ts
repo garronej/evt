@@ -1,7 +1,7 @@
 import { Polyfill as Set } from "minimal-polyfills/dist/lib/Set";
 import { MapLike, SetLike, DateLike, ArrayLike } from "./types";
 import { arrAllEquals } from "../reducers/allEquals";
-import "../polyfill/Object.is";
+import "minimal-polyfills/dist/lib/Object.is";
 
 /** 
  * Function that perform a in depth comparison of two things of arbitrary type T

@@ -1,45 +1,52 @@
 {
-  "name": "evt",
-  "version": "1.6.3",
-  "description": "Type safe replacement for node's EventEmitter",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/garronej/evt"
-  },
-  "main": "./dist/lib/index.js",
-  "types": "./dist/lib/index.d.ts",
-  "scripts": {
-    "tsc": "npx tsc",
-    "test": "node ./dist/test/index"
-  },
-  "author": "Joseph Garrone",
-  "license": "MIT",
-  "dependencies": {
-    "minimal-polyfills": "^1.0.3",
-    "run-exclusive": "^2.1.4"
-  },
-  "files": [
-    "/dist/lib",
-    "/src/lib",
-    "/dist/tools",
-    "/src/tools"
-  ],
-  "keywords": [
-    "EventEmitter",
-    "typescript",
-    "functional programming",
-    "qt signal",
-    "events",
-    "ts-evt",
-    "async-await",
-    "promise",
-    "rxjs"
-  ],
-  "homepage": "https://evt.land",
-  "devDependencies": {
-    "@types/node": "^8.9.1",
-    "colors": "^1.3.0",
-    "rxjs": "^6.5.4",
-    "typescript": "~3.8.0"
-  }
+    "name": "evt",
+    "version": "1.6.4",
+    "description": "Type safe replacement for node's EventEmitter",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/garronej/evt"
+    },
+    "main": "./dist/lib/index.js",
+    "types": "./dist/lib/index.d.ts",
+    "scripts": {
+        "tsc": "npx tsc",
+        "denoify": "npx denoify",
+        "build": "npm run tsc && npm run denoify",
+        "test": "node ./dist/test/index && deno ./deno_dist/test/deno_index.ts"
+    },
+    "author": "Joseph Garrone",
+    "license": "MIT",
+    "dependencies": {
+        "minimal-polyfills": "^1.0.7",
+        "run-exclusive": "^2.1.11"
+    },
+    "files": [
+        "/dist/lib",
+        "/src/lib",
+        "/dist/tools",
+        "/src/tools",
+        "/tsconfig.json"
+    ],
+    "keywords": [
+        "deno",
+        "EventEmitter",
+        "typescript",
+        "functional programming",
+        "qt signal",
+        "events",
+        "ts-evt",
+        "async-await",
+        "promise",
+        "rxjs"
+    ],
+    "homepage": "https://evt.land",
+    "devDependencies": {
+        "@types/node": "^8.9.1",
+        "rxjs": "^6.5.4",
+        "typescript": "^3.8.0",
+        "denoify": "github:garronej/denoify"
+    },
+    "deno": {
+        "url": "https://deno.land/x/evt/mod.ts"
+    }
 }

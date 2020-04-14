@@ -15,15 +15,14 @@ export class LazyEvt<T> {
         if (false) { LazyEvt.__1; }
 
         defineAccessors(LazyEvt.prototype, "evt", {
-            "get": function () {
-                const self: LazyEvt<any> = this;
+            "get": function (this: LazyEvt<any>) {
 
-                if (self.__evt === undefined) {
-                    self.__evt = new importProxy.Evt();
-                    overwriteReadonlyProp(self.__evt, "postCount", self.initialPostCount);
+                if (this.__evt === undefined) {
+                    this.__evt = new importProxy.Evt();
+                    overwriteReadonlyProp(this.__evt, "postCount", this.initialPostCount);
                 }
 
-                return self.__evt;
+                return this.__evt;
 
             }
         });

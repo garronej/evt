@@ -10,6 +10,6 @@ type B = UnpackEvt<Evt<number> | Evt<void>>;
 const b: void | number = null as any as B; b;
 const bb: B = null as any as void | number; bb;
 
-console.log("PASS".green);
+console.log("PASS");
 
 

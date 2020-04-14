@@ -50,6 +50,7 @@ exports.__esModule = true;
  */
 function typeGuard(o, isMatched) {
     if (isMatched === void 0) { isMatched = true; }
+    o; //NOTE: Just to avoid unused variable;
     return isMatched;
 }
 exports.typeGuard = typeGuard;

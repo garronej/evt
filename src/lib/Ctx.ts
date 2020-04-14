@@ -4,9 +4,8 @@ import { assert } from "../tools/typeSafety/assert";
 import { typeGuard } from "../tools/typeSafety/typeGuard";
 import { LazyEvt } from "./LazyEvt";
 import { importProxy } from "./importProxy";
-import /*type*/ { Handler } from "./types/Handler";
+import { Handler } from "./types/Handler";
 import { defineAccessors } from "../tools/typeSafety/defineAccessors";
-import { id } from "../tools/typeSafety/id";
 import { overwriteReadonlyProp } from "../tools/typeSafety/overwriteReadonlyProp";
 
 type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T>;
@@ -41,8 +40,8 @@ class CtxImpl<Result> implements Ctx<Result>{
             CtxImpl.prototype,
             "evtDoneOrAborted",
             {
-                "get": function () {
-                    return id<CtxImpl<any>>(this).lazyEvtDoneOrAborted.evt;
+                "get": function (this: CtxImpl<any>) {
+                    return this.lazyEvtDoneOrAborted.evt;
                 }
             }
         );
@@ -51,8 +50,8 @@ class CtxImpl<Result> implements Ctx<Result>{
             CtxImpl.prototype,
             "evtAttach",
             {
-                "get": function () {
-                    return id<CtxImpl<any>>(this).lazyEvtAttach.evt;
+                "get": function (this: CtxImpl<any>) {
+                    return this.lazyEvtAttach.evt;
                 }
             }
         );
@@ -61,8 +60,8 @@ class CtxImpl<Result> implements Ctx<Result>{
             CtxImpl.prototype,
             "evtDetach",
             {
-                "get": function () {
-                    return id<CtxImpl<any>>(this).lazyEvtDetach.evt;
+                "get": function (this: CtxImpl<any>) {
+                    return this.lazyEvtDetach.evt;
                 }
             }
         );

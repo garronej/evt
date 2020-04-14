@@ -26,5 +26,5 @@ mustStayPending(
 evt.post(["a", "b", "c"]);
 evt.post(["a", "b", "c", "d"]);
 
-console.log("PASS".green);
+console.log("PASS");
 

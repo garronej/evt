@@ -369,7 +369,7 @@ for (const methodName of ["attachOnce", "attach", "attachOncePrepend", "attachPr
 
 */
 
-setTimeout(() => console.log("PASS".green), 0);
+setTimeout(() => console.log("PASS"), 0);
 
 
 

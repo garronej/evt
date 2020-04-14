@@ -33,8 +33,7 @@ var __spread = (this && this.__spread) || function () {
     return ar;
 };
 exports.__esModule = true;
-require("../tools/polyfill/Object.is");
-var id_1 = require("../tools/typeSafety/id");
+require("minimal-polyfills/dist/lib/Object.is");
 var defineAccessors_1 = require("../tools/typeSafety/defineAccessors");
 var LazyEvt_1 = require("./LazyEvt");
 var importProxy_1 = require("./importProxy");
@@ -91,12 +90,12 @@ var StatefulEvtImpl = /** @class */ (function (_super) {
             StatefulEvtImpl.__4;
         }
         defineAccessors_1.defineAccessors(StatefulEvtImpl.prototype, "state", {
-            "get": function () { return id_1.id(this).__state; },
-            "set": function (state) { id_1.id(this).post(state); }
+            "get": function () { return this.__state; },
+            "set": function (state) { this.post(state); }
         });
-        defineAccessors_1.defineAccessors(StatefulEvtImpl.prototype, "evtDiff", { "get": function () { return id_1.id(this).lazyEvtDiff.evt; } });
-        defineAccessors_1.defineAccessors(StatefulEvtImpl.prototype, "evtChange", { "get": function () { return id_1.id(this).lazyEvtChange.evt; } });
-        defineAccessors_1.defineAccessors(StatefulEvtImpl.prototype, "evtChangeDiff", { "get": function () { return id_1.id(this).lazyEvtChangeDiff.evt; } });
+        defineAccessors_1.defineAccessors(StatefulEvtImpl.prototype, "evtDiff", { "get": function () { return this.lazyEvtDiff.evt; } });
+        defineAccessors_1.defineAccessors(StatefulEvtImpl.prototype, "evtChange", { "get": function () { return this.lazyEvtChange.evt; } });
+        defineAccessors_1.defineAccessors(StatefulEvtImpl.prototype, "evtChangeDiff", { "get": function () { return this.lazyEvtChangeDiff.evt; } });
     })();
     return StatefulEvtImpl;
 }(Evt_2.Evt));

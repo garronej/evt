@@ -1,5 +1,5 @@
 
-import /*type*/{ ToNonPostableEvt } from "./types/helper/ToNonpostableEvt";
+import { ToNonPostableEvt } from "./types/helper/ToNonPostableEvt";
 type EvtLike<T>= import("./types/helper/UnpackEvt").EvtLike<T>;
 
 /** https://docs.evt.land/api/evt/asnonpostable */

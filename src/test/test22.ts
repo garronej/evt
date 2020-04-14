@@ -880,7 +880,7 @@ function mkCb(expect: Object[]) {
 
 setTimeout(() => {
 
-    console.log("PASS".green);
+    console.log("PASS");
 
 }, 2100);
 

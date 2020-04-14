@@ -225,7 +225,7 @@ const evtSocketError = new Evt<Error>();
 
     })();
 
-    console.log("PASS".green);
+    console.log("PASS");
 
 })();
 

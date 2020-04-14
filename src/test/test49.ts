@@ -77,5 +77,5 @@ assert(evtAge.getHandlers().length === 0);
 evtText.post("nothing");
 evtAge.post(0);
 
-prTest.then(() => console.log("PASS".green));
+prTest.then(() => console.log("PASS"));
 

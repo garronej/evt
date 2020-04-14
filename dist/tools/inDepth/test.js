@@ -3,6 +3,7 @@ exports.__esModule = true;
 var same_1 = require("./same");
 var assert_1 = require("../typeSafety/assert");
 var copy_1 = require("./copy");
+var util = require("util");
 {
     var same_2 = same_1.sameFactory({ "takeIntoAccountArraysOrdering": false }).same;
     assert_1.assert(same_2(new Set([
@@ -219,7 +220,6 @@ var copy_1 = require("./copy");
     map2.set(33, ["a", 33, new Date(12), new Set(["a", [map2], 55])]);
     assert_1.assert(!same_1.same(map1, map2));
 }
-var util = require("util");
 var obj = { "p1": "FOO", "p2": new Set(["a", "b", "c"]), "p3": ["a", "b"], "p4": undefined, "p5": null };
 Object.assign(obj, { obj: obj });
 var s1 = util.inspect(obj);

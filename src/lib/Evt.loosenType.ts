@@ -1,4 +1,4 @@
-import /*type*/ { SwapEvtType } from "./types/helper/SwapEvtType";
+import { SwapEvtType } from "./types/helper/SwapEvtType";
 import { UnpackEvt } from "./types/helper/UnpackEvt";
 
 type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T>;

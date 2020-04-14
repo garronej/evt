@@ -49,7 +49,7 @@ let evt = new Evt<string>();
             throw new Error(`fail ${letter}`);
 
         } catch{
-            console.log("PASS".green);
+            console.log("PASS");
         }
 
 

@@ -25,5 +25,5 @@ evt.post("ko");
 
 console.assert(success);
 
-console.log("PASS".green);
+console.log("PASS");
 

@@ -62,7 +62,7 @@ const updateModelFactory = (
     }
 ) => {
 
-    const sleep = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
+    const sleep = (ms: number) => new Promise<void>(resolve => setTimeout(()=>resolve(), ms));
 
     const updateModel = async (person: Person): Promise<void> => {
 
@@ -195,7 +195,7 @@ const updateModelFactory = (
             ].join("\n")
         );
 
-        console.log("PASS".green);
+        console.log("PASS");
 
     });
 

@@ -1,6 +1,6 @@
 
 import { Evt } from "../lib";
-import { id } from "../tools/typeSafety";
+import { id, assert } from "../tools/typeSafety";
 
 type Circle = {
     type: "CIRCLE";
@@ -98,14 +98,14 @@ id<Evt<Shape>>(evtBigShape);
 
         evtBigCircle.waitFor(0)
             .then(
-                () => console.assert(false, "1"),
+                () => assert(false, "1"),
                 () => { }
             )
             ;
 
         evtBigShape.waitFor(0)
             .then(
-                () => console.assert(false, "2"),
+                () => assert(false, "2!"),
                 () => { }
             )
             ;
@@ -123,14 +123,14 @@ id<Evt<Shape>>(evtBigShape);
 
         evtCircle.waitFor(0)
             .then(
-                () => console.assert(false, "3"),
+                () => assert(false, "3"),
                 () => { }
             )
             ;
 
         evtRadius.waitFor(0)
             .then(
-                () => console.assert(false, "4"),
+                () => assert(false, "4"),
                 () => { }
             )
             ;
@@ -141,7 +141,7 @@ id<Evt<Shape>>(evtBigShape);
 
         evtBigCircle.waitFor(0)
             .then(
-                () => console.assert(false, "5"),
+                () => assert(false, "5"),
                 () => { }
             )
             ;
@@ -156,4 +156,4 @@ id<Evt<Shape>>(evtBigShape);
 
 })();
 
-setTimeout(() => console.log("PASS".green), 10);
+setTimeout(() => console.log("PASS"), 10);

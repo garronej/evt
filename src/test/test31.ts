@@ -10,7 +10,7 @@ const evtText = new Evt<string>();
 
     console.assert(`${t1}${t2}` === "AB");
 
-    console.log("PASS".green);
+    console.log("PASS");
 
 })();
 

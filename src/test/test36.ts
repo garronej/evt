@@ -16,5 +16,5 @@ evt.waitFor(0)
     )
     ;
 
-setTimeout(()=> console.log("PASS".green), 100);
+setTimeout(()=> console.log("PASS"), 100);
 

@@ -31,5 +31,5 @@ mustResolve({
     "delay": 150
 });
 
-pr.then(() => console.log("PASS".green));
+pr.then(() => console.log("PASS"));
 

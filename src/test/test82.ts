@@ -37,4 +37,4 @@ const k : VoidEvt = null as any as K; k;
 type L = SwapEvtType<Evt<any>, void | number>;
 const l : Evt<number | void> = null as any as L; l;
 
-console.log("PASS".green);
+console.log("PASS");

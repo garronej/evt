@@ -1,5 +1,5 @@
 
-import /*type*/ { Handler } from "../Handler";
+import { Handler } from "../Handler";
 
 type EvtLike<T> = import("../helper/UnpackEvt").EvtLike<T>;
 type Evt<T> = import("./Evt").Evt<T>;
