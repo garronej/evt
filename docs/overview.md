@@ -25,6 +25,7 @@ In EVT the recommended approach is to give every event it's `Evt` instance. Tran
 
 ```typescript
 import { Evt } from "evt";
+//Or import { Evt } from "https://evt.land/x/evt/mod.ts" on deno
 
 const evtText = Evt.create<string>();
 const evtTime = Evt.create<number>();
