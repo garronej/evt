@@ -25,7 +25,7 @@
 It enable and encourage **functional programming** and makes heavy use of **typescript**'s type inference features to provide **type safety** while keeping things **concise and elegant** 🍸.
 
 <b>Suitable for any JS runtime env (deno, node, old browser, react-native ...)</b>
-- ✅ It is both a **Deno** and an NPM module. 
+- ✅ It is both a [Deno](https://deno.land/x/evt) and an [NPM](https://www.npmjs.com/evt) module. 
 - ✅ Light weight, no dependency.
 - ✅ No polyfills needed, the NPM module is transpile down to ES3   
 
