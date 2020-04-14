@@ -7,7 +7,7 @@ It enable and encourage **functional programming** and makes heavy use of **type
 
 Its main target is [**Deno**](https://github.com/denoland/deno)**\*** but it is cross compatible with **Node** and will run just about anywhere from **React Native** to the **web browser** of your grama.
 
-_\*The deno package hasn't been published yet but it will be soon._
+_\*The deno package hasn't been published yet but it will be by May 13 2020,1.0 release date_ [🚀](https://apps.timwhitlock.info/emoji/tables/unicode#emoji-modal)_._
 
 **Browserify friendly:**
 
@@ -31,7 +31,9 @@ There are a lot of things that can't easily be done with `EventEmitter`:
 Concerning RxJS:
 
 * It introduce lot of abstractions. It is a big jump from `EventEmitter`.
-* [The filter operator breaks the type inference](https://stackblitz.com/edit/evt-795plc?embed=1&file=index.ts&hideExplorer=1).
+* [The filter operator breaks the type inference](https://stackblitz.com/edit/evt-795plc?embed=1&file=index.ts&hideExplorer=1), forces to resort to [type guards](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards).
+* Tend to be quite verbose.
+* It's not available on Deno.
 
 EVT is an attempt to sove these issues while trying to remain as accessible as `EventEmitter`.
 
