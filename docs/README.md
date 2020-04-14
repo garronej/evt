@@ -1,7 +1,5 @@
 # Why EVT ?
 
-## Why EVT ?
-
 ![](https://img.shields.io/bundlephobia/minzip/evt) ![](https://img.shields.io/npm/dw/evt) ![](https://img.shields.io/github/commit-activity/w/garronej/evt) ![](https://img.shields.io/npm/l/evt)
 
 `'evt'` is intended to be a replacement for `'events'`.  
