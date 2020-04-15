@@ -3,7 +3,7 @@
     <img src="https://user-images.githubusercontent.com/6702424/76674598-91ebfc00-65b1-11ea-88df-eb43f04f3cce.png">  
 </p>
 <p align="center">
-    💧<i>Type safe replacement for Node's EventEmitter</i>💧
+    💧<i>A type safe replacement for Node's EventEmitter</i>💧
     <br>
     <br>
     <img src="https://img.shields.io/bundlephobia/minzip/evt">
