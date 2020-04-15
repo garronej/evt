@@ -47,7 +47,6 @@ import { Evt } from "evt";
 
 # TL;DR*
 
-
 ```typescript
 import { Evt } from "evt";
 
