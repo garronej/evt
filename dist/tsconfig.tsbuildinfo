@@ -1021,6 +1021,10 @@
         "version": "90d66f6e68a96eef7cdb9588606f8af153ccaad3e1fbf28fbc86c56808daaa95",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
       },
+      "../node_modules/@types/comment-json/index.d.ts": {
+        "version": "c401118ea6c6daa9f196013b0622c602d4faec565bb1cc6ca751d2a8fc295498",
+        "signature": "c401118ea6c6daa9f196013b0622c602d4faec565bb1cc6ca751d2a8fc295498"
+      },
       "../node_modules/@types/node/inspector.d.ts": {
         "version": "7e49dbf1543b3ee54853ade4c5e9fa460b6a4eca967efe6bf943e0c505d087ed",
         "signature": "7e49dbf1543b3ee54853ade4c5e9fa460b6a4eca967efe6bf943e0c505d087ed"
@@ -2710,6 +2714,10 @@
         "../node_modules/@types/node/base.d.ts",
         "../node_modules/@types/node/ts3.2/index.d.ts"
       ],
+      "../node_modules/@types/comment-json/index.d.ts": [
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
       "../node_modules/@types/node/inspector.d.ts": [
         "../node_modules/@types/node/base.d.ts",
         "../node_modules/@types/node/ts3.2/index.d.ts"
@@ -2804,295 +2812,6 @@
         "../node_modules/@types/node/base.d.ts",
         "../node_modules/@types/node/ts3.2/index.d.ts"
       ],
-      "../node_modules/minimal-polyfills/dist/lib/weakmap.d.ts": [
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/minimal-polyfills/dist/lib/array.prototype.find.d.ts": [
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../src/tools/typesafety/index.ts": [
-        "../src/tools/typesafety/assert.ts",
-        "../src/tools/typesafety/asyncreturntype.ts",
-        "../src/tools/typesafety/exclude.ts",
-        "../src/tools/typesafety/id.ts",
-        "../src/tools/typesafety/matchvoid.ts",
-        "../src/tools/typesafety/objectkeys.ts",
-        "../src/tools/typesafety/typeguard.ts",
-        "../src/tools/typesafety/unpackpromise.ts",
-        "../src/tools/typesafety/unpacktypeguard.ts"
-      ],
-      "../src/lib/types/operator.ts": [
-        "../src/lib/types/interfaces/index.ts"
-      ],
-      "../src/lib/types/handler.ts": [
-        "../src/lib/types/interfaces/index.ts",
-        "../src/lib/types/operator.ts",
-        "../src/lib/types/helper/unpackevt.ts"
-      ],
-      "../src/lib/types/interfaces/ctxlike.ts": [
-        "../src/lib/types/handler.ts",
-        "../src/lib/types/helper/unpackevt.ts"
-      ],
-      "../src/lib/types/interfaces/statefulreadonlyevt.ts": [
-        "../src/lib/types/interfaces/nonpostableevt.ts",
-        "../src/lib/types/interfaces/statefulevt.ts",
-        "../src/lib/types/operator.ts",
-        "../src/lib/types/interfaces/ctxlike.ts"
-      ],
-      "../src/lib/types/interfaces/statefulpostable.ts": [
-        "../src/lib/types/interfaces/postable.ts"
-      ],
-      "../src/lib/types/interfaces/statefulevt.ts": [
-        "../src/lib/types/interfaces/statefulreadonlyevt.ts",
-        "../src/lib/types/interfaces/statefulpostable.ts"
-      ],
-      "../src/lib/types/interfaces/nonpostableevt.ts": [
-        "../src/lib/types/interfaces/ctxlike.ts",
-        "../src/lib/types/interfaces/statefulevt.ts",
-        "../src/lib/types/interfaces/evt.ts",
-        "../src/lib/types/handler.ts",
-        "../src/lib/types/operator.ts"
-      ],
-      "../src/lib/types/interfaces/evt.ts": [
-        "../src/lib/types/interfaces/postable.ts",
-        "../src/lib/types/interfaces/nonpostableevt.ts"
-      ],
-      "../src/lib/types/interfaces/ctx.ts": [
-        "../src/lib/types/handler.ts",
-        "../src/lib/types/interfaces/evt.ts",
-        "../src/lib/types/interfaces/ctxlike.ts",
-        "../src/lib/types/helper/unpackevt.ts"
-      ],
-      "../src/lib/types/interfaces/voidctx.ts": [
-        "../src/lib/types/interfaces/ctx.ts",
-        "../src/lib/types/handler.ts"
-      ],
-      "../src/lib/types/interfaces/voidevt.ts": [
-        "../src/lib/types/interfaces/evt.ts"
-      ],
-      "../src/lib/types/interfaces/index.ts": [
-        "../src/lib/types/interfaces/ctx.ts",
-        "../src/lib/types/interfaces/ctxlike.ts",
-        "../src/lib/types/interfaces/evt.ts",
-        "../src/lib/types/interfaces/nonpostableevt.ts",
-        "../src/lib/types/interfaces/postable.ts",
-        "../src/lib/types/interfaces/statefulevt.ts",
-        "../src/lib/types/interfaces/statefulreadonlyevt.ts",
-        "../src/lib/types/interfaces/statefulpostable.ts",
-        "../src/lib/types/interfaces/voidctx.ts",
-        "../src/lib/types/interfaces/voidevt.ts"
-      ],
-      "../src/lib/evt.create.ts": [
-        "../src/lib/types/interfaces/index.ts"
-      ],
-      "../src/lib/evt.getctx.ts": [
-        "../src/lib/types/interfaces/index.ts"
-      ],
-      "../src/lib/types/helper/swapevttype.ts": [
-        "../src/lib/types/helper/unpackevt.ts",
-        "../src/lib/types/interfaces/index.ts"
-      ],
-      "../src/lib/types/helper/factorizeevt.ts": [
-        "../src/lib/types/helper/unpackevt.ts",
-        "../src/lib/types/helper/swapevttype.ts"
-      ],
-      "../src/lib/evt.factorize.ts": [
-        "../src/lib/types/helper/unpackevt.ts",
-        "../src/lib/types/helper/factorizeevt.ts"
-      ],
-      "../src/lib/evt.merge.ts": [
-        "../src/lib/types/helper/unpackevt.ts",
-        "../src/lib/types/interfaces/index.ts"
-      ],
-      "../src/lib/evt.from.ts": [
-        "../src/lib/types/lib.dom.ts",
-        "../src/lib/types/interfaces/index.ts",
-        "../src/lib/types/eventtargetlike.ts",
-        "../src/lib/types/interfaces/evt.ts",
-        "../src/lib/types/helper/unpackevt.ts"
-      ],
-      "../src/lib/types/helper/topostableevt.ts": [
-        "../src/lib/types/helper/unpackevt.ts",
-        "../src/lib/types/interfaces/index.ts"
-      ],
-      "../src/lib/evt.aspostable.ts": [
-        "../src/lib/types/helper/unpackevt.ts",
-        "../src/lib/types/helper/topostableevt.ts"
-      ],
-      "../src/lib/types/helper/tononpostableevt.ts": [
-        "../src/lib/types/helper/unpackevt.ts",
-        "../src/lib/types/interfaces/index.ts"
-      ],
-      "../src/lib/evt.asnonpostable.ts": [
-        "../src/lib/types/helper/unpackevt.ts",
-        "../src/lib/types/helper/tononpostableevt.ts"
-      ],
-      "../src/lib/util/encapsulateopstate.ts": [
-        "../src/lib/types/operator.ts"
-      ],
-      "../src/lib/util/invokeoperator.ts": [
-        "../src/lib/types/operator.ts"
-      ],
-      "../src/lib/util/compose.ts": [
-        "../src/lib/types/operator.ts"
-      ],
-      "../src/lib/evt.parsepropsfromargs.ts": [
-        "../src/lib/types/handler.ts"
-      ],
-      "../src/lib/evt.newctx.ts": [
-        "../src/lib/types/interfaces/index.ts",
-        "../src/lib/ctx.ts"
-      ],
-      "../node_modules/minimal-polyfills/dist/lib/map.d.ts": [
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/run-exclusive/dist/lib/runexclusive.d.ts": [
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../src/lib/evt.loosentype.ts": [
-        "../src/lib/types/helper/unpackevt.ts",
-        "../src/lib/types/helper/swapevttype.ts"
-      ],
-      "../src/lib/evt.ts": [
-        "../src/lib/types/interfaces/index.ts",
-        "../src/lib/evt.create.ts",
-        "../src/lib/evt.newctx.ts",
-        "../src/lib/evt.merge.ts",
-        "../src/lib/evt.from.ts",
-        "../src/lib/evt.useeffect.ts",
-        "../src/lib/evt.getctx.ts",
-        "../src/lib/evt.loosentype.ts",
-        "../src/lib/evt.factorize.ts",
-        "../src/lib/evt.aspostable.ts",
-        "../src/lib/evt.asnonpostable.ts"
-      ],
-      "../node_modules/minimal-polyfills/dist/lib/object.is.d.ts": [
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../src/lib/statefulevt.ts": [
-        "../src/lib/types/interfaces/index.ts"
-      ],
-      "../src/lib/importproxy.ts": [
-        "../src/lib/ctx.ts",
-        "../src/lib/evt.ts",
-        "../src/lib/statefulevt.ts"
-      ],
-      "../src/lib/lazyevt.ts": [
-        "../src/lib/types/interfaces/evt.ts"
-      ],
-      "../src/lib/ctx.ts": [
-        "../src/lib/types/interfaces/index.ts"
-      ],
-      "../src/lib/types/helper/index.ts": [
-        "../src/lib/types/helper/factorizeevt.ts",
-        "../src/lib/types/helper/swapevttype.ts",
-        "../src/lib/types/helper/topostableevt.ts",
-        "../src/lib/types/helper/tononpostableevt.ts",
-        "../src/lib/types/helper/unpackctx.ts",
-        "../src/lib/types/helper/unpackevt.ts"
-      ],
-      "../src/lib/types/index.ts": [
-        "../src/lib/types/helper/index.ts",
-        "../src/lib/types/interfaces/index.ts",
-        "../src/lib/types/eventtargetlike.ts",
-        "../src/lib/types/evterror.ts",
-        "../src/lib/types/handler.ts",
-        "../src/lib/types/lib.dom.ts",
-        "../src/lib/types/operator.ts"
-      ],
-      "../src/lib/util/genericoperators/throttletime.ts": [
-        "../src/lib/index.ts"
-      ],
-      "../src/lib/util/genericoperators/to.ts": [
-        "../src/lib/types/operator.ts"
-      ],
-      "../src/lib/util/genericoperators/index.ts": [
-        "../src/lib/util/genericoperators/throttletime.ts",
-        "../src/lib/util/genericoperators/to.ts"
-      ],
-      "../src/lib/util/index.ts": [
-        "../src/lib/util/genericoperators/index.ts",
-        "../src/lib/util/compose.ts",
-        "../src/lib/util/invokeoperator.ts"
-      ],
-      "../src/lib/index.ts": [
-        "../src/lib/types/index.ts",
-        "../src/lib/util/index.ts",
-        "../src/lib/ctx.ts",
-        "../src/lib/evt.ts",
-        "../src/lib/statefulevt.ts",
-        "../src/tools/typesafety/matchvoid.ts"
-      ],
-      "../src/lib/util/genericoperators/chunksof.ts": [
-        "../src/lib/index.ts"
-      ],
-      "../src/lib/util/genericoperators/scan.ts": [
-        "../src/lib/index.ts"
-      ],
-      "../src/tools/reducers/every.ts": [
-        "../src/tools/reducers/reduceify.ts"
-      ],
-      "../src/tools/reducers/allequalsto.ts": [
-        "../src/tools/reducers/reduceify.ts"
-      ],
-      "../src/tools/reducers/allequals.ts": [
-        "../src/tools/reducers/reduceify.ts"
-      ],
-      "../src/tools/reducers/removeduplicates.ts": [
-        "../src/tools/reducers/reduceify.ts"
-      ],
-      "../src/tools/reducers/alluniq.ts": [
-        "../src/tools/reducers/reduceify.ts"
-      ],
-      "../src/tools/reducers/and.ts": [
-        "../src/tools/reducers/reduceify.ts"
-      ],
-      "../src/tools/reducers/includes.ts": [
-        "../src/tools/reducers/reduceify.ts"
-      ],
-      "../src/tools/reducers/count.ts": [
-        "../src/tools/reducers/reduceify.ts"
-      ],
-      "../src/tools/reducers/or.ts": [
-        "../src/tools/reducers/reduceify.ts"
-      ],
-      "../src/tools/reducers/sameas.ts": [
-        "../src/tools/reducers/reduceify.ts"
-      ],
-      "../src/tools/reducers/partition.ts": [
-        "../src/tools/reducers/reduceify.ts"
-      ],
-      "../src/tools/reducers/contains.ts": [
-        "../src/tools/reducers/reduceify.ts"
-      ],
-      "../src/tools/reducers/diff.ts": [
-        "../src/tools/reducers/reduceify.ts"
-      ],
-      "../src/tools/reducers/index.ts": [
-        "../src/tools/reducers/allequals.ts",
-        "../src/tools/reducers/allequalsto.ts",
-        "../src/tools/reducers/alluniq.ts",
-        "../src/tools/reducers/and.ts",
-        "../src/tools/reducers/includes.ts",
-        "../src/tools/reducers/count.ts",
-        "../src/tools/reducers/every.ts",
-        "../src/tools/reducers/or.ts",
-        "../src/tools/reducers/removeduplicates.ts",
-        "../src/tools/reducers/sameas.ts",
-        "../src/tools/reducers/partition.ts",
-        "../src/tools/reducers/diff.ts"
-      ],
-      "../src/tools/testing/index.ts": [
-        "../src/tools/testing/getpromiseassertionapi.ts"
-      ],
-      "../src/test/gethandlerpr.ts": [
-        "../src/lib/index.ts"
-      ],
       "../src/tools/indepth/index.ts": [
         "../src/tools/indepth/same.ts",
         "../src/tools/indepth/copy.ts"
@@ -3163,389 +2882,297 @@
         "../src/test/test85.ts",
         "../src/test/test86.ts"
       ],
+      "../src/tools/testing/index.ts": [
+        "../src/tools/testing/getpromiseassertionapi.ts"
+      ],
+      "../src/lib/ctx.ts": [
+        "../src/lib/types/interfaces/index.ts"
+      ],
+      "../src/lib/index.ts": [
+        "../src/lib/types/index.ts",
+        "../src/lib/util/index.ts",
+        "../src/lib/ctx.ts",
+        "../src/lib/evt.ts",
+        "../src/lib/statefulevt.ts",
+        "../src/tools/typesafety/matchvoid.ts"
+      ],
+      "../src/test/gethandlerpr.ts": [
+        "../src/lib/index.ts"
+      ],
+      "../src/lib/importproxy.ts": [
+        "../src/lib/ctx.ts",
+        "../src/lib/evt.ts",
+        "../src/lib/statefulevt.ts"
+      ],
+      "../src/lib/lazyevt.ts": [
+        "../src/lib/types/interfaces/evt.ts"
+      ],
+      "../src/lib/statefulevt.ts": [
+        "../src/lib/types/interfaces/index.ts"
+      ],
+      "../src/lib/evt.ts": [
+        "../src/lib/types/interfaces/index.ts",
+        "../src/lib/evt.create.ts",
+        "../src/lib/evt.newctx.ts",
+        "../src/lib/evt.merge.ts",
+        "../src/lib/evt.from.ts",
+        "../src/lib/evt.useeffect.ts",
+        "../src/lib/evt.getctx.ts",
+        "../src/lib/evt.loosentype.ts",
+        "../src/lib/evt.factorize.ts",
+        "../src/lib/evt.aspostable.ts",
+        "../src/lib/evt.asnonpostable.ts"
+      ],
+      "../src/lib/evt.newctx.ts": [
+        "../src/lib/types/interfaces/index.ts",
+        "../src/lib/ctx.ts"
+      ],
+      "../src/lib/evt.from.ts": [
+        "../src/lib/types/lib.dom.ts",
+        "../src/lib/types/interfaces/index.ts",
+        "../src/lib/types/eventtargetlike.ts",
+        "../src/lib/types/interfaces/evt.ts",
+        "../src/lib/types/helper/unpackevt.ts"
+      ],
+      "../src/lib/evt.merge.ts": [
+        "../src/lib/types/helper/unpackevt.ts",
+        "../src/lib/types/interfaces/index.ts"
+      ],
+      "../src/lib/evt.getctx.ts": [
+        "../src/lib/types/interfaces/index.ts"
+      ],
+      "../src/lib/evt.create.ts": [
+        "../src/lib/types/interfaces/index.ts"
+      ],
+      "../node_modules/minimal-polyfills/dist/lib/weakmap.d.ts": [
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../src/lib/util/compose.ts": [
+        "../src/lib/types/operator.ts"
+      ],
+      "../src/lib/util/genericoperators/scan.ts": [
+        "../src/lib/index.ts"
+      ],
+      "../src/lib/util/genericoperators/chunksof.ts": [
+        "../src/lib/index.ts"
+      ],
+      "../src/lib/util/index.ts": [
+        "../src/lib/util/genericoperators/index.ts",
+        "../src/lib/util/compose.ts",
+        "../src/lib/util/invokeoperator.ts"
+      ],
+      "../src/lib/util/genericoperators/throttletime.ts": [
+        "../src/lib/index.ts"
+      ],
+      "../src/lib/util/genericoperators/index.ts": [
+        "../src/lib/util/genericoperators/throttletime.ts",
+        "../src/lib/util/genericoperators/to.ts"
+      ],
+      "../src/lib/evt.parsepropsfromargs.ts": [
+        "../src/lib/types/handler.ts"
+      ],
+      "../src/tools/typesafety/index.ts": [
+        "../src/tools/typesafety/assert.ts",
+        "../src/tools/typesafety/asyncreturntype.ts",
+        "../src/tools/typesafety/exclude.ts",
+        "../src/tools/typesafety/id.ts",
+        "../src/tools/typesafety/matchvoid.ts",
+        "../src/tools/typesafety/objectkeys.ts",
+        "../src/tools/typesafety/typeguard.ts",
+        "../src/tools/typesafety/unpackpromise.ts",
+        "../src/tools/typesafety/unpacktypeguard.ts"
+      ],
+      "../src/tools/reducers/partition.ts": [
+        "../src/tools/reducers/reduceify.ts"
+      ],
+      "../src/tools/reducers/index.ts": [
+        "../src/tools/reducers/allequals.ts",
+        "../src/tools/reducers/allequalsto.ts",
+        "../src/tools/reducers/alluniq.ts",
+        "../src/tools/reducers/and.ts",
+        "../src/tools/reducers/includes.ts",
+        "../src/tools/reducers/count.ts",
+        "../src/tools/reducers/every.ts",
+        "../src/tools/reducers/or.ts",
+        "../src/tools/reducers/removeduplicates.ts",
+        "../src/tools/reducers/sameas.ts",
+        "../src/tools/reducers/partition.ts",
+        "../src/tools/reducers/diff.ts"
+      ],
+      "../src/lib/types/index.ts": [
+        "../src/lib/types/helper/index.ts",
+        "../src/lib/types/interfaces/index.ts",
+        "../src/lib/types/eventtargetlike.ts",
+        "../src/lib/types/evterror.ts",
+        "../src/lib/types/handler.ts",
+        "../src/lib/types/lib.dom.ts",
+        "../src/lib/types/operator.ts"
+      ],
+      "../src/lib/types/operator.ts": [
+        "../src/lib/types/interfaces/index.ts"
+      ],
+      "../src/lib/util/genericoperators/to.ts": [
+        "../src/lib/types/operator.ts"
+      ],
+      "../src/lib/util/invokeoperator.ts": [
+        "../src/lib/types/operator.ts"
+      ],
+      "../src/lib/util/encapsulateopstate.ts": [
+        "../src/lib/types/operator.ts"
+      ],
+      "../src/lib/types/interfaces/nonpostableevt.ts": [
+        "../src/lib/types/interfaces/ctxlike.ts",
+        "../src/lib/types/interfaces/statefulevt.ts",
+        "../src/lib/types/interfaces/evt.ts",
+        "../src/lib/types/handler.ts",
+        "../src/lib/types/operator.ts"
+      ],
+      "../src/lib/types/interfaces/index.ts": [
+        "../src/lib/types/interfaces/ctx.ts",
+        "../src/lib/types/interfaces/ctxlike.ts",
+        "../src/lib/types/interfaces/evt.ts",
+        "../src/lib/types/interfaces/nonpostableevt.ts",
+        "../src/lib/types/interfaces/postable.ts",
+        "../src/lib/types/interfaces/statefulevt.ts",
+        "../src/lib/types/interfaces/statefulreadonlyevt.ts",
+        "../src/lib/types/interfaces/statefulpostable.ts",
+        "../src/lib/types/interfaces/voidctx.ts",
+        "../src/lib/types/interfaces/voidevt.ts"
+      ],
+      "../src/lib/types/helper/tononpostableevt.ts": [
+        "../src/lib/types/helper/unpackevt.ts",
+        "../src/lib/types/interfaces/index.ts"
+      ],
+      "../src/lib/types/helper/index.ts": [
+        "../src/lib/types/helper/factorizeevt.ts",
+        "../src/lib/types/helper/swapevttype.ts",
+        "../src/lib/types/helper/topostableevt.ts",
+        "../src/lib/types/helper/tononpostableevt.ts",
+        "../src/lib/types/helper/unpackctx.ts",
+        "../src/lib/types/helper/unpackevt.ts"
+      ],
+      "../src/lib/evt.asnonpostable.ts": [
+        "../src/lib/types/helper/unpackevt.ts",
+        "../src/lib/types/helper/tononpostableevt.ts"
+      ],
+      "../src/lib/types/helper/topostableevt.ts": [
+        "../src/lib/types/helper/unpackevt.ts",
+        "../src/lib/types/interfaces/index.ts"
+      ],
+      "../src/lib/evt.aspostable.ts": [
+        "../src/lib/types/helper/unpackevt.ts",
+        "../src/lib/types/helper/topostableevt.ts"
+      ],
+      "../src/lib/types/helper/swapevttype.ts": [
+        "../src/lib/types/helper/unpackevt.ts",
+        "../src/lib/types/interfaces/index.ts"
+      ],
+      "../src/lib/evt.loosentype.ts": [
+        "../src/lib/types/helper/unpackevt.ts",
+        "../src/lib/types/helper/swapevttype.ts"
+      ],
+      "../src/lib/types/helper/factorizeevt.ts": [
+        "../src/lib/types/helper/unpackevt.ts",
+        "../src/lib/types/helper/swapevttype.ts"
+      ],
+      "../src/lib/evt.factorize.ts": [
+        "../src/lib/types/helper/unpackevt.ts",
+        "../src/lib/types/helper/factorizeevt.ts"
+      ],
+      "../src/lib/types/handler.ts": [
+        "../src/lib/types/interfaces/index.ts",
+        "../src/lib/types/operator.ts",
+        "../src/lib/types/helper/unpackevt.ts"
+      ],
+      "../src/lib/types/interfaces/voidctx.ts": [
+        "../src/lib/types/interfaces/ctx.ts",
+        "../src/lib/types/handler.ts"
+      ],
+      "../src/lib/types/interfaces/ctx.ts": [
+        "../src/lib/types/handler.ts",
+        "../src/lib/types/interfaces/evt.ts",
+        "../src/lib/types/interfaces/ctxlike.ts",
+        "../src/lib/types/helper/unpackevt.ts"
+      ],
+      "../src/lib/types/interfaces/ctxlike.ts": [
+        "../src/lib/types/handler.ts",
+        "../src/lib/types/helper/unpackevt.ts"
+      ],
+      "../src/lib/types/interfaces/statefulreadonlyevt.ts": [
+        "../src/lib/types/interfaces/nonpostableevt.ts",
+        "../src/lib/types/interfaces/statefulevt.ts",
+        "../src/lib/types/operator.ts",
+        "../src/lib/types/interfaces/ctxlike.ts"
+      ],
+      "../src/lib/types/interfaces/statefulevt.ts": [
+        "../src/lib/types/interfaces/statefulreadonlyevt.ts",
+        "../src/lib/types/interfaces/statefulpostable.ts"
+      ],
+      "../src/lib/types/interfaces/evt.ts": [
+        "../src/lib/types/interfaces/postable.ts",
+        "../src/lib/types/interfaces/nonpostableevt.ts"
+      ],
+      "../src/lib/types/interfaces/voidevt.ts": [
+        "../src/lib/types/interfaces/evt.ts"
+      ],
+      "../node_modules/minimal-polyfills/dist/lib/array.prototype.find.d.ts": [
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../src/lib/types/interfaces/statefulpostable.ts": [
+        "../src/lib/types/interfaces/postable.ts"
+      ],
+      "../node_modules/minimal-polyfills/dist/lib/map.d.ts": [
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/run-exclusive/dist/lib/runexclusive.d.ts": [
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/minimal-polyfills/dist/lib/object.is.d.ts": [
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../src/tools/reducers/diff.ts": [
+        "../src/tools/reducers/reduceify.ts"
+      ],
+      "../src/tools/reducers/contains.ts": [
+        "../src/tools/reducers/reduceify.ts"
+      ],
+      "../src/tools/reducers/sameas.ts": [
+        "../src/tools/reducers/reduceify.ts"
+      ],
+      "../src/tools/reducers/or.ts": [
+        "../src/tools/reducers/reduceify.ts"
+      ],
+      "../src/tools/reducers/count.ts": [
+        "../src/tools/reducers/reduceify.ts"
+      ],
+      "../src/tools/reducers/includes.ts": [
+        "../src/tools/reducers/reduceify.ts"
+      ],
+      "../src/tools/reducers/and.ts": [
+        "../src/tools/reducers/reduceify.ts"
+      ],
+      "../src/tools/reducers/alluniq.ts": [
+        "../src/tools/reducers/reduceify.ts"
+      ],
+      "../src/tools/reducers/removeduplicates.ts": [
+        "../src/tools/reducers/reduceify.ts"
+      ],
+      "../src/tools/reducers/allequals.ts": [
+        "../src/tools/reducers/reduceify.ts"
+      ],
+      "../src/tools/reducers/allequalsto.ts": [
+        "../src/tools/reducers/reduceify.ts"
+      ],
+      "../src/tools/reducers/every.ts": [
+        "../src/tools/reducers/reduceify.ts"
+      ],
       "../node_modules/rxjs/internal/subscription.d.ts": [
         "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/types.d.ts": [
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/rxjs/internal/subscription.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/subscriber.d.ts": [
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/rxjs/internal/subscription.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/operator.d.ts": [
-        "../node_modules/rxjs/internal/subscriber.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/iif.d.ts": [
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/throwerror.d.ts": [
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable.d.ts": [
-        "../node_modules/rxjs/internal/operator.d.ts",
-        "../node_modules/rxjs/internal/subscriber.d.ts",
-        "../node_modules/rxjs/internal/subscription.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/rxjs/internal/observable/iif.d.ts",
-        "../node_modules/rxjs/internal/observable/throwerror.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/subject.d.ts": [
-        "../node_modules/rxjs/internal/operator.d.ts",
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/rxjs/internal/subscriber.d.ts",
-        "../node_modules/rxjs/internal/subscription.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/connectableobservable.d.ts": [
-        "../node_modules/rxjs/internal/subject.d.ts",
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/rxjs/internal/subscriber.d.ts",
-        "../node_modules/rxjs/internal/subscription.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/operators/groupby.d.ts": [
-        "../node_modules/rxjs/internal/subscriber.d.ts",
-        "../node_modules/rxjs/internal/subscription.d.ts",
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/rxjs/internal/subject.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/symbol/observable.d.ts": [
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/behaviorsubject.d.ts": [
-        "../node_modules/rxjs/internal/subject.d.ts",
-        "../node_modules/rxjs/internal/subscriber.d.ts",
-        "../node_modules/rxjs/internal/subscription.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/replaysubject.d.ts": [
-        "../node_modules/rxjs/internal/subject.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/rxjs/internal/subscriber.d.ts",
-        "../node_modules/rxjs/internal/subscription.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/asyncsubject.d.ts": [
-        "../node_modules/rxjs/internal/subject.d.ts",
-        "../node_modules/rxjs/internal/subscriber.d.ts",
-        "../node_modules/rxjs/internal/subscription.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/scheduler.d.ts": [
-        "../node_modules/rxjs/internal/scheduler/action.d.ts",
-        "../node_modules/rxjs/internal/subscription.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/scheduler/action.d.ts": [
-        "../node_modules/rxjs/internal/scheduler.d.ts",
-        "../node_modules/rxjs/internal/subscription.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/scheduler/asyncscheduler.d.ts": [
-        "../node_modules/rxjs/internal/scheduler.d.ts",
-        "../node_modules/rxjs/internal/scheduler/action.d.ts",
-        "../node_modules/rxjs/internal/scheduler/asyncaction.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/rxjs/internal/subscription.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/scheduler/asyncaction.d.ts": [
-        "../node_modules/rxjs/internal/scheduler/action.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/rxjs/internal/subscription.d.ts",
-        "../node_modules/rxjs/internal/scheduler/asyncscheduler.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/scheduler/asapscheduler.d.ts": [
-        "../node_modules/rxjs/internal/scheduler/asyncaction.d.ts",
-        "../node_modules/rxjs/internal/scheduler/asyncscheduler.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/scheduler/asap.d.ts": [
-        "../node_modules/rxjs/internal/scheduler/asapscheduler.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/scheduler/async.d.ts": [
-        "../node_modules/rxjs/internal/scheduler/asyncscheduler.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/scheduler/queuescheduler.d.ts": [
-        "../node_modules/rxjs/internal/scheduler/asyncscheduler.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/scheduler/queue.d.ts": [
-        "../node_modules/rxjs/internal/scheduler/queuescheduler.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/scheduler/animationframescheduler.d.ts": [
-        "../node_modules/rxjs/internal/scheduler/asyncaction.d.ts",
-        "../node_modules/rxjs/internal/scheduler/asyncscheduler.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/scheduler/animationframe.d.ts": [
-        "../node_modules/rxjs/internal/scheduler/animationframescheduler.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/scheduler/virtualtimescheduler.d.ts": [
-        "../node_modules/rxjs/internal/scheduler/asyncaction.d.ts",
-        "../node_modules/rxjs/internal/subscription.d.ts",
-        "../node_modules/rxjs/internal/scheduler/asyncscheduler.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/notification.d.ts": [
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/util/pipe.d.ts": [
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/util/noop.d.ts": [
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/util/identity.d.ts": [
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/util/isobservable.d.ts": [
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/util/argumentoutofrangeerror.d.ts": [
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/util/emptyerror.d.ts": [
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/util/objectunsubscribederror.d.ts": [
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/util/unsubscriptionerror.d.ts": [
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/util/timeouterror.d.ts": [
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/bindcallback.d.ts": [
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/bindnodecallback.d.ts": [
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/innersubscriber.d.ts": [
-        "../node_modules/rxjs/internal/subscriber.d.ts",
-        "../node_modules/rxjs/internal/outersubscriber.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/outersubscriber.d.ts": [
-        "../node_modules/rxjs/internal/subscriber.d.ts",
-        "../node_modules/rxjs/internal/innersubscriber.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/combinelatest.d.ts": [
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/rxjs/internal/subscriber.d.ts",
-        "../node_modules/rxjs/internal/outersubscriber.d.ts",
-        "../node_modules/rxjs/internal/operator.d.ts",
-        "../node_modules/rxjs/internal/innersubscriber.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/concat.d.ts": [
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/defer.d.ts": [
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/empty.d.ts": [
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/forkjoin.d.ts": [
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/from.d.ts": [
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/fromevent.d.ts": [
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/fromeventpattern.d.ts": [
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/rxjs/internal/observable/fromevent.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/generate.d.ts": [
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/interval.d.ts": [
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/merge.d.ts": [
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/never.d.ts": [
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/of.d.ts": [
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/onerrorresumenext.d.ts": [
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/pairs.d.ts": [
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/rxjs/internal/subscriber.d.ts",
-        "../node_modules/rxjs/internal/subscription.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/partition.d.ts": [
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/race.d.ts": [
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/rxjs/internal/operator.d.ts",
-        "../node_modules/rxjs/internal/subscriber.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/rxjs/internal/outersubscriber.d.ts",
-        "../node_modules/rxjs/internal/innersubscriber.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/range.d.ts": [
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/timer.d.ts": [
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/using.d.ts": [
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/observable/zip.d.ts": [
-        "../node_modules/rxjs/internal/observable.d.ts",
-        "../node_modules/rxjs/internal/operator.d.ts",
-        "../node_modules/rxjs/internal/types.d.ts",
-        "../node_modules/rxjs/internal/subscriber.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/scheduled/scheduled.d.ts": [
-        "../node_modules/rxjs/index.d.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
-      "../node_modules/rxjs/internal/config.d.ts": [
         "../node_modules/@types/node/base.d.ts",
         "../node_modules/@types/node/ts3.2/index.d.ts"
       ],
@@ -3608,6 +3235,391 @@
         "../node_modules/@types/node/base.d.ts",
         "../node_modules/@types/node/ts3.2/index.d.ts"
       ],
+      "../node_modules/rxjs/internal/scheduled/scheduled.d.ts": [
+        "../node_modules/rxjs/index.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/pairs.d.ts": [
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/rxjs/internal/subscriber.d.ts",
+        "../node_modules/rxjs/internal/subscription.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/scheduler/virtualtimescheduler.d.ts": [
+        "../node_modules/rxjs/internal/scheduler/asyncaction.d.ts",
+        "../node_modules/rxjs/internal/subscription.d.ts",
+        "../node_modules/rxjs/internal/scheduler/asyncscheduler.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/scheduler/asyncaction.d.ts": [
+        "../node_modules/rxjs/internal/scheduler/action.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/rxjs/internal/subscription.d.ts",
+        "../node_modules/rxjs/internal/scheduler/asyncscheduler.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/scheduler/animationframescheduler.d.ts": [
+        "../node_modules/rxjs/internal/scheduler/asyncaction.d.ts",
+        "../node_modules/rxjs/internal/scheduler/asyncscheduler.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/scheduler/animationframe.d.ts": [
+        "../node_modules/rxjs/internal/scheduler/animationframescheduler.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/scheduler/asapscheduler.d.ts": [
+        "../node_modules/rxjs/internal/scheduler/asyncaction.d.ts",
+        "../node_modules/rxjs/internal/scheduler/asyncscheduler.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/scheduler/asap.d.ts": [
+        "../node_modules/rxjs/internal/scheduler/asapscheduler.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/scheduler/asyncscheduler.d.ts": [
+        "../node_modules/rxjs/internal/scheduler.d.ts",
+        "../node_modules/rxjs/internal/scheduler/action.d.ts",
+        "../node_modules/rxjs/internal/scheduler/asyncaction.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/rxjs/internal/subscription.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/scheduler/queuescheduler.d.ts": [
+        "../node_modules/rxjs/internal/scheduler/asyncscheduler.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/scheduler/queue.d.ts": [
+        "../node_modules/rxjs/internal/scheduler/queuescheduler.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/scheduler/async.d.ts": [
+        "../node_modules/rxjs/internal/scheduler/asyncscheduler.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/scheduler/action.d.ts": [
+        "../node_modules/rxjs/internal/scheduler.d.ts",
+        "../node_modules/rxjs/internal/subscription.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/scheduler.d.ts": [
+        "../node_modules/rxjs/internal/scheduler/action.d.ts",
+        "../node_modules/rxjs/internal/subscription.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/asyncsubject.d.ts": [
+        "../node_modules/rxjs/internal/subject.d.ts",
+        "../node_modules/rxjs/internal/subscriber.d.ts",
+        "../node_modules/rxjs/internal/subscription.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/replaysubject.d.ts": [
+        "../node_modules/rxjs/internal/subject.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/rxjs/internal/subscriber.d.ts",
+        "../node_modules/rxjs/internal/subscription.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/behaviorsubject.d.ts": [
+        "../node_modules/rxjs/internal/subject.d.ts",
+        "../node_modules/rxjs/internal/subscriber.d.ts",
+        "../node_modules/rxjs/internal/subscription.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/operators/groupby.d.ts": [
+        "../node_modules/rxjs/internal/subscriber.d.ts",
+        "../node_modules/rxjs/internal/subscription.d.ts",
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/rxjs/internal/subject.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/connectableobservable.d.ts": [
+        "../node_modules/rxjs/internal/subject.d.ts",
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/rxjs/internal/subscriber.d.ts",
+        "../node_modules/rxjs/internal/subscription.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/subject.d.ts": [
+        "../node_modules/rxjs/internal/operator.d.ts",
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/rxjs/internal/subscriber.d.ts",
+        "../node_modules/rxjs/internal/subscription.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable.d.ts": [
+        "../node_modules/rxjs/internal/operator.d.ts",
+        "../node_modules/rxjs/internal/subscriber.d.ts",
+        "../node_modules/rxjs/internal/subscription.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/rxjs/internal/observable/iif.d.ts",
+        "../node_modules/rxjs/internal/observable/throwerror.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/zip.d.ts": [
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/rxjs/internal/operator.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/rxjs/internal/subscriber.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/using.d.ts": [
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/timer.d.ts": [
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/range.d.ts": [
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/race.d.ts": [
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/rxjs/internal/operator.d.ts",
+        "../node_modules/rxjs/internal/subscriber.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/rxjs/internal/outersubscriber.d.ts",
+        "../node_modules/rxjs/internal/innersubscriber.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/partition.d.ts": [
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/onerrorresumenext.d.ts": [
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/of.d.ts": [
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/never.d.ts": [
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/merge.d.ts": [
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/interval.d.ts": [
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/generate.d.ts": [
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/fromeventpattern.d.ts": [
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/rxjs/internal/observable/fromevent.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/fromevent.d.ts": [
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/from.d.ts": [
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/forkjoin.d.ts": [
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/empty.d.ts": [
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/defer.d.ts": [
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/concat.d.ts": [
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/combinelatest.d.ts": [
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/rxjs/internal/subscriber.d.ts",
+        "../node_modules/rxjs/internal/outersubscriber.d.ts",
+        "../node_modules/rxjs/internal/operator.d.ts",
+        "../node_modules/rxjs/internal/innersubscriber.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/bindnodecallback.d.ts": [
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/bindcallback.d.ts": [
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/util/isobservable.d.ts": [
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/notification.d.ts": [
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/throwerror.d.ts": [
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/observable/iif.d.ts": [
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/types.d.ts": [
+        "../node_modules/rxjs/internal/observable.d.ts",
+        "../node_modules/rxjs/internal/subscription.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/util/pipe.d.ts": [
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/operator.d.ts": [
+        "../node_modules/rxjs/internal/subscriber.d.ts",
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/subscriber.d.ts": [
+        "../node_modules/rxjs/internal/types.d.ts",
+        "../node_modules/rxjs/internal/subscription.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/outersubscriber.d.ts": [
+        "../node_modules/rxjs/internal/subscriber.d.ts",
+        "../node_modules/rxjs/internal/innersubscriber.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/innersubscriber.d.ts": [
+        "../node_modules/rxjs/internal/subscriber.d.ts",
+        "../node_modules/rxjs/internal/outersubscriber.d.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/symbol/observable.d.ts": [
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/util/noop.d.ts": [
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/util/identity.d.ts": [
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/util/argumentoutofrangeerror.d.ts": [
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/util/emptyerror.d.ts": [
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/util/objectunsubscribederror.d.ts": [
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/util/unsubscriptionerror.d.ts": [
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/util/timeouterror.d.ts": [
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/rxjs/internal/config.d.ts": [
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
+      "../node_modules/@types/comment-json/index.d.ts": [
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
       "../node_modules/@types/node/inspector.d.ts": [
         "../node_modules/@types/node/base.d.ts",
         "../node_modules/@types/node/ts3.2/index.d.ts"
@@ -3622,25 +3634,6 @@
       ]
     },
     "semanticDiagnosticsPerFile": [
-      "../node_modules/typescript/lib/lib.es5.d.ts",
-      "../node_modules/typescript/lib/lib.es2015.d.ts",
-      "../node_modules/typescript/lib/lib.es2016.d.ts",
-      "../node_modules/typescript/lib/lib.es2017.d.ts",
-      "../node_modules/typescript/lib/lib.es2015.core.d.ts",
-      "../node_modules/typescript/lib/lib.es2015.collection.d.ts",
-      "../node_modules/typescript/lib/lib.es2015.generator.d.ts",
-      "../node_modules/typescript/lib/lib.es2015.iterable.d.ts",
-      "../node_modules/typescript/lib/lib.es2015.promise.d.ts",
-      "../node_modules/typescript/lib/lib.es2015.proxy.d.ts",
-      "../node_modules/typescript/lib/lib.es2015.reflect.d.ts",
-      "../node_modules/typescript/lib/lib.es2015.symbol.d.ts",
-      "../node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
-      "../node_modules/typescript/lib/lib.es2016.array.include.d.ts",
-      "../node_modules/typescript/lib/lib.es2017.object.d.ts",
-      "../node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts",
-      "../node_modules/typescript/lib/lib.es2017.string.d.ts",
-      "../node_modules/typescript/lib/lib.es2017.intl.d.ts",
-      "../node_modules/typescript/lib/lib.es2017.typedarrays.d.ts",
       "../node_modules/minimal-polyfills/dist/lib/set.d.ts",
       "../node_modules/minimal-polyfills/dist/lib/weakmap.d.ts",
       "../src/tools/typesafety/assert.ts",
@@ -3798,6 +3791,7 @@
       "../src/test/test84.ts",
       "../src/test/test85.ts",
       "../src/test/test86.ts",
+      "../src/test/deno_index.ts",
       "../src/test/index.ts",
       "../src/test/test12.ts",
       "../src/test/test13.ts",
@@ -3876,10 +3870,29 @@
       "../src/test/test7.ts",
       "../src/tools/iscallablefunction.ts",
       "../src/tools/indepth/test.ts",
+      "../node_modules/@types/comment-json/index.d.ts",
       "../node_modules/@types/node/inspector.d.ts",
       "../node_modules/@types/node/base.d.ts",
       "../node_modules/@types/node/ts3.2/index.d.ts",
-      "../src/test/deno_index.ts"
+      "../node_modules/typescript/lib/lib.es2015.d.ts",
+      "../node_modules/typescript/lib/lib.es2016.d.ts",
+      "../node_modules/typescript/lib/lib.es2017.d.ts",
+      "../node_modules/typescript/lib/lib.es2017.typedarrays.d.ts",
+      "../node_modules/typescript/lib/lib.es2017.intl.d.ts",
+      "../node_modules/typescript/lib/lib.es2017.string.d.ts",
+      "../node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts",
+      "../node_modules/typescript/lib/lib.es2017.object.d.ts",
+      "../node_modules/typescript/lib/lib.es2016.array.include.d.ts",
+      "../node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+      "../node_modules/typescript/lib/lib.es2015.symbol.d.ts",
+      "../node_modules/typescript/lib/lib.es2015.reflect.d.ts",
+      "../node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+      "../node_modules/typescript/lib/lib.es2015.promise.d.ts",
+      "../node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+      "../node_modules/typescript/lib/lib.es2015.generator.d.ts",
+      "../node_modules/typescript/lib/lib.es2015.collection.d.ts",
+      "../node_modules/typescript/lib/lib.es2015.core.d.ts",
+      "../node_modules/typescript/lib/lib.es5.d.ts"
     ]
   },
   "version": "3.8.3"

@@ -1,4 +1,4 @@
-import "https://raw.githubusercontent.com/garronej/minimal_polyfills/b7ed952522d45b96c8fb8751f14ea6e88dc595a3/deno_dist/lib/Array.prototype.find.ts";
+import "https://raw.githubusercontent.com/garronej/minimal_polyfills/v1.0.8/deno_dist/lib/Array.prototype.find.ts";
 import { importProxy } from "./importProxy.ts";
 import { create } from "./Evt.create.ts";
 import { getCtxFactory } from "./Evt.getCtx.ts";
@@ -13,9 +13,9 @@ import { newCtx } from "./Evt.newCtx.ts";
 import { LazyEvt } from "./LazyEvt.ts";
 import { defineAccessors } from "../tools/typeSafety/defineAccessors.ts";
 import { invokeOperator } from "./util/invokeOperator.ts";
-import { Polyfill as Map, LightMap } from "https://raw.githubusercontent.com/garronej/minimal_polyfills/b7ed952522d45b96c8fb8751f14ea6e88dc595a3/deno_dist/lib/Map.ts";
-import { Polyfill as WeakMap } from "https://raw.githubusercontent.com/garronej/minimal_polyfills/b7ed952522d45b96c8fb8751f14ea6e88dc595a3/deno_dist/lib/WeakMap.ts";
-import * as runExclusive from "https://deno.land/x/run_exclusive/mod.ts";
+import { Polyfill as Map, LightMap } from "https://raw.githubusercontent.com/garronej/minimal_polyfills/v1.0.8/deno_dist/lib/Map.ts";
+import { Polyfill as WeakMap } from "https://raw.githubusercontent.com/garronej/minimal_polyfills/v1.0.8/deno_dist/lib/WeakMap.ts";
+import * as runExclusive from "https://raw.githubusercontent.com/garronej/run_exclusive/v2.1.12/mod.ts";
 import { EvtError } from "./types/EvtError.ts";
 import { overwriteReadonlyProp } from "../tools/typeSafety/overwriteReadonlyProp.ts";
 import { typeGuard } from "../tools/typeSafety/typeGuard.ts";

@@ -1,7 +1,7 @@
-import { Polyfill as Set } from "https://raw.githubusercontent.com/garronej/minimal_polyfills/b7ed952522d45b96c8fb8751f14ea6e88dc595a3/deno_dist/lib/Set.ts";
+import { Polyfill as Set } from "https://raw.githubusercontent.com/garronej/minimal_polyfills/v1.0.8/deno_dist/lib/Set.ts";
 import { MapLike, SetLike, DateLike, ArrayLike } from "./types.ts";
 import { arrAllEquals } from "../reducers/allEquals.ts";
-import "https://raw.githubusercontent.com/garronej/minimal_polyfills/b7ed952522d45b96c8fb8751f14ea6e88dc595a3/deno_dist/lib/Object.is.ts";
+import "https://raw.githubusercontent.com/garronej/minimal_polyfills/v1.0.8/deno_dist/lib/Object.is.ts";
 
 /** 
  * Function that perform a in depth comparison of two things of arbitrary type T

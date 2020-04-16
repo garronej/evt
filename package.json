@@ -1,6 +1,6 @@
 {
     "name": "evt",
-    "version": "1.6.4",
+    "version": "1.6.5",
     "description": "Type safe replacement for node's EventEmitter",
     "repository": {
         "type": "git",
@@ -17,15 +17,14 @@
     "author": "Joseph Garrone",
     "license": "MIT",
     "dependencies": {
-        "minimal-polyfills": "^1.0.7",
-        "run-exclusive": "^2.1.11"
+        "minimal-polyfills": "^1.0.8",
+        "run-exclusive": "^2.1.12"
     },
     "files": [
         "/dist/lib",
         "/src/lib",
         "/dist/tools",
-        "/src/tools",
-        "/tsconfig.json"
+        "/src/tools"
     ],
     "keywords": [
         "deno",
@@ -45,8 +44,5 @@
         "rxjs": "^6.5.4",
         "typescript": "^3.8.0",
         "denoify": "github:garronej/denoify"
-    },
-    "deno": {
-        "url": "https://deno.land/x/evt/mod.ts"
     }
 }

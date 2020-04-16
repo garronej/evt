@@ -1,4 +1,4 @@
-import "https://raw.githubusercontent.com/garronej/minimal_polyfills/b7ed952522d45b96c8fb8751f14ea6e88dc595a3/deno_dist/lib/Object.is.ts";
+import "https://raw.githubusercontent.com/garronej/minimal_polyfills/v1.0.8/deno_dist/lib/Object.is.ts";
 import { defineAccessors } from "../tools/typeSafety/defineAccessors.ts";
 import { LazyEvt } from "./LazyEvt.ts";
 import { importProxy } from "./importProxy.ts";
