@@ -26,7 +26,7 @@ EVT Operators can be of three types:
     Uses the previous matched event data transformation as input à la `Array.prototype.reduce`
 
 {% hint style="warning" %}
-Operators do not have to be [pure, they](https://en.wikipedia.org/wiki/Pure_function) can use variables available in scope and involve time `(Date.now())`, but they **must not have any side effect**. In particular they cannot modify their input.
+Operators do not have to be [pure](https://en.wikipedia.org/wiki/Pure_function), they can use variables available in scope and involve time `(Date.now())`, but they **must not have any side effect**. In particular they cannot modify their input.
 {% endhint %}
 
 ## Operator - Filter

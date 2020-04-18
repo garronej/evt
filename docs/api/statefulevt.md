@@ -118,6 +118,35 @@ const evtClickCount= Evt.from(document,"click")
 console.log(evtClickCount.state); //Prints "3"
 ```
 
+## Merging multiple `StatefulEvt`s
+
+```typescript
+import { Evt } from "evt";
+
+const evtIsBlue= Evt.create(false);
+const evtIsBig= Evt.create(false);
+
+const evtIsBigAndBlue = Evt.merge([
+    evtIsBlue.evtChange,
+    evtIsBig.evtChange
+])
+    .toStateful()
+    .statefulPipe(()=> [ evtIsBlue.state && evtIsBig.state ])
+    ;
+    
+console.log(evtIsBigAndBlue.state); // Prints "false"
+
+evtIsBlue.state= true;
+
+console.log(evtIsBigAndBlue.state); // Prints "false"
+
+evtIsBig.state= true;
+
+console.log(evtIsBigAndBlue.state); // Prints "true"
+```
+
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-22pavm?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
+
 ## Make a `StatefulEvt` readonly
 
 To prevent a StatefulEvt to be posted by parts of the code that is not supposed to StatefulEvt can be exposed as `StatefulReadonlyEvt`.

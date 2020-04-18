@@ -9,7 +9,7 @@ It enables and encourages **functional programming** and makes heavy use of **ty
 
 * ✅ It is both a [Deno](https://deno.land/x/evt) and an [NPM](https://www.npmjs.com/evt) module. 
 * ✅ Lightweight, no dependency.
-* ✅ No polyfills needed, the NPM module is transpile down to ES3   
+* ✅ No polyfills needed, the NPM module is transpiled down to ES3   
 
 Can be imported in TypeScript projects using version &gt;= **3.4** \(Mar 2019\) and in any plain JS projects.
 
