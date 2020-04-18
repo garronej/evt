@@ -88,3 +88,4 @@ import "./test83.ts";
 import "./test84.ts";
 import "./test85.ts";
 import "./test86.ts";
+import "./test87.ts";

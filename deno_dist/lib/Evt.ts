@@ -22,11 +22,11 @@ import { typeGuard } from "../tools/typeSafety/typeGuard.ts";
 import { encapsulateOpState } from "./util/encapsulateOpState.ts";
 import { Deferred } from "../tools/Deferred.ts";
 import { loosenType } from "./Evt.loosenType.ts";
+import { CtxLike } from "./types/interfaces/CtxLike.ts";
 
 import { Handler } from "./types/Handler.ts";
 import { Operator } from "./types/Operator.ts";
 type NonPostableEvt<T> = import("./types/interfaces/index.ts").NonPostableEvt<T>;
-type CtxLike<Result = any> = import("./types/interfaces/index.ts").CtxLike<Result>;
 type StatefulEvt<T> = import("./types/interfaces/index.ts").StatefulEvt<T>;
 
 //NOTE: Deno can't use NodeJS type def ( obviously )
@@ -65,9 +65,14 @@ class EvtImpl<T> implements Evt<T> {
         this.__defaultMaxHandlers = isFinite(n) ? n : 0;
     }
 
-    toStateful(initialState: T, ctx?: CtxLike): StatefulEvt<T> {
+    toStateful(p1: any,p2?: CtxLike): StatefulEvt<any> {
 
-        const out = new importProxy.StatefulEvt(initialState);
+        const isP1Ctx= CtxLike.match(p1);
+
+        const initialValue: any = isP1Ctx ? undefined : p1;
+        const ctx= p2 ?? ( isP1Ctx ? p1 : undefined );
+
+        const out = new importProxy.StatefulEvt<any>(initialValue);
 
         const callback = (data: T) => out.post(data);
 

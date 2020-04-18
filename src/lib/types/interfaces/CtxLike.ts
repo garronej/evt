@@ -1,5 +1,6 @@
 
 import { Handler } from "../Handler";
+import { typeGuard } from "../../../tools/typeSafety/typeGuard";
 type EvtLike<T> = import("../helper/UnpackEvt").EvtLike<T>;
 
 /** 
@@ -11,6 +12,21 @@ export interface CtxLike<Result = any> {
     abort(error: Error): void;
     zz__addHandler<T>(handler: Handler<T, any, CtxLike<Result>>, evt: EvtLike<T>): void;
     zz__removeHandler<T>(handler: Handler<T, any, CtxLike<Result>>): void;
+}
+
+export namespace CtxLike {
+
+    export function match<T=any>(o: any): o is CtxLike<T> {
+        return (
+            typeGuard<CtxLike>(o) &&
+            o instanceof Object &&
+            typeof o.done === "function" &&
+            typeof o.abort === "function" &&
+            typeof o.zz__addHandler === "function" &&
+            typeof o.zz__removeHandler === "function"
+        );
+    }
+
 }
 
 

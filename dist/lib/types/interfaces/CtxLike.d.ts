@@ -10,6 +10,9 @@ export interface CtxLike<Result = any> {
     zz__addHandler<T>(handler: Handler<T, any, CtxLike<Result>>, evt: EvtLike<T>): void;
     zz__removeHandler<T>(handler: Handler<T, any, CtxLike<Result>>): void;
 }
+export declare namespace CtxLike {
+    function match<T = any>(o: any): o is CtxLike<T>;
+}
 export interface VoidCtxLike extends CtxLike<void> {
     done(): void;
 }

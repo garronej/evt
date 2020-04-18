@@ -66,6 +66,7 @@ var typeGuard_1 = require("../tools/typeSafety/typeGuard");
 var encapsulateOpState_1 = require("./util/encapsulateOpState");
 var Deferred_1 = require("../tools/Deferred");
 var Evt_loosenType_1 = require("./Evt.loosenType");
+var CtxLike_1 = require("./types/interfaces/CtxLike");
 var Operator_1 = require("./types/Operator");
 var safeSetTimeout = function (callback, ms) { return setTimeout(callback, ms); };
 var safeClearTimeout = function (timer) { return clearTimeout(timer); };
@@ -89,8 +90,11 @@ var EvtImpl = /** @class */ (function () {
     EvtImpl.setDefaultMaxHandlers = function (n) {
         this.__defaultMaxHandlers = isFinite(n) ? n : 0;
     };
-    EvtImpl.prototype.toStateful = function (initialState, ctx) {
-        var out = new importProxy_1.importProxy.StatefulEvt(initialState);
+    EvtImpl.prototype.toStateful = function (p1, p2) {
+        var isP1Ctx = CtxLike_1.CtxLike.match(p1);
+        var initialValue = isP1Ctx ? undefined : p1;
+        var ctx = p2 !== null && p2 !== void 0 ? p2 : (isP1Ctx ? p1 : undefined);
+        var out = new importProxy_1.importProxy.StatefulEvt(initialValue);
         var callback = function (data) { return out.post(data); };
         if (!!ctx) {
             this.attach(ctx, callback);
