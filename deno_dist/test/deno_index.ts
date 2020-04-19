@@ -90,3 +90,4 @@ import "./test85.ts";
 import "./test86.ts";
 import "./test87.ts";
 import "./test88.ts";
+import "./test89.ts";

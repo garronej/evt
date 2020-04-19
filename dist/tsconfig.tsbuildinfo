@@ -717,12 +717,16 @@
         "version": "502bd2c28020aca8229a84cd8f74cee985ef61f81ef6bbfd1c725a7644cda2db",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
       },
+      "../src/test/test89.ts": {
+        "version": "481d77fc4c49d960a67087b169bf28894316cfff844dd5cf72f1adf84728cddf",
+        "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
       "../src/test/deno_index.ts": {
-        "version": "33afa17511f7f09ff39f5b9b6f88cf0bfbb8829a1070193ab2f4ffce150ae5c2",
-        "signature": "b115996bb87f6f4c5155f187e3bd5da64fe37f4883718c14e42971e8597e3d7b"
+        "version": "adadbce38e2bb7e7244cf076b0806eed555f41a241e3bda60257fca99b6cceeb",
+        "signature": "63f13d1e75e59b7a44996ff569c0fd5bee73efc4c8ead8c857fda41c4ee0b988"
       },
       "../src/test/index.ts": {
-        "version": "eef98414f930cccea28f855a4a9f85c5bcfd7e6ed8494c7a6232bef2be87ae01",
+        "version": "9a7a2663ef561a795d79ae5a2675efd5c7ef87b3dd69ed07804ae49028d28258",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
       },
       "../src/test/test12.ts": {
@@ -1023,10 +1027,6 @@
       },
       "../src/test/test7.ts": {
         "version": "34802eb90a8590e5cf21030fd449367d6f27aa3ccbb8285497c5fea8ec2d1ca2",
-        "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
-      },
-      "../src/test/test89.ts": {
-        "version": "481d77fc4c49d960a67087b169bf28894316cfff844dd5cf72f1adf84728cddf",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
       },
       "../src/tools/iscallablefunction.ts": {
@@ -2165,6 +2165,12 @@
         "../node_modules/@types/node/base.d.ts",
         "../node_modules/@types/node/ts3.2/index.d.ts"
       ],
+      "../src/test/test89.ts": [
+        "../src/lib/index.ts",
+        "../src/tools/typesafety/index.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
       "../src/test/deno_index.ts": [
         "../src/tools/reducers/test.ts",
         "../src/test/test1.ts",
@@ -2232,6 +2238,7 @@
         "../src/test/test86.ts",
         "../src/test/test87.ts",
         "../src/test/test88.ts",
+        "../src/test/test89.ts",
         "../node_modules/@types/node/base.d.ts",
         "../node_modules/@types/node/ts3.2/index.d.ts"
       ],
@@ -2744,12 +2751,6 @@
         "../node_modules/@types/node/base.d.ts",
         "../node_modules/@types/node/ts3.2/index.d.ts"
       ],
-      "../src/test/test89.ts": [
-        "../src/lib/index.ts",
-        "../src/tools/typesafety/index.ts",
-        "../node_modules/@types/node/base.d.ts",
-        "../node_modules/@types/node/ts3.2/index.d.ts"
-      ],
       "../src/tools/iscallablefunction.ts": [
         "../node_modules/@types/node/base.d.ts",
         "../node_modules/@types/node/ts3.2/index.d.ts"
@@ -3221,7 +3222,8 @@
         "../src/test/test85.ts",
         "../src/test/test86.ts",
         "../src/test/test87.ts",
-        "../src/test/test88.ts"
+        "../src/test/test88.ts",
+        "../src/test/test89.ts"
       ],
       "../node_modules/rxjs/internal/subscription.d.ts": [
         "../node_modules/rxjs/internal/types.d.ts",
@@ -3742,6 +3744,7 @@
       "../src/lib/types/eventtargetlike.ts",
       "../src/lib/types/lib.dom.ts",
       "../src/lib/evt.from.ts",
+      "../src/lib/evt.useeffect.ts",
       "../src/lib/types/helper/topostableevt.ts",
       "../src/lib/evt.aspostable.ts",
       "../src/lib/types/helper/tononpostableevt.ts",
@@ -3864,8 +3867,7 @@
       "../src/test/test86.ts",
       "../src/test/test87.ts",
       "../src/test/test88.ts",
-      "../src/test/deno_index.ts",
-      "../src/test/index.ts",
+      "../src/test/test89.ts",
       "../src/test/test12.ts",
       "../src/test/test13.ts",
       "../src/test/test20.ts",
@@ -3941,14 +3943,14 @@
       "../src/test/test6.ts",
       "../src/test/test63.ts",
       "../src/test/test7.ts",
-      "../src/test/test89.ts",
       "../src/tools/iscallablefunction.ts",
       "../src/tools/indepth/test.ts",
       "../node_modules/@types/comment-json/index.d.ts",
       "../node_modules/@types/node/inspector.d.ts",
       "../node_modules/@types/node/base.d.ts",
       "../node_modules/@types/node/ts3.2/index.d.ts",
-      "../src/lib/evt.useeffect.ts"
+      "../src/test/deno_index.ts",
+      "../src/test/index.ts"
     ]
   },
   "version": "3.8.3"
