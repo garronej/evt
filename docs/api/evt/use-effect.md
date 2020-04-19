@@ -47,6 +47,7 @@ Evt.useEffect(
 ); // Pints "foo"
 
 evtText.state= "bar"; // Prints "bar"
+evtText.state= "bar"; // Prints nothing
 
 ctx.done();
 
