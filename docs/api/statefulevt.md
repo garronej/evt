@@ -30,7 +30,7 @@ console.log(evtCount.state); //Pints "2";
 
 ## `.evtChange`
 
-Property type: `NonPostableEvt<T>`
+Property type: `ReadonlyStatefulEvt<T>`
 
 The `.evtChange` property is an `Evt` that post only when the `.state` has changed. \( or when post is made via `.postForceChange()` \)
 
