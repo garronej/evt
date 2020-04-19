@@ -1,4 +1,4 @@
-declare type Evt<T> = import("./types/interfaces/Evt").Evt<T>;
+declare type Evt<T> = import("./types/interfaces").Evt<T>;
 export declare class LazyEvt<T> {
     private initialPostCount;
     readonly evt: Evt<T>;

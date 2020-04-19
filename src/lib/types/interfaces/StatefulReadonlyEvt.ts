@@ -15,8 +15,7 @@ export interface StatefulReadonlyEvt<T> extends NonPostableEvt<T> {
     readonly evtDiff: NonPostableEvt<StateDiff<T>>;
 
     /** https://docs.evt.land/api/statefulevt#evtchange */
-    readonly evtChange: NonPostableEvt<T>;
-
+    readonly evtChange: StatefulReadonlyEvt<T>;
 
     /** https://docs.evt.land/api/statefulevt#evtchangediff */
     readonly evtChangeDiff: NonPostableEvt<StateDiff<T>>;

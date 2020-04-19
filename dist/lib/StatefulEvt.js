@@ -36,6 +36,7 @@ exports.__esModule = true;
 require("minimal-polyfills/dist/lib/Object.is");
 var defineAccessors_1 = require("../tools/typeSafety/defineAccessors");
 var LazyEvt_1 = require("./LazyEvt");
+var LazyStatefulEvt_1 = require("./LazyStatefulEvt");
 var importProxy_1 = require("./importProxy");
 var invokeOperator_1 = require("./util/invokeOperator");
 var Operator_1 = require("./types/Operator");
@@ -46,9 +47,9 @@ var StatefulEvtImpl = /** @class */ (function (_super) {
     function StatefulEvtImpl(initialState) {
         var _this_1 = _super.call(this) || this;
         _this_1.lazyEvtDiff = new LazyEvt_1.LazyEvt();
-        _this_1.lazyEvtChange = new LazyEvt_1.LazyEvt();
         _this_1.lazyEvtChangeDiff = new LazyEvt_1.LazyEvt();
         _this_1.__state = initialState;
+        _this_1.lazyEvtChange = new LazyStatefulEvt_1.LazyStatefulEvt(_this_1.__state);
         return _this_1;
     }
     StatefulEvtImpl.prototype.post = function (data) {

@@ -1,12 +1,14 @@
 import "https://raw.githubusercontent.com/garronej/minimal_polyfills/v1.0.8/deno_dist/lib/Object.is.ts";
 import { defineAccessors } from "../tools/typeSafety/defineAccessors.ts";
 import { LazyEvt } from "./LazyEvt.ts";
+import { LazyStatefulEvt } from "./LazyStatefulEvt.ts";
 import { importProxy } from "./importProxy.ts";
 import { invokeOperator } from "./util/invokeOperator.ts";
 import { Operator } from "./types/Operator.ts";
 import { parsePropsFromArgs } from "./Evt.parsePropsFromArgs.ts";
 type Diff<T> = import("./types/interfaces/index.ts").Diff<T>;
 type NonPostableEvt<T> = import("./types/interfaces/index.ts").NonPostableEvt<T>;
+type StatefulReadonlyEvt<T>= import("./types/interfaces/index.ts").StatefulReadonlyEvt<T>;
 import { Evt } from "./Evt.ts";
 
 /** https://docs.evt.land/api/statefulevt */
@@ -20,13 +22,14 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
     constructor(initialState: T) {
         super();
         this.__state = initialState;
+        this.lazyEvtChange = new LazyStatefulEvt(this.__state);
     }
 
     private readonly lazyEvtDiff = new LazyEvt<Diff<T>>();
     declare public readonly evtDiff: NonPostableEvt<Diff<T>>;
 
-    private readonly lazyEvtChange = new LazyEvt<T>();
-    declare public readonly evtChange: NonPostableEvt<T>;
+    private readonly lazyEvtChange: LazyStatefulEvt<T>;
+    declare public readonly evtChange: StatefulReadonlyEvt<T>;
 
     private readonly lazyEvtChangeDiff = new LazyEvt<Diff<T>>();
     declare public readonly evtChangeDiff: NonPostableEvt<Diff<T>>;
