@@ -32,8 +32,9 @@ ctx.done();
 
 //Prints nothing, Evt detached.
 evtAge.pose(1);
-
 ```
+
+Used with [`StatefulEvt`](https://docs.evt.land/api/statefulevt)s:
 
 ```typescript
 import { Evt } from "evt";
