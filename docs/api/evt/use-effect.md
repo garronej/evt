@@ -1,8 +1,6 @@
----
-description: Invoke a callback now and every time an event is posted.
----
-
 # Evt.useEffect\(...\)
+
+Invoke a callback now and every time an event is posted. If the event passed is statefull the effect callback is only invoked when `evtChange` is posted.
 
 ```typescript
 import { Evt } from "evt";
@@ -37,5 +35,22 @@ evtAge.pose(1);
 
 ```
 
+```typescript
+import { Evt } from "evt";
 
+const evtText = Evt.create("foo");
+
+
+Evt.useEffect(
+    text=> console.log(text),
+    evtText.evtChange.statefulPipe(ctx)
+); // Pints "foo"
+
+evtText.state= "bar"; // Prints "bar"
+
+ctx.done();
+
+evtText.state= "baz"; // Prints nothing
+
+```
 
