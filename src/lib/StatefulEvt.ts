@@ -6,6 +6,7 @@ import { importProxy } from "./importProxy";
 import { invokeOperator } from "./util/invokeOperator";
 import { Operator } from "./types/Operator";
 import { parsePropsFromArgs } from "./Evt.parsePropsFromArgs";
+import { CtxLike } from "./types/interfaces/CtxLike";
 type Diff<T> = import("./types/interfaces").Diff<T>;
 type NonPostableEvt<T> = import("./types/interfaces").NonPostableEvt<T>;
 type StatefulReadonlyEvt<T>= import("./types/interfaces").StatefulReadonlyEvt<T>;
@@ -94,11 +95,10 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
 
     }
 
+    pipe(...args: any[]): StatefulEvt<any> {
 
-    statefulPipe(...args: any[]): StatefulEvt<any> {
-
-        const evt = this
-            .pipe(...(args as Parameters<typeof StatefulEvtImpl.prototype.pipe>))
+        const evt = super
+            .pipe(...(args as Parameters<typeof importProxy.Evt.prototype.pipe>))
             ;
 
         const opResult = invokeOperator(
@@ -111,8 +111,9 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
         if (Operator.fλ.Result.NotMatched.match(opResult)) {
 
             throw new Error([
-                "Operator do not match current state",
-                "use evt.pipe([ctx], op).toStatic(initialState)",
+                "Cannot pipe StatefulEvt because the operator does not match",
+                "it's current state.",
+                "Use evt.toStateless([ctx]).pipe(op).toStatic(initialState)",
                 "to be sure the StatefulEvt is correctly initialized"
             ].join(" "));
 
@@ -120,6 +121,10 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
 
         return evt.toStateful(opResult[0]);
 
+    }
+
+    toStateless(ctx?: CtxLike): Evt<any> {
+        return !!ctx ? super.pipe(ctx) : super.pipe();
     }
 
 }

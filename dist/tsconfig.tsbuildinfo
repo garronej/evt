@@ -154,8 +154,8 @@
         "signature": "56040fac2784c73bdb749cad83d380b1fa0f5e545f10a3a264e0fedf38d0f8cc"
       },
       "../src/lib/types/interfaces/statefulreadonlyevt.ts": {
-        "version": "231bca7d17fca83eb211e3405457dc20afd59629afbf105e0eb918833fd516cc",
-        "signature": "b0f09fa780a6b6610f07dc6f5a8abfe7148fe821b1d86d36dc73a0a03989e5fb"
+        "version": "c2003519920ce9b2e8a29f83d34592ca766ea0dda4503c71c5f84487a20e7866",
+        "signature": "f2a8884060ed89b52cf8fa575bc39ce14e27765d0f8c9c8a5e493133826dfd13"
       },
       "../src/lib/types/interfaces/statefulpostable.ts": {
         "version": "4988fbbe057ec061a5e8a7f4b9f9230471cff13607c825b28323fca641c1e5af",
@@ -302,7 +302,7 @@
         "signature": "deab4c2ecafe68d2b12f97ed18961a614734ee1eb2af3008bad1d1924a03c836"
       },
       "../src/lib/statefulevt.ts": {
-        "version": "0f3d3ea85d4a1397145f74bcf3a493f27577a9e8bfc8b746dcabf2c4bf6bd611",
+        "version": "4d27160245453a6f7ca8452a720d339292a664dc09c33943fba4963b95aa4dc0",
         "signature": "a607bf14aa9b8e6322dc9b9112e27e9d2fcdfe7bd8e664d0d1a249fb31d100ec"
       },
       "../src/lib/importproxy.ts": {
@@ -666,7 +666,7 @@
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
       },
       "../src/test/test73.ts": {
-        "version": "b065e074f96992c466ec0d85e9cb013178ef12b4c0c1600301b4de9319637411",
+        "version": "48d41f22a3fda70f4780a19b0f4468cefa4d71fe35e2c99d214d4239c9137837",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
       },
       "../src/test/test76.ts": {
@@ -710,7 +710,7 @@
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
       },
       "../src/test/test87.ts": {
-        "version": "cc1de6365d5cb2ccb742ec14b3138f370bfc725096a985436b1baf6c4ca31622",
+        "version": "f7d8f103a22de41461e3509e7cf5f43773ddd91e9217307e09b2bd2ebd156bde",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
       },
       "../src/test/test88.ts": {
@@ -718,15 +718,19 @@
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
       },
       "../src/test/test89.ts": {
-        "version": "481d77fc4c49d960a67087b169bf28894316cfff844dd5cf72f1adf84728cddf",
+        "version": "1c7e38a2e9733ddb36dedc0fb69b900f579dcf95f41d5dd77b855b0659151498",
+        "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      "../src/test/test90.ts": {
+        "version": "4957100cf8f687303cb60280d8ed2d3ad3e356ff04cde94c1be15f9cb0a8752b",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
       },
       "../src/test/deno_index.ts": {
-        "version": "adadbce38e2bb7e7244cf076b0806eed555f41a241e3bda60257fca99b6cceeb",
-        "signature": "63f13d1e75e59b7a44996ff569c0fd5bee73efc4c8ead8c857fda41c4ee0b988"
+        "version": "325e61bff2ac094eaa7b1908afcf18bf634526e6342e5b1b437fc9b3793f82a0",
+        "signature": "14913cef43a902c27f73756c455ab55c3efcaca3c2c4cb85a53b5b7b9c7e5522"
       },
       "../src/test/index.ts": {
-        "version": "9a7a2663ef561a795d79ae5a2675efd5c7ef87b3dd69ed07804ae49028d28258",
+        "version": "fb55c622c18ae15e53c5b04f8b355f2f59124a1e681c9827deea0fb02c701de3",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
       },
       "../src/test/test12.ts": {
@@ -1247,6 +1251,7 @@
         "../src/lib/types/interfaces/nonpostableevt.ts",
         "../src/lib/types/interfaces/ctxlike.ts",
         "../src/lib/types/interfaces/statefulevt.ts",
+        "../src/lib/types/interfaces/evt.ts",
         "../node_modules/@types/node/base.d.ts",
         "../node_modules/@types/node/ts3.2/index.d.ts"
       ],
@@ -1514,6 +1519,7 @@
         "../src/lib/util/invokeoperator.ts",
         "../src/lib/types/operator.ts",
         "../src/lib/evt.parsepropsfromargs.ts",
+        "../src/lib/types/interfaces/ctxlike.ts",
         "../src/lib/evt.ts",
         "../src/lib/types/interfaces/index.ts",
         "../node_modules/@types/node/base.d.ts",
@@ -2171,6 +2177,12 @@
         "../node_modules/@types/node/base.d.ts",
         "../node_modules/@types/node/ts3.2/index.d.ts"
       ],
+      "../src/test/test90.ts": [
+        "../src/lib/index.ts",
+        "../src/tools/typesafety/index.ts",
+        "../node_modules/@types/node/base.d.ts",
+        "../node_modules/@types/node/ts3.2/index.d.ts"
+      ],
       "../src/test/deno_index.ts": [
         "../src/tools/reducers/test.ts",
         "../src/test/test1.ts",
@@ -2239,6 +2251,7 @@
         "../src/test/test87.ts",
         "../src/test/test88.ts",
         "../src/test/test89.ts",
+        "../src/test/test90.ts",
         "../node_modules/@types/node/base.d.ts",
         "../node_modules/@types/node/ts3.2/index.d.ts"
       ],
@@ -2893,9 +2906,10 @@
       ],
       "../src/lib/types/interfaces/statefulreadonlyevt.ts": [
         "../src/lib/types/interfaces/nonpostableevt.ts",
+        "../src/lib/types/interfaces/ctxlike.ts",
+        "../src/lib/types/interfaces/evt.ts",
         "../src/lib/types/interfaces/statefulevt.ts",
-        "../src/lib/types/operator.ts",
-        "../src/lib/types/interfaces/ctxlike.ts"
+        "../src/lib/types/operator.ts"
       ],
       "../src/lib/types/interfaces/statefulpostable.ts": [
         "../src/lib/types/interfaces/postable.ts"
@@ -3223,7 +3237,8 @@
         "../src/test/test86.ts",
         "../src/test/test87.ts",
         "../src/test/test88.ts",
-        "../src/test/test89.ts"
+        "../src/test/test89.ts",
+        "../src/test/test90.ts"
       ],
       "../node_modules/rxjs/internal/subscription.d.ts": [
         "../node_modules/rxjs/internal/types.d.ts",
@@ -3868,6 +3883,8 @@
       "../src/test/test87.ts",
       "../src/test/test88.ts",
       "../src/test/test89.ts",
+      "../src/test/deno_index.ts",
+      "../src/test/index.ts",
       "../src/test/test12.ts",
       "../src/test/test13.ts",
       "../src/test/test20.ts",
@@ -3949,8 +3966,7 @@
       "../node_modules/@types/node/inspector.d.ts",
       "../node_modules/@types/node/base.d.ts",
       "../node_modules/@types/node/ts3.2/index.d.ts",
-      "../src/test/deno_index.ts",
-      "../src/test/index.ts"
+      "../src/test/test90.ts"
     ]
   },
   "version": "3.8.3"

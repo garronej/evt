@@ -9,8 +9,8 @@ const evtIsBigAndBlue = Evt.merge([
     evtIsBlue.evtChange,
     evtIsBig.evtChange
 ])
-    .toStateful() //It is safe to use as any here
-    .statefulPipe(()=> [ evtIsBlue.state && evtIsBig.state ])
+    .toStateful()
+    .pipe(()=> [ evtIsBlue.state && evtIsBig.state ])
     ;
 
 assert(evtIsBigAndBlue.state === false as boolean);

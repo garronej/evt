@@ -69,22 +69,26 @@ var StatefulEvtImpl = /** @class */ (function (_super) {
         }
         return _super.prototype.post.call(this, data);
     };
-    StatefulEvtImpl.prototype.statefulPipe = function () {
+    StatefulEvtImpl.prototype.pipe = function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
-        var evt = this
-            .pipe.apply(this, __spread(args));
+        var evt = _super.prototype.pipe.apply(this, __spread(args));
         var opResult = invokeOperator_1.invokeOperator(this.getStatelessOp(Evt_parsePropsFromArgs_1.parsePropsFromArgs(args, "pipe").op), this.state);
         if (Operator_1.Operator.fλ.Result.NotMatched.match(opResult)) {
             throw new Error([
-                "Operator do not match current state",
-                "use evt.pipe([ctx], op).toStatic(initialState)",
+                "Cannot pipe StatefulEvt because the operator does not match",
+                "it's current state.",
+                "Use evt.toStateless([ctx]).pipe(op).toStatic(initialState)",
                 "to be sure the StatefulEvt is correctly initialized"
             ].join(" "));
         }
         return evt.toStateful(opResult[0]);
+    };
+    /** Return a stateless copy */
+    StatefulEvtImpl.prototype.toStateless = function (ctx) {
+        return !!ctx ? _super.prototype.pipe.call(this, ctx) : _super.prototype.pipe.call(this);
     };
     StatefulEvtImpl.__4 = (function () {
         if (false) {

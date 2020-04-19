@@ -8,7 +8,7 @@ import { assert } from "../tools/typeSafety/assert";
 
         const sevText = Evt.create("foo");
 
-        const sevCharCount = sevText.statefulPipe(text => [text.length]);
+        const sevCharCount = sevText.pipe(text => [text.length]);
 
         assert(sevCharCount.state === sevText.state.length);
 
@@ -24,7 +24,7 @@ import { assert } from "../tools/typeSafety/assert";
 
         const sevText = Evt.create("foo");
 
-        const sevCharCount = sevText.statefulPipe(ctx, text => [text.length]);
+        const sevCharCount = sevText.pipe(ctx, text => [text.length]);
 
         assert(sevCharCount.state === sevText.state.length);
 
@@ -97,7 +97,7 @@ import { assert } from "../tools/typeSafety/assert";
 
         const sevText = Evt.create("foo");
 
-        const sevCharCount = sevText.statefulPipe(text => [text.length]);
+        const sevCharCount = sevText.pipe(text => [text.length]);
 
         assert(sevCharCount.state === sevText.state.length);
 
@@ -113,7 +113,7 @@ import { assert } from "../tools/typeSafety/assert";
 
         const sevText = Evt.create("foo");
 
-        const sevCharCount = sevText.statefulPipe(ctx, text => [text.length]);
+        const sevCharCount = sevText.pipe(ctx, text => [text.length]);
 
         assert(sevCharCount.state === sevText.state.length);
 

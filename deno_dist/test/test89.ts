@@ -12,7 +12,7 @@ const ctx = Evt.newCtx();
 
 Evt.useEffect(
     text => std_out+= text.toString(),
-    evtText.evtChange.statefulPipe(ctx)
+    evtText.evtChange.pipe(ctx)
 );
 
 assert( std_out === "foo" as string);
