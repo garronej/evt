@@ -44,7 +44,7 @@ const evtText = Evt.create("foo");
 
 Evt.useEffect(
     text=> console.log(text),
-    evtText.evtChange.statefulPipe(ctx)
+    evtText.evtChange.pipe(ctx)
 ); // Pints "foo"
 
 evtText.state= "bar"; // Prints "bar"

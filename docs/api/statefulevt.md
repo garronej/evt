@@ -81,9 +81,9 @@ evtColor.state= "BLUE"; //Prints nothing
 evtColor.state= "WHITE"; //Prints "BLUE=>WHITE"
 ```
 
-## `.statefulPipe(...)`
+## `.pipe(...)`
 
-Same as [`evt.pipe(...)`](https://docs.evt.land/api/evt/pipe) but return a `StatefulEvt`.
+Same as [`evt.pipe(...)`](https://docs.evt.land/api/evt/pipe) but return a `StatefulEvt`. Be aware that the current state of the `StatefulEvt` must be matched by the operator \( if any \) when invoking `.pipe()`, elst an exception will be thrown.
 
 ```typescript
 import { Evt } from "evt";
@@ -96,7 +96,7 @@ type Circle = { 
 const evtSelectedCircle = Evt.create<Circle>({ "color": "RED", "radius": 3 });
 
 const evtSelectedCricleColor = 
-    evtSelectedCircle.statefulPipe(circle=> [ cicle.color ]);
+    evtSelectedCircle.pipe(circle=> [ cicle.color ]);
 
 evtSelectedCircleColor.attach(console.log);
 ```
@@ -131,7 +131,7 @@ const evtIsBigAndBlue = Evt.merge([
     evtIsBig.evtChange
 ])
     .toStateful()
-    .statefulPipe(()=> [ evtIsBlue.state && evtIsBig.state ])
+    .pipe(()=> [ evtIsBlue.state && evtIsBig.state ])
     ;
     
 console.log(evtIsBigAndBlue.state); // Prints "false"
@@ -185,4 +185,19 @@ evtTick.post(2); // TS ERROR
   **/
   postForceChange(wData?: readonly [T]): number;
 ```
+
+## `.toStateless([ctx])`
+
+Return a stateless copy of the `Evt.`
+
+```typescript
+import { Evt } from "evt";
+
+const evtText= Evt.create("foo");
+
+//x is Evt<string>
+const x= evtText.toStateless();
+```
+
+`evt.toStateless()` is equivalent to `Evt.prototype.pipe.call(evt)` 
 
