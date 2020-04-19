@@ -131,7 +131,7 @@ const evtIsBigAndBlue = Evt.merge([
     evtIsBig.evtChange
 ])
     .toStateful()
-    .statefulPipe(()=> [ evtIsBlue.state && evtIsBig.state ])
+    .pipe(()=> [ evtIsBlue.state && evtIsBig.state ])
     ;
     
 console.log(evtIsBigAndBlue.state); // Prints "false"
