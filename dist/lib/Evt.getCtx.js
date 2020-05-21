@@ -1,6 +1,7 @@
 "use strict";
 exports.__esModule = true;
-var WeakMap_1 = require("minimal-polyfills/dist/lib/WeakMap");
+exports.getCtxFactory = void 0;
+var WeakMap_1 = require("minimal-polyfills/WeakMap");
 var importProxy_1 = require("./importProxy");
 /**
  * https://docs.evt.land/api/evt/getctx

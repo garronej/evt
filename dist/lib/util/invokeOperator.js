@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+exports.invokeOperator = void 0;
 var Operator_1 = require("../types/Operator");
 function invokeOperator(op, data, isPost) {
     var result = op(data, undefined, isPost);

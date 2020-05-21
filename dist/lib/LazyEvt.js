@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+exports.LazyEvt = void 0;
 var overwriteReadonlyProp_1 = require("../tools/typeSafety/overwriteReadonlyProp");
 var importProxy_1 = require("./importProxy");
 var defineAccessors_1 = require("../tools/typeSafety/defineAccessors");

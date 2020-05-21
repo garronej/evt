@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+exports.CtxLike = void 0;
 var typeGuard_1 = require("../../../tools/typeSafety/typeGuard");
 var CtxLike;
 (function (CtxLike) {

@@ -1,4 +1,4 @@
-import "minimal-polyfills/dist/lib/Array.prototype.find";
+import "minimal-polyfills/Array.prototype.find";
 import { importProxy } from "./importProxy";
 import { create } from "./Evt.create";
 import { getCtxFactory } from "./Evt.getCtx";
@@ -13,8 +13,8 @@ import { newCtx } from "./Evt.newCtx";
 import { LazyEvt } from "./LazyEvt";
 import { defineAccessors } from "../tools/typeSafety/defineAccessors";
 import { invokeOperator } from "./util/invokeOperator";
-import { Polyfill as Map, LightMap } from "minimal-polyfills/dist/lib/Map";
-import { Polyfill as WeakMap } from "minimal-polyfills/dist/lib/WeakMap";
+import { Polyfill as Map, LightMap } from "minimal-polyfills/Map";
+import { Polyfill as WeakMap } from "minimal-polyfills/WeakMap";
 import * as runExclusive from "run-exclusive";
 import { EvtError } from "./types/EvtError";
 import { overwriteReadonlyProp } from "../tools/typeSafety/overwriteReadonlyProp";

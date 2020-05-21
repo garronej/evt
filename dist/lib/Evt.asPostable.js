@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+exports.asPostable = void 0;
 /**
  * https://docs.evt.land/api/evt/aspostable
  * ⚠ UNSAFE ⚠ - Please refer to documentation before using.

@@ -23,6 +23,6 @@
 		"node_modules",
 		"dist/**/*",
 		"deno_dist/**/*",
-		"./mod.ts"
+		"mod.ts"
 	]
 }

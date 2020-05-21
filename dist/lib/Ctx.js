@@ -22,8 +22,9 @@ var __values = (this && this.__values) || function(o) {
     throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
 exports.__esModule = true;
-var Set_1 = require("minimal-polyfills/dist/lib/Set");
-var WeakMap_1 = require("minimal-polyfills/dist/lib/WeakMap");
+exports.Ctx = void 0;
+var Set_1 = require("minimal-polyfills/Set");
+var WeakMap_1 = require("minimal-polyfills/WeakMap");
 var assert_1 = require("../tools/typeSafety/assert");
 var typeGuard_1 = require("../tools/typeSafety/typeGuard");
 var LazyEvt_1 = require("./LazyEvt");

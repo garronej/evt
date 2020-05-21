@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+exports.exclude = void 0;
 /** Return a function to use as Array.prototype.filter argument
  * to exclude one or many primitive value element from the array.
  * Ex: ([ "a", "b" ] as const).filter(exclude("a") return "b"[]

@@ -1,4 +1,4 @@
-import "minimal-polyfills/dist/lib/Array.prototype.find";
+import "minimal-polyfills/Array.prototype.find";
 import { create } from "./Evt.create";
 import { getCtxFactory } from "./Evt.getCtx";
 import { factorize } from "./Evt.factorize";

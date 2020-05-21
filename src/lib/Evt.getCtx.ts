@@ -1,4 +1,4 @@
-import { Polyfill as WeakMap } from "minimal-polyfills/dist/lib/WeakMap";
+import { Polyfill as WeakMap } from "minimal-polyfills/WeakMap";
 import { importProxy } from "./importProxy";
 type VoidCtx = import("./types/interfaces").VoidCtx;
 

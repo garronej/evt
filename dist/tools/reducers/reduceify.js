@@ -20,6 +20,7 @@ var __spread = (this && this.__spread) || function () {
     return ar;
 };
 exports.__esModule = true;
+exports.toReduceArguments = void 0;
 function toReduceArguments(arrOp) {
     var params = [];
     for (var _i = 1; _i < arguments.length; _i++) {

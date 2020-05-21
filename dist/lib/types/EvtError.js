@@ -13,6 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 exports.__esModule = true;
+exports.EvtError = void 0;
 var EvtError;
 (function (EvtError) {
     var Timeout = /** @class */ (function (_super) {

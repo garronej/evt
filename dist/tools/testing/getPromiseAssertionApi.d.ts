@@ -9,7 +9,7 @@ export declare function getPromiseAssertionApi(params?: {
     mustReject: (params: {
         promise: Promise<any>;
         expectedRejectedValue?: any;
-        delay?: number | undefined;
+        delay?: number;
     }) => Promise<void>;
     mustStayPending: (p: Promise<any>) => void;
 };

@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+exports.DateLike = exports.ArrayLike = exports.MapLike = exports.SetLike = void 0;
 var typeGuard_1 = require("../typeSafety/typeGuard");
 var getPrototypeChain_1 = require("./getPrototypeChain");
 var SetLike;

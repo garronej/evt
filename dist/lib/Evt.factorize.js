@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+exports.factorize = void 0;
 /** https://docs.evt.land/api/evt/factorize */
 function factorize(evt) {
     return evt;

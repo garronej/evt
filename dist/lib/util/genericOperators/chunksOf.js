@@ -20,6 +20,7 @@ var __spread = (this && this.__spread) || function () {
     return ar;
 };
 exports.__esModule = true;
+exports.chunksOf = void 0;
 var compose_1 = require("../compose");
 var concatUint8Array_1 = require("../../../tools/concatUint8Array");
 /** Output Uint8Array of fixed size*/

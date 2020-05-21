@@ -8,7 +8,7 @@ export declare type StateDiff<T> = {
     newState: T;
 };
 export interface StatefulReadonlyEvt<T> extends NonPostableEvt<T> {
-    /** https://docs.evt.land/api/statefulevt#converting-an-evt-into-a-statefulevt */
+    /** https://docs.evt.land/api/statefulevt#tostateless-ctx */
     toStateless(ctx?: CtxLike): Evt<T>;
     readonly state: T;
     /** https://docs.evt.land/api/statefulevt#evtdiff */
@@ -17,7 +17,7 @@ export interface StatefulReadonlyEvt<T> extends NonPostableEvt<T> {
     readonly evtChange: StatefulReadonlyEvt<T>;
     /** https://docs.evt.land/api/statefulevt#evtchangediff */
     readonly evtChangeDiff: NonPostableEvt<StateDiff<T>>;
-    /** https://docs.evt.land/api/statefulevt#statefulpipe */
+    /** https://docs.evt.land/api/statefulevt#pipe */
     pipe(): StatefulEvt<T>;
     pipe<U, CtxResult>(op: Operator.fλ<T, U, CtxResult>): StatefulEvt<U>;
     pipe<U extends T>(op: (data: T) => data is U): StatefulEvt<U>;

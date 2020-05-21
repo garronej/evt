@@ -1,4 +1,4 @@
-import { Polyfill as WeakMap } from "https://raw.githubusercontent.com/garronej/minimal_polyfills/v1.0.8/deno_dist/lib/WeakMap.ts";
+import { Polyfill as WeakMap } from "https://raw.github.com/garronej/minimal_polyfills/2.0.1/WeakMap.ts";
 import { importProxy } from "./importProxy.ts";
 type VoidCtx = import("./types/interfaces/index.ts").VoidCtx;
 

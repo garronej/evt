@@ -3,7 +3,7 @@
 import { sameFactory, same } from "./same.ts";
 import { assert } from "../typeSafety/assert.ts";
 import { copy } from "./copy.ts";
-import * as util from "util DENOIFY: DEPENDENCY UNMET (STANDARD)";
+import * as util from "https://deno.land/std/node/util.ts";
 
 {
 

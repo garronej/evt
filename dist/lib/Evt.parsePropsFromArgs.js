@@ -31,6 +31,7 @@ var __spread = (this && this.__spread) || function () {
     return ar;
 };
 exports.__esModule = true;
+exports.parsePropsFromArgs = exports.matchAll = void 0;
 var id_1 = require("../tools/typeSafety/id");
 var compose_1 = require("./util/compose");
 var typeGuard_1 = require("../tools/typeSafety/typeGuard");

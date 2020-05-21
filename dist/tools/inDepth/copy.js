@@ -22,8 +22,9 @@ var __values = (this && this.__values) || function(o) {
     throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
 exports.__esModule = true;
+exports.copy = void 0;
 var assert_1 = require("../typeSafety/assert");
-var Map_1 = require("minimal-polyfills/dist/lib/Map");
+var Map_1 = require("minimal-polyfills/Map");
 var types_1 = require("./types");
 var overwriteReadonlyProp_1 = require("../typeSafety/overwriteReadonlyProp");
 /** Will work with:

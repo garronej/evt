@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+exports.loosenType = void 0;
 /**
  * https://docs.evt.land/api/evt/loosenType
  */

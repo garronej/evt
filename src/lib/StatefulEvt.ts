@@ -1,4 +1,4 @@
-import "minimal-polyfills/dist/lib/Object.is";
+import "minimal-polyfills/Object.is";
 import { defineAccessors } from "../tools/typeSafety/defineAccessors";
 import { LazyEvt } from "./LazyEvt";
 import { LazyStatefulEvt } from "./LazyStatefulEvt";

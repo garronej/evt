@@ -1,3 +1,10 @@
+const __dirname = (()=>{
+    const {url: urlStr}= import.meta;
+    const url= new URL(urlStr);
+    const __filename = url.protocol === "file:" ? url.pathname : urlStr;
+    return __filename.replace(/[/][^/]*$/, '');
+})();
+
 
 process.once("unhandledRejection", error => {
 
@@ -10,8 +17,8 @@ console.assert = (condition: any, msg?: string) => {
     }
 };
 
-import { existsSync } from "fs DENOIFY: DEPENDENCY UNMET (STANDARD)";
-import { join } from "path DENOIFY: DEPENDENCY UNMET (STANDARD)";
+import { existsSync } from "https://deno.land/std/node/fs.ts";
+import { join } from "https://deno.land/std/node/path.ts";
 
 
 (async ()=>{

@@ -33,7 +33,8 @@ var __spread = (this && this.__spread) || function () {
     return ar;
 };
 exports.__esModule = true;
-require("minimal-polyfills/dist/lib/Object.is");
+exports.StatefulEvt = void 0;
+require("minimal-polyfills/Object.is");
 var defineAccessors_1 = require("../tools/typeSafety/defineAccessors");
 var LazyEvt_1 = require("./LazyEvt");
 var LazyStatefulEvt_1 = require("./LazyStatefulEvt");
@@ -86,7 +87,6 @@ var StatefulEvtImpl = /** @class */ (function (_super) {
         }
         return evt.toStateful(opResult[0]);
     };
-    /** Return a stateless copy */
     StatefulEvtImpl.prototype.toStateless = function (ctx) {
         return !!ctx ? _super.prototype.pipe.call(this, ctx) : _super.prototype.pipe.call(this);
     };

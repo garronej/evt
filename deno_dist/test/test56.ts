@@ -1,6 +1,6 @@
 
 import { Evt } from "../lib/index.ts";
-import { EventEmitter } from "events DENOIFY: DEPENDENCY UNMET (STANDARD)";
+import { EventEmitter } from "https://deno.land/std/node/events.ts";
 import { getPromiseAssertionApi } from "../tools/testing/index.ts";
 import { assert } from "../tools/typeSafety/index.ts";
 

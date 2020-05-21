@@ -40,3 +40,8 @@ dist/test
 .vscode
 
 .DS_Store
+
+
+# /dist
+# /deno_dist
+# /mod.ts

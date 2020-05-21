@@ -9,22 +9,29 @@
     "main": "./dist/lib/index.js",
     "types": "./dist/lib/index.d.ts",
     "scripts": {
+        "test:node": "node ./dist/test",
+        "test:deno": "deno run ./deno_dist/test/deno_index.ts",
+        "test": "npm run test:node && npm run test:deno",
         "tsc": "npx tsc",
         "denoify": "npx denoify",
-        "build": "npm run tsc && npm run denoify",
-        "test": "node ./dist/test/index && deno ./deno_dist/test/deno_index.ts"
+        "cdn:.js": "simplifyify dist/lib/index.js -s evt -o dist/umd_bundle.js --debug --bundle",
+        "cdn:.min.js": "terser dist/umd_bundle.js -cmo dist/umd_bundle.min.js",
+        "cdn": "npm run cdn:.js && npm run cdn:.min.js",
+        "build": "npm run tsc && npm run denoify && npm run cdn",
+        "enable_short_import_path:npm": "npm run build && npx denoify_enable_short_npm_import_path",
+        "enable_short_import_path:deno": "npm run build && npx denoify_enable_short_deno_import_path",
+        "clean": "rm -rf dist deno_dist node_modules mod.ts"
     },
     "author": "Joseph Garrone",
     "license": "MIT",
     "dependencies": {
-        "minimal-polyfills": "^1.0.8",
-        "run-exclusive": "^2.1.12"
+        "minimal-polyfills": "^2.0.1",
+        "run-exclusive": "^2.1.18"
     },
     "files": [
+        "/dist/*.{d.ts,js,js.map}",
         "/dist/lib",
-        "/src/lib",
-        "/dist/tools",
-        "/src/tools"
+        "/dist/tools"
     ],
     "keywords": [
         "deno",
@@ -40,9 +47,11 @@
     ],
     "homepage": "https://evt.land",
     "devDependencies": {
+        "denoify": "^0.2.11",
+        "simplifyify": "8.0.1",
+        "terser": "4.6.13",
         "@types/node": "^8.9.1",
         "rxjs": "^6.5.4",
-        "typescript": "^3.8.0",
-        "denoify": "github:garronej/denoify"
+        "typescript": "3.9.2"
     }
 }

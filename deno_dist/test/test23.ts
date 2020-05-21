@@ -1,5 +1,5 @@
 import { Evt } from "../lib/index.ts";
-import { EventEmitter } from "events DENOIFY: DEPENDENCY UNMET (STANDARD)";
+import { EventEmitter } from "https://deno.land/std/node/events.ts";
 
 let success = 0;
 

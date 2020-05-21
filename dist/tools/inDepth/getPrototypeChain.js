@@ -20,6 +20,7 @@ var __spread = (this && this.__spread) || function () {
     return ar;
 };
 exports.__esModule = true;
+exports.getPrototypeChain = void 0;
 function getPrototypeChain(obj, callback) {
     var proto = Object.getPrototypeOf(obj);
     if (!proto) {

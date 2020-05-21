@@ -1,5 +1,5 @@
-import { Polyfill as Set } from "minimal-polyfills/dist/lib/Set";
-import { Polyfill as WeakMap } from "minimal-polyfills/dist/lib/WeakMap";
+import { Polyfill as Set } from "minimal-polyfills/Set";
+import { Polyfill as WeakMap } from "minimal-polyfills/WeakMap";
 import { assert } from "../tools/typeSafety/assert";
 import { typeGuard } from "../tools/typeSafety/typeGuard";
 import { LazyEvt } from "./LazyEvt";

@@ -1,4 +1,4 @@
-import "minimal-polyfills/dist/lib/Object.is";
+import "minimal-polyfills/Object.is";
 /** https://docs.evt.land/api/statefulevt */
 export declare type StatefulEvt<T> = import("./types/interfaces").StatefulEvt<T>;
 export declare const StatefulEvt: {

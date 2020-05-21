@@ -20,6 +20,7 @@ var __spread = (this && this.__spread) || function () {
     return ar;
 };
 exports.__esModule = true;
+exports.allEqualsFactory = exports.allEquals = exports.arrAllEquals = void 0;
 var allEqualsTo_1 = require("./allEqualsTo");
 var reduceify_1 = require("./reduceify");
 function arrAllEquals(arr, areEquals) {

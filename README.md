@@ -47,6 +47,17 @@ import { Evt } from "https://deno.land/x/evt/mod.ts";
 import { Evt } from "evt"; 
 ```
 
+## Import from HTML, with CDN
+
+Expose a global (wider browser support):  
+
+```html
+<script src="//unpkg.com/evt/umd_bundle.min.js"></script>
+<script>
+  var Evt = evt.Evt;
+</script>
+```
+
 # TL;DR*
 
 ```typescript

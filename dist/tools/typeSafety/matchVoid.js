@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+exports.matchVoid = void 0;
 /**
  *
  * Unlike undefined or null, testing o !== void

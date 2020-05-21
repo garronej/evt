@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+exports.throttleTime = void 0;
 var compose_1 = require("../compose");
 exports.throttleTime = function (duration) {
     return compose_1.compose([

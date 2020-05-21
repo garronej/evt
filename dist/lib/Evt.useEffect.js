@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+exports.useEffect = void 0;
 function useEffect(effect, evt, dataFirst) {
     var i = 0;
     ("state" in evt ? evt.evtChange : evt)

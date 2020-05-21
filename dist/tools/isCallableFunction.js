@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+exports.isCallableFunction = void 0;
 /** NOTE: constructors are of type "function" but are not callable,
  * without the new keyword.
  * This function will return true if and only if the object passed is

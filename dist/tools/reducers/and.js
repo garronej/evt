@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+exports.and = exports.arrAnd = void 0;
 var reduceify_1 = require("./reduceify");
 function arrAnd(arr, conditions) {
     return !conditions.find(function (condition) { return !condition(arr); });

@@ -1,5 +1,5 @@
-import { Polyfill as Set } from "https://raw.githubusercontent.com/garronej/minimal_polyfills/v1.0.8/deno_dist/lib/Set.ts";
-import { Polyfill as WeakMap } from "https://raw.githubusercontent.com/garronej/minimal_polyfills/v1.0.8/deno_dist/lib/WeakMap.ts";
+import { Polyfill as Set } from "https://raw.github.com/garronej/minimal_polyfills/2.0.1/Set.ts";
+import { Polyfill as WeakMap } from "https://raw.github.com/garronej/minimal_polyfills/2.0.1/WeakMap.ts";
 import { assert } from "../tools/typeSafety/assert.ts";
 import { typeGuard } from "../tools/typeSafety/typeGuard.ts";
 import { LazyEvt } from "./LazyEvt.ts";

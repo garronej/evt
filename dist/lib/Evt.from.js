@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+exports.from = void 0;
 var id_1 = require("../tools/typeSafety/id");
 var assert_1 = require("../tools/typeSafety/assert");
 var typeGuard_1 = require("../tools/typeSafety/typeGuard");

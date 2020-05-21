@@ -20,6 +20,7 @@ var __spread = (this && this.__spread) || function () {
     return ar;
 };
 exports.__esModule = true;
+exports.compose = void 0;
 var encapsulateOpState_1 = require("./encapsulateOpState");
 var invokeOperator_1 = require("./invokeOperator");
 var Operator_1 = require("../types/Operator");
@@ -34,19 +35,19 @@ function f_o_g(op1, op2) {
         encapsulateOpState_1.encapsulateOpState(op2) :
         id_1.id(op2);
     return id_1.id(function () {
-        var _a = [];
+        var _a, _b;
+        var _c = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            _a[_i] = arguments[_i];
+            _c[_i] = arguments[_i];
         }
-        var _b = __read(_a, 3), dataA = _b[0], isPost = _b[2];
-        var _c, _d;
+        var _d = __read(_c, 3), dataA = _d[0], isPost = _d[2];
         var resultB = invokeOperator_1.invokeOperator(opAtoB, dataA, isPost);
         if (Operator_1.Operator.fλ.Result.NotMatched.match(resultB)) {
             //CtxResultOp1 assignable to CtxResultOp1 | CtxResultOp2...
             assert_1.assert(typeGuard_1.typeGuard(resultB));
             return resultB;
         }
-        var detachOp1 = (_c = resultB[1]) !== null && _c !== void 0 ? _c : null;
+        var detachOp1 = (_a = resultB[1]) !== null && _a !== void 0 ? _a : null;
         //...same...
         assert_1.assert(typeGuard_1.typeGuard(detachOp1));
         var _e = __read(resultB, 1), dataB = _e[0];
@@ -58,7 +59,7 @@ function f_o_g(op1, op2) {
         }
         return id_1.id([
             resultC[0],
-            (_d = detachOp1 !== null && detachOp1 !== void 0 ? detachOp1 : resultC[1]) !== null && _d !== void 0 ? _d : null
+            (_b = detachOp1 !== null && detachOp1 !== void 0 ? detachOp1 : resultC[1]) !== null && _b !== void 0 ? _b : null
         ]);
     });
 }

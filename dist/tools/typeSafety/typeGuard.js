@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+exports.typeGuard = void 0;
 /**
  * Use cases:
  *

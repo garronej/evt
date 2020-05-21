@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+exports.merge = exports.mergeImpl = void 0;
 var importProxy_1 = require("./importProxy");
 function mergeImpl(ctx, evts) {
     var evtUnion = new importProxy_1.importProxy.Evt();

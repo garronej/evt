@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+exports.Operator = void 0;
 var typeSafety_1 = require("../../tools/typeSafety");
 var Operator;
 (function (Operator) {

@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+exports.every = exports.arrEvery = void 0;
 var reduceify_1 = require("./reduceify");
 function arrEvery(arr, test) {
     if (test === void 0) { test = function (e) { return !!e; }; }

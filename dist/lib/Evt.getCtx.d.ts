@@ -1,3 +1,4 @@
+declare type VoidCtx = import("./types/interfaces").VoidCtx;
 /**
  * https://docs.evt.land/api/evt/getctx
  *
@@ -5,4 +6,5 @@
  * No strong reference to the object is created
  * when the object is no longer referenced it's associated Ctx will be freed from memory.
  */
-export declare function getCtxFactory(): (obj: object) => import("./types/interfaces").VoidCtx;
+export declare function getCtxFactory(): (obj: object) => VoidCtx;
+export {};

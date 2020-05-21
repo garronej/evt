@@ -1,7 +1,7 @@
 
 import { assert } from "../typeSafety/assert.ts";
-import { Polyfill as Map, LightMap } from "https://raw.githubusercontent.com/garronej/minimal_polyfills/v1.0.8/deno_dist/lib/Map.ts";
-import { LightSet } from "https://raw.githubusercontent.com/garronej/minimal_polyfills/v1.0.8/deno_dist/lib/Set.ts";
+import { Polyfill as Map, LightMap } from "https://raw.github.com/garronej/minimal_polyfills/2.0.1/Map.ts";
+import { LightSet } from "https://raw.github.com/garronej/minimal_polyfills/2.0.1/Set.ts";
 import { MapLike, SetLike, ArrayLike, DateLike } from "./types.ts";
 import { overwriteReadonlyProp } from "../typeSafety/overwriteReadonlyProp.ts";
 

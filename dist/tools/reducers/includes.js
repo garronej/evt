@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+exports.includes = exports.arrIncludes = void 0;
 var reduceify_1 = require("./reduceify");
 function arrIncludes(arr, e) {
     return arr.indexOf(e) >= 0;

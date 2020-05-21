@@ -1,4 +1,4 @@
-import "https://raw.githubusercontent.com/garronej/minimal_polyfills/v1.0.8/deno_dist/lib/Object.is.ts";
+import "https://raw.github.com/garronej/minimal_polyfills/2.0.1/Object.is.ts";
 import { defineAccessors } from "../tools/typeSafety/defineAccessors.ts";
 import { LazyEvt } from "./LazyEvt.ts";
 import { LazyStatefulEvt } from "./LazyStatefulEvt.ts";
@@ -123,7 +123,6 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
 
     }
 
-    /** Return a stateless copy */
     toStateless(ctx?: CtxLike): Evt<any> {
         return !!ctx ? super.pipe(ctx) : super.pipe();
     }
