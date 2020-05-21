@@ -1,6 +1,6 @@
 # Why EVT ?
 
-![](https://img.shields.io/bundlephobia/minzip/evt) ![](https://img.shields.io/npm/dw/evt) ![](https://img.shields.io/github/commit-activity/w/garronej/evt) ![](https://img.shields.io/npm/l/evt)
+![](https://github.com/garronej/evt/workflows/ci/badge.svg?branch=develop) ![](https://img.shields.io/bundlephobia/minzip/evt) ![](https://img.shields.io/npm/dw/evt) ![](https://img.shields.io/github/commit-activity/w/garronej/evt) ![](https://img.shields.io/npm/l/evt)
 
 `'evt'` is intended to be a replacement for `'events'`.  
 It enables and encourages **functional programming** and makes heavy use of **typescript**'s type inference features to provide **type safety** while keeping things **concise and elegant** 🍸.
