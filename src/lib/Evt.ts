@@ -26,16 +26,19 @@ import { CtxLike } from "./types/interfaces/CtxLike";
 
 import { Handler } from "./types/Handler";
 import { Operator } from "./types/Operator";
-type NonPostableEvt<T> = import("./types/interfaces").NonPostableEvt<T>;
-type StatefulEvt<T> = import("./types/interfaces").StatefulEvt<T>;
+
+import type { NonPostableEvt } from "./types/interfaces";
+import type { StatefulEvt } from "./types/interfaces";
 
 //NOTE: Deno can't use NodeJS type def ( obviously )
 type Timer= { _timerBrand: any; };
 const safeSetTimeout = (callback: () => void, ms: number): Timer => setTimeout(callback, ms) as any;
 const safeClearTimeout = (timer: Timer): void => clearTimeout(timer as any);
 
+import type { Evt as _Evt } from "./types/interfaces";
+
 /** https://docs.evt.land/api/evt */
-export type Evt<T> = import("./types/interfaces").Evt<T>;
+export type Evt<T> = _Evt<T>;
 
 class EvtImpl<T> implements Evt<T> {
 

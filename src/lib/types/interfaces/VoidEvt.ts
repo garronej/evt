@@ -1,5 +1,6 @@
 
-type Evt<T> = import("./Evt").Evt<T>;
+
+import type { Evt } from "./Evt";
 
 /** 
  * https://docs.evt.land/api/evt/create#why-voidevt-and-not-evt-less-than-void-greater-than 

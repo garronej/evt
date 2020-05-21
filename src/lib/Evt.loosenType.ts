@@ -1,7 +1,7 @@
 import { SwapEvtType } from "./types/helper/SwapEvtType";
 import { UnpackEvt } from "./types/helper/UnpackEvt";
 
-type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T>;
+import type { EvtLike } from "./types/helper/UnpackEvt";
 
 /**
  * https://docs.evt.land/api/evt/loosenType

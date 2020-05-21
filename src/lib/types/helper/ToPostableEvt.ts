@@ -1,11 +1,13 @@
-type EvtLike<T> = import("./UnpackEvt").EvtLike<T>;
-type StatefulPostable<T> = import("../interfaces").StatefulPostable<T>;
-type Postable<T> = import("../interfaces").Postable<T>;
-type NonPostableEvt<T> = import("../interfaces").NonPostableEvt<T>;
-type StatefulReadonlyEvt<T> = import("../interfaces").StatefulReadonlyEvt<T>;
-type StatefulEvt<T> = import("../interfaces").StatefulEvt<T>;
-type Evt<T> = import("../interfaces").Evt<T>;
-type VoidEvt = import("../interfaces").VoidEvt;
+
+import type { EvtLike } from "./UnpackEvt";
+import type { StatefulPostable } from "../interfaces";
+import type { Postable } from "../interfaces";
+import type { NonPostableEvt } from "../interfaces";
+import type { StatefulReadonlyEvt } from "../interfaces";
+import type { StatefulEvt } from "../interfaces";
+import type { Evt } from "../interfaces";
+import type { VoidEvt } from "../interfaces";
+
 
 type UseVoidEvt<E> = E extends Evt<void> ? VoidEvt : E;
 

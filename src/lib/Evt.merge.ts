@@ -1,10 +1,11 @@
 import { UnpackEvt } from "./types/helper/UnpackEvt";
 import { importProxy } from "./importProxy";
 
-type Evt<T>= import("./types/interfaces").Evt<T>;
-type CtxLike<Result> = import("./types/interfaces").CtxLike<Result>;
+import type { Evt } from "./types/interfaces";
+import type { CtxLike } from "./types/interfaces";
+import type { EvtLike as _EvtLike } from "./types/helper/UnpackEvt";
 
-type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T> & {
+type EvtLike<T> = _EvtLike<T> & {
     attach(ctx: CtxLike<any>, callback: (data: T)=> void): void;
     attach(callback: (data: T)=> void): void;
 };

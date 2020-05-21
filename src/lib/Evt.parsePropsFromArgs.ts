@@ -4,7 +4,7 @@ import { Operator } from "./types/Operator"
 import { id } from "../tools/typeSafety/id";
 import { compose } from "./util/compose";
 import { typeGuard } from "../tools/typeSafety/typeGuard"
-type CtxLike<Result> = import("./types/interfaces").CtxLike<Result>;
+import { CtxLike } from "./types/interfaces";
 
 export function matchAll() { return true; }
 

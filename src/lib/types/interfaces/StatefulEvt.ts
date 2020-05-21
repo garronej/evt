@@ -1,6 +1,6 @@
 
-type StatefulReadonlyEvt<T> = import("./StatefulReadonlyEvt").StatefulReadonlyEvt<T>;
-type StatefulPostable<T> = import("./StatefulPostable").StatefulPostable<T>;
+import type { StatefulReadonlyEvt } from "./StatefulReadonlyEvt";
+import type { StatefulPostable } from "./StatefulPostable";
 
 export interface StatefulEvt<T> extends StatefulReadonlyEvt<T>, StatefulPostable<T> {
 

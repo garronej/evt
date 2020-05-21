@@ -1,9 +1,10 @@
 
 import { Handler } from "../Handler";
 
-type EvtLike<T> = import("../helper/UnpackEvt").EvtLike<T>;
-type Evt<T> = import("./Evt").Evt<T>;
-type CtxLike<T> = import("./CtxLike").CtxLike<T>;
+
+import type { EvtLike } from "../helper/UnpackEvt";
+import type { Evt } from "./Evt";
+import type { CtxLike } from "./CtxLike";
 
 export type DoneOrAborted<Result> = DoneOrAborted.Done<Result> | DoneOrAborted.Aborted<Result>;
 
