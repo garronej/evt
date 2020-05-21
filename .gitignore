@@ -42,6 +42,6 @@ dist/test
 .DS_Store
 
 
-# /dist
-# /deno_dist
-# /mod.ts
+/dist
+/deno_dist
+/mod.ts
