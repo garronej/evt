@@ -584,7 +584,7 @@ f((n: number): n is 0 | 1 => n === 0 || n === 1); // OK, TS infer f<number, 0 | 
 Generic operators such as `bufferTime` `debounceTime`, `skip`, `take`, `switchMap`, `mergeMap` and `reduce`Will be added later on alongside creators. To implement those we need a third type of operator called `AutonomousOperators` that will ship in the next major release.
 {% endhint %}
 
-Some generic operators are provided in `"evt/dist/lib/util/genericOperators"` such as `scan`, `throttleTime` or `to` but that's about it.
+Some generic operators are provided in `"evt/lib/util/genericOperators"` such as `scan`, `throttleTime` or `to` but that's about it.
 
 ```typescript
 //Importing custom operator chunksOf that is not exported by default.
