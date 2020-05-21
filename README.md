@@ -7,15 +7,12 @@
     <br>
     <img src="https://img.shields.io/bundlephobia/minzip/evt">
     <img src="https://img.shields.io/npm/dw/evt">
-    <img src="https://img.shields.io/github/commit-activity/w/garronej/evt">
     <img src="https://img.shields.io/npm/l/evt">
 </p>
 <p align="center">
   <a href="https://www.evt.land">Home</a>
   -
   <a href="https://docs.evt.land/api">Documentation</a>
-  -
-  <a href="https://gitter.im/evtland/">Chat</a>
 </p>
 
 ---
