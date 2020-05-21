@@ -1,3 +1,5 @@
+Deno v1.0.1 breaks EVT, fix on the way.
+
 <p align="center">
     <img src="https://user-images.githubusercontent.com/6702424/76674598-91ebfc00-65b1-11ea-88df-eb43f04f3cce.png">  
 </p>

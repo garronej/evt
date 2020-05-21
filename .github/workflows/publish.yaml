@@ -70,6 +70,8 @@ jobs:
         ref: develop
     - name: Remove .github directory, useless on 'master' branch
       run: rm -r .github
+    - name: Removes GitBook files
+      run: rm -r docs .gitbook.yaml
     - name: Remove branch 'master' 
       continue-on-error: true
       run: |
