@@ -7,7 +7,7 @@
 {% endhint %}
 
 ```typescript
-import { ToNonPostableEvt } from "evt";
+import { ToNonPostableEvt } from "evt";
 
 ToNonPostableEvt<Evt<T>>         → NonPostableEvt<T>
 ToNonPostableEvt<SatefulEvt<T>>  → StatefulReadonlyEvt<T>
@@ -25,7 +25,6 @@ ToNonPostableEvt<{
     evtCount: StatefulNonpostableEvt<number>; 
     type: "FOO"
 }
-
 ```
 
 Example use of the `NonPostableEvt` interface:
@@ -79,7 +78,7 @@ ToPostableEvt<{
 
 ## UnpackEvt&lt;E&gt;
 
-Extract the type argument of an Evt 
+Extract the type argument of an Evt
 
 ```typescript
 import { UnpackEvt } from "evt";
@@ -101,7 +100,7 @@ UnpackEvt<{
 }
 ```
 
-#### Example:
+### Example:
 
 UnpackEvt is a helper type to infer the type argument of an Evt instance.
 
@@ -142,11 +141,9 @@ SwapEvtType<StatefulEvt<number>, void>    → VoidEvt
 ## FactorizeEvt&lt;E&gt;
 
 ```typescript
-import { FactorizeEvt } from "evt";
+import { FactorizeEvt } from "evt";
 
 FactorizeEvt<Evt<string> | Evt<number>>     → Evt<string | number>
 //...Work as well with StatefulEvt, NonPostable ect
 ```
-
-
 

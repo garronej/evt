@@ -6,7 +6,7 @@ Evt.asNonPostable\(\) is the identity function with special type annotation
 
 Return the passed evt typed as an object that can't be posted.
 
-#### Usecase: 
+## Usecase:
 
 Take [this example](https://docs.evt.land/api/statefulevt#make-a-statefulevt-readonly).
 
@@ -17,13 +17,13 @@ import { Evt } from "evt";
 
 //Return an event that post every second.
 function generateEvtTick(delay: number) {
-    
+
     const evtTick= Evt.create(0);
-    
+
     setInterval(()=> evtTick.state++, delay);
-    
+
     retrun Evt.asNonPostable(evtTick);
-    
+
 }
 
 const evtTick= generateTick(1000);

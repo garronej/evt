@@ -95,7 +95,7 @@ Evt.from(document, "click")
 
 ### RxJS operators vs EVT operator
 
-Unlike [RxJS operators](https://rxjs-dev.firebaseapp.com/guide/operators) that return `Observable` EVT operators are function build using native language features, no by composing other pre-existing operators or instantiating any particular class. 
+Unlike [RxJS operators](https://rxjs-dev.firebaseapp.com/guide/operators) that return `Observable` EVT operators are function build using native language features, no by composing other pre-existing operators or instantiating any particular class.
 
 Consider that we have an emitter for this data type:
 

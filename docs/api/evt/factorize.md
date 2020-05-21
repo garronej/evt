@@ -1,7 +1,7 @@
 # Evt.factorize\(evt\)
 
 {% hint style="info" %}
-This is the identity function with special type annotations. 
+This is the identity function with special type annotations.
 {% endhint %}
 
 If you have a variable that is either an `Evt` that post `A` or an `Evt` that post `B` you have an event that post `A or B`.
@@ -17,14 +17,14 @@ evt.attach(data=> { }); // TS ERROR
 
 Evt.factorize(evt) // OK, return Evt<string | number | void>
     .attach(data=> { // data is string | number | void
-    
+
         //To test if data is void
         if( matchVoid(data) ){
             return;
         }
-        
+
         //Here data is string | number.
-    
+
     })
     ;
 ```

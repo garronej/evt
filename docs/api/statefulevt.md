@@ -1,6 +1,6 @@
 # StatefulEvt&lt;T&gt;
 
-A `StatefulEvt` is an Evt stat keep a reference to the last value posted. 
+A `StatefulEvt` is an Evt stat keep a reference to the last value posted.
 
 You can think of it as way to observe when a value is changed.
 
@@ -8,7 +8,7 @@ You can think of it as way to observe when a value is changed.
 
 Property type: `T`
 
-reading the property gives the last event data posted. Setting the property \(`evt.state = data`\) is equivalent of calling invoking  `.post(data)`.
+reading the property gives the last event data posted. Setting the property \(`evt.state = data`\) is equivalent of calling invoking `.post(data)`.
 
 ```typescript
 import { Evt } from "evt";
@@ -52,7 +52,7 @@ Property type: `NonPostableEvt<{prevState:T; newState: T}>`
 Posted every time the Evt is posted. Used to compare the previous state with the new state.
 
 ```typescript
-import { Evt } from "evt";
+import { Evt } from "evt";
 
 const evtColor = Evt.create<"BLUE"|"RED"|"WHITE">("BLUE");
 evtColor.evtDiff.attach(
@@ -70,7 +70,7 @@ Property type: `NonPostableEvt<{prevState:T; newState: T}>`
 Same than .evtDiff but post only when .evtChang post.
 
 ```typescript
-import { Evt } from "evt";
+import { Evt } from "evt";
 
 const evtColor = Evt.create<"BLUE"|"RED"|"WHITE">("BLUE");
 evtColor.evtChangeDiff.attach(
@@ -86,9 +86,9 @@ evtColor.state= "WHITE"; //Prints "BLUE=>WHITE"
 Same as [`evt.pipe(...)`](https://docs.evt.land/api/evt/pipe) but return a `StatefulEvt`. Be aware that the current state of the `StatefulEvt` must be matched by the operator \( if any \) when invoking `.pipe()`, elst an exception will be thrown.
 
 ```typescript
-import { Evt } from "evt";
+import { Evt } from "evt";
 
-type Circle = { 
+type Circle = { 
     color: "WHITE" | "RED";
     radius: number;
 };
@@ -112,7 +112,7 @@ import { Evt } from "evt";
 const evtClickCount= Evt.from(document,"click")
     .pipe([(...[,count])=>[count+1],0])
     .toStateful(0);
-    
+
 //...user click 3 times on the page
 
 console.log(evtClickCount.state); //Prints "3"
@@ -133,7 +133,7 @@ const evtIsBigAndBlue = Evt.merge([
     .toStateful()
     .pipe(()=> [ evtIsBlue.state && evtIsBig.state ])
     ;
-    
+
 console.log(evtIsBigAndBlue.state); // Prints "false"
 
 evtIsBlue.state= true;
@@ -156,13 +156,13 @@ import { StatefulEvt, StatefulReadonlyEvt } from "evt";
 
 //Return an event that post every second.
 function generateEvtTick(delay: number): StatefulReadonlyEvt<number> {
-    
+
     const evtTick= new StatefulEvt(0);
-    
+
     setInterval(()=> evtTick.state++, delay);
-    
+
     retrun evtTick;
-    
+
 }
 
 const evtTick= generateTick(1000);
@@ -199,5 +199,5 @@ const evtText= Evt.create("foo");
 const x= evtText.toStateless();
 ```
 
-`evt.toStateless()` is equivalent to `Evt.prototype.pipe.call(evt)` 
+`evt.toStateless()` is equivalent to `Evt.prototype.pipe.call(evt)`
 

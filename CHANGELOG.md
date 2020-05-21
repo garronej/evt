@@ -1,3 +1,8 @@
+### **1.7.1** (2020-05-21)  
+  
+- Temorarly disabeling sourcemap  
+- Add CI badge    
+  
 
 ### **1.7.0** (2020-05-21)  
   
