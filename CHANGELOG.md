@@ -1,3 +1,7 @@
+### **1.7.3** (2020-05-21)  
+  
+- fix for supporting Deno v1.0.1, temporary droping support for TS < 3.8    
+  
 ### **1.7.2** (2020-05-21)  
   
 - Notice about the fact EVT won't work on Deno 1.0.1  
