@@ -5,6 +5,7 @@
     💧<i>A type safe replacement for Node's EventEmitter</i>💧
     <br>
     <br>
+    <img src="https://github.com/garronej/evt/workflows/ci/badge.svg?branch=develop">
     <img src="https://img.shields.io/bundlephobia/minzip/evt">
     <img src="https://img.shields.io/npm/dw/evt">
     <img src="https://img.shields.io/npm/l/evt">
