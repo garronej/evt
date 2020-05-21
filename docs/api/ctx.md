@@ -26,11 +26,11 @@ When it returns `{ "DETACH": ctx, "res": result }`, `ctx.done(result)` is invoke
 To test if ctx.done\(\) have been invoked already you can use:`ctx.getEvtDone().postCount !== 0`
 {% endhint %}
 
-#### Returns
+### Returns
 
 `ReturnType<ctx.getHandlers()>` All the [Handler](https://docs.ts-evt.dev/api/handler)s that were bound to the context. They are now detached, calling `ctx.getHandler()` just after `ctx.done()` returns an empty array.
 
-#### Parameter
+### Parameter
 
 * `T` for `Ctx<T>`
 * none for `VoidCtx`
@@ -43,11 +43,11 @@ Equivalent of `ctx.done()` to use when the task did not go through.
 When a fλ operator returns `{ "DETACH": ctx, "err": error }`, `ctx.abort(error)` is invoked.
 {% endhint %}
 
-#### Returns
+### Returns
 
 `ReturnType<ctx.done()>` \(cf `ctx.done` \)
 
-#### Parameter
+### Parameter
 
 `Error` an error that describes what went wrong.
 
@@ -59,7 +59,7 @@ Tracks when ctx.done or ctx.abort are invoked.
 For most use cases, it is more convenient to use `ctx.waitFor([timeout])`
 {% endhint %}
 
-#### Returns
+### Returns
 
 * For VoidCtx an Evt that posts:
   * `{ handlers: Handler.WithEvt[] }` when `ctx.done()` is called.
@@ -70,7 +70,7 @@ For most use cases, it is more convenient to use `ctx.waitFor([timeout])`
 
 `Handler.WithEvt<T>` is just a type alias for an object that wraps a handler and the `Evt` it is attached to: `{ handler: Handler<T, any>, evt: Evt<T> }`
 
-#### Example
+### Example
 
 ```typescript
 import { Evt } from "evt";
@@ -157,7 +157,7 @@ ee.emit("text", "bar"); //Prints nothing
 
 Tracks via a Promise that resolves when `ctx.done()` or `ctx.abort()` is invoked.
 
-#### Returns
+### Returns
 
 `Promise<T>` \(`T` is the type argument of `Ctx<T>` \) A promise that resolve when ctx.done\(\[result\]\) is invoked.
 
@@ -165,17 +165,17 @@ If `ctx.abort(error)` is invoked before `ctx.done()` the promise rejects with `e
 
 If timeout was specified the promise rejects if `ctx.done()` was not invoked within `timeout` milliseconds. If it happens `ctx.abort(timeoutError)` is internally invoked `timeoutError` being an instance of `EvtError.Timeout`.
 
-#### Parameter
+### Parameter
 
 `number` Optional, number of milliseconds before the promise reject if it hasn't fulfilled within this delay.
 
 ## `ctx.getHandlers()`
 
-#### Returns
+### Returns
 
 `Handler.WithEvt[]` The [`Handler`](https://docs.ts-evt.dev/api/handler)s that are bound to the context alongside with the `Evt` instance each one is attached to. The Handlers that are bound to the context but no longer attached to an Evt are not listed \( they are usually freed from memory anyway as there should be nor reference left of them as soon as they are detached \).
 
-#### Example
+### Example
 
 ```typescript
 //NOTE: Equivalent to evt.detach(ctx);
@@ -188,9 +188,9 @@ ctx
 
 ## `ctx.evtAttach`
 
-#### Returns
+### Returns
 
-`Evt<Handler.WithEvt<any>>` An Evt that posts every time a new handler bound to the context is attached.  
+`Evt<Handler.WithEvt<any>>` An Evt that posts every time a new handler bound to the context is attached.
 
 ```typescript
 import { Evt } from "evt";

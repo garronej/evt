@@ -10,5 +10,3 @@ Use Infinity or 0 to completely disable the warning.
 Different version of EVT can be coabitating in a single project. The modification will only apply to the `Evt`s instantiated by this constructor.
 {% endhint %}
 
-
-

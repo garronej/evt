@@ -20,7 +20,7 @@ There are a lot of things that can't easily be done with `EventEmitter`:
 * Enforcing **type safety**.
 * Removing a particular listener \( if the callback is an anonymous function \).
 * Adding a one-time listener for the next event that meets a condition.
-* Waiting \(via a Promise\) for one thing or another to happen.  
+* Waiting \(via a Promise\) for one thing or another to happen.
 
   _Example: waiting at most one second for the next message, stop waiting if the socket disconnects._
 

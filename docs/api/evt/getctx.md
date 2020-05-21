@@ -8,5 +8,3 @@ description: A way to avoid having to create a ctx variable.
 
 No strong reference to the object is created when the object is no longer referenced it's associated Ctx will be freed from memory.
 
-
-

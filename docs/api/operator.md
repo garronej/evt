@@ -499,7 +499,7 @@ Unless all the operators passed as arguments are stateless the operator returned
 {% endhint %}
 
 ```typescript
-import { Evt, compose } from "evt";
+import { Evt, compose } from "evt";
 
 //Never do that: 
 {

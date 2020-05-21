@@ -37,7 +37,7 @@ evtAge.pose(1);
 Used with [`StatefulEvt`](https://docs.evt.land/api/statefulevt)s:
 
 ```typescript
-import { Evt } from "evt";
+import { Evt } from "evt";
 
 const evtText = Evt.create("foo");
 
@@ -53,6 +53,5 @@ evtText.state= "bar"; // Prints nothing
 ctx.done();
 
 evtText.state= "baz"; // Prints nothing
-
 ```
 

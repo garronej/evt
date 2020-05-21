@@ -26,8 +26,6 @@ To chery pick the handlers to detach use [`evt.getHandlers()`](https://docs.ts-e
 
 `ctx?: Ctx` If [`Ctx`](https://docs.ts-evt.dev/api/ctx) is provided only Handler bound to the given context will be removed.
 
-
-
 ## Examples
 
 To detach all handlers at once:

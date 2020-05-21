@@ -12,14 +12,14 @@ Evt.asNonPostable\(\) is the identity function with special type annotation
 Use this method only on`Evt` you instantiated yourself. Not as a hack to trigger events on `Evt` that have been exposed as non-postable by an API.
 {% endhint %}
 
-To invoke `post()` on a `NonPostableEvt` or a `StatefullReadonlyEvt`. 
+To invoke `post()` on a `NonPostableEvt` or a `StatefullReadonlyEvt`.
 
-#### Usecase:
+## Usecase:
 
-Without this method this would be the way for a class to expose `Evt` that are posted internally and exposed to be listened. 
+Without this method this would be the way for a class to expose `Evt` that are posted internally and exposed to be listened.
 
 ```typescript
-import { Evt } from "evt";
+import { Evt } from "evt";
 
 class Socket2 {
 
@@ -47,7 +47,7 @@ class Socket2 {
 }
 ```
 
-Now it can be frustrating to have to store a private property only to call post on a object that we know is postable. Here is were this method come in handy: 
+Now it can be frustrating to have to store a private property only to call post on a object that we know is postable. Here is were this method come in handy:
 
 ```typescript
 class Socket {
