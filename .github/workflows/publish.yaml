@@ -92,7 +92,7 @@ jobs:
         git config --local user.email "denoify_ci@github.com"
         git config --local user.name "denoify_ci"
         git add -A
-        git commit -am "Automatic structural changes for Deno"
+        git commit -am "Refer to CHANGELOG.md"
     - name: Push changes
       uses: ad-m/github-push-action@v0.5.0
       with:
