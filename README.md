@@ -49,7 +49,7 @@ Expose a global (wider browser support):
 ```html
 <script src="//unpkg.com/evt/umd_bundle.min.js"></script>
 <script>
-  var Evt = evt.Evt;
+    const { Evt } = window["evt"];
 </script>
 ```
 
