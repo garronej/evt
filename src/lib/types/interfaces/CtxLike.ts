@@ -1,8 +1,7 @@
 
 import { Handler } from "../Handler";
 import { typeGuard } from "../../../tools/typeSafety/typeGuard";
-
-import type { EvtLike } from "../helper/UnpackEvt";
+type EvtLike<T> = import("../helper/UnpackEvt").EvtLike<T>;
 
 /** 
  * Minimal interface that an object must implement to be a valid context argument 

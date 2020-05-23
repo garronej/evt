@@ -1,7 +1,7 @@
 
 import { FactorizeEvt } from "./types/helper/FactorizeEvt";
 
-import type { EvtLike } from "./types/helper/UnpackEvt";
+type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T>;
 
 /** https://docs.evt.land/api/evt/factorize */
 export function factorize<E extends EvtLike<any>>(

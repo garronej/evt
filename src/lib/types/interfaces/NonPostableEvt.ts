@@ -1,10 +1,9 @@
 import { Handler } from "../Handler";
 import { Operator } from "../Operator";
 
-
-import type { StatefulEvt } from "./StatefulEvt";
-import type { CtxLike } from "./CtxLike";
-import type { Evt } from "./Evt";
+type StatefulEvt<T> = import("./StatefulEvt").StatefulEvt<T>;
+type CtxLike<Result = any> = import("./CtxLike").CtxLike<Result>;
+type Evt<T> = import("./Evt").Evt<T>;
 
 
 export interface NonPostableEvt<T> {

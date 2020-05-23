@@ -1,9 +1,9 @@
 
 import { importProxy } from "./importProxy";
 
-import type { Evt } from "./types/interfaces";
-import type { VoidEvt } from "./types/interfaces";
-import type { StatefulEvt } from "./types/interfaces";
+type Evt<T> = import("./types/interfaces").Evt<T>;
+type VoidEvt= import("./types/interfaces").VoidEvt;
+type StatefulEvt<T> = import("./types/interfaces").StatefulEvt<T>;
 
 /** 
  * https://docs.evt.land/api/evt/create

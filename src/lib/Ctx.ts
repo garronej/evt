@@ -8,12 +8,12 @@ import { Handler } from "./types/Handler";
 import { defineAccessors } from "../tools/typeSafety/defineAccessors";
 import { overwriteReadonlyProp } from "../tools/typeSafety/overwriteReadonlyProp";
 
-import type { EvtLike } from "./types/helper/UnpackEvt"
-import type { Evt } from "./types/interfaces";
-import type { CtxLike } from "./types/interfaces";
-import type { DoneOrAborted } from "./types/interfaces/Ctx";
-import type { Ctx as _Ctx } from "./types/interfaces";
-export type Ctx<Result> = _Ctx<Result>;
+type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T>;
+type Evt<T> = import("./types/interfaces").Evt<T>;
+type CtxLike<T> = import("./types/interfaces").CtxLike<T>;
+type DoneOrAborted<Result> = import("./types/interfaces/Ctx").DoneOrAborted<Result>;
+
+export type Ctx<Result> = import("./types/interfaces").Ctx<Result>;
 
 class CtxImpl<Result> implements Ctx<Result>{
 

@@ -5,15 +5,11 @@ import { EventTargetLike } from "./types/EventTargetLike";
 import { mergeImpl } from "./Evt.merge";
 import { importProxy } from "./importProxy";
 import * as dom from "./types/lib.dom";
-
-import type { Evt } from "./types/interfaces/Evt";
-import type { EvtLike } from "./types/helper/UnpackEvt";
+type Evt<T>= import("./types/interfaces/Evt").Evt<T>;
+type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T>;
 
 type OneOrMany<T> = T | ArrayLike<T>;
-
-import type { CtxLike as _CtxLike } from "./types/interfaces";
-
-type CtxLike<Result> = _CtxLike<Result> & {
+type CtxLike<Result> = import("./types/interfaces").CtxLike<Result> & {
       evtDoneOrAborted: EvtLike<unknown> & { postCount: number; attachOnce(callback: ()=> void): void; };
 };
 

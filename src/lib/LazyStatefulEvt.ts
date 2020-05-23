@@ -1,6 +1,6 @@
 import { overwriteReadonlyProp } from "../tools/typeSafety/overwriteReadonlyProp";
 import { importProxy } from "./importProxy";
-import type { StatefulEvt } from "./types/interfaces";
+type StatefulEvt<T> = import("./types/interfaces").StatefulEvt<T>;
 import { defineAccessors } from "../tools/typeSafety/defineAccessors";
 
 export class LazyStatefulEvt<T> {

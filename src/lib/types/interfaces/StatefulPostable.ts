@@ -1,5 +1,5 @@
 
-import type { Postable } from "./Postable";
+type Postable<T>= import("./Postable").Postable<T>;
 
 export interface StatefulPostable<T> extends Postable<T>  {
 

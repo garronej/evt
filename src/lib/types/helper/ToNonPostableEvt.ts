@@ -1,10 +1,8 @@
 
-
-import type { EvtLike } from "./UnpackEvt";
-import type { StatefulPostable } from "../interfaces";
-import type { NonPostableEvt } from "../interfaces";
-import type { StatefulReadonlyEvt } from "../interfaces";
-
+type EvtLike<T> = import("./UnpackEvt").EvtLike<T>;
+type StatefulPostable<T> = import("../interfaces").StatefulPostable<T>;
+type NonPostableEvt<T> = import("../interfaces").NonPostableEvt<T>;
+type StatefulReadonlyEvt<T> = import("../interfaces").StatefulReadonlyEvt<T>;
 
 //NOTE: Omit only introduced in 3.5
 /**

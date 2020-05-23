@@ -1,7 +1,7 @@
 
 import { Handler } from "../Handler";
 
-import type { Ctx } from "./Ctx";
+type Ctx<T> = import("./Ctx").Ctx<T>;
 
 /** 
  * https://docs.evt.land/api/evt/ctx 

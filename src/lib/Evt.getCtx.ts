@@ -1,6 +1,6 @@
 import { Polyfill as WeakMap } from "minimal-polyfills/WeakMap";
 import { importProxy } from "./importProxy";
-import type { VoidCtx } from "./types/interfaces";
+type VoidCtx = import("./types/interfaces").VoidCtx;
 
 /** 
  * https://docs.evt.land/api/evt/getctx

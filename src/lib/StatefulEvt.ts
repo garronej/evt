@@ -9,14 +9,11 @@ import { parsePropsFromArgs } from "./Evt.parsePropsFromArgs";
 import { CtxLike } from "./types/interfaces/CtxLike";
 type Diff<T> = import("./types/interfaces").Diff<T>;
 type NonPostableEvt<T> = import("./types/interfaces").NonPostableEvt<T>;
-import type { StatefulReadonlyEvt } from "./types/interfaces";
-
+type StatefulReadonlyEvt<T>= import("./types/interfaces").StatefulReadonlyEvt<T>;
 import { Evt } from "./Evt";
 
-import type { StatefulEvt as _StatefulEvt } from "./types/interfaces";
-
 /** https://docs.evt.land/api/statefulevt */
-export type StatefulEvt<T> = _StatefulEvt<T>;
+export type StatefulEvt<T> = import("./types/interfaces").StatefulEvt<T>;
 
 class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
 

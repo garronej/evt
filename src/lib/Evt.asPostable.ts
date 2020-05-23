@@ -1,6 +1,6 @@
 
 import { ToPostableEvt } from "./types/helper/ToPostableEvt";
-import type { EvtLike} from "./types/helper/UnpackEvt";
+type EvtLike<T>= import("./types/helper/UnpackEvt").EvtLike<T>;
 
 /** 
  * https://docs.evt.land/api/evt/aspostable 

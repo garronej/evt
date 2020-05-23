@@ -1,6 +1,5 @@
 
-
-import type { Postable } from "./Postable";
-import type { NonPostableEvt } from "./NonPostableEvt";
+type Postable<T> = import("./Postable").Postable<T>;
+type NonPostableEvt<T> = import("./NonPostableEvt").NonPostableEvt<T>;
 
 export interface Evt<T> extends Postable<T>, NonPostableEvt<T> { }

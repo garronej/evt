@@ -26,7 +26,7 @@ It enables and encourages **functional programming** and makes heavy use of **ty
 - ✅ Lightweight, no dependency.
 - ✅ No polyfills needed, the NPM module is transpile down to ES3   
 
-Can be imported in TypeScript projects using version &gt;= **3.8** \(Feb 2020\) and in any plain JS projects.
+Can be imported in TypeScript projects using version &gt;= **3.4** \(Mar 2019\) and in any plain JS projects.
 
 # Install / Import
 
