@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Synchronize package.json  and package-lock.json version if needed.
-      uses: garronej/github_actions_toolkit@v1.2
+      uses: garronej/github_actions_toolkit@v1.4
       env:
         GITHUB_TOKEN: ${{ secrets.PAT }} 
       with:
@@ -19,7 +19,7 @@ jobs:
         commit_author_email: denoify_ci@github.com
     - name: Update CHANGELOG.md
       if: ${{ !!github.event.client_payload.from_version }}
-      uses: garronej/github_actions_toolkit@v1.2
+      uses: garronej/github_actions_toolkit@v1.4
       env:
         GITHUB_TOKEN: ${{ secrets.PAT }} 
       with:
@@ -92,12 +92,25 @@ jobs:
         git config --local user.email "denoify_ci@github.com"
         git config --local user.name "denoify_ci"
         git add -A
-        git commit -am "Refer to CHANGELOG.md"
+        git commit -am "Enable shorter import paths [automatic]"
     - name: Push changes
       uses: ad-m/github-push-action@v0.5.0
       with:
         github_token: ${{ secrets.PAT }}
         branch: master
+    - name: Release body
+      id: id_rb
+      run: |
+        if [ "$FROM_VERSION" = "" ]; then
+            echo "::set-output name=body::🚀"
+        else
+            echo "::set-output name=body::📋 [CHANGELOG](https://github.com/$OWNER/$REPO/blob/$REF/CHANGELOG.md)"
+        fi
+      env: 
+        FROM_VERSION: ${{ github.event.client_payload.from_version }}
+        OWNER: ${{github.repository_owner}}
+        REPO: ${{github.event.client_payload.repo}}
+        REF: ${{github.event.client_payload.to_version}}
     - name: Create Release
       uses: garronej/create-release@master
       env:
@@ -108,6 +121,7 @@ jobs:
         branch: master
         draft: false
         prerelease: false
+        body: ${{ steps.id_rb.outputs.body }}
 
          
          
