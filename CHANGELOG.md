@@ -1,3 +1,12 @@
+### **1.7.6** (2020-05-23)  
+  
+- Make the README links visible on deno.land/x  
+- Merge pull request #7 from searchableguy/develop
+
+Add a note in overview about difference between attach and $attach  
+- Add a note in overview about difference between attach and $attach  
+- update run-exclusive    
+  
 ### **1.7.5** (2020-05-23)  
   
 - Minor readme fix  
