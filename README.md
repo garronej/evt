@@ -97,7 +97,7 @@ _*Those are introductory examples, EVT can do much more than this._
 <b><a href="https://stackblitz.com/edit/evt-playground?embed=1&file=index.ts&hideExplorer=1">Run some examples</a></b>
 </p>
 
-# Motivation
+# Motivations
 
 There are a lot of things that can't easily be done with `EventEmitter`:
 
