@@ -10,11 +10,9 @@
     <img src="https://img.shields.io/npm/dw/evt">
     <img src="https://img.shields.io/npm/l/evt">
 </p>
-<p align="center">
-  <a href="https://www.evt.land">Home</a>
-  -
-  <a href="https://docs.evt.land/api">Documentation</a>
-</p>
+
++ [**Home**](https://www.evt.land)
++ [**Documentation**](https://docs.evt.land/overview)
 
 ---
 
@@ -117,7 +115,4 @@ EVT is an attempt to address all these points while trying to remain as accessib
   
 </br>
 
-<p align="center">
-    <b><a href="https://docs.evt.land/overview#rxjs-comparison">Get started</a></b>
-</p>
-
+[**Get started**](https://docs.evt.land/overview#rxjs-comparison)
