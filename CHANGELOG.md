@@ -1,3 +1,13 @@
+### **1.7.5** (2020-05-23)  
+  
+- Minor readme fix  
+- readme typo fix  
+- bump version ( changlog ignore )  
+- Use test/mod.ts instead of test/index_deno.ts to align with convetions  
+- enable source map, 'Go to Definition' navigate to .ts source file instead of .d.ts file  
+- Revert back to the old type import syntax and regain support for TS 3.4 - 3.7, WARNING: This relase do not work with Deno 1.0.1 but do work with 1.0.2  
+- Typo fix    
+  
 ### **1.7.4** (2020-05-22)  
   
 - GitBook: [develop] one page modified  
