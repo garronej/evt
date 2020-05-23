@@ -1,7 +1,7 @@
 ### **1.7.4** (2020-05-22)  
   
 - GitBook: [develop] one page modified  
-- instruct to refer to CANGELOG.md  
+- instruct to refer to CHANGELOG.md  
 - GitBook: [develop] one page modified  
 - GitBook: [develop] 32 pages and one asset modified    
   
