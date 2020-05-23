@@ -40,6 +40,8 @@ evtTime.post(1234);
 
 However, the traditional approach that consists of gathering all the events in a single bus is also an option.
 
+Note: Due to a current [TypeScript limitation])(https://github.com/microsoft/TypeScript/issues/36735) the .attach*() methods need to be prefixed with $ when used with fλ (or to in this case) operators but evt.$attach*() are actually just aliases to the corresponding evt.attach*() methods.
+
 ```typescript
 import { Evt, to } from "evt";
 
