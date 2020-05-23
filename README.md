@@ -89,13 +89,12 @@ _*Those are introductory examples, EVT can do much more than this._
 
 # Try it
 
+[Run some examples](https://stackblitz.com/edit/evt-playground?embed=1&file=index.ts&hideExplorer=1)
+
 <p align="center"> 
     <img src="https://www.evt.land/assets/img/try-in-browser.gif">  
 </p>
 
-<p align="center">
-<b><a href="https://stackblitz.com/edit/evt-playground?embed=1&file=index.ts&hideExplorer=1">Run some examples</a></b>
-</p>
 
 # Motivations
 
