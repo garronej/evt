@@ -10,7 +10,7 @@
     "types": "./dist/lib/index.d.ts",
     "scripts": {
         "test:node": "node ./dist/test",
-        "test:deno": "deno run ./deno_dist/test/deno_index.ts",
+        "test:deno": "deno run ./deno_dist/test/mod.ts",
         "test": "npm run test:node && npm run test:deno",
         "tsc": "npx tsc",
         "denoify": "npx denoify",
@@ -30,8 +30,8 @@
     },
     "files": [
         "/src/",
-        "/dist/lib",
-        "/dist/tools"
+        "/dist/lib/",
+        "/dist/tools/"
     ],
     "keywords": [
         "deno",
