@@ -25,11 +25,11 @@
     "author": "Joseph Garrone",
     "license": "MIT",
     "dependencies": {
-        "minimal-polyfills": "^2.0.1",
-        "run-exclusive": "^2.1.18"
+        "minimal-polyfills": "^2.1.0",
+        "run-exclusive": "^2.2.3"
     },
     "files": [
-        "/dist/*.{d.ts,js,js.map}",
+        "/src/",
         "/dist/lib",
         "/dist/tools"
     ],
@@ -47,10 +47,10 @@
     ],
     "homepage": "https://evt.land",
     "devDependencies": {
-        "denoify": "^0.2.11",
+        "denoify": "^0.2.13",
         "simplifyify": "8.0.1",
         "terser": "4.6.13",
-        "@types/node": "^8.9.1",
+        "@types/node": "^10.0.0",
         "rxjs": "^6.5.4",
         "typescript": "3.9.2"
     }
