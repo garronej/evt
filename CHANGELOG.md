@@ -1,3 +1,8 @@
+### **1.7.7** (2020-05-24)  
+  
+- Not including source test files in the NPM bundle  
+- readme typo fix    
+  
 ### **1.7.6** (2020-05-23)  
   
 - Make the README links visible on deno.land/x  
