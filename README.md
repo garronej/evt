@@ -75,6 +75,7 @@ const evt = new Evt<
     [ "time",  number ]
 >();
 
+//Mind the '$' prefixing 'attach'
 evt.$attach(to("text"), text => console.log(text));
 evt.$attachOnce(to("time"), time => console.log(time));
 
