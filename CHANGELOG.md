@@ -1,3 +1,7 @@
+### **1.7.9** (2020-05-24)  
+  
+- Do not include source in the NPM bundle for TS retrocompatibility    
+  
 ### **1.7.8** (2020-05-24)  
   
 - Remove nullish coalescing from source for stackblitz compat  
