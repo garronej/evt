@@ -1,3 +1,8 @@
+### **1.7.8** (2020-05-24)  
+  
+- Remove nullish coalescing from source for stackblitz compat  
+- Update dependencies ( changleog ignore )    
+  
 ### **1.7.7** (2020-05-24)  
   
 - Not including source test files in the NPM bundle  
