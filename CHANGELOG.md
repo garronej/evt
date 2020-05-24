@@ -3,17 +3,15 @@
 - Make the README links visible on deno.land/x  
 - Merge pull request #7 from searchableguy/develop
 - Add a note in overview about difference between attach and $attach  
-- update run-exclusive    
+- Update run-exclusive    
   
 ### **1.7.5** (2020-05-23)  
   
-- Minor readme fix  
-- readme typo fix  
-- bump version ( changlog ignore )  
-- Use test/mod.ts instead of test/index_deno.ts to align with convetions  
-- enable source map, 'Go to Definition' navigate to .ts source file instead of .d.ts file  
-- Revert back to the old type import syntax and regain support for TS 3.4 - 3.7, WARNING: This relase do not work with Deno 1.0.1 but do work with 1.0.2  
-- Typo fix    
+- Bump version ( changelog ignore )  
+- Use test/mod.ts instead of test/index_deno.ts to align with conventions  
+- Enable source map, 'Go to Definition' navigate to .ts source file instead of .d.ts file  
+- Revert back to the old type import syntax and regain support for TS 3.4 - 3.7, WARNING: This release do not work with Deno 1.0.1 but do work with 1.0.2  
+- Typo fixes
   
 ### **1.7.4** (2020-05-22)  
   
@@ -33,7 +31,7 @@
   
 ### **1.7.1** (2020-05-21)  
   
-- Temorarly disabeling sourcemap  
+- Temporarily disabling sourcemaps  
 - Add CI badge    
   
 
