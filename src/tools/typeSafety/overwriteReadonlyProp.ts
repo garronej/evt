@@ -23,7 +23,7 @@ export const overwriteReadonlyProp = <T extends { [key: string]: any; }, K exten
     let errorDefineProperty: Error | undefined = undefined;
 
     const propertyDescriptor: PropertyDescriptor =
-        Object.getOwnPropertyDescriptor(obj, propertyName) ?? {
+        Object.getOwnPropertyDescriptor(obj, propertyName) || {
             "enumerable": true,
             "configurable": true
         };
@@ -51,7 +51,7 @@ export const overwriteReadonlyProp = <T extends { [key: string]: any; }, K exten
     }
 
     if (obj[propertyName] !== value) {
-        throw errorDefineProperty ?? new Error("Can't assign");
+        throw errorDefineProperty || new Error("Can't assign");
     }
 
     return value;

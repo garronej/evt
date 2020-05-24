@@ -16,7 +16,10 @@ export function getPromiseAssertionApi(
         }
     ): Promise<T> {
 
-        const timer = setTimeout(() => assert(false, "did not resolve in time"), params.delay ?? 0);
+        const timer = setTimeout(
+            () => assert(false, "did not resolve in time"),
+            params.delay !== undefined ? params.delay : 0
+        );
 
         return params.promise.then(data => {
             clearTimeout(timer);
@@ -38,7 +41,10 @@ export function getPromiseAssertionApi(
         }
     ) {
 
-        const timer = setTimeout(() => assert(false, "did not reject in time"), params.delay ?? 0);
+        const timer = setTimeout(
+            () => assert(false, "did not reject in time"),
+            params.delay !== undefined ? params.delay : 0
+        );
 
         return params.promise.then(
             () => assert(false, "resolved"),

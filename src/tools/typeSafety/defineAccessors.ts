@@ -14,7 +14,7 @@ export const defineAccessors = <T extends { [key: string]: any; }, K extends key
         obj,
         propertyName,
         {
-            ...(Object.getOwnPropertyDescriptor(obj, propertyName) ?? {  
+            ...(Object.getOwnPropertyDescriptor(obj, propertyName) || {  
                 "enumerable": true,
                 "configurable": true
             }),

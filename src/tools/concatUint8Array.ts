@@ -4,8 +4,10 @@ export const concatUint8Array = (
     byteLength?: number
 ): Uint8Array => {
 
-    byteLength = byteLength ??
-        chunks.reduce<number>((prev, { byteLength }) => prev + byteLength, 0);
+    byteLength = byteLength !== undefined ?
+        byteLength :
+        chunks.reduce<number>((prev, { byteLength }) => prev + byteLength, 0)
+        ;
 
     return chunks.reduce(
         ({ out, n }, chunk) => {

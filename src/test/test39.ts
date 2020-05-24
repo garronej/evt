@@ -132,11 +132,11 @@ const updateModelFactory = (
             };
 
 
-            console.assert(handlerHandlingEventCount(personChange) === 1, "here???");
+            console.assert(handlerHandlingEventCount(personChange) === 1);
 
             postPersonChange(personChange);
 
-            console.assert(handlerHandlingEventCount(personChange) === 0, "here?");
+            console.assert(handlerHandlingEventCount(personChange) === 0);
 
         }
 

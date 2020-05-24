@@ -142,7 +142,11 @@ export const same = (() => {
                 return false;
             }
 
-            if (!(takeIntoAccountArraysOrderingOv ?? takeIntoAccountArraysOrdering)) {
+            if (
+                !(takeIntoAccountArraysOrderingOv !== undefined ?
+                    takeIntoAccountArraysOrderingOv :
+                    takeIntoAccountArraysOrdering)
+            ) {
 
                 const o2Set = new Set(Array.from(o2));
 

@@ -36,10 +36,10 @@ function f_o_g<A, B, C, CtxResultOp1 = any, CtxResultOp2 = any>(
             }
 
 
-            const detachOp1 = resultB[1] ?? null;
+            const detachOp1 = !!resultB[1] ? resultB[1] : null;
 
             //...same...
-            assert(typeGuard<Operator.fλ.Result.Detach<CtxResultOp1 | CtxResultOp2>>(detachOp1));
+            assert(typeGuard<Operator.fλ.Result.Detach<CtxResultOp1 | CtxResultOp2> | null>(detachOp1));
 
             const [dataB] = resultB;
 
@@ -52,12 +52,12 @@ function f_o_g<A, B, C, CtxResultOp1 = any, CtxResultOp2 = any>(
             if (Operator.fλ.Result.NotMatched.match<CtxResultOp2>(resultC)) {
                 //...same
                 assert(typeGuard<Operator.fλ.Result.NotMatched<CtxResultOp1 | CtxResultOp2>>(resultC));
-                return detachOp1 ?? resultC;
+                return detachOp1 !== null ? detachOp1 : resultC;
             }
 
             return id<Operator.fλ.Result<C, CtxResultOp1 | CtxResultOp2>>([ 
                 resultC[0],
-                detachOp1 ?? resultC[1] ?? null 
+                !!detachOp1 ? detachOp1 : (!!resultC[1] ? resultC[1] : null)
             ]);
 
 

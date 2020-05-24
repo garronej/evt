@@ -70,7 +70,7 @@ class EvtImpl<T> implements Evt<T> {
         const isP1Ctx= CtxLike.match(p1);
 
         const initialValue: any = isP1Ctx ? undefined : p1;
-        const ctx= p2 ?? ( isP1Ctx ? p1 : undefined );
+        const ctx= p2 || ( isP1Ctx ? p1 : undefined );
 
         const out = new importProxy.StatefulEvt<any>(initialValue);
 
@@ -144,7 +144,7 @@ class EvtImpl<T> implements Evt<T> {
 
         this.traceId = id;
 
-        this.traceFormatter = formatter ?? (
+        this.traceFormatter = formatter || (
             data => {
                 try {
                     return JSON.stringify(data, null, 2);
@@ -408,7 +408,11 @@ class EvtImpl<T> implements Evt<T> {
 
     private checkForPotentialMemoryLeak(): void {
 
-        const maxHandlers = this.__maxHandlers ?? EvtImpl.__defaultMaxHandlers;
+        const maxHandlers = this.__maxHandlers !== undefined ?
+            this.__maxHandlers :
+            EvtImpl.__defaultMaxHandlers
+            ;
+
 
         if (
             maxHandlers === 0 ||
@@ -440,7 +444,7 @@ class EvtImpl<T> implements Evt<T> {
                     .map(key => `  ${key}: ${(obj as any)[key]}`)
                     .join(",\n") + "\n}"
             )
-            .forEach(str => map.set(str, (map.get(str) ?? 0) + 1))
+            .forEach(str => map.set(str, (map.has(str) ? map.get(str)! : 0) + 1))
             ;
 
         message += "\n" + Array.from(map.keys())
