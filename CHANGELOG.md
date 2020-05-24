@@ -2,8 +2,6 @@
   
 - Make the README links visible on deno.land/x  
 - Merge pull request #7 from searchableguy/develop
-
-Add a note in overview about difference between attach and $attach  
 - Add a note in overview about difference between attach and $attach  
 - update run-exclusive    
   
