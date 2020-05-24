@@ -29,7 +29,8 @@
         "run-exclusive": "^2.2.4"
     },
     "files": [
-        "/src/",
+        "/src/lib/",
+        "/src/tools/",
         "/dist/lib/",
         "/dist/tools/"
     ],
