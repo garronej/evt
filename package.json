@@ -18,15 +18,15 @@
         "cdn:.min.js": "terser dist/bundle.js -cmo dist/bundle.min.js",
         "cdn": "npm run cdn:.js && npm run cdn:.min.js",
         "build": "npm run tsc && npm run denoify && npm run cdn",
-        "enable_short_import_path:npm": "npm run build && npx denoify_enable_short_npm_import_path --.ts_alongside_.js=false",
+        "enable_short_import_path:npm": "npm run build && npx denoify_enable_short_npm_import_path",
         "enable_short_import_path:deno": "npm run build && npx denoify_enable_short_deno_import_path",
         "clean": "rm -rf dist deno_dist node_modules mod.ts"
     },
     "author": "Joseph Garrone",
     "license": "MIT",
     "dependencies": {
-        "minimal-polyfills": "^2.1.1",
-        "run-exclusive": "^2.2.6"
+        "minimal-polyfills": "^2.1.2",
+        "run-exclusive": "^2.2.7"
     },
     "files": [
         "/dist/lib/",
@@ -49,7 +49,7 @@
     ],
     "homepage": "https://evt.land",
     "devDependencies": {
-        "denoify": "^0.2.14",
+        "denoify": "^0.2.15",
         "simplifyify": "8.0.1",
         "terser": "4.6.13",
         "@types/node": "^10.0.0",
