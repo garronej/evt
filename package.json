@@ -14,8 +14,8 @@
         "test": "npm run test:node && npm run test:deno",
         "tsc": "npx tsc",
         "denoify": "npx denoify",
-        "cdn:.js": "simplifyify dist/lib/index.js -s evt -o dist/umd_bundle.js --debug --bundle",
-        "cdn:.min.js": "terser dist/umd_bundle.js -cmo dist/umd_bundle.min.js",
+        "cdn:.js": "simplifyify dist/lib/index.js -s evt -o dist/bundle.js --bundle",
+        "cdn:.min.js": "terser dist/bundle.js -cmo dist/bundle.min.js",
         "cdn": "npm run cdn:.js && npm run cdn:.min.js",
         "build": "npm run tsc && npm run denoify && npm run cdn",
         "enable_short_import_path:npm": "npm run build && npx denoify_enable_short_npm_import_path",
@@ -30,7 +30,8 @@
     },
     "files": [
         "/dist/lib/",
-        "/dist/tools/"
+        "/dist/tools/",
+        "/dist/bundle.{js,min.js}"
     ],
     "keywords": [
         "deno",

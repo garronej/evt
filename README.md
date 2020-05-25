@@ -45,7 +45,7 @@ import { Evt } from "evt";
 Expose a global (wider browser support):  
 
 ```html
-<script src="//unpkg.com/evt/umd_bundle.min.js"></script>
+<script src="//unpkg.com/evt/bundle.min.js"></script>
 <script>
     const { Evt } = window["evt"];
 </script>
