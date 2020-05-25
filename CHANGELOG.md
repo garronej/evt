@@ -1,3 +1,8 @@
+### **1.7.11** (2020-05-25)  
+  
+- Re include source map without breaking TS retro compatibility  
+- Re-integrate source map but not alongside .js files for TS retrocompatibility    
+  
 ### **1.7.10** (2020-05-25)  
   
 - Fix: Include CDN build    
