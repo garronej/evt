@@ -1,6 +1,6 @@
 ### **1.7.9** (2020-05-24)  
   
-- Do not include source in the NPM bundle for TS retrocompatibility    
+- Do not include source in the NPM bundle for TS retro compatibility (they will be re-included later)
   
 ### **1.7.8** (2020-05-24)  
   
