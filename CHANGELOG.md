@@ -1,3 +1,7 @@
+### **1.7.10** (2020-05-25)  
+  
+- Fix: Include CDN build    
+  
 ### **1.7.9** (2020-05-24)  
   
 - Do not include source in the NPM bundle for TS retro compatibility (they will be re-included later)
