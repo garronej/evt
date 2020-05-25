@@ -1,5 +1,9 @@
 ### **1.7.11** (2020-05-25)  
   
+  
+  
+### **1.7.11** (2020-05-25)  
+  
 - Re include source map without breaking TS retro compatibility  
   
 ### **1.7.10** (2020-05-25)  
