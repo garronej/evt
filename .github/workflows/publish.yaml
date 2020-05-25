@@ -81,7 +81,6 @@ jobs:
       run: |
         git branch master
         git checkout master
-        git push origin master
     - uses: actions/setup-node@v1
     - run: npm ci
     - run: npm run enable_short_import_path:deno
@@ -93,11 +92,7 @@ jobs:
         git config --local user.name "denoify_ci"
         git add -A
         git commit -am "Enable shorter import paths [automatic]"
-    - name: Push changes
-      uses: ad-m/github-push-action@v0.5.0
-      with:
-        github_token: ${{ secrets.PAT }}
-        branch: master
+    - run: git push origin master
     - name: Release body
       id: id_rb
       run: |
@@ -122,7 +117,3 @@ jobs:
         draft: false
         prerelease: false
         body: ${{ steps.id_rb.outputs.body }}
-
-         
-         
-
