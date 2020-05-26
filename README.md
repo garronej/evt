@@ -40,9 +40,7 @@ import { Evt } from "https://deno.land/x/evt/mod.ts";
 import { Evt } from "evt"; 
 ```
 
-## Import from HTML, with CDN
-
-Expose a global (wider browser support):  
+## Import from HTML, with CDN 
 
 ```html
 <script src="//unpkg.com/evt/bundle.min.js"></script>
