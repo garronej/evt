@@ -1,3 +1,8 @@
+### **1.7.12** (2020-05-30)  
+  
+- Reference Denoify in the readme  
+- Update README.md    
+  
 ### **1.7.11** (2020-05-25)  
   
   
