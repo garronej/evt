@@ -2,7 +2,7 @@
     <img src="https://user-images.githubusercontent.com/6702424/76674598-91ebfc00-65b1-11ea-88df-eb43f04f3cce.png">  
 </p>
 <p align="center">
-    💧<i>A type safe replacement for Node's EventEmitter</i>💧
+    💧<i>EventEmitter's typesafe replacement</i>💧
     <br>
     <br>
     <img src="https://github.com/garronej/evt/workflows/ci/badge.svg?branch=develop">
@@ -64,10 +64,10 @@ _*Those are introductory examples, EVT can do much more than this._
 # Who is using it
 
 <p align="center">
-    <a href="https://connext.network">
+    <a href="https://connext.network" style="margin-right:20px">
         <img src="https://user-images.githubusercontent.com/6702424/84102640-4e1e5c80-aa11-11ea-9d13-df0a65c8cdaf.png">
     </a>
-    <a href="https://www.semasim.com">
+    <a href="https://www.semasim.com" style="margin-left:20px">
         <img src="https://user-images.githubusercontent.com/6702424/84102785-aead9980-aa11-11ea-915b-5c4a5282c44e.png"> 
     </a>
 </p>
