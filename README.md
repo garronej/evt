@@ -26,31 +26,6 @@ It enables and encourages **functional programming** and makes heavy use of **ty
 
 Can be imported in TypeScript projects using version &gt;= **3.4** \(Mar 2019\) and in any plain JS projects.
 
-# Install / Import
-
-## In Deno:
-```typescript
-import { Evt } from "https://deno.land/x/evt/mod.ts";
-```
-## Anywhere else:
-```bash
-> npm install --save evt
-```
-```typescript
-import { Evt } from "evt"; 
-```
-
-## Import from HTML, with CDN
-
-Expose a global (wider browser support):  
-
-```html
-<script src="//unpkg.com/evt/bundle.min.js"></script>
-<script>
-    const { Evt } = window["evt"];
-</script>
-```
-
 # TL;DR*
 
 ```typescript
@@ -85,6 +60,43 @@ evt.post(["time", 1234]);
 ```
 
 _*Those are introductory examples, EVT can do much more than this._
+
+# Who is using it
+
+<p align="center">
+    <a href="https://connext.network">
+        <img src="https://connext.network/static/media/logoHorizontal.3251cc60.png" style="height:30px">
+    </a>
+    <a href="https://www.semasim.com">
+        <img src="https://www.semasim.com/wp-content/uploads/2019/08/logo-nouveau-bleu-banierre-grand.png" style="height:34px">
+    </a>
+</p>
+
+# Install / Import
+
+## In Deno:
+```typescript
+import { Evt } from "https://deno.land/x/evt/mod.ts";
+```
+## Anywhere else:
+```bash
+$ npm install --save evt
+```
+```typescript
+import { Evt } from "evt"; 
+```
+
+## Import from HTML, with CDN
+
+Expose a global (wider browser support):  
+
+```html
+<script src="//unpkg.com/evt/bundle.min.js"></script>
+<script>
+    const { Evt } = window["evt"];
+</script>
+```
+
 
 # Try it
 
