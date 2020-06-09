@@ -97,7 +97,6 @@ Expose a global (wider browser support):
 </script>
 ```
 
-
 # Try it
 
 [Run some examples](https://stackblitz.com/edit/evt-playground?embed=1&file=index.ts&hideExplorer=1)
@@ -105,7 +104,6 @@ Expose a global (wider browser support):
 <p align="center"> 
     <img src="https://www.evt.land/assets/img/try-in-browser.gif">  
 </p>
-
 
 # Motivations
 
