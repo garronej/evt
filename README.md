@@ -64,10 +64,10 @@ _*Those are introductory examples, EVT can do much more than this._
 # Who is using it
 
 <p align="center">
-    <a href="https://connext.network" style="margin-right:20px">
+    <a href="https://connext.network">
         <img src="https://user-images.githubusercontent.com/6702424/84102640-4e1e5c80-aa11-11ea-9d13-df0a65c8cdaf.png">
     </a>
-    <a href="https://www.semasim.com" style="margin-left:20px">
+    <a href="https://www.semasim.com">
         <img src="https://user-images.githubusercontent.com/6702424/84102785-aead9980-aa11-11ea-915b-5c4a5282c44e.png"> 
     </a>
 </p>
