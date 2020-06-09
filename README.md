@@ -65,10 +65,10 @@ _*Those are introductory examples, EVT can do much more than this._
 
 <p align="center">
     <a href="https://connext.network">
-        <img src="https://connext.network/static/media/logoHorizontal.3251cc60.png" style="height:30px">
+        <img src="https://user-images.githubusercontent.com/6702424/84102640-4e1e5c80-aa11-11ea-9d13-df0a65c8cdaf.png">
     </a>
     <a href="https://www.semasim.com">
-        <img src="https://www.semasim.com/wp-content/uploads/2019/08/logo-nouveau-bleu-banierre-grand.png" style="height:34px">
+        <img src="https://user-images.githubusercontent.com/6702424/84102785-aead9980-aa11-11ea-915b-5c4a5282c44e.png"> 
     </a>
 </p>
 
