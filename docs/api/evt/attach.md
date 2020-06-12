@@ -2,21 +2,43 @@
 description: Attach a Handler provided with a callback function to the Evt
 ---
 
-# evt.\[$\]attach\*\(...\)
+# evt.attach\*\(...\)
 
 There is multiple flavor of the attach method: `attachOnce`, `atachPrepend`, `attachExtract`... All this methods have in common to accept the same parameters and to return the same promise.
 
-## Returned Value
+## The `$` prefix
 
-It no timeout argument have been passed all attach methods return `this`.
+Due to a current [TypeScript limitation](https://github.com/microsoft/TypeScript/issues/36735) the `.attach*()` methods need to be prefixed with `$` when used with fλ operators but `evt.$attach*()` are actually just aliases to the corresponding `evt.attach*()` methods.
 
-If a timeout arguement was passed a `Promise<U>` that resolves with the first event data matched by the operator. By default of operator, all the events are matched.
+```typescript
+import { Evt } from "evt";
 
-The returned promise can reject **only** if a timeout parameter was passed to the `attach*` method.
+const evtText= new Evt<string>();
 
-If no event has been matched within the specified timeout, the promise will reject with a `EvtError.Timeout.` If the event is detached before the first event is matched, the promise will reject with an `EvtError.Detached`.
 
-If you have no use of the callback function and just want the promise, [`evt.waitFor(...)`](https://docs.ts-evt.dev/api-doc/evt#evt-waitfor) should be used in place of `evt.attach*(...)`.
+//No operator, we don't need the $ prefix
+evtText.attach(text => console.log(`1: ${text}`));
+
+//text => text.startWith("H") is a filter so we do not need the $ prefix
+evtText.attach(
+    text => text.startWith("H"),
+    text => console.log(`2: ${text}`)
+);
+
+//text => [ text.toUpperCase() ] is a fλ operator, we need the $ prefix
+evtText.$attach(
+    text => [ text.toUpperCase() ],
+    upperCaseText => console.log(`3: ${upperCaseText}`)
+);
+
+//Prints: 
+//"1: Hello World" 
+//"2: HelloWorld"
+//"3: Hello World"
+evtText.post("Hello World");
+
+
+```
 
 ## Parameters
 
@@ -35,19 +57,27 @@ Examples:
 * Specifying an operator and a context: `evt.attach(op, boundTo, callback)`
 * ...
 
-## The `$` prefix
+## Returned Value
 
-Due to a current [TypeScript limitation](https://github.com/microsoft/TypeScript/issues/36735) the `.attach*()` methods need to be prefixed with `$` when used with fλ operators but `evt.$attach*()` are actually just aliases to the corresponding `evt.attach*()` methods.
+It no timeout argument have been passed all attach methods return `this`.
 
-## **`evt.[$]attach(...)`**
+If a timeout arguement was passed a `Promise<U>` that resolves with the first event data matched by the operator. By default of operator, all the events are matched.
+
+The returned promise can reject **only** if a timeout parameter was passed to the `attach*` method.
+
+If no event has been matched within the specified timeout, the promise will reject with a `EvtError.Timeout.` If the event is detached before the first event is matched, the promise will reject with an `EvtError.Detached`.
+
+If you have no use of the callback function and just want the promise, [`evt.waitFor(...)`](https://docs.ts-evt.dev/api-doc/evt#evt-waitfor) should be used in place of `evt.attach*(...)`.
+
+## **`evt.attach(...)`**
 
 Adds a new [handler](https://docs.ts-evt.dev/api/handler) to the end of the handlers array. No checks are made to see if the holder has already been added. Multiple calls passing the same combination of parameters will result in the `handler` being added, and called, multiple times.
 
-## **`evt.[$]attachOnce*(...)`**
+## **`evt.attachOnce*(...)`**
 
 When the method contains the keyword "**once**": Adds a **one-time** [handler](https://docs.ts-evt.dev/api/handler). The next time an event is matched this handler is detached and then it's callback is invoked.
 
-## `evt.[$]attach[Once]Prepend(...)`
+## `evt.attach[Once]Prepend(...)`
 
 When the method contains the keyword "**prepend**": Same as .attach\(\) but the [`handler`](https://docs.ts-evt.dev/api/handler) is added at the _beginning_ of the handler array.
 
@@ -68,7 +98,7 @@ evtLetter.post();
 
 [**Run the example**](https://stackblitz.com/edit/evt-qshmkh?embed=1&file=index.ts&hideExplorer=1)
 
-## **`evt.[$]attach[Once]Extract(...)`**
+## **`evt.attach[Once]Extract(...)`**
 
 When the method contains the "**extract**" keyword, every event that the [`handler`](https://docs.ts-evt.dev/api/handler) matches will be swallowed and no other handler will have the opportunity to handle it, even the other "extract"' handlers. It acts as a trap.
 
