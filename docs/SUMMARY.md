@@ -12,7 +12,7 @@
     * [evt.pipe\(...\)](api/evt/pipe.md)
     * [evt.getHandlers\(\)](api/evt/gethandler.md)
     * [evt.isHandled\(data\)](api/evt/ishandled.md)
-    * [evt.detach\(\[ctx\]\)](api/evt/detach.md)
+    * [evt.detach\(ctx?\)](api/evt/detach.md)
     * [evt.enableTrace\(...\)](api/evt/enabletrace.md)
     * [evt.setMaxHandlers\(n\)](api/evt/setmaxhandlers.md)
     * [toStateful\(initialState\)](api/evt/tostateful.md)

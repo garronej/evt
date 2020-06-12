@@ -2,7 +2,7 @@
 description: Similar to EventEmitter.prototype.removeListener()
 ---
 
-# evt.detach\(\[ctx\]\)
+# evt.detach\(ctx?\)
 
 Detach all handlers from the Evt or all Evt's handler that are bound to a given context.
 
