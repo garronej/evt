@@ -19,7 +19,7 @@
 `'evt'` is intended to be a replacement for `'events'`.  
 It enables and encourages **functional programming** and makes heavy use of **typescript**'s type inference features to provide **type safety** while keeping things **concise and elegant** 🍸.
 
-<b>Suitable for any JS runtime env (deno, node, old browser, react-native ...)</b>
+<b>Suitable for any JS runtime env (deno, node, old browsers, react-native ...)</b>
 - ✅ It is both a [Deno](https://deno.land/x/evt) and an [NPM](https://www.npmjs.com/evt) module. ( Achieved with [Denoify](https://github.com/garronej/denoify) ) 
 - ✅ Lightweight, no dependency.
 - ✅ No polyfills needed, the NPM module is transpiled down to ES3   
@@ -87,8 +87,6 @@ import { Evt } from "evt";
 ```
 
 ## Import from HTML, with CDN
-
-Expose a global (wider browser support):  
 
 ```html
 <script src="//unpkg.com/evt/bundle.min.js"></script>
