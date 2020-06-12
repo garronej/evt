@@ -3,11 +3,11 @@
 `Ctx` helps detach all `Handler`s that were attached in the goal of acompishing a certain task once the said task is done or aborted.
 
 {% hint style="info" %}
-Get Ctx instance using[`Evt.newCtx<T>()`](https://docs.evt.land/api/evt/newctx) or [`Evt.getCtx(obj)`](https://docs.evt.land/api/evt/getctx)\`\`
+Get Ctx instance using[`Evt.newCtx<T>()`](https://docs.evt.land/api/evt/newctx) or [`Evt.getCtx(obj)`](https://docs.evt.land/api/evt/getctx)
 {% endhint %}
 
 {% hint style="info" %}
-The only difference between `CtxVoid` and `Ctx<Void>` is that `ctxVoid.done()` can be called without argument when `ctx<void>.done()`must be called with an argument \(`null` or `undefined`\).
+The only difference between `CtxVoid` and `Ctx<void>` is that `ctxVoid.done()` can be called without argument when `ctx<void>.done(result)`must be called with an argument \(`null` or `undefined`\).
 {% endhint %}
 
 ## `ctx.done(result?)`
@@ -151,7 +151,7 @@ evtText.post("foo"); //Prints nothing
 ee.emit("text", "bar"); //Prints nothing
 ```
 
-\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-niwafz?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
+[**Run the example**](https://stackblitz.com/edit/evt-niwafz?embed=1&file=index.ts&hideExplorer=1)
 
 ## `ctx.waitFor([timeout])`
 
@@ -206,7 +206,7 @@ const timeout = 43;
 evtText.attach(timeout, ()=>{}); //Prints "43"
 ```
 
-\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-t17qsy?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
+[**Run the example**](https://stackblitz.com/edit/evt-t17qsy?embed=1&file=index.ts&hideExplorer=1)
 
 ## `ctx.evtDetach`
 
@@ -276,7 +276,7 @@ function downloadFile(
 }
 ```
 
-\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-qpke6h?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
+[**Run the example**](https://stackblitz.com/edit/evt-qpke6h?embed=1&file=index.ts&hideExplorer=1)
 
-Whether the download is successful or not this use of Ctx enforce that there is no left over handlers on the Evt passed as input once the download attempt has completed.
+Whether the download is successful or not this use of `Ctx` enforce that there is no left over handlers on the `Evt` passed as input once the download attempt has completed.
 
