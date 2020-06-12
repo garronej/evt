@@ -10,7 +10,7 @@ Get Ctx instance using[`Evt.newCtx<T>()`](https://docs.evt.land/api/evt/newctx) 
 The only difference between `CtxVoid` and `Ctx<Void>` is that `ctxVoid.done()` can be called without argument when `ctx<void>.done()`must be called with an argument \(`null` or `undefined`\).
 {% endhint %}
 
-## `ctx.done([result])`
+## `ctx.done(result?)`
 
 Detach, from the `Evt` instances they are attached to, all Handlers bound to the context.
 
