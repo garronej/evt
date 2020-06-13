@@ -12,12 +12,10 @@
         "test:node": "node ./dist/test",
         "test:deno": "deno run ./deno_dist/test/mod.ts",
         "test": "npm run test:node && npm run test:deno",
-        "tsc": "npx tsc",
-        "denoify": "npx denoify",
         "cdn:.js": "simplifyify dist/lib/index.js -s evt -o dist/bundle.js --debug --bundle",
         "cdn:.min.js": "terser dist/bundle.js -cmo dist/bundle.min.js",
         "cdn": "npm run cdn:.js && npm run cdn:.min.js",
-        "build": "npm run tsc && npm run denoify && npm run cdn",
+        "build": "tsc && denoify && npm run cdn",
         "enable_short_import_path:npm": "npm run build && npx denoify_enable_short_npm_import_path",
         "enable_short_import_path:deno": "npm run build && npx denoify_enable_short_deno_import_path",
         "clean": "rm -rf dist deno_dist node_modules mod.ts"
@@ -49,7 +47,7 @@
     ],
     "homepage": "https://evt.land",
     "devDependencies": {
-        "denoify": "^0.2.15",
+        "denoify": "^0.2.22",
         "simplifyify": "8.0.1",
         "terser": "4.6.13",
         "@types/node": "^10.0.0",
