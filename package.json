@@ -1,6 +1,6 @@
 {
     "name": "evt",
-    "version": "1.7.12",
+    "version": "1.7.13",
     "description": "Type safe replacement for node's EventEmitter",
     "repository": {
         "type": "git",
