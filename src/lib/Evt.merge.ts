@@ -36,7 +36,7 @@ export function mergeImpl<EvtUnion extends EvtLike<any>>(
 
 
 
-/* https://docs.evt.land/api/evt/merge */
+/** https://docs.evt.land/api/evt/merge */
 export function merge<EvtUnion extends EvtLike<any>>(
     ctx: CtxLike<any>,
     evts: readonly EvtUnion[]
