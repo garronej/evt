@@ -1,3 +1,11 @@
+### **1.7.13** (2020-06-14)  
+  
+- Add JSDoc link to Evt.merge  
+- update deps  
+- Update project description  
+- Reference Denoify in the readme  
+- include who is using it sectiion    
+  
 ### **1.7.12** (2020-05-30)  
   
 - Reference Denoify in the readme  
