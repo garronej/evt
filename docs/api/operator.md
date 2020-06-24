@@ -396,6 +396,10 @@ $$
 
 Operators can be composed \( aka piped \) to achieve more complex behaviour.
 
+{% hint style="info" %}
+For most use cases, it is more convenient to chain [`evt.pipe()`](https://docs.evt.land/api/evt/pipe) calls rather than using compose. However it is very useful for creating custom operators.
+{% endhint %}
+
 Example composing type guards with fλ:
 
 ```typescript
