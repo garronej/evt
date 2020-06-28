@@ -70,6 +70,10 @@ _*Those are introductory examples, EVT can do much more than this._
     <a href="https://www.semasim.com">
         <img src="https://user-images.githubusercontent.com/6702424/84102785-aead9980-aa11-11ea-915b-5c4a5282c44e.png"> 
     </a>
+    <br>
+    <a href="https://thegraph.com">
+        <img src="https://user-images.githubusercontent.com/6702424/85960692-cd1a0b80-b9a5-11ea-9775-37e1126a3cd6.png"> 
+    </a>
 </p>
 
 # Install / Import
