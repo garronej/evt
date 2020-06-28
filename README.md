@@ -72,7 +72,7 @@ _*Those are introductory examples, EVT can do much more than this._
     </a>
     <br>
     <a href="https://thegraph.com">
-        <img src="https://user-images.githubusercontent.com/6702424/85960692-cd1a0b80-b9a5-11ea-9775-37e1126a3cd6.png"> 
+        <img src="https://user-images.githubusercontent.com/6702424/85961024-ed4aca00-b9a7-11ea-9c7e-03e2f59e6d21.png"> 
     </a>
 </p>
 
