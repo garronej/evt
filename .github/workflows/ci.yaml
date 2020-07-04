@@ -14,8 +14,7 @@ jobs:
     if: ${{ !github.event.created }}
     strategy:
       matrix:
-        #node: [ '14', '13', '12', '11', '10', '8' ]
-        node: [ '14', '13', '12', '11', '10' ]
+        node: [ '14', '13', '12', '11', '10', '8' ]
     name: Test with Node v${{ matrix.node }}
     steps:
 
@@ -24,7 +23,7 @@ jobs:
       with:
         node-version: ${{ matrix.node }}
     - run: npm ci
-    - run: npm run build
+    - run: npx tsc
     - run: npm run test:node
 
   test_deno:
