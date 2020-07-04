@@ -10,7 +10,7 @@
     "types": "./dist/lib/index.d.ts",
     "scripts": {
         "test:node": "node ./dist/test",
-        "test:deno": "deno run ./deno_dist/test/mod.ts",
+        "test:deno": "deno run --reload ./deno_dist/test/mod.ts",
         "test": "npm run test:node && npm run test:deno",
         "cdn:.js": "simplifyify dist/lib/index.js -s evt -o dist/bundle.js --debug --bundle",
         "cdn:.min.js": "terser dist/bundle.js -cmo dist/bundle.min.js",
