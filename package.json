@@ -47,7 +47,7 @@
     ],
     "homepage": "https://evt.land",
     "devDependencies": {
-        "denoify": "^0.2.22",
+        "denoify": "^0.3.3",
         "simplifyify": "8.0.1",
         "terser": "4.6.13",
         "@types/node": "^10.0.0",
