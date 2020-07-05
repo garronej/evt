@@ -118,6 +118,10 @@ const evtClickCount= Evt.from(document,"click")
 console.log(evtClickCount.state); //Prints "3"
 ```
 
+{% hint style="success" %}
+You do not need to pass an initialization value to `.toStateful(),` if you don't the state will be initialized with `undefined` and the returned StatefulEvt will be of type`<T | undefined>`. This is usefull when using .toStateful after `Evt.merge()`. See next example.
+{% endhint %}
+
 ## Merging multiple `StatefulEvt`s
 
 ```typescript
