@@ -2,6 +2,10 @@
 
 Invoke a callback now and every time an event is posted. If the event passed is statefull the effect callback is only invoked when `evtChange` is posted.
 
+{% hint style="warning" %}
+When used with [`StatefulEvt`](https://docs.evt.land/api/statefulevt)s the effect will be called only when the state has changed. See [this example](https://stackblitz.com/edit/evt-pgc8f8?embed=1&file=index.ts&hideExplorer=1) that might explain why your effects are not beeing called.
+{% endhint %}
+
 ```typescript
 import { Evt } from "evt";
 
@@ -54,4 +58,6 @@ ctx.done();
 
 evtText.state= "baz"; // Prints nothing
 ```
+
+
 

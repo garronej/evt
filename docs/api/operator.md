@@ -592,7 +592,7 @@ Some generic operators are provided in `"evt/lib/util/genericOperators"` such as
 
 ```typescript
 //Importing custom operator chunksOf that is not exported by default.
-import { chuncksOf } from "evt/dist/lib/util/genericOperators";
+import { chuncksOf } from "evt/lib/util/genericOperators";
 ```
 
 ## Where to use operators
