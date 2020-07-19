@@ -1,3 +1,7 @@
+### **1.7.14** (2020-07-19)  
+  
+- update dependencies    
+  
 ### **1.7.13** (2020-06-14)  
   
 - Add JSDoc link to Evt.merge  
