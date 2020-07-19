@@ -22,7 +22,6 @@ for (let i = 1; i <= 60; i++) {
     }
 
     evt.attach(function () {
-        /** my handler */
         console.log("identification from source");
     });
 
@@ -41,7 +40,6 @@ Use Evt.setDefaultMaxHandlers(n) to change the default limit currently set to 25
   extract: false,
   isWaitFor: false,
   callback: function () {
-        /** my handler */
         console.log("identification from source");
     }
 }
@@ -60,7 +58,6 @@ Use Evt.setDefaultMaxHandlers(n) to change the default limit currently set to 25
   extract: false,
   isWaitFor: false,
   callback: function () {
-        /** my handler */
         console.log("identification from source");
     }
 }
