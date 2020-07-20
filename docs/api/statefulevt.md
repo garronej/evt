@@ -8,7 +8,7 @@ You can think of it as way to observe when a value is changed.
 
 Property type: `T`
 
-reading the property gives the last event data posted. Setting the property \(`evt.state = data`\) is equivalent of calling invoking `.post(data)`.
+reading the property gives the last event data posted. Setting the property \(`evt.state = data`\) is equivalent to calling `.post(data)`.
 
 ```typescript
 import { Evt } from "evt";
