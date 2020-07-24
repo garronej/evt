@@ -1,5 +1,5 @@
 ---
-description: Evt works really well with React Hooks!
+description: Evt works great with React Hooks!
 ---
 
 # React Hooks integration
