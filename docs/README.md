@@ -7,9 +7,10 @@ It enables and encourages **functional programming** and makes heavy use of **ty
 
 **Suitable for any JS runtime env \(deno, node, old browser, react-native ...\)**
 
-* ✅ It is both a [Deno](https://deno.land/x/evt) and an [NPM](https://www.npmjs.com/evt) module. 
-* ✅ Lightweight, no dependency.
-* ✅ No polyfills needed, the NPM module is transpiled down to ES3   
+* ✅  It is both a [Deno](https://deno.land/x/evt) and an [NPM](https://www.npmjs.com/evt) module. 
+* ✅  Lightweight, no dependency.
+* ✅  No polyfills needed, the NPM module is transpiled down to ES3.
+* ✅  Good integration with React Hooks.
 
 Can be imported in TypeScript projects using version &gt;= **3.4** \(Mar 2019\) and in any plain JS projects.
 
