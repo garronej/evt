@@ -1,12 +1,12 @@
 import { UnpackEvt } from "./types/helper/UnpackEvt";
-import { importProxy } from "./importProxy";
+import { importProxy } from "./importProxy";
 
-type Evt<T>= import("./types/interfaces").Evt<T>;
+type Evt<T> = import("./types/interfaces").Evt<T>;
 type CtxLike<Result> = import("./types/interfaces").CtxLike<Result>;
 
-type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T> & {
-    attach(ctx: CtxLike<any>, callback: (data: T)=> void): void;
-    attach(callback: (data: T)=> void): void;
+export type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T> & {
+    attach(ctx: CtxLike<any>, callback: (data: T) => void): void;
+    attach(callback: (data: T) => void): void;
 };
 
 export function mergeImpl<EvtUnion extends EvtLike<any>>(

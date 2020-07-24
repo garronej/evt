@@ -1,6 +1,6 @@
 {
     "name": "evt",
-    "version": "1.7.14",
+    "version": "1.8.0",
     "description": "Type safe replacement for node's EventEmitter",
     "repository": {
         "type": "git",
@@ -29,6 +29,7 @@
     "files": [
         "/dist/lib/",
         "/dist/tools/",
+        "/dist/hooks/",
         "/dist/bundle.{js,min.js,js.map}",
         "/src/lib/",
         "/src/tools/"
@@ -47,6 +48,8 @@
     ],
     "homepage": "https://evt.land",
     "devDependencies": {
+        "react": "^16.13.1",
+        "@types/react": "^16.9.43",
         "denoify": "^0.3.3",
         "simplifyify": "8.0.1",
         "terser": "4.6.13",
