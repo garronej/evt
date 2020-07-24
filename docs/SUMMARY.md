@@ -32,4 +32,5 @@
   * [StatefulEvt&lt;T&gt;](api/statefulevt.md)
   * [Helper types](api/helpertypes.md)
   * [Handler&lt;T, U&gt; \(type\)](api/handler.md)
+  * [React Hooks integration](api/react-hooks-integration.md)
 
