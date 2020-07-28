@@ -925,7 +925,7 @@ export interface NonPostableEvt<T> {
     /**
      * https://docs.evt.land/api/evt/attach
      * 
-     * op - fλ
+     * op - Filter
      * 
      * ctx
      * 
@@ -998,6 +998,18 @@ export interface NonPostableEvt<T> {
     /**
      * https://docs.evt.land/api/evt/attach
      * 
+     * ctx
+     * 
+     * timeout
+     */
+    attachExtract(
+        ctx: CtxLike,
+        timeout: number,
+        callback: (data: T) => void
+    ): Promise<T>;
+    /**
+     * https://docs.evt.land/api/evt/attach
+     * 
      * op - Type guard
      * 
      * callback
@@ -1015,6 +1027,36 @@ export interface NonPostableEvt<T> {
      */
     attachExtract(
         op: (data: T) => boolean,
+        callback: (data: T) => void
+    ): this;
+    /**
+     * https://docs.evt.land/api/evt/attach
+     * 
+     * ctx
+     * 
+     * callback
+     */
+    attachExtract(
+        ctx: CtxLike,
+        callback: (data: T) => void
+    ): this;
+    /**
+     * https://docs.evt.land/api/evt/attach
+     * 
+     * timeout
+     * 
+     * callback
+     */
+    attachExtract(
+        timeout: number,
+        callback: (data: T) => void
+    ): Promise<T>;
+    /**
+     * https://docs.evt.land/api/evt/attach
+     * 
+     * callback
+     */
+    attachExtract(
         callback: (data: T) => void
     ): this;
 
