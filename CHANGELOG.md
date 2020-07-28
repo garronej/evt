@@ -1,3 +1,8 @@
+### **1.8.1** (2020-07-28)  
+  
+- fix bug in hooks/useStatefulEvt  
+- Add missing 'attachExtract' overloads    
+  
 ## **1.8.0** (2020-07-24)  
   
 - Add hooks for react integration    
