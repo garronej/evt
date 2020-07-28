@@ -3,7 +3,24 @@ import { useReducer } from "react";
 import { Evt } from "../lib";
 import { useEvt } from "./useEvt";
 
-type StatefulReadonlyEvtLike = { evtChange: import("../lib/Evt.merge").EvtLike<any>; };
+type CtxLike<Result = any> = import("../lib/types/interfaces/CtxLike").CtxLike<Result>;
+interface HandlerLike { ctx: CtxLike };
+type Pipe<Cb = ()=>void> = (ctx: CtxLike, cb?: Cb)=> import("../lib/Evt.merge").EvtLike<any>;
+
+interface StatefulReadonlyEvtLike { 
+  evtChange: { 
+    evtAttach: { pipe: Pipe<(handler: HandlerLike)=> void>; };
+    attach(ctx: CtxLike, cb: ()=> void): void;
+    detach(ctx: CtxLike): void;
+  }; 
+  evtChangeDiff: {
+    evtAttach: { pipe: Pipe; }
+  };
+  evtDiff: {
+    evtAttach: { pipe: Pipe; }
+  };
+  evtAttach: { pipe: Pipe; }
+};
 
 /**Use StatefulEvt as react component state */
 export function useStatefulEvt(evts: StatefulReadonlyEvtLike[]): void {
@@ -13,20 +30,30 @@ export function useStatefulEvt(evts: StatefulReadonlyEvtLike[]): void {
   useEvt(
     ctx => {
 
-      Evt.merge(ctx, evts.map(evt => evt.evtChange))
-        .attach(() => {
-          Promise.resolve().then(() => {
+      evts.forEach(evt => {
 
-            if (ctx.getHandlers().length === 0) {
-              return;
-            }
+        const attach = () => evt.evtChange.attach(ctx, forceUpdate);
 
-            forceUpdate()
+        attach();
 
-          });
+        Evt.merge(
+          [
+            evt.evtChange.evtAttach.pipe(ctx, handler => handler.ctx !== ctx),
+            ...[
+              evt,
+              evt.evtChangeDiff,
+              evt.evtDiff
+            ].map(evt => evt.evtAttach.pipe(ctx)),
+          ]
+        ).attach(() => {
 
+          evt.evtChange.detach(ctx);
+
+          attach();
 
         });
+
+      });
 
     },
     evts
