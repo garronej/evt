@@ -1,3 +1,7 @@
+## **1.8.0** (2020-07-24)  
+  
+- Add hooks for react integration    
+  
 ### **1.7.14** (2020-07-19)  
   
 - update dependencies    
