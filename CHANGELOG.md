@@ -1,3 +1,7 @@
+### **1.8.3** (2020-07-31)  
+  
+- Add documentation for react hooks    
+  
 ### **1.8.2** (2020-07-31)  
   
 - Fix for useEvt on Safari    
