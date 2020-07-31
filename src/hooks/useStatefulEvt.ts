@@ -22,7 +22,11 @@ interface StatefulReadonlyEvtLike {
   evtAttach: { pipe: Pipe; }
 };
 
-/**Use StatefulEvt as react component state */
+/**
+ * https://docs.evt.land/api/react-hooks
+ * 
+ * To use StatefulEvt as react component state.
+ * */
 export function useStatefulEvt(evts: StatefulReadonlyEvtLike[]): void {
 
   const [, forceUpdate] = useReducer(x => x + 1, 0);

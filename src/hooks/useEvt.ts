@@ -9,6 +9,8 @@ declare const process: any;
 const isDevStrictMode = process.env.NODE_ENV !== "production";
 
 /**
+ * https://docs.evt.land/api/react-hooks
+ * 
  * Provide a Ctx to attach handlers.
  * You should list in deps all the Evt that are
  * susceptible to change ( Evt passed as props 
