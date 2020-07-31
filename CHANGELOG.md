@@ -1,3 +1,7 @@
+### **1.8.2** (2020-07-31)  
+  
+- Fix for useEvt on Safari    
+  
 ### **1.8.1** (2020-07-28)  
   
 - fix bug in hooks/useStatefulEvt  
