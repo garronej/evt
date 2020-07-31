@@ -5,6 +5,7 @@ import { safeClearTimeout, safeSetTimeout, Timer } from "../tools/safeSetTimeout
 
 declare const process: any;
 
+//TODO: Find a more reliable way to test if <React.UseStrict> is used.
 const isDevStrictMode = process.env.NODE_ENV !== "production";
 
 /**
@@ -72,7 +73,7 @@ function useHackStrictMode(isDevStrictMode: boolean, ctx: VoidCtx) {
 
         timer = safeSetTimeout(
             () => ctx.done(),
-            0
+            100
         );
 
     });
