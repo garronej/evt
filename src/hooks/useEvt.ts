@@ -75,7 +75,7 @@ function useHackStrictMode(isDevStrictMode: boolean, ctx: VoidCtx) {
 
         timer = safeSetTimeout(
             () => ctx.done(),
-            100
+            700
         );
 
     });
