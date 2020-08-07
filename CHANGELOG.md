@@ -1,3 +1,8 @@
+### **1.8.4** (2020-08-05)  
+  
+- Switch back to tag name prefixed with 'v'  
+- fix useEvt hook for verry slow browser    
+  
 ### **1.8.3** (2020-07-31)  
   
 - Add documentation for react hooks    
