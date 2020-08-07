@@ -20,41 +20,47 @@ function fromImpl<T>(
     options?: EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<T> {
 
-    if ("then" in target) {
+    const matchEventTargetLike =
+        (target_: typeof target): target_ is EventTargetLike<T> =>
+            EventTargetLike.canBe(target_);
 
-        const evt = new importProxy.Evt<T>();
+    if (!matchEventTargetLike(target)) {
 
-        const isCtxDone = (()=>{
+        if ("then" in target) {
 
-            const getEvtDonePostCount = () => ctx?.evtDoneOrAborted.postCount;
+            const evt = new importProxy.Evt<T>();
 
-            const n = getEvtDonePostCount();
+            const isCtxDone = (() => {
 
-            return ()=> n !== getEvtDonePostCount();
+                const getEvtDonePostCount = () => ctx?.evtDoneOrAborted.postCount;
 
-        })();
+                const n = getEvtDonePostCount();
 
-        target.then(data => {
+                return () => n !== getEvtDonePostCount();
 
-            if( isCtxDone() ){
-                return;
-            }
+            })();
 
-            evt.post(data);
+            target.then(data => {
 
-        });
+                if (isCtxDone()) {
+                    return;
+                }
 
-        return evt;
+                evt.post(data);
 
-    }
+            });
 
-    if ("length" in target) {
+            return evt;
+
+        }
+
         return mergeImpl<Evt<T>>(
             ctx,
             Array.from(target).map(
                 target => fromImpl<T>(ctx, target, eventName, options)
             )
         );
+
     }
 
     type ProxyMethod<T> = (

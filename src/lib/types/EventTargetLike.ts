@@ -117,4 +117,25 @@ export namespace EventTargetLike {
     }
 
 
+    /* Return true if o can be a EventTargetLike */
+    export function canBe(o: any): boolean {
+
+        try{
+
+            return (
+                HasEventTargetAddRemove.match(o) ||
+                NodeStyleEventEmitter.match(o) ||
+                JQueryStyleEventEmitter.match(o) ||
+                RxJSSubject.match(o)
+            );
+
+        }catch{
+
+            return false;
+
+        }
+
+    }
+
+
 }
