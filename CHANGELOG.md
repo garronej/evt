@@ -1,3 +1,10 @@
+### **1.8.5** (2020-08-07)  
+  
+- Merge pull request #8 from garronej/dependabot/npm_and_yarn/lodash-4.17.19
+
+Bump lodash from 4.17.15 to 4.17.19  
+- Fix issue #9: Bug with Evt.from(window,...)    
+  
 ### **1.8.4** (2020-08-05)  
   
 - Switch back to tag name prefixed with 'v'  
