@@ -10,7 +10,7 @@ It enables and encourages **functional programming** and makes heavy use of **ty
 * ✅  It is both a [Deno](https://deno.land/x/evt) and an [NPM](https://www.npmjs.com/evt) module. 
 * ✅  Lightweight, no dependency.
 * ✅  No polyfills needed, the NPM module is transpiled down to ES3.
-* ✅  Good integration with React Hooks.
+* ✅  [React Hooks integration](https://docs.evt.land/api/react-hooks)
 
 Can be imported in TypeScript projects using version &gt;= **3.4** \(Mar 2019\) and in any plain JS projects.
 
@@ -31,6 +31,7 @@ Concerning RxJS:
 * It is often needed to resort to custom [type guards](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards), the filter operator [breaks the type inference.](https://stackblitz.com/edit/evt-795plc?embed=1&file=index.ts&hideExplorer=1)
 * Tend to be quite verbose.
 * It could be months before it eventually supports Deno.
+* There is no official guideline on how to integrate it with React.
 
 EVT is an attempt to address all these points while trying to remain as accessible as `EventEmitter`.
 

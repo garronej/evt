@@ -1,3 +1,7 @@
+### **1.8.6** (2020-08-08)  
+  
+- Advertise React Hooks integration    
+  
 ### **1.8.5** (2020-08-07)  
   
 - Merge pull request #8 from garronej/dependabot/npm_and_yarn/lodash-4.17.19
