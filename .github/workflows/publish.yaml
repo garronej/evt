@@ -26,26 +26,40 @@ jobs:
         action_name: update_changelog
         owner: ${{github.repository_owner}}
         repo: ${{github.event.client_payload.repo}}
-        branch_behind: master
+        branch_behind: latest
         branch_ahead: develop
         commit_author_email: denoify_ci@github.com
         exclude_commit_from_author_names_json: '["denoify_ci"]'
-      
-  publish_npm:
+
+  publish:
     runs-on: ubuntu-latest
     needs: update_changelog_and_sync_package_lock_version
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        ref: develop
+    - name: Remove .github directory, useless on 'latest' branch
+      run: rm -r .github
+    - name: Remove branch 'latest' 
+      continue-on-error: true
+      run: |
+        git branch -d latest || true
+        git push origin :latest
+    - name: Create the new 'latest' branch
+      run: |
+        git branch latest
+        git checkout latest
     - uses: actions/setup-node@v1
     - run: npm ci
-    - run: npm run enable_short_import_path:npm
+    - run: npm run enable_short_import_path
       env:
         DRY_RUN: "0"
     - name: (DEBUG) Show how the files have been moved to enable short import
       run: ls -lR
     - name: Publishing on NPM
       run: |
-        if [ "$(npm show $MODULE_NAME version)" = "$VERSION" ]; then
+        if [ "$(npm show . version)" = "$VERSION" ]; then
           echo "This version is already published"
           exit 0
         fi
@@ -58,41 +72,14 @@ jobs:
         rm .npmrc
       env:
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        MODULE_NAME: ${{ github.event.client_payload.repo }}
         VERSION: ${{ github.event.client_payload.to_version }}
-  publish_deno:
-    runs-on: ubuntu-latest
-    needs: update_changelog_and_sync_package_lock_version
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-        ref: develop
-    - name: Remove .github directory, useless on 'master' branch
-      run: rm -r .github
-    - name: Removes GitBook files
-      run: rm -r docs .gitbook.yaml
-    - name: Remove branch 'master' 
-      continue-on-error: true
-      run: |
-        git branch -d master || true
-        git push origin :master
-    - name: Create the new 'master' branch
-      run: |
-        git branch master
-        git checkout master
-    - uses: actions/setup-node@v1
-    - run: npm ci
-    - run: npm run enable_short_import_path:deno
-      env:
-        DRY_RUN: "0"
     - name: Commit changes
       run: |
         git config --local user.email "denoify_ci@github.com"
         git config --local user.name "denoify_ci"
         git add -A
-        git commit -am "Enable shorter import paths [automatic]"
-    - run: git push origin master
+        git commit -am "Enabling shorter import paths [automatic]"
+    - run: git push origin latest
     - name: Release body
       id: id_rb
       run: |
@@ -112,8 +99,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.PAT }} 
       with:
         tag_name: v${{ github.event.client_payload.to_version }}
-        release_name: Release ${{ github.event.client_payload.to_version }}
-        branch: master
+        release_name: Release v${{ github.event.client_payload.to_version }}
+        branch: latest
         draft: false
         prerelease: false
         body: ${{ steps.id_rb.outputs.body }}
