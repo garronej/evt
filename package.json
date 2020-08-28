@@ -1,13 +1,13 @@
 {
     "name": "evt",
-    "version": "1.8.7",
+    "version": "1.8.8",
     "description": "Type safe replacement for node's EventEmitter",
     "repository": {
         "type": "git",
         "url": "git://github.com/garronej/evt"
     },
-    "main": "./dist/lib/index.js",
-    "types": "./dist/lib/index.d.ts",
+    "main": "dist/lib/index.js",
+    "types": "dist/lib/index.d.ts",
     "scripts": {
         "test:node": "node ./dist/test",
         "test:deno": "deno run --reload ./deno_dist/test/mod.ts",
@@ -21,16 +21,13 @@
     "author": "Joseph Garrone",
     "license": "MIT",
     "dependencies": {
-        "minimal-polyfills": "^2.1.4",
-        "run-exclusive": "^2.2.13"
+        "minimal-polyfills": "^2.1.5",
+        "run-exclusive": "^2.2.14"
     },
     "files": [
-        "/dist/lib/",
-        "/dist/tools/",
-        "/dist/hooks/",
-        "/dist/bundle.{js,min.js,js.map}",
-        "/src/lib/",
-        "/src/tools/"
+        "dist/",
+        "src/",
+        "!{src,dist}/test/"
     ],
     "keywords": [
         "deno",

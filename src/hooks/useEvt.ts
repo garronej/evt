@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo } from "react";
+import * as React from "react";
+const { useState, useEffect, useMemo } = React;
 
 import { Evt, VoidCtx } from "../lib";
 import { safeClearTimeout, safeSetTimeout, Timer } from "../tools/safeSetTimeout";

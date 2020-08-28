@@ -1,18 +1,20 @@
 
-import { useReducer } from "react";
+import * as React from "react";
+const { useReducer } = React;
+
 import { Evt } from "../lib";
 import { useEvt } from "./useEvt";
 
 type CtxLike<Result = any> = import("../lib/types/interfaces/CtxLike").CtxLike<Result>;
 interface HandlerLike { ctx: CtxLike };
-type Pipe<Cb = ()=>void> = (ctx: CtxLike, cb?: Cb)=> import("../lib/Evt.merge").EvtLike<any>;
+type Pipe<Cb = () => void> = (ctx: CtxLike, cb?: Cb) => import("../lib/Evt.merge").EvtLike<any>;
 
-interface StatefulReadonlyEvtLike { 
-  evtChange: { 
-    evtAttach: { pipe: Pipe<(handler: HandlerLike)=> void>; };
-    attach(ctx: CtxLike, cb: ()=> void): void;
+interface StatefulReadonlyEvtLike {
+  evtChange: {
+    evtAttach: { pipe: Pipe<(handler: HandlerLike) => void>; };
+    attach(ctx: CtxLike, cb: () => void): void;
     detach(ctx: CtxLike): void;
-  }; 
+  };
   evtChangeDiff: {
     evtAttach: { pipe: Pipe; }
   };
