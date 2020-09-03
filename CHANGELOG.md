@@ -1,3 +1,8 @@
+### **1.8.8** (2020-08-28)  
+  
+- Hooks denoified as well  
+- Update README.md    
+  
 ### **1.8.6** (2020-08-08)  
   
 - Advertise React Hooks integration    
