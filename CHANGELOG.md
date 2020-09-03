@@ -1,3 +1,7 @@
+### **1.8.9** (2020-09-03)  
+  
+- add Evt.asyncPipe (as a static method until async operator lands)    
+  
 ### **1.8.8** (2020-08-28)  
   
 - Hooks denoified as well  
