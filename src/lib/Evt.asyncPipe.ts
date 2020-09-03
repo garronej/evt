@@ -8,7 +8,7 @@ type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T> & {
 };
 
 /** 
- * Will be a Evt method in next release and thus, this function will be deprecated.
+ * Will be deprecated in next release once async operators lands.
  * Example of use: https://stackblitz.com/edit/evt-async-op?file=index.ts 
  */
 export function asyncPipe<E extends EvtLike<any>, U>(
