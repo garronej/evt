@@ -7,6 +7,7 @@ import { merge } from "./Evt.merge";
 import { from } from "./Evt.from";
 import { useEffect } from "./Evt.useEffect";
 import { asPostable } from "./Evt.asPostable";
+import { asyncPipe } from "./Evt.asyncPipe";
 import { asNonPostable } from "./Evt.asNonPostable";
 import { parsePropsFromArgs, matchAll } from "./Evt.parsePropsFromArgs";
 import { newCtx } from "./Evt.newCtx";
@@ -53,6 +54,8 @@ class EvtImpl<T> implements Evt<T> {
     static readonly factorize = factorize;
 
     static readonly asPostable = asPostable;
+
+    static readonly asyncPipe = asyncPipe;
 
     static readonly asNonPostable= asNonPostable;
 
@@ -919,6 +922,8 @@ export const Evt: {
     readonly factorize: typeof factorize;
 
     readonly asPostable: typeof asPostable;
+
+    readonly asyncPipe: typeof asyncPipe;
 
     readonly asNonPostable: typeof asNonPostable;
 
