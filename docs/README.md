@@ -25,9 +25,9 @@ There are a lot of things that can't easily be done with `EventEmitter`:
 
   _Example: waiting at most one second for the next message, stop waiting if the socket disconnects._
 
-Concerning RxJS:
+Why would someone pick EVT over RxJS:
 
-* It introduces a lot of abstractions. It's a big jump from `EventEmitter`.
+* RxJS introduces a lot of abstractions. It's a big jump from `EventEmitter`.
 * It is often needed to resort to custom [type guards](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards), the filter operator [breaks the type inference.](https://stackblitz.com/edit/evt-795plc?embed=1&file=index.ts&hideExplorer=1)
 * Tend to be quite verbose.
 * It could be months before it eventually supports Deno.
