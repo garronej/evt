@@ -121,10 +121,10 @@ _Example: waiting at most one second for the next message, stop waiting if the s
 Why would someone pick EVT over RxJS:  
 
 * RxJS introduces a lot of abstractions. It's a big jump from ``EventEmitter``.
-* It is often needed to resort to custom [type guards](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards), the filter operator [breaks the type inference.](https://stackblitz.com/edit/evt-795plc?embed=1&file=index.ts&hideExplorer=1)
-* It tends to be quite verbose.
-* It could be months before it eventually supports Deno.
-* No official guideline on how to integrate with React.
+* With RxJS It is often needed to resort to custom [type guards](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards), the filter operator [breaks the type inference.](https://stackblitz.com/edit/evt-795plc?embed=1&file=index.ts&hideExplorer=1)
+* RxJS tends to be quite verbose.
+* It could be months before RxJS it eventually supports Deno.
+* No official guideline on how to integrate RxJS with React.
 
 EVT is an attempt to address all these points while trying to remain as accessible as `EventEmitter`.  
   
