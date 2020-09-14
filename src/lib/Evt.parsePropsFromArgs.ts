@@ -1,10 +1,17 @@
 
-import { Handler } from "./types/Handler"
-import { Operator } from "./types/Operator"
+type CtxLike<Result> = import("./types/interfaces").CtxLike<Result>;
+
+namespace Handler {
+
+    export type PropsFromArgs<T, U, CtxProp extends CtxLike<any> | undefined = CtxLike<any> | undefined>= 
+        import("./types/Handler").Handler.PropsFromArgs<T,U,CtxProp>;
+
+}
+
+import type { Operator } from "./types/Operator"
 import { id } from "../tools/typeSafety/id";
 import { compose } from "./util/compose";
 import { typeGuard } from "../tools/typeSafety/typeGuard"
-type CtxLike<Result> = import("./types/interfaces").CtxLike<Result>;
 
 export function matchAll() { return true; }
 

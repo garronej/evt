@@ -6,7 +6,7 @@ import { importProxy } from "./importProxy";
 import { invokeOperator } from "./util/invokeOperator";
 import { Operator } from "./types/Operator";
 import { parsePropsFromArgs } from "./Evt.parsePropsFromArgs";
-import { CtxLike } from "./types/interfaces/CtxLike";
+import type { CtxLike } from "./types/interfaces/CtxLike";
 type Diff<T> = import("./types/interfaces").Diff<T>;
 type NonPostableEvt<T> = import("./types/interfaces").NonPostableEvt<T>;
 type StatefulReadonlyEvt<T>= import("./types/interfaces").StatefulReadonlyEvt<T>;

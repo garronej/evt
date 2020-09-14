@@ -1,6 +1,6 @@
 
 import { Evt, UnpackEvt } from "../lib";
-import { UnpackPromise } from "../tools/typeSafety";
+type UnpackPromise<T> = import("../tools/typeSafety").UnpackPromise<T>;
 
 import { assert } from "../tools/typeSafety/assert";
 import { same } from "../tools/inDepth";

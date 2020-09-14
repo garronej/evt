@@ -4,7 +4,7 @@ import { assert } from "../tools/typeSafety/assert";
 import { typeGuard } from "../tools/typeSafety/typeGuard";
 import { LazyEvt } from "./LazyEvt";
 import { importProxy } from "./importProxy";
-import { Handler } from "./types/Handler";
+import type { Handler } from "./types/Handler";
 import { defineAccessors } from "../tools/typeSafety/defineAccessors";
 import { overwriteReadonlyProp } from "../tools/typeSafety/overwriteReadonlyProp";
 

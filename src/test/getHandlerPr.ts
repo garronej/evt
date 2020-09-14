@@ -1,5 +1,5 @@
 
-import { NonPostableEvt } from "../lib";
+type NonPostableEvt<T> = import("../lib").NonPostableEvt<T>;
 import { arrDiff } from "../tools/reducers/diff";
 import { assert } from "../tools/typeSafety";
 

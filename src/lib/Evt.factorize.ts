@@ -1,5 +1,7 @@
 
-import { FactorizeEvt } from "./types/helper/FactorizeEvt";
+
+type FactorizeEvt<E extends import("./types/helper/UnpackEvt").EvtLike<any>> = 
+    import("./types/helper/FactorizeEvt").FactorizeEvt<E>;
 
 type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T>;
 

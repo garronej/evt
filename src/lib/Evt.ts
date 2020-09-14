@@ -26,7 +26,7 @@ import { loosenType } from "./Evt.loosenType";
 import { CtxLike } from "./types/interfaces/CtxLike";
 import { safeClearTimeout, safeSetTimeout, Timer } from "../tools/safeSetTimeout";
 
-import { Handler } from "./types/Handler";
+import type { Handler } from "./types/Handler";
 import { Operator } from "./types/Operator";
 type NonPostableEvt<T> = import("./types/interfaces").NonPostableEvt<T>;
 type StatefulEvt<T> = import("./types/interfaces").StatefulEvt<T>;

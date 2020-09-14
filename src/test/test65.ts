@@ -1,6 +1,6 @@
 
 import { Evt, throttleTime } from "../lib";
-import * as dom from "../lib/types/lib.dom";
+import type * as dom from "../lib/types/lib.dom";
 
 declare const document: dom.Document;
 

@@ -1,5 +1,11 @@
 
-import { Handler } from "../Handler";
+
+namespace Handler {
+
+    export type WithEvt<T,CtxResult> = 
+        import("../Handler").Handler.WithEvt<T, CtxResult>;
+
+}
 
 type Ctx<T> = import("./Ctx").Ctx<T>;
 

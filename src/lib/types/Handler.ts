@@ -1,4 +1,4 @@
-import { Operator } from "./Operator";
+type Operator<T, U, CtxResult = any> = import("./Operator").Operator<T, U, CtxResult>;
 type EvtLike<T>= import("../types/helper/UnpackEvt").EvtLike<T>;
 type CtxLike<Result> = import("../types/interfaces").CtxLike<Result>;
 

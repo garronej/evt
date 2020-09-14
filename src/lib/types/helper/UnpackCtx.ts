@@ -1,6 +1,6 @@
 
 
-interface CtxLike<Result = any> {
+export interface CtxLike<Result = any> {
     done(result: Result): void;
 }
 
