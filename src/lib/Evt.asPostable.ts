@@ -1,5 +1,5 @@
 
-import { ToPostableEvt } from "./types/helper/ToPostableEvt";
+import type { ToPostableEvt } from "./types/helper/ToPostableEvt";
 type EvtLike<T>= import("./types/helper/UnpackEvt").EvtLike<T>;
 
 /** 

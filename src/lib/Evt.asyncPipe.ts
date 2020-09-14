@@ -1,7 +1,7 @@
 
 import { Evt } from "./Evt";
-import { UnpackEvt } from "./types/helper/UnpackEvt";
-import { SwapEvtType } from "./types/helper/SwapEvtType";
+import type { UnpackEvt } from "./types/helper/UnpackEvt";
+import type { SwapEvtType } from "./types/helper/SwapEvtType";
 
 type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T> & {
     attach(callback: (data: T) => void): void;

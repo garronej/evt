@@ -1,5 +1,5 @@
 
-import { Handler } from "../Handler";
+import type { Handler } from "../Handler";
 import { typeGuard } from "../../../tools/typeSafety/typeGuard";
 type EvtLike<T> = import("../helper/UnpackEvt").EvtLike<T>;
 

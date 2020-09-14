@@ -1,5 +1,5 @@
 
-import { Handler } from "../Handler";
+import type { Handler } from "../Handler";
 
 type Ctx<T> = import("./Ctx").Ctx<T>;
 

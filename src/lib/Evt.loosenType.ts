@@ -1,5 +1,5 @@
-import { SwapEvtType } from "./types/helper/SwapEvtType";
-import { UnpackEvt } from "./types/helper/UnpackEvt";
+import type { SwapEvtType } from "./types/helper/SwapEvtType";
+import type { UnpackEvt } from "./types/helper/UnpackEvt";
 
 type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T>;
 

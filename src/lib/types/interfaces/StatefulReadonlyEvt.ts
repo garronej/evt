@@ -1,5 +1,5 @@
 
-import { Operator } from "../Operator";
+import type { Operator } from "../Operator";
 
 type NonPostableEvt<T> = import("./NonPostableEvt").NonPostableEvt<T>;
 type CtxLike<Result = any> = import("./CtxLike").CtxLike<Result>;

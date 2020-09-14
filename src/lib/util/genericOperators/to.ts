@@ -1,4 +1,4 @@
-import { Operator } from "../../types/Operator";
+import type { Operator } from "../../types/Operator";
 
 export const to = <T extends readonly [string, any], K extends T[0]>(
     eventName: K

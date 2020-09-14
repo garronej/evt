@@ -1,6 +1,6 @@
 
-import { SwapEvtType } from "./SwapEvtType";
-import { UnpackEvt } from "./UnpackEvt";
+import type { SwapEvtType } from "./SwapEvtType";
+import type { UnpackEvt } from "./UnpackEvt";
 type EvtLike<T>= import("./UnpackEvt").EvtLike<T>;
 
 /** https://docs.evt.land/api/helpertypes#swapevttype-less-than-e-t-greater-than */

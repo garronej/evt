@@ -4,7 +4,7 @@ import { typeGuard } from "../tools/typeSafety/typeGuard";
 import { EventTargetLike } from "./types/EventTargetLike";
 import { mergeImpl } from "./Evt.merge";
 import { importProxy } from "./importProxy";
-import * as dom from "./types/lib.dom";
+import type * as dom from "./types/lib.dom";
 type Evt<T>= import("./types/interfaces/Evt").Evt<T>;
 type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T>;
 
