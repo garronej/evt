@@ -1,63 +1,64 @@
 //NOTE: Type only
-import type { Evt, StatefulEvt, ToPostableEvt, ToNonPostableEvt, VoidEvt, NonPostableEvt, StatefulReadonlyEvt } from "../lib";
+
+import * as _ from "../lib";
 
 {
 
-    type T = void; type Source = VoidEvt;
+    type T = void; type Source = _.VoidEvt;
 
-    type A = ToNonPostableEvt<Source>;
+    type A = _.ToNonPostableEvt<Source>;
 
-    const x: NonPostableEvt<T> = null as any as A;x;
+    const x: _.NonPostableEvt<T> = null as any as A;x;
 
-    type B = ToPostableEvt<A>
+    type B = _.ToPostableEvt<A>
 
     const y: Source = null as any as B;y;
 
 }
 {
-    type T = undefined; type Source = Evt<T>;
+    type T = undefined; type Source = _.Evt<T>;
 
-    type A = ToNonPostableEvt<Source>;
+    type A = _.ToNonPostableEvt<Source>;
 
-    const x: NonPostableEvt<T> = null as any as A;x;
+    const x: _.NonPostableEvt<T> = null as any as A;x;
 
-    type B = ToPostableEvt<A>
-
-    const y: B = null as any as Source; y;
-
-}
-{
-    type T = undefined | number; type Source = Evt<T>;
-
-    type A = ToNonPostableEvt<Source>;
-
-    const x: NonPostableEvt<T> = null as any as A;x;
-
-    type B = ToPostableEvt<A>
+    type B = _.ToPostableEvt<A>
 
     const y: B = null as any as Source; y;
 
 }
 {
-    type T = undefined; type Source = StatefulEvt<T>;
+    type T = undefined | number; type Source = _.Evt<T>;
 
-    type A = ToNonPostableEvt<Source>;
+    type A = _.ToNonPostableEvt<Source>;
 
-    const x: StatefulReadonlyEvt<T> = null as any as A;x;
+    const x: _.NonPostableEvt<T> = null as any as A;x;
 
-    type B = ToPostableEvt<A>
+    type B = _.ToPostableEvt<A>
 
     const y: B = null as any as Source; y;
 
 }
 {
-    type T = undefined | number; type Source = StatefulEvt<T>;
+    type T = undefined; type Source = _.StatefulEvt<T>;
 
-    type A = ToNonPostableEvt<Source>;
+    type A = _.ToNonPostableEvt<Source>;
 
-    const x: StatefulReadonlyEvt<T> = null as any as A;x;
+    const x: _.StatefulReadonlyEvt<T> = null as any as A;x;
 
-    type B = ToPostableEvt<A>
+    type B = _.ToPostableEvt<A>
+
+    const y: B = null as any as Source; y;
+
+}
+{
+    type T = undefined | number; type Source = _.StatefulEvt<T>;
+
+    type A = _.ToNonPostableEvt<Source>;
+
+    const x: _.StatefulReadonlyEvt<T> = null as any as A;x;
+
+    type B = _.ToPostableEvt<A>
 
     const y: B = null as any as Source; y;
 
@@ -66,30 +67,30 @@ import type { Evt, StatefulEvt, ToPostableEvt, ToNonPostableEvt, VoidEvt, NonPos
 {
 
     type Source = {
-        evtText: Evt<string | number>;
-        evtIsConnected: StatefulReadonlyEvt<boolean | number>;
-        evtTime: NonPostableEvt<number | Date>;
-        evtTime2: StatefulReadonlyEvt<number | Date>;
+        evtText: _.Evt<string | number>;
+        evtIsConnected: _.StatefulReadonlyEvt<boolean | number>;
+        evtTime: _.NonPostableEvt<number | Date>;
+        evtTime2: _.StatefulReadonlyEvt<number | Date>;
         p: number;
     };
 
-    type A = ToNonPostableEvt<Source>;
+    type A = _.ToNonPostableEvt<Source>;
 
     const x: {
-        evtText: NonPostableEvt<string | number>;
-        evtIsConnected: StatefulReadonlyEvt<number | boolean>;
-        evtTime: NonPostableEvt<number | Date>;
-        evtTime2: StatefulReadonlyEvt<number | Date>;
+        evtText: _.NonPostableEvt<string | number>;
+        evtIsConnected: _.StatefulReadonlyEvt<number | boolean>;
+        evtTime: _.NonPostableEvt<number | Date>;
+        evtTime2: _.StatefulReadonlyEvt<number | Date>;
         p: number;
     }= null as any as A; x;
 
-    type B= ToPostableEvt<A>;
+    type B= _.ToPostableEvt<A>;
 
     const y: {
-        evtText: Evt<string | number>;
-        evtIsConnected: StatefulEvt<number | boolean>;
-        evtTime: Evt<number | Date>;
-        evtTime2: StatefulEvt<number | Date>;
+        evtText: _.Evt<string | number>;
+        evtIsConnected: _.StatefulEvt<number | boolean>;
+        evtTime: _.Evt<number | Date>;
+        evtTime2: _.StatefulEvt<number | Date>;
         p: number;
     }= null as any as B; y;
 

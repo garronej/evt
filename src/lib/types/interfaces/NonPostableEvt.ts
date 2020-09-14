@@ -1,9 +1,31 @@
-import type { Handler } from "../Handler";
-import type { Operator } from "../Operator";
+
+
+export type Operator<T, U, CtxResult = any> =
+    import("../Operator").Operator<T, U, CtxResult>;
+
+namespace Operator {
+
+    export type fλ<T, U, CtxResult = any> =
+        import("../Operator").Operator.fλ<T, U, CtxResult>;
+
+    export namespace fλ {
+
+        export type Stateless<T, U, CtxResult = any> =
+            import("../Operator").Operator.fλ.Stateless<T, U, CtxResult>;
+
+    }
+
+    export type Stateless<T, U, CtxResult = any> =
+        import("../Operator").Operator.Stateless<T, U, CtxResult>;
+
+}
 
 type StatefulEvt<T> = import("./StatefulEvt").StatefulEvt<T>;
 type CtxLike<Result = any> = import("./CtxLike").CtxLike<Result>;
 type Evt<T> = import("./Evt").Evt<T>;
+
+type Handler<T, U, CtxProp extends CtxLike<any> | undefined = CtxLike<any> | undefined> =
+    import("../Handler").Handler<T, U, CtxProp>;
 
 
 export interface NonPostableEvt<T> {

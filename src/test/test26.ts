@@ -1,6 +1,11 @@
 
 import { Evt } from "../lib";
-import type { UnpackEvt, ToNonPostableEvt } from "../lib/types/helper";
+
+type UnpackEvt<T extends ({ [key: string]: any; } | import("../lib/types/helper").EvtLike<any>)> = import("../lib/types/helper").UnpackEvt<T>;
+
+type ToNonPostableEvt<E extends ({ [key: string]: any; } | import("../lib/types/helper").EvtLike<any>)> = 
+    import("../lib/types/helper/ToNonPostableEvt").ToNonPostableEvt<E>;
+
 type UnpackEvt_<T> = import("../lib/types/helper").UnpackEvt<T>;
 
 {

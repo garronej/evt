@@ -1,12 +1,12 @@
 //NOTE: type only
 
-import type { UnpackEvt, Evt } from "../lib";
+import * as _ from "../lib";
 
-type A= UnpackEvt<Evt<void | number>>;
+type A= _.UnpackEvt<_.Evt<void | number>>;
 const a: number | void = null as any as A; a;
 const aa: A= null as any as number | void; aa;
 
-type B = UnpackEvt<Evt<number> | Evt<void>>;
+type B = _.UnpackEvt<_.Evt<number> | _.Evt<void>>;
 const b: void | number = null as any as B; b;
 const bb: B = null as any as void | number; bb;
 

@@ -1,5 +1,13 @@
 
-import type { Operator } from "../Operator";
+export type Operator<T, U, CtxResult = any> =
+    import("../Operator").Operator<T, U, CtxResult>;
+
+namespace Operator {
+
+    export type fλ<T, U, CtxResult = any> =
+        import("../Operator").Operator.fλ<T, U, CtxResult>;
+
+}
 
 type NonPostableEvt<T> = import("./NonPostableEvt").NonPostableEvt<T>;
 type CtxLike<Result = any> = import("./CtxLike").CtxLike<Result>;

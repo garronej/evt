@@ -1,7 +1,11 @@
 
 import { Evt } from "./Evt";
-import type { UnpackEvt } from "./types/helper/UnpackEvt";
-import type { SwapEvtType } from "./types/helper/SwapEvtType";
+
+type UnpackEvt<T extends ({ [key: string]: any; } | import("./types/helper/UnpackEvt").EvtLike<any>)> = 
+    import("./types/helper/UnpackEvt").UnpackEvt<T>;
+
+type SwapEvtType<E extends import("./types/helper/UnpackEvt").EvtLike<any>, T> = 
+    import("./types/helper/SwapEvtType").SwapEvtType<E, T>;
 
 type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T> & {
     attach(callback: (data: T) => void): void;

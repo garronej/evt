@@ -1,9 +1,15 @@
 export { assert } from "./assert";
-export type { AsyncReturnType } from "./AsyncReturnType";
+/** Extract the return type of an async function */
+export type AsyncReturnType<T extends (...args: any) => Promise<any>> = import("./AsyncReturnType").AsyncReturnType<T>;
 export { exclude } from "./exclude";
 export { id } from "./id";
 export { matchVoid } from "./matchVoid";
 export { objectKeys } from "./objectKeys";
 export { typeGuard } from "./typeGuard";
-export type { UnpackPromise } from "./UnpackPromise";
-export type { UnpackTypeGuard } from "./UnpackTypeGuard";
+/**
+ * Usecase: 
+ * declare const pr: Promise<string[]>;
+ * const x: Unpack<typeof pr>; <== x is string[]
+ */
+export type UnpackPromise<T> = import("./UnpackPromise").UnpackPromise<T>;
+export type UnpackTypeGuard<T> = import("./UnpackTypeGuard").UnpackTypeGuard<T>;

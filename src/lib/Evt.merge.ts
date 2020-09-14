@@ -1,4 +1,6 @@
-import type { UnpackEvt } from "./types/helper/UnpackEvt";
+type UnpackEvt<T extends ({ [key: string]: any; } | import("./types/helper/UnpackEvt").EvtLike<any>)> = 
+    import("./types/helper/UnpackEvt").UnpackEvt<T>;
+
 import { importProxy } from "./importProxy";
 
 type Evt<T> = import("./types/interfaces").Evt<T>;
