@@ -1,3 +1,19 @@
+### **1.8.10** (2020-09-14)  
+  
+- Merge pull request #14 from garronej/issue-12-support-strict-type-import-export
+
+Issue 12 support strict type import export ( fix for retrocompat )  
+- Use --unstable flag to run tests  
+- CI workflow runs test on Windows as well  
+- fix: missed some
+fix: add type imports to test files  
+- fix: use import/export type syntax for types  
+- Merge pull request #11 from garronej/dependabot/npm_and_yarn/node-fetch-2.6.1
+
+Bump node-fetch from 2.6.0 to 2.6.1  
+- Update README.md  
+- Update README.md    
+  
 ### **1.8.9** (2020-09-03)  
   
 - add Evt.asyncPipe (as a static method until async operator lands)    
