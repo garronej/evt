@@ -551,7 +551,7 @@ The `Operator` type alias defines what functions qualify as a valid EVT operaor.
 In `Operator<T, U>` , `T` design the type of the event data and `U` design the type of the data spitted out by the operator. For filters operator `U=T`.
 
 ```typescript
-import { Operator } from "evt";
+import type { Operator } from "evt";
 
 //A function that take an EVT operator as argument.
 declare function f<T, U>(op: Operator<T, U>): void;
