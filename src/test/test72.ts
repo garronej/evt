@@ -1,6 +1,6 @@
 
 import { Evt, UnpackEvt } from "../lib";
-import { UnpackPromise } from "../tools/typeSafety";
+import type { UnpackPromise } from "../tools/typeSafety";
 
 import { assert } from "../tools/typeSafety/assert";
 import { same } from "../tools/inDepth";

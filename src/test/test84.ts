@@ -1,6 +1,6 @@
 //NOTE: type only
 
-import { UnpackEvt, Evt } from "../lib";
+import type { UnpackEvt, Evt } from "../lib";
 
 type A= UnpackEvt<Evt<void | number>>;
 const a: number | void = null as any as A; a;

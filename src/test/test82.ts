@@ -1,5 +1,5 @@
 //NOTE: Test type only
-import { Evt, StatefulEvt, StatefulReadonlyEvt, NonPostableEvt, SwapEvtType, VoidEvt } from "../lib";
+import type { Evt, StatefulEvt, StatefulReadonlyEvt, NonPostableEvt, SwapEvtType, VoidEvt } from "../lib";
 
 type A = SwapEvtType<Evt<number>, void>;
 const a: VoidEvt = null as any as A;a;

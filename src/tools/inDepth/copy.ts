@@ -1,7 +1,7 @@
 
 import { assert } from "../typeSafety/assert";
 import { Polyfill as Map, LightMap } from "minimal-polyfills/Map";
-import { LightSet } from "minimal-polyfills/Set";
+import type { LightSet } from "minimal-polyfills/Set";
 import { MapLike, SetLike, ArrayLike, DateLike } from "./types";
 import { overwriteReadonlyProp } from "../typeSafety/overwriteReadonlyProp";
 

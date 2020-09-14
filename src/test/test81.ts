@@ -1,5 +1,5 @@
 //NOTE: Type only
-import { Evt, StatefulEvt, ToPostableEvt, ToNonPostableEvt, VoidEvt, NonPostableEvt, StatefulReadonlyEvt } from "../lib";
+import type { Evt, StatefulEvt, ToPostableEvt, ToNonPostableEvt, VoidEvt, NonPostableEvt, StatefulReadonlyEvt } from "../lib";
 
 {
 

@@ -1,4 +1,4 @@
-import { Handler } from "../Handler";
+import type { Handler } from "../Handler";
 import type { Operator } from "../Operator";
 
 type StatefulEvt<T> = import("./StatefulEvt").StatefulEvt<T>;

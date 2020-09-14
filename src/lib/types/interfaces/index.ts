@@ -1,5 +1,4 @@
-export { Ctx } from "./Ctx";
-export type { DoneOrAborted } from "./Ctx";
+export type { Ctx, DoneOrAborted } from "./Ctx";
 export { CtxLike } from "./CtxLike";
 export type { VoidCtxLike } from "./CtxLike";
 export type { Evt } from "./Evt";
