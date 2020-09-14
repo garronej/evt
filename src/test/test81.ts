@@ -2,6 +2,8 @@
 
 import * as _ from "../lib";
 
+_.dom.__hack;
+
 {
 
     type T = void; type Source = _.VoidEvt;

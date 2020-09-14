@@ -5,9 +5,6 @@ import { EventTargetLike } from "./types/EventTargetLike";
 import { mergeImpl } from "./Evt.merge";
 import { importProxy } from "./importProxy";
 
-import * as dom from "./types/lib.dom";
-
-/*
 namespace dom {
 
     export type HTMLElementEventMap = import("./types/lib.dom").HTMLElementEventMap;
@@ -15,7 +12,6 @@ namespace dom {
     export type DocumentEventMap = import("./types/lib.dom").DocumentEventMap;
 
 }
-*/
 
 type Evt<T>= import("./types/interfaces/Evt").Evt<T>;
 type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T>;

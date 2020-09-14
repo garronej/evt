@@ -2,6 +2,8 @@
 
 import * as _ from "../lib";
 
+_.dom.__hack;
+
 type A= _.UnpackEvt<_.Evt<void | number>>;
 const a: number | void = null as any as A; a;
 const aa: A= null as any as number | void; aa;

@@ -1,6 +1,8 @@
 //NOTE: Test type only
 import * as _ from "../lib";
 
+_.dom.__hack;
+
 type A = _.SwapEvtType<_.Evt<number>, void>;
 const a: _.VoidEvt = null as any as A;a;
 
