@@ -18,7 +18,7 @@ _NOTE: The request delay are simulated to show how the UI would handle slow netw
 
 [Live code](https://stackblitz.com/edit/evt-react-hooks-todo-list?embed=1&file=index.tsx) / [GitHub repo](https://github.com/garronej/evt_react_hooks_todo_list)
 
-![](../.gitbook/assets/89027333-9891ca80-d32a-11ea-8d58-6e93c12a50f5.png)
+![](.gitbook/assets/89027333-9891ca80-d32a-11ea-8d58-6e93c12a50f5.png)
 
 
 
