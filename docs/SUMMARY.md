@@ -3,6 +3,7 @@
 * [Why EVT ?](README.md)
 * [Overview](overview.md)
 * [API Documentation](api/README.md)
+  * [React integration with Hooks](api/react-hooks.md)
   * [Operator&lt;T, U&gt; \(type\)](api/operator.md)
   * [Evt&lt;T&gt;](api/evt/README.md)
     * [evt.attach\*\(...\)](api/evt/attach.md)
@@ -32,5 +33,4 @@
   * [StatefulEvt&lt;T&gt;](api/statefulevt.md)
   * [Helper types](api/helpertypes.md)
   * [Handler&lt;T, U&gt; \(type\)](api/handler.md)
-  * [React integration with Hooks](api/react-hooks.md)
 
