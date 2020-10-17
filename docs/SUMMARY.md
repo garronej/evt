@@ -3,6 +3,7 @@
 * [Why EVT ?](README.md)
 * [Overview](overview.md)
 * [API Documentation](api/README.md)
+  * [Extending Evt](api/extending_evt.md)
   * [Evt&lt;T&gt;](api/evt/README.md)
     * [evt.attach\*\(...\)](api/evt/attach.md)
     * [evt.post\*\(data\)](api/evt/post.md)
