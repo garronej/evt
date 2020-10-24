@@ -79,7 +79,7 @@ Flavor of post that returns a promise that resolves after all asynchronous Handl
 ```typescript
 import { Evt } from "evt";
 
-const evt = Evt.create<string>();
+const evt = Evt.create();
 
 evt.attach(async () => {
 
@@ -93,7 +93,7 @@ evt.attach(async () => {
 
     console.log("foo");
 
-    await evt.postAndWait("Hello");
+    await evt.postAndWait();
 
     console.log("baz");
 
