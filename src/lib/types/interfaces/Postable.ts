@@ -9,4 +9,11 @@ export interface Postable<T> {
      * */
     post(data: T): number;
 
+    /** 
+     * Post and wait for all async handler's callbacks have resolved.
+     * 
+     * https://docs.evt.land/api/evt/post#evt-postandwait-data-promise-less-than-void-greater-than 
+     */
+    postAndWait(data: T): Promise<void>;
+
 }

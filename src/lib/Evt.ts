@@ -25,6 +25,7 @@ import { Deferred } from "../tools/Deferred";
 import { loosenType } from "./Evt.loosenType";
 import { CtxLike } from "./types/interfaces/CtxLike";
 import { safeClearTimeout, safeSetTimeout, Timer } from "../tools/safeSetTimeout";
+import { isPromiseLike } from "../tools/typeSafety/isPromiseLike";
 
 import type { Handler } from "./types/Handler";
 import { Operator } from "./types/Operator";
@@ -171,7 +172,7 @@ class EvtImpl<T> implements Evt<T> {
 
     private readonly handlerTriggers: LightMap<
         Handler<T, any>,
-        (opResult: Operator.fλ.Result.Matched<any, any>) => void
+        (opResult: Operator.fλ.Result.Matched<any, any>) => PromiseLike<void> | undefined
     > = new Map();
 
     //NOTE: An async handler ( attached with waitFor ) is only eligible to handle a post if the post
@@ -286,7 +287,7 @@ class EvtImpl<T> implements Evt<T> {
         wTimer: [Timer | undefined],
         resolvePr: ((transformedData: any) => void) | undefined,
         opResult: Operator.fλ.Result.Matched<any, any>
-    ): void {
+    ): PromiseLike<void> | undefined {
 
         const { callback, once } = handler;
 
@@ -299,12 +300,14 @@ class EvtImpl<T> implements Evt<T> {
 
         const [transformedData] = opResult;
 
-        callback?.call(
+        const prOrValue = callback?.call(
             this,
             transformedData
         );
 
         resolvePr?.(transformedData);
+
+        return isPromiseLike(prOrValue) ? prOrValue : undefined;
 
     }
 
@@ -509,8 +512,16 @@ class EvtImpl<T> implements Evt<T> {
 
     }
 
-    /** Return isExtracted */
-    private postSync(data: T): boolean {
+    /** Return [ isExtracted, prAllHandlerCallbacksResolved ] */
+    private postSync(data: T): readonly [boolean, Promise<void>] {
+
+        const prAllHandlerCallbacksResolved: PromiseLike<void>[] = [];
+
+        const getReturnValue = (isExtracted: boolean) => [
+            isExtracted, 
+            Promise.all(prAllHandlerCallbacksResolved).then(() => { })
+        ] as const;
+
 
         for (const handler of [...this.handlers]) {
 
@@ -541,15 +552,19 @@ class EvtImpl<T> implements Evt<T> {
                 continue;
             }
 
-            handlerTrigger(opResult);
+            const prOrUndefined = handlerTrigger(opResult);
+
+            if (prOrUndefined !== undefined) {
+                prAllHandlerCallbacksResolved.push(prOrUndefined);
+            }
 
             if (extract) {
-                return true;
+                return getReturnValue(true);
             }
 
         }
 
-        return false;
+        return getReturnValue(false);
 
     }
 
@@ -631,6 +646,7 @@ class EvtImpl<T> implements Evt<T> {
 
                     handlerTrigger(opResult);
 
+
                 }
 
                 if (promises.length === 0) {
@@ -670,7 +686,12 @@ class EvtImpl<T> implements Evt<T> {
         );
     }
 
-    declare private postAsync: ((data: T, postChronologyMark: number) => void) | undefined;
+    declare private postAsync: (
+        (
+            data: T,
+            postChronologyMark: number
+        ) => void
+    ) | undefined;
 
     private static readonly propsFormMethodNames: Record<
         "waitFor" | "attach" | "attachExtract" | "attachPrepend" | "attachOnce" |
@@ -794,7 +815,7 @@ class EvtImpl<T> implements Evt<T> {
     }
 
     private __attachX(
-        args: any[], 
+        args: any[],
         methodName: keyof typeof EvtImpl.propsFormMethodNames
     ): any {
 
@@ -805,8 +826,8 @@ class EvtImpl<T> implements Evt<T> {
             EvtImpl.propsFormMethodNames[methodName]
         );
 
-        return  propsFromArgs.timeout === undefined ? 
-            this : 
+        return propsFromArgs.timeout === undefined ?
+            this :
             handler.promise
             ;
 
@@ -829,7 +850,9 @@ class EvtImpl<T> implements Evt<T> {
 
     }
 
-    post(data: T): number {
+    private postOrPostAndWait(data: T, wait: false): number;
+    private postOrPostAndWait(data: T, wait: true): Promise<void>;
+    private postOrPostAndWait(data: T, wait: boolean): number | Promise<void> {
 
         this.trace(data);
 
@@ -838,29 +861,38 @@ class EvtImpl<T> implements Evt<T> {
         //NOTE: Must be before postSync.
         const postChronologyMark = this.getChronologyMark();
 
-        const isExtracted = this.postSync(data);
+        const [isExtracted, prAllHandlerCallbacksResolved] = this.postSync(data);
+
+        const getReturnValue = wait ?
+            () => prAllHandlerCallbacksResolved :
+            () => this.postCount;
 
         if (isExtracted) {
-            return this.postCount;
+            return getReturnValue();
         }
 
         if (this.postAsync === undefined) {
 
             if (this.asyncHandlerCount === 0) {
-                return this.postCount;
+                return getReturnValue();
             }
 
             this.postAsync = this.postAsyncFactory();
 
         }
 
-        this.postAsync(
-            data,
-            postChronologyMark
-        );
+        this.postAsync(data, postChronologyMark);
 
-        return this.postCount;
+        return getReturnValue();
 
+    }
+
+    post(data: T) {
+        return this.postOrPostAndWait(data, false);
+    }
+
+    postAndWait(data: T) {
+        return this.postOrPostAndWait(data, true);
     }
 
 }
@@ -932,7 +964,7 @@ export const Evt: {
 
 } = EvtImpl;
 
-try{ overwriteReadonlyProp(Evt as any, "name", "Evt"); }catch{}
+try { overwriteReadonlyProp(Evt as any, "name", "Evt"); } catch { }
 
 importProxy.Evt = Evt;
 
