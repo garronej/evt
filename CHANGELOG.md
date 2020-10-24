@@ -1,3 +1,8 @@
+### **1.8.11** (2020-10-22)  
+  
+- Fix TypeScript error in Evt.asNonPostable.d.ts '=' expected. TS1005
+(create-react-app) Use of import type was breaking the TypeScript retroconpatibility.    
+  
 ### **1.8.10** (2020-09-14)  
   
 - Merge pull request #14 from garronej/issue-12-support-strict-type-import-export

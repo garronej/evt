@@ -49,7 +49,7 @@ const socket = new MySocket({
 
 (async ()=> {
 
-  socket.waitFor(to("connect"));
+  await socket.waitFor(to("connect"));
 
   console.log("Socket connected");
 

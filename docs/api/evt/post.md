@@ -72,3 +72,34 @@ console.log("BEFORE");
 `evt.postSyncOnceHandled()` does not exist because it is preferable to wait for the next event cycle before posting the event. For example, the previous example would not print `"2 foo"` if we had used `evt.postSyncOnceHandled()`
 {% endhint %}
 
+## `evt.postAndWait(data): Promise<void>`
+
+Flavor of post that returns a promise that resolves after all asynchronous Handler's callbacks that matches the event data has resolved.
+
+```typescript
+import { Evt } from "evt";
+
+const evt = Evt.create();
+
+evt.attach(async () => {
+
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    console.log("bar");
+
+});
+
+(async () => {
+
+    console.log("foo");
+
+    await evt.postAndWait();
+
+    console.log("baz");
+
+
+})();
+
+//"foo bar baz" is printed to the console.
+```
+

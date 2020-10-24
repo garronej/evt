@@ -33,5 +33,5 @@ Why would someone pick EVT over RxJS:
 * It could be months before it eventually supports Deno.
 * There is no official guideline on how to integrate it with React.
 
-EVT is an attempt to address all these points while trying to remain as accessible as `EventEmitter`.
+EVT is an attempt to build a lib as accessible as the `EventEmitter` yet much more powerfull.
 
