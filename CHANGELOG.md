@@ -1,3 +1,7 @@
+## **1.9.0** (2020-10-24)  
+  
+- Add evt.postAndWait()    
+  
 ### **1.8.11** (2020-10-22)  
   
 - Fix TypeScript error in Evt.asNonPostable.d.ts '=' expected. TS1005
