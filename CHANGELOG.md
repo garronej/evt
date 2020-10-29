@@ -1,3 +1,7 @@
+### **1.9.1** (2020-10-28)  
+  
+- Make EventEmitter.removeListener easily emulable    
+  
 ## **1.9.0** (2020-10-24)  
   
 - Add evt.postAndWait()    
