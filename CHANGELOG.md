@@ -1,3 +1,7 @@
+### **1.9.2** (2020-10-29)  
+  
+- Improve error stack trace of tools/typeSafety/assert    
+  
 ### **1.9.1** (2020-10-28)  
   
 - Make EventEmitter.removeListener easily emulable    
