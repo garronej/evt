@@ -132,12 +132,3 @@ EVT is an attempt to address all these points while trying to remain as accessib
 
 [Get started](https://docs.evt.land/overview#rxjs-comparison)
 
-# The sticker
-
-<p align="center">
-    <img src="https://user-images.githubusercontent.com/6702424/90626180-e3607d00-e21a-11ea-9c88-82880ac9cedf.png">  
-</p>
-<p align="center">
-    <a href="https://teespring.com/fr/evt-sticker">Shop</a>
-</p>
-
