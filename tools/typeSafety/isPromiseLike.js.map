@@ -1,0 +1,1 @@
+{"version":3,"file":"isPromiseLike.js","sourceRoot":"","sources":["../../src/tools/typeSafety/isPromiseLike.ts"],"names":[],"mappings":";;;AACA,SAAgB,aAAa,CAAW,CAAM;IAC1C,OAAO,QAAO,CAAC,aAAD,CAAC,uBAAD,CAAC,CAAE,IAAI,CAAA,KAAK,UAAU,CAAC;AACzC,CAAC;AAFD,sCAEC"}
