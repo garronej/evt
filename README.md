@@ -140,4 +140,3 @@ EVT is an attempt to address all these points while trying to remain as accessib
 <p align="center">
     <a href="https://teespring.com/fr/evt-sticker">Shop</a>
 </p>
-
