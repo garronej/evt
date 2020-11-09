@@ -1,3 +1,7 @@
+### **1.9.3** (2020-11-09)  
+  
+- Add tools/typeSafety/MethodNames    
+  
 ### **1.9.2** (2020-10-29)  
   
 - Improve error stack trace of tools/typeSafety/assert    
