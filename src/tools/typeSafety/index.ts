@@ -4,6 +4,7 @@ export type AsyncReturnType<T extends (...args: any) => Promise<any>> = import("
 export { exclude } from "./exclude";
 export { id } from "./id";
 export { matchVoid } from "./matchVoid";
+export type MethodNames<Api extends {}> = import("./MethodNames").MethodNames<Api>;
 export { objectKeys } from "./objectKeys";
 export { typeGuard } from "./typeGuard";
 /**
