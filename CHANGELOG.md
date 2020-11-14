@@ -1,3 +1,7 @@
+### **1.9.5** (2020-11-14)  
+  
+- Ensure semantic guarantee for hooks/useEvt    
+  
 ### **1.9.4** (2020-11-10)  
   
 - Add the Id helper type in tools/typeSafety/id    
