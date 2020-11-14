@@ -1,3 +1,7 @@
+### **1.9.4** (2020-11-10)  
+  
+- Add the Id helper type in tools/typeSafety/id    
+  
 ### **1.9.3** (2020-11-09)  
   
 - Add tools/typeSafety/MethodNames    
