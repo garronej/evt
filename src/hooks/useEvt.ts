@@ -1,8 +1,9 @@
 import * as React from "react";
-const { useState, useEffect, useMemo } = React;
+const { useEffect } = React;
 
 import { Evt, VoidCtx } from "../lib";
 import { safeClearTimeout, safeSetTimeout, Timer } from "../tools/safeSetTimeout";
+import { useSemanticGuaranteeMemo } from "../tools/hooks/useSemanticGuaranteeMemo";
 
 declare const process: any;
 
@@ -36,9 +37,9 @@ export function useEvt<T>(
     deps: any[]
 ): T {
 
-    const [ctx] = useState(() => Evt.newCtx());
+    const ctx = useSemanticGuaranteeMemo(() => Evt.newCtx(), []);
 
-    const out = useMemo(() => {
+    const out = useSemanticGuaranteeMemo(() => {
 
         ctx.done();
 
@@ -68,7 +69,7 @@ function useHackStrictMode(isDevStrictMode: boolean, ctx: VoidCtx) {
 
     let timer: Timer | undefined = undefined;
 
-    useState(() => {
+    useSemanticGuaranteeMemo(() => {
 
         if (!isDevStrictMode) {
             return;
@@ -79,7 +80,7 @@ function useHackStrictMode(isDevStrictMode: boolean, ctx: VoidCtx) {
             700
         );
 
-    });
+    }, []);
 
     useEffect(() => {
 
