@@ -5,7 +5,7 @@ type NonPostableEvt<T> = import("../interfaces").NonPostableEvt<T>;
 type EvtLike<T> = import("./UnpackEvt").EvtLike<T>;
 type VoidEvt = import("../interfaces").VoidEvt;
 
-type UseVoidEvt<E> = E extends Evt<void> ? VoidEvt : E;
+export type UseVoidEvt<E> = E extends Evt<void> ? VoidEvt : E;
 
 /** https://docs.evt.land/api/helpertypes#swapevttype-less-than-e-t-greater-than */
 export type SwapEvtType<E extends EvtLike<any>, T> =
