@@ -6,13 +6,15 @@ type StatefulReadonlyEvt<T> = import("./types/interfaces").StatefulReadonlyEvt<T
 type NonPostableEvt<T> = import("./types/interfaces").NonPostableEvt<T>;
 
 type UnpackEvt<T extends ({ [key: string]: any; } | import("./types/helper/UnpackEvt").EvtLike<any>)> =
-    import("./types/helper/UnpackEvt").UnpackEvt<T>;
+    import("./types/helper").UnpackEvt<T>;
 
 type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T> & {
     attach(callback: (data: T) => void): void;
 };
 
-type PromiseOrNot<T> = PromiseLike<T> | T;
+type UseVoidEvt<T> = import("./types/helper/SwapEvtType").UseVoidEvt<T>;
+type PromiseOrNot<T> = import("../tools/typeSafety").PromiseOrNot<T>;
+
 
 /** 
  * NOTE: Workaround until v3.0 where .pipe() will support async operators 
@@ -30,11 +32,11 @@ type PromiseOrNot<T> = PromiseLike<T> | T;
 export function asyncPipe<E extends EvtLike<any>, U>(
     evt: E,
     asyncOp: (data: UnpackEvt<E>) => PromiseOrNot<[U] | null>
-): import("./types/helper/SwapEvtType").UseVoidEvt<
+): UseVoidEvt<
     E extends StatefulReadonlyEvt<any> ? StatefulEvt<U | undefined> :
     E extends NonPostableEvt<any> ? Evt<U> :
     EvtLike<U>
-    > {
+> {
 
     const out = "state" in evt ?
         Evt.create<UnpackEvt<E> | undefined>(undefined) :

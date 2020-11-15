@@ -3,9 +3,11 @@ export { assert } from "./assert";
 export type AsyncReturnType<T extends (...args: any) => Promise<any>> = import("./AsyncReturnType").AsyncReturnType<T>;
 export { exclude } from "./exclude";
 export { id } from "./id";
+export type Id<Generic, Specific extends Generic> = import("./id").Id<Generic, Specific>;
 export { matchVoid } from "./matchVoid";
 export type MethodNames<Api extends {}> = import("./MethodNames").MethodNames<Api>;
 export { objectKeys } from "./objectKeys";
+export type PromiseOrNot<T> = import("./PromiseOrNot").PromiseOrNot<T>;
 export { typeGuard } from "./typeGuard";
 /**
  * Usecase: 
