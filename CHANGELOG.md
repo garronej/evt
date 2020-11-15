@@ -1,3 +1,7 @@
+### **1.9.6** (2020-11-15)  
+  
+- Improve Evt.asyncPipe()    
+  
 ### **1.9.5** (2020-11-14)  
   
 - Ensure semantic guarantee for hooks/useEvt    
