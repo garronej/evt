@@ -1,3 +1,7 @@
+### **1.9.7** (2020-11-15)  
+  
+- Add tools/typeSafety/PromiseOrNot helper type    
+  
 ### **1.9.6** (2020-11-15)  
   
 - Improve Evt.asyncPipe()    
