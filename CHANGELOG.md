@@ -1,3 +1,7 @@
+### **1.9.8** (2020-11-16)  
+  
+- Add nonNullable operator    
+  
 ### **1.9.7** (2020-11-15)  
   
 - Add tools/typeSafety/PromiseOrNot helper type    
