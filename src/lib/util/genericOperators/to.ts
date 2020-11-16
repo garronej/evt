@@ -18,7 +18,7 @@ const map = new Map<string, ReturnType<typeof to>>();
  * */
 export const to = <T extends readonly [string, any], K extends T[0]>(
     eventName: K
-): import("../../types/Operator").Operator.fλ.Stateless<T, (Extract<T, readonly [K, any]> extends never ? T : Extract<T, readonly [K, any]>)[1], never> =>
+): import("../../types").Operator.fλ.Stateless<T, (Extract<T, readonly [K, any]> extends never ? T : Extract<T, readonly [K, any]>)[1], never> =>
     map.get(eventName) ?? (
         map.set(
             eventName,
