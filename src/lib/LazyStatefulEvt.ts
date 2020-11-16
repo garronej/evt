@@ -36,7 +36,9 @@ export class LazyStatefulEvt<T> {
 
     })();
 
-    post(data: T): number {
+    private __post(data: T, doWait: false): number;
+    private __post(data: T, doWait: true): Promise<void>;
+    private __post(data: T, doWait: boolean): number | Promise<void> {
 
         if (this.__evt === undefined) {
 
@@ -47,8 +49,16 @@ export class LazyStatefulEvt<T> {
 
         }
 
-        return this.__evt.post(data);
+        return this.__evt[doWait?"postAndWait":"post"](data);
 
+    }
+
+    post(data: T){
+        return this.__post(data,false);
+    }
+
+    postAndWait(data: T){
+        return this.__post(data, true);
     }
 
 

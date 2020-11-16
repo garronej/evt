@@ -2,24 +2,33 @@ name: ci
 on:
   push:
     branches:
-      - develop
+      - v2_beta
   pull_request:
     branches:
-      - develop
+      - v2_beta
 
 jobs:
 
-  test_node:
-    runs-on: ${{ matrix.os }}
+  test_lint:
+    runs-on: ubuntu-latest
     if: ${{ !github.event.created }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+    - run: npm ci
+    - name: Making sure 'npm run lint' and 'npm run format' does not changes anything.
+      run: |
+        npm run lint:check
+        npm run format:check
+
+  test_node:
+    runs-on: ubuntu-latest
+    needs: test_lint
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest]
         node: [ '14', '13', '12', '11', '10', '8' ]
-    name: Test with Node v${{ matrix.node }} on ${{ matrix.os }}
-
+    name: Test with Node v${{ matrix.node }}
     steps:
-
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1
       with:
@@ -30,7 +39,7 @@ jobs:
 
   test_deno:
     runs-on: ubuntu-latest
-    if: ${{ !github.event.created }}
+    needs: test_lint
     name: test with Deno
     steps: 
 
@@ -48,6 +57,7 @@ jobs:
     - uses: denolib/setup-deno@master
       with:
         deno-version: v1.x
+    - run: deno --version
     - run: npm ci
     - run: npm run build
     - run: npm run test:deno
@@ -65,7 +75,7 @@ jobs:
 
     - name: Get version on latest
       id: v_latest
-      uses: garronej/github_actions_toolkit@v1.4
+      uses: garronej/github_actions_toolkit@v1.8
       with: 
         action_name: get_package_json_version
         owner: ${{github.repository_owner}}
@@ -73,9 +83,9 @@ jobs:
         branch: latest
         compare_to_version: '0.0.0'
 
-    - name: Get version on develop
-      id: v_develop
-      uses: garronej/github_actions_toolkit@v1.4
+    - name: Get version on v2_beta
+      id: v_v2_beta
+      uses: garronej/github_actions_toolkit@v1.8
       with: 
         action_name: get_package_json_version
         owner: ${{github.repository_owner}}
@@ -83,22 +93,22 @@ jobs:
         branch: ${{ github.sha }}
         compare_to_version: ${{steps.v_latest.outputs.version || '0.0.0'}}
 
-    - name: 'Trigger the ''publish'' workflow' 
-      if: ${{ !!env.PAT && steps.v_develop.outputs.compare_result == '1' }}
-      uses: garronej/github_actions_toolkit@v1.4
+    - name: 'Trigger the ''publish-beta'' workflow' 
+      if: ${{ !!env.PAT && steps.v_v2_beta.outputs.compare_result == '1' }}
+      uses: garronej/github_actions_toolkit@v1.8
       env:
         GITHUB_TOKEN: ${{ secrets.PAT }} 
       with:
         action_name: dispatch_event
         owner: ${{github.repository_owner}}
         repo: ${{github.event.repository.name}}
-        event_type: publish
+        event_type: publish-beta
         client_payload_json: |
           ${{
             format(
               '{{"from_version":"{0}","to_version":"{1}","repo":"{2}"}}',
               steps.v_latest.outputs.version,
-              steps.v_develop.outputs.version,
+              steps.v_v2_beta.outputs.version,
               github.event.repository.name
             )
           }}

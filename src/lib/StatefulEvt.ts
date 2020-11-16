@@ -9,7 +9,7 @@ import { parsePropsFromArgs } from "./Evt.parsePropsFromArgs";
 import type { CtxLike } from "./types/interfaces/CtxLike";
 type Diff<T> = import("./types/interfaces").Diff<T>;
 type NonPostableEvt<T> = import("./types/interfaces").NonPostableEvt<T>;
-type StatefulReadonlyEvt<T>= import("./types/interfaces").StatefulReadonlyEvt<T>;
+type StatefulReadonlyEvt<T> = import("./types/interfaces").StatefulReadonlyEvt<T>;
 import { Evt } from "./Evt";
 
 /** https://docs.evt.land/api/statefulevt */
@@ -69,14 +69,20 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
     })();
 
     post(data: T): number {
-        return this.__post(data, false);
+        return this.__post(data, false, false);
     }
 
     postForceChange(wData?: readonly [T]): number {
-        return this.__post( !!wData ? wData[0] : this.state, true);
+        return this.__post(!!wData ? wData[0] : this.state, true, false);
     }
 
-    private __post(data: T, forceChange: boolean): number {
+    postAndWait(data: T) {
+        return this.__post(data, false, true);
+    }
+
+    private __post(data: T, forceChange: boolean, doWait: false): number;
+    private __post(data: T, forceChange: boolean, doWait: true): Promise<void>;
+    private __post(data: T, forceChange: boolean, doWait: boolean): number | Promise<void> {
 
         const prevState = this.state;
 
@@ -84,14 +90,31 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
 
         const diff = { prevState, "newState": this.state };
 
-        this.lazyEvtDiff.post(diff);
+        const postVariantName = doWait ? "postAndWait" : "post";
 
-        if (forceChange || !Object.is(prevState, this.state)) {
-            this.lazyEvtChange.post(this.state);
-            this.lazyEvtChangeDiff.post(diff);
+        const prs: Promise<void>[] = [];
+
+        const r1 = this.lazyEvtDiff[postVariantName](diff)
+
+        if (doWait) {
+            prs.push(r1 as any);
         }
 
-        return super.post(data);
+        if (forceChange || !Object.is(prevState, this.state)) {
+            const r2 = this.lazyEvtChange[postVariantName](this.state);
+            const r3 = this.lazyEvtChangeDiff[postVariantName](diff);
+
+            if (doWait) {
+                prs.push(r2 as any, r3 as any);
+            }
+
+        }
+
+        const r4 = super[postVariantName](data);
+
+        return doWait ? 
+            (prs.push(r4 as any), Promise.all(prs).then(() => { })) : 
+            r4;
 
     }
 

@@ -44,7 +44,7 @@ export function asyncPipe<E extends EvtLike<any>, U>(
 
     let currentCallCount = 0;
 
-    const onData = async (data: UnpackEvt<E>) => {
+    evt.attach(async (data: UnpackEvt<E>) => {
 
         currentCallCount++;
 
@@ -81,16 +81,7 @@ export function asyncPipe<E extends EvtLike<any>, U>(
 
         out.post(opResult[0] as any);
 
-    };
-
-    evt.attach(onData);
-
-
-    if ("state" in evt) {
-
-        onData((evt as any).state);
-
-    }
+    });
 
     return out as any;
 
