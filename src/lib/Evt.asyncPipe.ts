@@ -17,7 +17,7 @@ type PromiseOrNot<T> = import("../tools/typeSafety").PromiseOrNot<T>;
 
 
 /** 
- * NOTE: Workaround until v3.0 where .pipe() will support async operators 
+ * NOTE: Workaround until v2.0 where .pipe() will support async operators 
  * Usage example: https://stackblitz.com/edit/evt-async-op?file=index.ts 
  * 
  * When the argument is a StatefulEvt:
