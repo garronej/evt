@@ -6,7 +6,7 @@ import { assert } from "../tools/typeSafety";
 
     const evtText = Evt.create<string | undefined>();
 
-    const prText = evtText.waitFor(nonNullable, 200);
+    const prText = evtText.waitFor(nonNullable(), 200);
 
     evtText.post(undefined);
     evtText.post("foo");

@@ -17,8 +17,7 @@ import { assert } from "../tools/typeSafety/assert";
 
         assert(evtBis.state === undefined);
 
-        assert( await evtBis.waitFor(nonNullable) === "foo bar");
-
+        assert( await evtBis.waitFor(nonNullable()) === "foo bar");
 
     }
 
@@ -68,7 +67,7 @@ import { assert } from "../tools/typeSafety/assert";
 
         assert(evtBis.state === undefined);
 
-        const pr= evtBis.waitFor(nonNullable);
+        const pr= evtBis.waitFor(nonNullable());
 
         evt.state= "Hello World";
         evt.state= "Okay";

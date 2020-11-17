@@ -1,5 +1,10 @@
 
-const isNonNullable= <T>(arg: T): arg is NonNullable<T> => arg !== undefined && arg !== null;
+const isNonNullable = <T>(arg: T): arg is NonNullable<T> =>
+    arg !== undefined && arg !== null;
 
-export const nonNullable = <T>(data: T): import("../../types").Operator.fλ.Result<NonNullable<T>, never> => 
-    !isNonNullable(data) ? null : [data];
+const nonNullableImpl = <T>(data: T) =>
+    !isNonNullable(data) ? null : [data] as const;
+
+export const nonNullable =
+    <T>(): import("../../types").Operator.fλ.Stateless<T, NonNullable<T>> =>
+        nonNullableImpl;
