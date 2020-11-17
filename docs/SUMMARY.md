@@ -20,7 +20,6 @@
     * [Evt.newCtx&lt;T&gt;\(\)](api/evt/newctx.md)
     * [Evt.getCtx\(object\)](api/evt/getctx.md)
     * [Evt.from&lt;T&gt;\(...\)](api/evt/from.md)
-    * [Evt.useEffect\(...\)](api/evt/use-effect.md)
     * [Evt.merge\(\[ evt1, evt2, ... \]\)](api/evt/merge.md)
     * [Evt.loosenType\(evt\)](api/evt/loosentype.md)
     * [Evt.factorize\(evt\)](api/evt/factorize.md)
