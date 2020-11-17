@@ -5,7 +5,6 @@ import { getCtxFactory } from "./Evt.getCtx";
 import { factorize } from "./Evt.factorize";
 import { merge } from "./Evt.merge";
 import { from } from "./Evt.from";
-import { useEffect } from "./Evt.useEffect";
 import { asPostable } from "./Evt.asPostable";
 import { asyncPipe } from "./Evt.asyncPipe";
 import { asNonPostable } from "./Evt.asNonPostable";
@@ -45,8 +44,6 @@ class EvtImpl<T> implements Evt<T> {
     static readonly merge = merge;
 
     static readonly from = from;
-
-    static readonly useEffect = useEffect;
 
     static readonly getCtx = getCtxFactory();
 
@@ -766,48 +763,48 @@ class EvtImpl<T> implements Evt<T> {
         ).promise;
     }
 
-    $attach(...inputs: any[]) {
-        return (this.attach as any)(...inputs);
+    $attach(...args: any[]) {
+        return this.attach(...args);
     }
 
     attach(...args: any[]) {
         return this.__attachX(args, "attach");
     }
 
-    $attachOnce(...inputs: any[]) {
-        return (this.attachOnce as any)(...inputs);
+    $attachOnce(...args: any[]) {
+        return this.attachOnce(...args);
     }
 
     attachOnce(...args: any[]) {
         return this.__attachX(args, "attachOnce");
     }
 
-    $attachExtract(...inputs: any[]) {
-        return (this.attachExtract as any)(...inputs);
+    $attachExtract(...args: any[]) {
+        return this.attachExtract(...args);
     }
 
     attachExtract(...args: any[]) {
         return this.__attachX(args, "attachExtract");
     }
 
-    $attachPrepend(...inputs: any[]) {
-        return (this.attachPrepend as any)(...inputs);
+    $attachPrepend(...args: any[]) {
+        return (this.attachPrepend as any)(...args);
     }
 
     attachPrepend(...args: any[]) {
         return this.__attachX(args, "attachPrepend");
     }
 
-    $attachOncePrepend(...inputs: any[]) {
-        return (this.attachOncePrepend as any)(...inputs);
+    $attachOncePrepend(...args: any[]) {
+        return this.attachOncePrepend(...args);
     }
 
     attachOncePrepend(...args: any[]) {
         return this.__attachX(args, "attachOncePrepend");
     }
 
-    $attachOnceExtract(...inputs: any[]) {
-        return (this.attachOnceExtract as any)(...inputs);
+    $attachOnceExtract(...args: any[]) {
+        return this.attachOnceExtract(...args);
     }
 
     attachOnceExtract(...args: any[]) {
@@ -944,8 +941,6 @@ export const Evt: {
     readonly merge: typeof merge;
 
     readonly from: typeof from;
-
-    readonly useEffect: typeof useEffect;
 
     readonly getCtx: ReturnType<typeof getCtxFactory>;
 

@@ -20,7 +20,7 @@ Evt.create(0)
     .attach(data => std_out += data)
     .state++;
 
-assert(std_out === "111" as string);
+assert(std_out === "000111" as string);
 std_out="";
 
 Evt.create<number>()

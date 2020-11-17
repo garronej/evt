@@ -17,7 +17,7 @@ evtCount.postForceChange([evtCount.state + 1]);
 evtCount.postForceChange([evtCount.state]);
 evtCount.postForceChange();
 
-assert(std_out === "1222");
+assert(std_out === "01222");
 
 console.log("PASS");
 

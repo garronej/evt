@@ -94,7 +94,7 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
 
         const prs: Promise<void>[] = [];
 
-        const r1 = this.lazyEvtDiff[postVariantName](diff)
+        const r1 = this.lazyEvtDiff[postVariantName](diff);
 
         if (doWait) {
             prs.push(r1 as any);
@@ -135,15 +135,99 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
 
             throw new Error([
                 "Cannot pipe StatefulEvt because the operator does not match",
-                "it's current state.",
+                "it's current state. You would end up with evt.state === undefined",
                 "Use evt.toStateless([ctx]).pipe(op).toStatic(initialState)",
-                "to be sure the StatefulEvt is correctly initialized"
+                "to be sure the StatefulEvt does not have an undefined state"
             ].join(" "));
 
         }
 
         return evt.toStateful(opResult[0]);
 
+    }
+    
+    private anyAttach(
+        args: any[],
+        methodName: 
+        "waitFor" | "$attach" | "attach" | "$attachOnce" | "attachOnce" |
+        "$attachExtract" | "attachExtract" | "$attachPrepend" | "attachPrepend" |
+        "$attachOncePrepend" | "attachOncePrepend" | "$attachOnceExtract" | "attachOnceExtract"
+    ){
+
+        //@ts-ignore
+        const out = super[methodName](...args);
+
+        const { op, callback } = parsePropsFromArgs(
+            args, 
+            methodName === "waitFor" ? "waitFor" : "attach*"
+        );
+
+        const opResult = invokeOperator(
+            this.getStatelessOp(op),
+            this.state
+        );
+
+        if (Operator.fλ.Result.Matched.match(opResult)) {
+
+            callback?.(opResult[0]);
+
+        }
+
+        return out;
+
+
+    }
+
+    waitFor(...args: any[]) {
+        return this.anyAttach(args, "waitFor");
+    }
+
+    $attach(...args: any[]) {
+        return this.anyAttach(args, "$attach");
+    }
+
+    attach(...args: any[]) {
+        return this.anyAttach(args, "attach");
+    }
+
+    $attachOnce(...args: any[]) {
+        return this.anyAttach(args, "$attachOnce");
+    }
+
+    attachOnce(...args: any[]) {
+        return this.anyAttach(args, "attachOnce");
+    }
+
+    $attachExtract(...args: any[]) {
+        return this.anyAttach(args, "$attachExtract");
+    }
+
+    attachExtract(...args: any[]) {
+        return this.anyAttach(args, "attachExtract");
+    }
+
+    $attachPrepend(...args: any[]) {
+        return this.anyAttach(args, "$attachPrepend");
+    }
+
+    attachPrepend(...args: any[]) {
+        return this.anyAttach(args, "attachPrepend");
+    }
+
+    $attachOncePrepend(...args: any[]) {
+        return this.anyAttach(args, "$attachOncePrepend");
+    }
+
+    attachOncePrepend(...args: any[]) {
+        return this.anyAttach(args, "attachOncePrepend");
+    }
+
+    $attachOnceExtract(...args: any[]) {
+        return this.anyAttach(args, "$attachOnceExtract");
+    }
+
+    attachOnceExtract(...args: any[]) {
+        return this.anyAttach(args, "attachOnceExtract");
     }
 
     toStateless(ctx?: CtxLike): Evt<any> {

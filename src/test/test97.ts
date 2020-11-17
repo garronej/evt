@@ -50,7 +50,7 @@ evt.evtChange.attach(
 
     stdout += "baz";
 
-    assert(stdout === "foobar4bar1bar2bar3baz");
+    assert(stdout === "foobar4bar1bar3baz");
 
     console.log("PASS");
 
