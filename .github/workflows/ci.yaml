@@ -9,21 +9,8 @@ on:
 
 jobs:
 
-  test_lint:
-    runs-on: ubuntu-latest
-    if: ${{ !github.event.created }}
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
-    - run: npm ci
-    - name: Making sure 'npm run lint' and 'npm run format' does not changes anything.
-      run: |
-        npm run lint:check
-        npm run format:check
-
   test_node:
     runs-on: ubuntu-latest
-    needs: test_lint
     strategy:
       matrix:
         node: [ '14', '13', '12', '11', '10', '8' ]
@@ -39,7 +26,6 @@ jobs:
 
   test_deno:
     runs-on: ubuntu-latest
-    needs: test_lint
     name: test with Deno
     steps: 
 
