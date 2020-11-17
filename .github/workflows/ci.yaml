@@ -80,7 +80,7 @@ jobs:
         compare_to_version: ${{steps.v_latest.outputs.version || '0.0.0'}}
 
     - name: 'Trigger the ''publish-beta'' workflow' 
-      if: ${{ !!env.PAT && steps.v_v2_beta.outputs.compare_result == '1' }}
+      if: ${{ !!env.PAT && ( steps.v_v2_beta.outputs.compare_result == '1' || steps.v_v2_beta.outputs.version !=  steps.v_latest.outputs.version ) }}
       uses: garronej/github_actions_toolkit@v1.8
       env:
         GITHUB_TOKEN: ${{ secrets.PAT }} 
