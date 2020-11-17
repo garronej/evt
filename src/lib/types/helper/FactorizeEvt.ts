@@ -1,9 +1,9 @@
 
+type EvtLike<T>= import("./EvtLike").EvtLike<T>;
 
-type SwapEvtType<E extends import("./UnpackEvt").EvtLike<any>, T> = 
+type SwapEvtType<E extends EvtLike<any>, T> = 
     import("./SwapEvtType").SwapEvtType<E, T>;
 
-type EvtLike<T>= import("./UnpackEvt").EvtLike<T>;
 
 type UnpackEvt<T extends ({ [key: string]: any; } | EvtLike<any>)> = 
     import("./UnpackEvt").UnpackEvt<T>;

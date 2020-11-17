@@ -14,7 +14,7 @@ namespace dom {
 }
 
 type Evt<T>= import("./types/interfaces/Evt").Evt<T>;
-type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T>;
+type EvtLike<T> = import("./types/helper").EvtLike<T>;
 
 type OneOrMany<T> = T | ArrayLike<T>;
 type CtxLike<Result> = import("./types/interfaces").CtxLike<Result> & {

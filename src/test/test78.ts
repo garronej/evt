@@ -1,38 +1,74 @@
 
 import { Evt } from "../lib";
+import { assert } from "../tools/typeSafety/assert";
 import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi";
 
 const { mustResolve, mustStayPending } = getPromiseAssertionApi();
 
 (async () => {
 
-
     {
 
-        const sevText = Evt.create("");
+        let stdout= "";
 
-        const pr1 = mustResolve({
-            "promise": sevText.waitFor(),
-            "expectedData": ""
+        const sevText = Evt.create("foo");
+
+        sevText.evtChange.attach(text => {
+
+            stdout+= text;
+
         });
 
-        const pr2 = mustResolve({
-            "promise": sevText.evtDiff.waitFor(({ newState }) => newState === "" ? [newState] : null),
-            "expectedData": ""
-        });
+        sevText.state = "foo";
+        sevText.state = " bar";
 
-        mustStayPending(sevText.evtChange.waitFor());
-        mustStayPending(sevText.evtChangeDiff.waitFor());
+        assert(stdout === "foo bar");
 
-
-        sevText.post(sevText.state);
-
-        await Promise.all([pr1, pr2]);
 
     }
 
     {
 
+        let stdout= "";
+
+        const sevText = Evt.create("foo");
+
+        sevText.evtChangeDiff.attach(({ newState }) => {
+
+            stdout+= newState;
+
+        });
+
+        sevText.state = " bar";
+
+        assert(stdout === " bar");
+
+
+    }
+
+    {
+
+        let stdout= "";
+
+        const sevText = Evt.create("foo");
+
+        sevText.evtDiff.attach(({ newState }) => {
+
+            stdout+= newState;
+
+        });
+
+        sevText.state = "foo";
+        sevText.state = " bar";
+
+        assert(stdout === "foo bar");
+
+
+    }
+
+
+    {
+
         const sevText = Evt.create("");
 
         const pr1 = mustResolve({
@@ -40,17 +76,17 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi();
             "expectedData": ""
         });
 
-        const pr2 = mustResolve({
-            "promise": sevText.evtDiff.waitFor(({ newState }) => newState === "" ? [newState] : null),
+        mustStayPending(
+            sevText.evtDiff.waitFor(({ newState }) => [newState])
+        );
+
+        mustResolve({
+            "promise": sevText.evtChange.waitFor(),
             "expectedData": ""
         });
-
-        mustStayPending(sevText.evtChange.waitFor());
         mustStayPending(sevText.evtChangeDiff.waitFor());
 
-        sevText.state = sevText.state;
-
-        await Promise.all([pr1, pr2]);
+        await pr1;
 
     }
 

@@ -1,11 +1,11 @@
 
-type SwapEvtType<E extends import("./types/helper/UnpackEvt").EvtLike<any>, T> = 
+type SwapEvtType<E extends import("./types/helper").EvtLike<any>, T> = 
     import("./types/helper/SwapEvtType").SwapEvtType<E, T>;
 
-type UnpackEvt<T extends ({ [key: string]: any; } | import("./types/helper/UnpackEvt").EvtLike<any>)> = 
+type UnpackEvt<T extends ({ [key: string]: any; } | import("./types/helper").EvtLike<any>)> = 
     import("./types/helper/UnpackEvt").UnpackEvt<T>;
 
-type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T>;
+type EvtLike<T> = import("./types/helper").EvtLike<T>;
 
 /**
  * https://docs.evt.land/api/evt/loosenType

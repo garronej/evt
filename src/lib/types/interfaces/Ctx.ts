@@ -11,7 +11,7 @@ namespace Handler {
 
 }
 
-type EvtLike<T> = import("../helper/UnpackEvt").EvtLike<T>;
+type EvtLike<T> = import("../helper").EvtLike<T>;
 type Evt<T> = import("./Evt").Evt<T>;
 
 export type DoneOrAborted<Result> = DoneOrAborted.Done<Result> | DoneOrAborted.Aborted<Result>;

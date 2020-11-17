@@ -8,7 +8,7 @@ import type { Handler } from "./types/Handler";
 import { defineAccessors } from "../tools/typeSafety/defineAccessors";
 import { overwriteReadonlyProp } from "../tools/typeSafety/overwriteReadonlyProp";
 
-type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T>;
+type EvtLike<T> = import("./types/helper").EvtLike<T>;
 type Evt<T> = import("./types/interfaces").Evt<T>;
 type CtxLike<T> = import("./types/interfaces").CtxLike<T>;
 type DoneOrAborted<Result> = import("./types/interfaces/Ctx").DoneOrAborted<Result>;

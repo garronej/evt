@@ -1,4 +1,4 @@
-type UnpackEvt<T extends ({ [key: string]: any; } | import("./types/helper/UnpackEvt").EvtLike<any>)> = 
+type UnpackEvt<T extends ({ [key: string]: any; } | import("./types/helper").EvtLike<any>)> = 
     import("./types/helper/UnpackEvt").UnpackEvt<T>;
 
 import { importProxy } from "./importProxy";
@@ -6,7 +6,7 @@ import { importProxy } from "./importProxy";
 type Evt<T> = import("./types/interfaces").Evt<T>;
 type CtxLike<Result> = import("./types/interfaces").CtxLike<Result>;
 
-export type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T> & {
+export type EvtLike<T> = import("./types/helper").EvtLike<T> & {
     attach(ctx: CtxLike<any>, callback: (data: T) => void): void;
     attach(callback: (data: T) => void): void;
 };

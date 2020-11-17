@@ -1,4 +1,4 @@
-import { Evt } from "../lib";
+import { Evt, nonNullable } from "../lib";
 import { assert } from "../tools/typeSafety/assert";
 
 (async () => {
@@ -17,7 +17,7 @@ import { assert } from "../tools/typeSafety/assert";
 
         assert(evtBis.state === undefined);
 
-        assert( await evtBis.waitFor() === "foo bar");
+        assert( await evtBis.waitFor(nonNullable) === "foo bar");
 
 
     }
@@ -68,7 +68,7 @@ import { assert } from "../tools/typeSafety/assert";
 
         assert(evtBis.state === undefined);
 
-        const pr= evtBis.waitFor()
+        const pr= evtBis.waitFor(nonNullable);
 
         evt.state= "Hello World";
         evt.state= "Okay";

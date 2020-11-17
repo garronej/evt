@@ -1,5 +1,5 @@
 
-type EvtLike<T> = import("./UnpackEvt").EvtLike<T>;
+type EvtLike<T> = import("./EvtLike").EvtLike<T>;
 type StatefulPostable<T> = import("../interfaces").StatefulPostable<T>;
 type NonPostableEvt<T> = import("../interfaces").NonPostableEvt<T>;
 type StatefulReadonlyEvt<T> = import("../interfaces").StatefulReadonlyEvt<T>;

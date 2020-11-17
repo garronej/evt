@@ -1,9 +1,5 @@
 
-/** Minimal interface that an object have to implement
- * to be considered as being most certainly an Evt instance */
-export interface EvtLike<T> {
-    isHandled(data?: T): void;
-}
+type EvtLike<T> = import("./EvtLike").EvtLike<T>;
 
 type UnpackEvtBase<T extends EvtLike<any>> = T extends EvtLike<infer U> ? U : never;
 

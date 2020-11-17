@@ -5,10 +5,10 @@ type StatefulEvt<T> = import("./types/interfaces").StatefulEvt<T>;
 type StatefulReadonlyEvt<T> = import("./types/interfaces").StatefulReadonlyEvt<T>;
 type NonPostableEvt<T> = import("./types/interfaces").NonPostableEvt<T>;
 
-type UnpackEvt<T extends ({ [key: string]: any; } | import("./types/helper/UnpackEvt").EvtLike<any>)> =
+type UnpackEvt<T extends ({ [key: string]: any; } | import("./types/helper").EvtLike<any>)> =
     import("./types/helper").UnpackEvt<T>;
 
-type EvtLike<T> = import("./types/helper/UnpackEvt").EvtLike<T> & {
+type EvtLike<T> = import("./types/helper").EvtLike<T> & {
     attach(callback: (data: T) => void): void;
 };
 

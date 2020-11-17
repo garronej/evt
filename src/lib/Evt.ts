@@ -5,8 +5,8 @@ import { getCtxFactory } from "./Evt.getCtx";
 import { factorize } from "./Evt.factorize";
 import { merge } from "./Evt.merge";
 import { from } from "./Evt.from";
-import { asPostable } from "./Evt.asPostable";
-import { asyncPipe } from "./Evt.asyncPipe";
+import { asPostable } from "./Evt.asPostable";
+import { asyncPipe } from "./Evt.asyncPipe";
 import { asNonPostable } from "./Evt.asNonPostable";
 import { parsePropsFromArgs, matchAll } from "./Evt.parsePropsFromArgs";
 import { newCtx } from "./Evt.newCtx";
@@ -30,7 +30,7 @@ import type { Handler } from "./types/Handler";
 import { Operator } from "./types/Operator";
 type NonPostableEvt<T> = import("./types/interfaces").NonPostableEvt<T>;
 type StatefulEvt<T> = import("./types/interfaces").StatefulEvt<T>;
-
+type EvtLike<T> = import("./types/helper").EvtLike<T>;
 
 /** https://docs.evt.land/api/evt */
 export type Evt<T> = import("./types/interfaces").Evt<T>;
@@ -55,7 +55,7 @@ class EvtImpl<T> implements Evt<T> {
 
     static readonly asyncPipe = asyncPipe;
 
-    static readonly asNonPostable= asNonPostable;
+    static readonly asNonPostable = asNonPostable;
 
     private static __defaultMaxHandlers = 25;
 
@@ -63,12 +63,12 @@ class EvtImpl<T> implements Evt<T> {
         this.__defaultMaxHandlers = isFinite(n) ? n : 0;
     }
 
-    toStateful(p1: any,p2?: CtxLike): StatefulEvt<any> {
+    toStateful(p1: any, p2?: CtxLike): StatefulEvt<any> {
 
-        const isP1Ctx= CtxLike.match(p1);
+        const isP1Ctx = CtxLike.match(p1);
 
         const initialValue: any = isP1Ctx ? undefined : p1;
-        const ctx= p2 || ( isP1Ctx ? p1 : undefined );
+        const ctx = p2 || (isP1Ctx ? p1 : undefined);
 
         const out = new importProxy.StatefulEvt<any>(initialValue);
 
@@ -146,7 +146,7 @@ class EvtImpl<T> implements Evt<T> {
             data => {
                 try {
                     return JSON.stringify(data, null, 2);
-                } catch{
+                } catch {
                     return `${data}`;
                 }
             }
@@ -347,14 +347,17 @@ class EvtImpl<T> implements Evt<T> {
 
         }
 
-        this.handlerTriggers.set(
-            handler,
-            opResult => this.triggerHandler(
+        const handlerTrigger: (opResult: Operator.fλ.Result.Matched<T, U>) => PromiseLike<void> | undefined
+        = opResult => this.triggerHandler(
                 handler,
                 wTimer,
                 d.isPending ? d.resolve : undefined,
                 opResult
-            )
+            );
+
+        this.handlerTriggers.set(
+            handler,
+            handlerTrigger
         );
 
         if (handler.async) {
@@ -398,7 +401,16 @@ class EvtImpl<T> implements Evt<T> {
             handler.ctx.zz__addHandler(handler, this);
         }
 
-        this.lazyEvtAttach.post(handler);
+        onAddHandlerByEvt.get(this)?.(handler, handlerTrigger);
+
+        //NOTE: Can happen for example if this is a StatefulEvt 
+        //and the handler is "once" and the matcher match the state 
+        //We don't want to post an attach if the handler is already detached.
+        if( this.handlerTriggers.has(handler) ){
+
+            this.lazyEvtAttach.post(handler);
+
+        }
 
         return handler;
 
@@ -462,7 +474,7 @@ class EvtImpl<T> implements Evt<T> {
 
         try {
             console.warn(message);
-        } catch{
+        } catch {
         }
 
     }
@@ -515,7 +527,7 @@ class EvtImpl<T> implements Evt<T> {
         const prAllHandlerCallbacksResolved: PromiseLike<void>[] = [];
 
         const getReturnValue = (isExtracted: boolean) => [
-            isExtracted, 
+            isExtracted,
             Promise.all(prAllHandlerCallbacksResolved).then(() => { })
         ] as const;
 
@@ -929,6 +941,22 @@ namespace EvtImpl {
     }
 
 }
+
+/** 
+ * Can be seen as a protected method that can be 
+ * optionally be implemented by class extending Evt.
+ * 
+ * Should only be accessible from within the module.
+ * Basically it is for allowing StatefulEvt to execute
+ * the callback on attach.
+ */
+export const onAddHandlerByEvt = new WeakMap<
+    EvtLike<any>,
+    (
+        handler: Handler<any, any>,
+        handlerTrigger: (opResult: Operator.fλ.Result.Matched<any, any>) => PromiseLike<void> | undefined
+    ) => void>();
+
 
 export const Evt: {
     new <T>(): Evt<T>;

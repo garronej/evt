@@ -10,7 +10,7 @@ import type { CtxLike } from "./types/interfaces/CtxLike";
 type Diff<T> = import("./types/interfaces").Diff<T>;
 type NonPostableEvt<T> = import("./types/interfaces").NonPostableEvt<T>;
 type StatefulReadonlyEvt<T> = import("./types/interfaces").StatefulReadonlyEvt<T>;
-import { Evt } from "./Evt";
+import { Evt, onAddHandlerByEvt } from "./Evt";
 
 /** https://docs.evt.land/api/statefulevt */
 export type StatefulEvt<T> = import("./types/interfaces").StatefulEvt<T>;
@@ -24,6 +24,25 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
         super();
         this.__state = initialState;
         this.lazyEvtChange = new LazyStatefulEvt(this.__state);
+
+        onAddHandlerByEvt.set(
+            this,
+            (handler, handlerTrigger) => {
+
+                const opResult = invokeOperator(
+                    this.getStatelessOp(handler.op),
+                    this.__state,
+                    true
+                );
+
+                if (Operator.fλ.Result.Matched.match(opResult)) {
+
+                    handlerTrigger(opResult);
+
+                }
+
+            }
+        );
     }
 
     private readonly lazyEvtDiff = new LazyEvt<Diff<T>>();
@@ -112,8 +131,8 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
 
         const r4 = super[postVariantName](data);
 
-        return doWait ? 
-            (prs.push(r4 as any), Promise.all(prs).then(() => { })) : 
+        return doWait ?
+            (prs.push(r4 as any), Promise.all(prs).then(() => { })) :
             r4;
 
     }
@@ -128,7 +147,8 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
             this.getStatelessOp(
                 parsePropsFromArgs(args, "pipe").op
             ),
-            this.state
+            this.__state,
+            true
         );
 
         if (Operator.fλ.Result.NotMatched.match(opResult)) {
@@ -144,90 +164,6 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
 
         return evt.toStateful(opResult[0]);
 
-    }
-    
-    private anyAttach(
-        args: any[],
-        methodName: 
-        "waitFor" | "$attach" | "attach" | "$attachOnce" | "attachOnce" |
-        "$attachExtract" | "attachExtract" | "$attachPrepend" | "attachPrepend" |
-        "$attachOncePrepend" | "attachOncePrepend" | "$attachOnceExtract" | "attachOnceExtract"
-    ){
-
-        //@ts-ignore
-        const out = super[methodName](...args);
-
-        const { op, callback } = parsePropsFromArgs(
-            args, 
-            methodName === "waitFor" ? "waitFor" : "attach*"
-        );
-
-        const opResult = invokeOperator(
-            this.getStatelessOp(op),
-            this.state
-        );
-
-        if (Operator.fλ.Result.Matched.match(opResult)) {
-
-            callback?.(opResult[0]);
-
-        }
-
-        return out;
-
-
-    }
-
-    waitFor(...args: any[]) {
-        return this.anyAttach(args, "waitFor");
-    }
-
-    $attach(...args: any[]) {
-        return this.anyAttach(args, "$attach");
-    }
-
-    attach(...args: any[]) {
-        return this.anyAttach(args, "attach");
-    }
-
-    $attachOnce(...args: any[]) {
-        return this.anyAttach(args, "$attachOnce");
-    }
-
-    attachOnce(...args: any[]) {
-        return this.anyAttach(args, "attachOnce");
-    }
-
-    $attachExtract(...args: any[]) {
-        return this.anyAttach(args, "$attachExtract");
-    }
-
-    attachExtract(...args: any[]) {
-        return this.anyAttach(args, "attachExtract");
-    }
-
-    $attachPrepend(...args: any[]) {
-        return this.anyAttach(args, "$attachPrepend");
-    }
-
-    attachPrepend(...args: any[]) {
-        return this.anyAttach(args, "attachPrepend");
-    }
-
-    $attachOncePrepend(...args: any[]) {
-        return this.anyAttach(args, "$attachOncePrepend");
-    }
-
-    attachOncePrepend(...args: any[]) {
-        return this.anyAttach(args, "attachOncePrepend");
-    }
-
-    $attachOnceExtract(...args: any[]) {
-        return this.anyAttach(args, "$attachOnceExtract");
-    }
-
-    attachOnceExtract(...args: any[]) {
-        return this.anyAttach(args, "attachOnceExtract");
     }
 
     toStateless(ctx?: CtxLike): Evt<any> {

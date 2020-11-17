@@ -1,6 +1,6 @@
 /** Minimal interface that an object have to implement
  * to be considered as being most certainly an Evt instance */
-export type EvtLike<T>= import("./UnpackEvt").EvtLike<T>;
+export type EvtLike<T>= import("./EvtLike").EvtLike<T>;
 
 /** https://docs.evt.land/api/helpertypes#unpackevt-less-than-e-greater-than */
 export type UnpackEvt<T extends ({ [key: string]: any; } | EvtLike<any>)> = 
