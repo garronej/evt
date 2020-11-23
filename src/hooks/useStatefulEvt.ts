@@ -10,18 +10,22 @@ interface HandlerLike { ctx: CtxLike };
 type Pipe<Cb = () => void> = (ctx: CtxLike, cb?: Cb) => import("../lib/Evt.merge").EvtLike<any>;
 
 interface StatefulReadonlyEvtLike {
-  evtChange: {
-    evtAttach: { pipe: Pipe<(handler: HandlerLike) => void>; };
-    attach(ctx: CtxLike, cb: () => void): void;
-    detach(ctx: CtxLike): void;
-  };
-  evtChangeDiff: {
-    evtAttach: { pipe: Pipe; }
-  };
-  evtDiff: {
-    evtAttach: { pipe: Pipe; }
-  };
-  evtAttach: { pipe: Pipe; }
+    evtChange: {
+        evtAttach: { pipe: Pipe<(handler: HandlerLike) => void>; };
+        detach(ctx: CtxLike): void;
+        toStateless(): {
+            attach(ctx: CtxLike, cb: () => void): void;
+        }
+    };
+    evtChangeDiff: {
+        evtAttach: { pipe: Pipe; }
+    };
+    evtDiff: {
+        evtAttach: { pipe: Pipe; }
+    };
+    evtAttach: {
+        pipe: Pipe;
+    }
 };
 
 /**
@@ -31,38 +35,38 @@ interface StatefulReadonlyEvtLike {
  * */
 export function useStatefulEvt(evts: StatefulReadonlyEvtLike[]): void {
 
-  const [, forceUpdate] = useReducer(x => x + 1, 0);
+    const [, forceUpdate] = useReducer(x => x + 1, 0);
 
-  useEvt(
-    ctx => {
+    useEvt(
+        ctx => {
 
-      evts.forEach(evt => {
+            evts.forEach(evt => {
 
-        const attach = () => evt.evtChange.attach(ctx, forceUpdate);
+                const attach = () => evt.evtChange.toStateless().attach(ctx, forceUpdate);
 
-        attach();
+                attach();
 
-        Evt.merge(
-          [
-            evt.evtChange.evtAttach.pipe(ctx, handler => handler.ctx !== ctx),
-            ...[
-              evt,
-              evt.evtChangeDiff,
-              evt.evtDiff
-            ].map(evt => evt.evtAttach.pipe(ctx)),
-          ]
-        ).attach(() => {
+                Evt.merge(
+                    [
+                        evt.evtChange.evtAttach.pipe(ctx, handler => handler.ctx !== ctx),
+                        ...[
+                            evt,
+                            evt.evtChangeDiff,
+                            evt.evtDiff
+                        ].map(evt => evt.evtAttach.pipe(ctx)),
+                    ]
+                ).attach(() => {
 
-          evt.evtChange.detach(ctx);
+                    evt.evtChange.detach(ctx);
 
-          attach();
+                    attach();
 
-        });
+                });
 
-      });
+            });
 
-    },
-    evts
-  );
+        },
+        evts
+    );
 
 }
