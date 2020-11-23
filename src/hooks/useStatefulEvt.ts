@@ -13,8 +13,8 @@ interface StatefulReadonlyEvtLike {
     evtChange: {
         evtAttach: { pipe: Pipe<(handler: HandlerLike) => void>; };
         detach(ctx: CtxLike): void;
-        toStateless(): {
-            attach(ctx: CtxLike, cb: () => void): void;
+        toStateless(ctx: CtxLike): {
+            attach(cb: () => void): void;
         }
     };
     evtChangeDiff: {
@@ -42,7 +42,7 @@ export function useStatefulEvt(evts: StatefulReadonlyEvtLike[]): void {
 
             evts.forEach(evt => {
 
-                const attach = () => evt.evtChange.toStateless().attach(ctx, forceUpdate);
+                const attach = () => evt.evtChange.toStateless(ctx).attach(forceUpdate);
 
                 attach();
 
