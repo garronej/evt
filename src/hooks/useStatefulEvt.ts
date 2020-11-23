@@ -46,6 +46,9 @@ export function useStatefulEvt(evts: StatefulReadonlyEvtLike[]): void {
 
                 attach();
 
+                //NOTE: We do all this funny business because we want to assure that the handler
+                //that triggers the re-render is always the last handler to be invoked.
+                //What we do is we detach our handler when an other is added and synchronously re-attach it
                 Evt.merge(
                     [
                         evt.evtChange.evtAttach.pipe(ctx, handler => handler.ctx !== ctx),
