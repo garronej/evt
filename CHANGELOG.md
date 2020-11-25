@@ -1,3 +1,7 @@
+### **1.9.10** (2020-11-25)  
+  
+- Fix issue related to strict mode hooks/useEvt    
+  
 ### **1.9.9** (2020-11-16)  
   
 - Create publish-beta.yaml    
