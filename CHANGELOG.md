@@ -1,3 +1,7 @@
+### **1.9.9** (2020-11-16)  
+  
+- Create publish-beta.yaml    
+  
 ### **1.9.8** (2020-11-16)  
   
 - Add nonNullable operator    
