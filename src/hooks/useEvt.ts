@@ -1,14 +1,15 @@
 import * as React from "react";
-const { useEffect } = React;
+const { useEffect, useRef } = React;
 
-import { Evt, VoidCtx } from "../lib";
-import { safeClearTimeout, safeSetTimeout, Timer } from "../tools/safeSetTimeout";
+import { Evt } from "../lib/Evt";
+import type { VoidCtx } from "../lib";
 import { useSemanticGuaranteeMemo } from "../tools/hooks/useSemanticGuaranteeMemo";
 
-declare const process: any;
-
 //TODO: Find a more reliable way to test if <React.UseStrict> is used.
-const isDevStrictMode = process.env.NODE_ENV !== "production";
+const isDevStrictMode = typeof process !== "object" ?
+    false :
+    (process?.env?.NODE_ENV ?? "production") !== "production"
+    ;
 
 /**
  * https://docs.evt.land/api/react-hooks
@@ -31,6 +32,8 @@ const isDevStrictMode = process.env.NODE_ENV !== "production";
  * 
  * BE AWARE: Unlike useEffect factoryOrEffect is called 
  * on render ( like useMemo's callback ).
+ * 
+ * Demo: https://stackblitz.com/edit/evt-useevt?file=index.tsx
  */
 export function useEvt<T>(
     factoryOrEffect: (ctx: VoidCtx) => T,
@@ -50,7 +53,7 @@ export function useEvt<T>(
 
     useEffect(() => () => { ctx.done(); }, []);
 
-    useHackStrictMode(isDevStrictMode, ctx);
+    useClearCtxIfReactStrictModeInspectRun(isDevStrictMode, ctx);
 
     return out;
 
@@ -65,9 +68,9 @@ export function useEvt<T>(
  * callback we clear the context if useEffect(f,[])
  * is not invoked right after useState(f).
  */
-function useHackStrictMode(isDevStrictMode: boolean, ctx: VoidCtx) {
+function useClearCtxIfReactStrictModeInspectRun(isDevStrictMode: boolean, ctx: VoidCtx) {
 
-    let timer: Timer | undefined = undefined;
+    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useSemanticGuaranteeMemo(() => {
 
@@ -75,7 +78,7 @@ function useHackStrictMode(isDevStrictMode: boolean, ctx: VoidCtx) {
             return;
         }
 
-        timer = safeSetTimeout(
+        timerRef.current = setTimeout(
             () => ctx.done(),
             700
         );
@@ -88,11 +91,11 @@ function useHackStrictMode(isDevStrictMode: boolean, ctx: VoidCtx) {
             return;
         }
 
-        if (timer === undefined) {
+        if (timerRef.current === null) {
             return;
         }
 
-        safeClearTimeout(timer);
+        clearTimeout(timerRef.current);
 
     }, []);
 
