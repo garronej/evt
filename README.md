@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/6702424/76674598-91ebfc00-65b1-11ea-88df-eb43f04f3cce.png">  
+    <img src="https://user-images.githubusercontent.com/6702424/76674598-91ebfc00-65b1-11ea-88df-eb43f04f3cce.png">
 </p>
 <p align="center">
     💧<i>EventEmitter's typesafe replacement</i>💧
@@ -11,8 +11,14 @@
     <img src="https://img.shields.io/npm/l/evt">
 </p>
 
-+ [Home](https://www.evt.land)
-+ [Documentation](https://docs.evt.land/overview)
+</p>
+<p align="center">
+  <a href="https://www.evt.land">Home</a>
+  -
+  <a href="https://docs.evt.land/overview">Documentation</a>
+  -
+  <a href="https://github.com/garronej/evt/pull/16">v2.0 🚀</a>
+</p>
 
 ---
 
