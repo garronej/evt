@@ -1,8 +1,110 @@
-# React integration with Hooks
+---
+description: >-
+  Evt let you work with events in react without having to worry about cleaning
+  up afterward.
+---
 
-EVT provide two custom React Hooks located in `evt/hook`: `useEvt()` and `useStatefulEvt()` 
+# React integration
 
-## "Hello World" Example 
+Checkout this quick example: 
+
+```typescript
+import { useState } from "react";
+import { Evt } from "evt";
+import { useEvt } from "evt/hooks";
+
+const evtTick = Evt.create();
+
+setInterval(()=> evtTick.post(), 1000);
+
+function App(){
+
+    const [count, setCount]= useState(0);
+
+    useEvt(ctx=> {
+    
+        evtTick.attach(ctx, ()=> setCount(count+1));
+    
+    
+    },[count]);
+    
+    return <h1>tick count: {count}</h1>;
+
+
+}
+
+```
+
+\*\*\*\*[**Run it**](https://stackblitz.com/edit/evt-hooks-101?file=index.tsx)\*\*\*\*
+
+## Custom hooks
+
+Evt let enables you to create powerful custom hooks. Here are some examples:
+
+### Custom hook that gives the innerWith of the window
+
+```typescript
+import { Evt } from "evt";
+import { useEvt, useStatefulEvt } from "evt/hooks";
+
+export function useWindowInnerWidth() {
+
+    const evtInnerWidth = useEvt(ctx =>
+        Evt.from(ctx, window, "resize")
+            .toStateful()
+            .pipe(() => [window.innerWidth])
+        ,
+        []
+    );
+
+    useStatefulEvt([evtInnerWidth]);
+
+    return { "windowInnerWidth": evtInnerWidth.state };
+
+}
+
+```
+
+Usage \( you'll have to resize the window to see the text change \)
+
+```typescript
+import { useWindowInnerWidth } from "app/utils/hooks/useWindowInnerWidth.ts";
+
+export function MyComponent(){
+
+    const { windowInnerWidth } = useWindowInnerWidth();
+    
+    return <h1>window.innerWidth is: {windowInnerWidth}px</h1>;
+
+}
+```
+
+## ESLint
+
+You can use this [`react-hooks/exhaustive-deps`](https://github.com/facebook/react/blob/master/packages/eslint-plugin-react-hooks/README.md#advanced-configuration) setting to be warned if you forget a dependency:
+
+```javascript
+//package.json (if you use create-react-app otherwise use .eslintrc.js) 
+{
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ],
+    "rules": {
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": [
+        "error",
+        {
+          "additionalHooks": "(useEvt)"
+        }
+      ]
+    }
+  }
+}
+```
+
+## Mini "Hello World" project Example 
 
  [Live code](https://stackblitz.com/edit/evt-hooks?embed=1&file=Hello.tsx)
 
