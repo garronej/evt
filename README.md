@@ -65,6 +65,33 @@ evt.post(["text", "hi!"]);
 evt.post(["time", 123]);
 evt.post(["time", 1234]);
 ```
+in React
+```typescript
+import { useState } from "react";
+import { Evt } from "evt";
+import { useEvt } from "evt/hooks";
+
+const evtTick = Evt.create();
+
+setInterval(()=> evtTick.post(), 1000);
+
+function App(){
+
+    const [count, setCount]= useState(0);
+
+    useEvt(ctx=> {
+    
+        evtTick.attach(ctx, ()=> setCount(count+1));
+    
+    
+    },[count]);
+    
+    return <h1>tick count: {count}</h1>;
+
+
+}
+```
+[run it](https://stackblitz.com/edit/evt-hooks-101?file=index.tsx)
 
 _*Those are introductory examples, EVT can do much more than this._
 
