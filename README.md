@@ -83,7 +83,6 @@ function App(){
     
         evtTick.attach(ctx, ()=> setCount(count+1));
     
-    
     },[count]);
     
     return <h1>tick count: {count}</h1>;
