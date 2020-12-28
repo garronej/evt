@@ -31,6 +31,6 @@
   * [StatefulEvt&lt;T&gt;](api/statefulevt.md)
   * [Helper types](api/helpertypes.md)
   * [Handler&lt;T, U&gt; \(type\)](api/handler.md)
-* [React integration with Hooks](react-hooks.md)
+* [React integration](react-hooks.md)
 * [Extending Evt](extending_evt.md)
 

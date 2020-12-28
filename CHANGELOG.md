@@ -1,3 +1,7 @@
+### **1.9.11** (2020-12-05)  
+  
+- Indicate that v2 is under devloppement.    
+  
 ### **1.9.10** (2020-11-25)  
   
 - Fix issue related to strict mode hooks/useEvt    
