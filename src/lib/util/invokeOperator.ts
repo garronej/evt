@@ -1,7 +1,10 @@
 
 import { Operator } from "../types/Operator";
 
-/** Invoke any type of stateless operator and return as if it was a fλ*/
+/** 
+ * Invoke any type of stateless operator and return as if it was a fλ.
+ * Intended to be used alongside Evt.prototype.getStatelessOp()
+*/
 export function invokeOperator<T, U, CtxResult>(op: Operator.fλ.Stateless<T, U, CtxResult>, data: T, isPost?: true): Operator.fλ.Result<U, CtxResult>;
 export function invokeOperator<T, U extends T>(op: (data: T) => data is U, data: T): Operator.fλ.Result<U, never>;
 export function invokeOperator<T>(op: (data: T) => boolean, data: T): Operator.fλ.Result<T, never>;
