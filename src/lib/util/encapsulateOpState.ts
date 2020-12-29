@@ -1,20 +1,20 @@
 import { id } from "../../tools/typeSafety/id";
-import { Operator } from "../types/Operator";
+import * as _1 from "../types/Operator";
 
 export function encapsulateOpState<T, U, CtxOperator>(
-    statefulFλOp: Operator.fλ.Stateful<T, U, CtxOperator>
-): Operator.fλ.Stateless<T, U, CtxOperator> {
+    statefulFλOp: _1.Operator.fλ.Stateful<T, U, CtxOperator>
+): _1.Operator.fλ.Stateless<T, U, CtxOperator> {
 
     let state: U = statefulFλOp[1];
 
-    return id<Operator.fλ.Stateless<T, U, CtxOperator>>(
+    return id<_1.Operator.fλ.Stateless<T, U, CtxOperator>>(
         (...[data, , cbInvokedIfMatched]) => {
 
             const opResult = statefulFλOp[0](data, state, cbInvokedIfMatched);
 
             if (
                 !!cbInvokedIfMatched &&
-                Operator.fλ.Result.Matched.match(opResult)
+                _1.z_f1.fλ_Result_Matched_match(opResult)
             ) {
 
                 state = opResult[0];

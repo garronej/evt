@@ -2,8 +2,22 @@
 import { typeGuard } from "../../../tools/typeSafety/typeGuard";
 type EvtLike<T> = import("../helper/UnpackEvt").EvtLike<T>;
 
-type Handler<T, U, CtxProp extends CtxLike<any> | undefined = CtxLike<any> | undefined> = 
+type Handler<T, U, CtxProp extends CtxLike<any> | undefined = CtxLike<any> | undefined> =
     import("../Handler").Handler<T, U, CtxProp>;
+
+export const z_3 = {
+    "match":
+        function match<T = any>(o: any): o is CtxLike<T> {
+            return (
+                typeGuard<CtxLike>(o) &&
+                o instanceof Object &&
+                typeof o.done === "function" &&
+                typeof o.abort === "function" &&
+                typeof o.zz__addHandler === "function" &&
+                typeof o.zz__removeHandler === "function"
+            );
+        }
+}
 
 /** 
  * Minimal interface that an object must implement to be a valid context argument 
@@ -18,16 +32,7 @@ export interface CtxLike<Result = any> {
 
 export namespace CtxLike {
 
-    export function match<T=any>(o: any): o is CtxLike<T> {
-        return (
-            typeGuard<CtxLike>(o) &&
-            o instanceof Object &&
-            typeof o.done === "function" &&
-            typeof o.abort === "function" &&
-            typeof o.zz__addHandler === "function" &&
-            typeof o.zz__removeHandler === "function"
-        );
-    }
+    export const match = z_3.match;
 
 }
 

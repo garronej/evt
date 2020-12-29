@@ -1,6 +1,66 @@
 
 import { typeGuard } from "../../tools/typeSafety";
 
+export const z_2 = {
+    "RxJSSubject_match":
+        function match<T>(eventTarget: EventTargetLike<T>): eventTarget is EventTargetLike.RxJSSubject<T> {
+            return (
+                typeGuard<EventTargetLike.RxJSSubject<T>>(eventTarget) &&
+                eventTarget instanceof Object &&
+                typeof eventTarget.subscribe === "function"
+            );
+        },
+    "NodeStyleEventEmitter_match":
+        function match<T>(eventTarget: EventTargetLike<T>): eventTarget is EventTargetLike.NodeStyleEventEmitter {
+            return (
+                typeGuard<EventTargetLike.NodeStyleEventEmitter>(eventTarget) &&
+                eventTarget instanceof Object &&
+                typeof eventTarget.addListener === "function" &&
+                typeof eventTarget.removeListener === "function"
+            );
+        },
+    "JQueryStyleEventEmitter_match":
+        function match<T>(eventTarget: EventTargetLike<T>): eventTarget is EventTargetLike.JQueryStyleEventEmitter {
+            return (
+                typeGuard<EventTargetLike.JQueryStyleEventEmitter>(eventTarget) &&
+                eventTarget instanceof Object &&
+                typeof eventTarget.on === "function" &&
+                typeof eventTarget.off === "function"
+            );
+        },
+    "HasEventTargetAddRemove_match":
+
+        function match<T>(eventTarget: EventTargetLike<T>): eventTarget is EventTargetLike.HasEventTargetAddRemove<T> {
+            return (
+                typeGuard<EventTargetLike.HasEventTargetAddRemove<T>>(eventTarget) &&
+                eventTarget instanceof Object &&
+                typeof eventTarget.addEventListener === "function" &&
+                typeof eventTarget.removeEventListener === "function"
+            );
+        },
+    "canBe":
+        function canBe(o: any): boolean {
+
+            try {
+
+                return (
+                    z_2.HasEventTargetAddRemove_match(o) ||
+                    z_2.NodeStyleEventEmitter_match(o) ||
+                    z_2.JQueryStyleEventEmitter_match(o) ||
+                    z_2.RxJSSubject_match(o)
+                );
+
+            } catch {
+
+                return false;
+
+            }
+
+        }
+
+
+};
+
 export type EventTargetLike<T> =
     EventTargetLike.HasEventTargetAddRemove<T> |
     EventTargetLike.NodeStyleEventEmitter |
@@ -32,14 +92,7 @@ export namespace EventTargetLike {
             unsubscribe(): void;
         };
 
-        export function match<T>(eventTarget: EventTargetLike<T>): eventTarget is RxJSSubject<T> {
-            return (
-                typeGuard<RxJSSubject<T>>(eventTarget) &&
-                eventTarget instanceof Object &&
-                typeof eventTarget.subscribe === "function"
-            );
-        }
-
+        export const match = z_2.RxJSSubject_match;
 
     }
 
@@ -63,14 +116,7 @@ export namespace EventTargetLike {
 
         export declare type NodeEventHandler = (...args: any[]) => void;
 
-        export function match<T>(eventTarget: EventTargetLike<T>): eventTarget is NodeStyleEventEmitter {
-            return (
-                typeGuard<NodeStyleEventEmitter>(eventTarget) &&
-                eventTarget instanceof Object &&
-                typeof eventTarget.addListener === "function" &&
-                typeof eventTarget.removeListener === "function"
-            );
-        }
+        export const match = z_2.NodeStyleEventEmitter_match;
 
     }
 
@@ -81,14 +127,7 @@ export namespace EventTargetLike {
 
     export namespace JQueryStyleEventEmitter {
 
-        export function match<T>(eventTarget: EventTargetLike<T>): eventTarget is JQueryStyleEventEmitter {
-            return (
-                typeGuard<JQueryStyleEventEmitter>(eventTarget) &&
-                eventTarget instanceof Object &&
-                typeof eventTarget.on === "function" &&
-                typeof eventTarget.off === "function"
-            );
-        }
+        export const match = z_2.JQueryStyleEventEmitter_match;
 
     }
 
@@ -105,37 +144,12 @@ export namespace EventTargetLike {
             once?: boolean;
         }
 
-        export function match<T>(eventTarget: EventTargetLike<T>): eventTarget is HasEventTargetAddRemove<T> {
-            return (
-                typeGuard<HasEventTargetAddRemove<T>>(eventTarget) &&
-                eventTarget instanceof Object &&
-                typeof eventTarget.addEventListener === "function" &&
-                typeof eventTarget.removeEventListener === "function"
-            );
-        }
+        export const match = z_2.HasEventTargetAddRemove_match;
 
     }
 
 
     /* Return true if o can be a EventTargetLike */
-    export function canBe(o: any): boolean {
-
-        try{
-
-            return (
-                HasEventTargetAddRemove.match(o) ||
-                NodeStyleEventEmitter.match(o) ||
-                JQueryStyleEventEmitter.match(o) ||
-                RxJSSubject.match(o)
-            );
-
-        }catch{
-
-            return false;
-
-        }
-
-    }
-
+    export const canBe = z_2.canBe;
 
 }

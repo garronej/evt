@@ -1,4 +1,23 @@
 
+export const z_ = {
+    "isMatched":
+        function isMatched(obj: Object, regExp: RegExp): boolean {
+
+            let out = false;
+
+            getPrototypeChain(
+                obj,
+                ({ constructor }) => {
+                    out = regExp.test(constructor.name);
+                    return !out;
+                }
+            );
+
+            return out;
+
+        }
+};
+
 export function getPrototypeChain(obj: Object, callback?: (proto: Object) => boolean): Object[] {
 
     const proto = Object.getPrototypeOf(obj);
@@ -18,22 +37,7 @@ export function getPrototypeChain(obj: Object, callback?: (proto: Object) => boo
 }
 export namespace getPrototypeChain {
 
-    export function isMatched(obj: Object, regExp: RegExp): boolean {
-
-        let out = false;
-
-        getPrototypeChain(
-            obj,
-            ({ constructor }) => {
-                out = regExp.test(constructor.name);
-                return !out;
-            }
-        );
-
-        return out;
-
-
-    }
+    export const isMatched = z_.isMatched;
 
 }
 

@@ -6,8 +6,8 @@ import { factorize } from "./Evt.factorize";
 import { merge } from "./Evt.merge";
 import { from } from "./Evt.from";
 import { useEffect } from "./Evt.useEffect";
-import { asPostable } from "./Evt.asPostable";
-import { asyncPipe } from "./Evt.asyncPipe";
+import { asPostable } from "./Evt.asPostable";
+import { asyncPipe } from "./Evt.asyncPipe";
 import { asNonPostable } from "./Evt.asNonPostable";
 import { parsePropsFromArgs, matchAll } from "./Evt.parsePropsFromArgs";
 import { newCtx } from "./Evt.newCtx";
@@ -17,18 +17,19 @@ import { invokeOperator } from "./util/invokeOperator";
 import { Polyfill as Map, LightMap } from "minimal-polyfills/Map";
 import { Polyfill as WeakMap } from "minimal-polyfills/WeakMap";
 import * as runExclusive from "run-exclusive";
-import { EvtError } from "./types/EvtError";
 import { overwriteReadonlyProp } from "../tools/typeSafety/overwriteReadonlyProp";
 import { typeGuard } from "../tools/typeSafety/typeGuard";
 import { encapsulateOpState } from "./util/encapsulateOpState";
 import { Deferred } from "../tools/Deferred";
 import { loosenType } from "./Evt.loosenType";
-import { CtxLike } from "./types/interfaces/CtxLike";
 import { safeClearTimeout, safeSetTimeout, Timer } from "../tools/safeSetTimeout";
 import { isPromiseLike } from "../tools/typeSafety/isPromiseLike";
 
 import type { Handler } from "./types/Handler";
-import { Operator } from "./types/Operator";
+import * as _1 from "./types/Operator";
+import * as _2 from "./types/EvtError";
+import * as _3 from "./types/interfaces/CtxLike";
+
 type NonPostableEvt<T> = import("./types/interfaces").NonPostableEvt<T>;
 type StatefulEvt<T> = import("./types/interfaces").StatefulEvt<T>;
 
@@ -58,7 +59,7 @@ class EvtImpl<T> implements Evt<T> {
 
     static readonly asyncPipe = asyncPipe;
 
-    static readonly asNonPostable= asNonPostable;
+    static readonly asNonPostable = asNonPostable;
 
     private static __defaultMaxHandlers = 25;
 
@@ -66,12 +67,12 @@ class EvtImpl<T> implements Evt<T> {
         this.__defaultMaxHandlers = isFinite(n) ? n : 0;
     }
 
-    toStateful(p1: any,p2?: CtxLike): StatefulEvt<any> {
+    toStateful(p1: any, p2?: _3.CtxLike): StatefulEvt<any> {
 
-        const isP1Ctx= CtxLike.match(p1);
+        const isP1Ctx = _3.z_3.match(p1);
 
         const initialValue: any = isP1Ctx ? undefined : p1;
-        const ctx= p2 || ( isP1Ctx ? p1 : undefined );
+        const ctx = p2 || (isP1Ctx ? p1 : undefined);
 
         const out = new importProxy.StatefulEvt<any>(initialValue);
 
@@ -149,7 +150,7 @@ class EvtImpl<T> implements Evt<T> {
             data => {
                 try {
                     return JSON.stringify(data, null, 2);
-                } catch{
+                } catch {
                     return `${data}`;
                 }
             }
@@ -172,7 +173,7 @@ class EvtImpl<T> implements Evt<T> {
 
     private readonly handlerTriggers: LightMap<
         Handler<T, any>,
-        (opResult: Operator.fλ.Result.Matched<any, any>) => PromiseLike<void> | undefined
+        (opResult: _1.Operator.fλ.Result.Matched<any, any>) => PromiseLike<void> | undefined
     > = new Map();
 
     //NOTE: An async handler ( attached with waitFor ) is only eligible to handle a post if the post
@@ -195,8 +196,8 @@ class EvtImpl<T> implements Evt<T> {
         (typeof EvtImpl.prototype.asyncHandlerChronologyExceptionRange) | undefined;
 
     declare private readonly statelessByStatefulOp: WeakMap<
-        Operator.fλ.Stateful<T, any, any>,
-        Operator.fλ.Stateless<T, any, any>
+        _1.Operator.fλ.Stateful<T, any, any>,
+        _1.Operator.fλ.Stateless<T, any, any>
     >;
     declare private __statelessByStatefulOp:
         (typeof EvtImpl.prototype.statelessByStatefulOp) | undefined;
@@ -245,7 +246,7 @@ class EvtImpl<T> implements Evt<T> {
     private detachHandler(
         handler: Handler<T, any>,
         wTimer: [Timer | undefined],
-        rejectPr: (error: EvtError.Detached) => void
+        rejectPr: (error: _2.EvtError.Detached) => void
     ) {
 
         const index = this.handlers.indexOf(handler);
@@ -254,7 +255,7 @@ class EvtImpl<T> implements Evt<T> {
             return false;
         }
 
-        if (typeGuard<Handler<T, any, CtxLike<any>>>(handler, !!handler.ctx)) {
+        if (typeGuard<Handler<T, any, _3.CtxLike<any>>>(handler, !!handler.ctx)) {
             handler.ctx.zz__removeHandler(handler);
         }
 
@@ -271,7 +272,7 @@ class EvtImpl<T> implements Evt<T> {
 
             safeClearTimeout(wTimer[0]);
 
-            rejectPr(new EvtError.Detached());
+            rejectPr(new _2.EvtError.Detached());
 
         }
 
@@ -286,7 +287,7 @@ class EvtImpl<T> implements Evt<T> {
         handler: Handler<T, U>,
         wTimer: [Timer | undefined],
         resolvePr: ((transformedData: any) => void) | undefined,
-        opResult: Operator.fλ.Result.Matched<any, any>
+        opResult: _1.Operator.fλ.Result.Matched<any, any>
     ): PromiseLike<void> | undefined {
 
         const { callback, once } = handler;
@@ -296,7 +297,7 @@ class EvtImpl<T> implements Evt<T> {
             wTimer[0] = undefined;
         }
 
-        EvtImpl.doDetachIfNeeded(handler, opResult, once);
+        doDetachIfNeeded(handler, opResult, once);
 
         const [transformedData] = opResult;
 
@@ -316,7 +317,9 @@ class EvtImpl<T> implements Evt<T> {
         propsFromMethodName: Handler.PropsFromMethodName
     ): Handler<T, U> {
 
-        if (Operator.fλ.Stateful.match<T, any, any>(propsFromArgs.op)) {
+        
+
+        if (_1.z_f1.fλ_Stateful_match<T, any, any>(propsFromArgs.op)) {
 
             this.statelessByStatefulOp.set(
                 propsFromArgs.op,
@@ -344,7 +347,7 @@ class EvtImpl<T> implements Evt<T> {
 
                 handler.detach();
 
-                d.reject(new EvtError.Timeout(handler.timeout!));
+                d.reject(new _2.EvtError.Timeout(handler.timeout!));
 
             }, handler.timeout);
 
@@ -397,7 +400,7 @@ class EvtImpl<T> implements Evt<T> {
 
         this.checkForPotentialMemoryLeak();
 
-        if (typeGuard<Handler<T, U, CtxLike<any>>>(handler, !!handler.ctx)) {
+        if (typeGuard<Handler<T, U, _3.CtxLike<any>>>(handler, !!handler.ctx)) {
             handler.ctx.zz__addHandler(handler, this);
         }
 
@@ -465,13 +468,13 @@ class EvtImpl<T> implements Evt<T> {
 
         try {
             console.warn(message);
-        } catch{
+        } catch {
         }
 
     }
 
-    getStatelessOp<U, CtxResult>(op: Operator<T, U, CtxResult>): Operator.Stateless<T, U, CtxResult> {
-        return Operator.fλ.Stateful.match(op) ?
+    getStatelessOp<U, CtxResult>(op: _1.Operator<T, U, CtxResult>): _1.Operator.Stateless<T, U, CtxResult> {
+        return _1.z_f1.fλ_Stateful_match(op) ?
             this.statelessByStatefulOp.get(op)! :
             op
     }
@@ -518,7 +521,7 @@ class EvtImpl<T> implements Evt<T> {
         const prAllHandlerCallbacksResolved: PromiseLike<void>[] = [];
 
         const getReturnValue = (isExtracted: boolean) => [
-            isExtracted, 
+            isExtracted,
             Promise.all(prAllHandlerCallbacksResolved).then(() => { })
         ] as const;
 
@@ -537,9 +540,9 @@ class EvtImpl<T> implements Evt<T> {
                 true
             );
 
-            if (Operator.fλ.Result.NotMatched.match(opResult)) {
+            if (_1.z_f1.fλ_Result_NotMatched_match(opResult)) {
 
-                EvtImpl.doDetachIfNeeded(handler, opResult);
+                 doDetachIfNeeded(handler, opResult);
 
                 continue;
 
@@ -599,9 +602,9 @@ class EvtImpl<T> implements Evt<T> {
                         true
                     );
 
-                    if (Operator.fλ.Result.NotMatched.match(opResult)) {
+                    if (_1.z_f1.fλ_Result_NotMatched_match(opResult)) {
 
-                        EvtImpl.doDetachIfNeeded(handler, opResult);
+                        doDetachIfNeeded(handler, opResult);
 
                         continue;
 
@@ -718,7 +721,7 @@ class EvtImpl<T> implements Evt<T> {
         return [...this.handlers];
     }
 
-    detach(ctx?: CtxLike<any>): Handler<T, any, any>[] {
+    detach(ctx?: _3.CtxLike<any>): Handler<T, any, any>[] {
 
         const detachedHandlers: Handler<T, any>[] = [];
 
@@ -897,38 +900,35 @@ class EvtImpl<T> implements Evt<T> {
 
 }
 
-namespace EvtImpl {
 
-    //NOTE: For some reason can't set it as static method so we put it here
-    export function doDetachIfNeeded<U = any>(
-        handler: Handler<any, U>,
-        opResult: Operator.fλ.Result.Matched<U, any>,
-        once: boolean
-    ): void;
-    export function doDetachIfNeeded(
-        handler: Handler<any, any>,
-        opResult: Operator.fλ.Result.NotMatched<any>,
-    ): void;
-    export function doDetachIfNeeded<U = any>(
-        handler: Handler<any, U>,
-        opResult: Operator.fλ.Result<U, any>,
-        once?: boolean
-    ): void {
+//NOTE: For some reason can't set it as static method so we put it here
+export function doDetachIfNeeded<U = any>(
+    handler: Handler<any, U>,
+    opResult: _1.Operator.fλ.Result.Matched<U, any>,
+    once: boolean
+): void;
+export function doDetachIfNeeded(
+    handler: Handler<any, any>,
+    opResult: _1.Operator.fλ.Result.NotMatched<any>,
+): void;
+export function doDetachIfNeeded<U = any>(
+    handler: Handler<any, U>,
+    opResult: _1.Operator.fλ.Result<U, any>,
+    once?: boolean
+): void {
 
-        const detach = Operator.fλ.Result.getDetachArg(opResult);
+    const detach = _1.z_f1.fλ_Result_getDetachArg(opResult);
 
-        if (typeof detach !== "boolean") {
-            const [ctx, error, res] = detach;
+    if (typeof detach !== "boolean") {
+        const [ctx, error, res] = detach;
 
-            if (!!error) {
-                ctx.abort(error);
-            } else {
-                ctx.done(res);
-            }
-        } else if (detach || !!once) {
-            handler.detach();
+        if (!!error) {
+            ctx.abort(error);
+        } else {
+            ctx.done(res);
         }
-
+    } else if (detach || !!once) {
+        handler.detach();
     }
 
 }

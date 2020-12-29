@@ -1,9 +1,10 @@
 import { id } from "../tools/typeSafety/id";
 import { assert } from "../tools/typeSafety/assert";
 import { typeGuard } from "../tools/typeSafety/typeGuard";
-import { EventTargetLike } from "./types/EventTargetLike";
 import { mergeImpl } from "./Evt.merge";
 import { importProxy } from "./importProxy";
+
+import * as _1 from "./types/EventTargetLike";
 
 namespace dom {
 
@@ -23,14 +24,14 @@ type CtxLike<Result> = import("./types/interfaces").CtxLike<Result> & {
 
 function fromImpl<T>(
     ctx: CtxLike<any> | undefined,
-    target: OneOrMany<EventTargetLike<T>> | PromiseLike<T>,
+    target: OneOrMany<_1.EventTargetLike<T>> | PromiseLike<T>,
     eventName?: string,
-    options?: EventTargetLike.HasEventTargetAddRemove.Options
+    options?: _1.EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<T> {
 
     const matchEventTargetLike =
-        (target_: typeof target): target_ is EventTargetLike<T> =>
-            EventTargetLike.canBe(target_);
+        (target_: typeof target): target_ is _1.EventTargetLike<T> =>
+            _1.z_2.canBe(target_);
 
     if (!matchEventTargetLike(target)) {
 
@@ -74,7 +75,7 @@ function fromImpl<T>(
     type ProxyMethod<T> = (
         listener: (data: T) => void,
         eventName: string,
-        options?: EventTargetLike.HasEventTargetAddRemove.Options
+        options?: _1.EventTargetLike.HasEventTargetAddRemove.Options
     ) => void;
 
     let proxy: {
@@ -82,24 +83,24 @@ function fromImpl<T>(
         off: ProxyMethod<T>;
     };
 
-    if (EventTargetLike.NodeStyleEventEmitter.match(target)) {
+    if (_1.z_2.NodeStyleEventEmitter_match(target)) {
         proxy = {
             "on": (listener, eventName) => target.addListener(eventName, listener),
             "off": (listener, eventName) => target.removeListener(eventName, listener)
         };
-    } else if (EventTargetLike.JQueryStyleEventEmitter.match(target)) {
+    } else if (_1.z_2.JQueryStyleEventEmitter_match(target)) {
         proxy = {
             "on": (listener, eventName) => target.on(eventName, listener),
             "off": (listener, eventName) => target.off(eventName, listener)
         };
-    } else if (EventTargetLike.HasEventTargetAddRemove.match(target)) {
+    } else if (_1.z_2.HasEventTargetAddRemove_match(target)) {
         proxy = {
             "on": (listener, eventName, options) => target.addEventListener(eventName, listener, options),
             "off": (listener, eventName, options) => target.removeEventListener(eventName, listener, options)
         };
-    } else if (EventTargetLike.RxJSSubject.match(target)) {
+    } else if (_1.z_2.RxJSSubject_match(target)) {
 
-        let subscription: EventTargetLike.RxJSSubject.Subscription;
+        let subscription: _1.EventTargetLike.RxJSSubject.Subscription;
 
         proxy = {
             "on": listener => subscription = target.subscribe(data => listener(data)),
@@ -135,44 +136,44 @@ function fromImpl<T>(
 /** https://docs.evt.land/api/evt/from */
 export function from<K extends keyof dom.HTMLElementEventMap>(
     ctx: CtxLike<any>,
-    target: EventTargetLike.HTMLElement,
+    target: _1.EventTargetLike.HTMLElement,
     eventName: K,
-    options?: EventTargetLike.HasEventTargetAddRemove.Options
+    options?: _1.EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<dom.HTMLElementEventMap[K]>;
 
 export function from<K extends keyof dom.WindowEventMap>(
     ctx: CtxLike<any>,
-    target: EventTargetLike.Window,
+    target: _1.EventTargetLike.Window,
     eventName: K,
-    options?: EventTargetLike.HasEventTargetAddRemove.Options
+    options?: _1.EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<dom.WindowEventMap[K]>;
 
 export function from<K extends keyof dom.DocumentEventMap>(
     ctx: CtxLike<any>,
-    target: EventTargetLike.Document,
+    target: _1.EventTargetLike.Document,
     eventName: K,
-    options?: EventTargetLike.HasEventTargetAddRemove.Options
+    options?: _1.EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<dom.DocumentEventMap[K]>;
 
 export function from<T>(
     ctx: CtxLike<any>,
     target: OneOrMany<
-        EventTargetLike.NodeStyleEventEmitter |
-        EventTargetLike.JQueryStyleEventEmitter
+        _1.EventTargetLike.NodeStyleEventEmitter |
+        _1.EventTargetLike.JQueryStyleEventEmitter
     >,
     eventName: string
 ): Evt<T>;
 export function from<T>(
     ctx: CtxLike<any>,
     target: OneOrMany<
-        EventTargetLike.HasEventTargetAddRemove<T>
+        _1.EventTargetLike.HasEventTargetAddRemove<T>
     >,
     eventName: string,
-    options?: EventTargetLike.HasEventTargetAddRemove.Options
+    options?: _1.EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<T>;
 export function from<T>(
     ctx: CtxLike<any>,
-    target: OneOrMany<EventTargetLike.RxJSSubject<T>>
+    target: OneOrMany<_1.EventTargetLike.RxJSSubject<T>>
 ): Evt<T>;
 
 export function from<T>(
@@ -182,54 +183,54 @@ export function from<T>(
 
 
 export function from<K extends keyof dom.HTMLElementEventMap>(
-    target: EventTargetLike.HTMLElement,
+    target: _1.EventTargetLike.HTMLElement,
     eventName: K,
-    options?: EventTargetLike.HasEventTargetAddRemove.Options
+    options?: _1.EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<dom.HTMLElementEventMap[K]>;
 export function from<K extends keyof dom.WindowEventMap>(
-    target: EventTargetLike.Window,
+    target: _1.EventTargetLike.Window,
     eventName: K,
-    options?: EventTargetLike.HasEventTargetAddRemove.Options
+    options?: _1.EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<dom.WindowEventMap[K]>;
 export function from<K extends keyof dom.DocumentEventMap>(
-    target: EventTargetLike.Document,
+    target: _1.EventTargetLike.Document,
     eventName: K,
-    options?: EventTargetLike.HasEventTargetAddRemove.Options
+    options?: _1.EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<dom.DocumentEventMap[K]>;
 export function from<T>(
     target: OneOrMany<
-        EventTargetLike.NodeStyleEventEmitter |
-        EventTargetLike.JQueryStyleEventEmitter
+        _1.EventTargetLike.NodeStyleEventEmitter |
+        _1.EventTargetLike.JQueryStyleEventEmitter
     >,
     eventName: string
 ): Evt<T>;
 export function from<T>(
     target: OneOrMany<
-        EventTargetLike.HasEventTargetAddRemove<T>
+        _1.EventTargetLike.HasEventTargetAddRemove<T>
     >,
     eventName: string,
-    options?: EventTargetLike.HasEventTargetAddRemove.Options
+    options?: _1.EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<T>;
 export function from<T>(
-    target: OneOrMany<EventTargetLike.RxJSSubject<T>>
+    target: OneOrMany<_1.EventTargetLike.RxJSSubject<T>>
 ): Evt<T>;
 export function from<T>(
     target: PromiseLike<T>
 ): Evt<T>;
 
 export function from<T>(
-    ctxOrTarget: CtxLike<any> | OneOrMany<EventTargetLike<T>> | PromiseLike<T>,
-    targetOrEventName?: OneOrMany<EventTargetLike<T>> | string | PromiseLike<T>,
-    eventNameOrOptions?: string | EventTargetLike.HasEventTargetAddRemove.Options,
-    options?: EventTargetLike.HasEventTargetAddRemove.Options
+    ctxOrTarget: CtxLike<any> | OneOrMany<_1.EventTargetLike<T>> | PromiseLike<T>,
+    targetOrEventName?: OneOrMany<_1.EventTargetLike<T>> | string | PromiseLike<T>,
+    eventNameOrOptions?: string | _1.EventTargetLike.HasEventTargetAddRemove.Options,
+    options?: _1.EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<T> {
 
     if ("evtDoneOrAborted" in ctxOrTarget) {
 
         assert(
-            typeGuard<OneOrMany<EventTargetLike<T>> | PromiseLike<T>>(targetOrEventName) &&
+            typeGuard<OneOrMany<_1.EventTargetLike<T>> | PromiseLike<T>>(targetOrEventName) &&
             typeGuard<string | undefined>(eventNameOrOptions) &&
-            typeGuard<EventTargetLike.HasEventTargetAddRemove.Options | undefined>(options)
+            typeGuard<_1.EventTargetLike.HasEventTargetAddRemove.Options | undefined>(options)
         );
 
         return fromImpl(
@@ -243,7 +244,7 @@ export function from<T>(
 
         assert(
             typeGuard<string | undefined>(targetOrEventName) &&
-            typeGuard<EventTargetLike.HasEventTargetAddRemove.Options | undefined>(eventNameOrOptions)
+            typeGuard<_1.EventTargetLike.HasEventTargetAddRemove.Options | undefined>(eventNameOrOptions)
         );
 
         return fromImpl(

@@ -4,13 +4,14 @@ import { LazyEvt } from "./LazyEvt";
 import { LazyStatefulEvt } from "./LazyStatefulEvt";
 import { importProxy } from "./importProxy";
 import { invokeOperator } from "./util/invokeOperator";
-import { Operator } from "./types/Operator";
 import { parsePropsFromArgs } from "./Evt.parsePropsFromArgs";
 import type { CtxLike } from "./types/interfaces/CtxLike";
 type Diff<T> = import("./types/interfaces").Diff<T>;
 type NonPostableEvt<T> = import("./types/interfaces").NonPostableEvt<T>;
 type StatefulReadonlyEvt<T>= import("./types/interfaces").StatefulReadonlyEvt<T>;
 import { Evt } from "./Evt";
+
+import * as _1 from "./types/Operator";
 
 /** https://docs.evt.land/api/statefulevt */
 export type StatefulEvt<T> = import("./types/interfaces").StatefulEvt<T>;
@@ -108,7 +109,7 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
             this.state
         );
 
-        if (Operator.fλ.Result.NotMatched.match(opResult)) {
+        if (_1.z_f1.fλ_Result_NotMatched_match(opResult)) {
 
             throw new Error([
                 "Cannot pipe StatefulEvt because the operator does not match",

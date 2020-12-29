@@ -2,6 +2,74 @@ import { typeGuard } from "../../tools/typeSafety";
 type CtxLike<Result> = import("./interfaces").CtxLike<Result>;
 type VoidCtxLike = import("./interfaces").VoidCtxLike;
 
+export const z_f1 = {
+    "fλ_Stateful_match": function match<T, U, CtxResult>(op: Operator<T, U, CtxResult>): op is Operator.fλ.Stateful<T, U, CtxResult> {
+        return typeof op !== "function";
+    },
+    "fλ_Result_match": function match<U, CtxResult>(result: any): result is Operator.fλ.Result<U, CtxResult> {
+        return z_f1.fλ_Result_Matched_match(result) || z_f1.fλ_Result_NotMatched_match(result);
+    },
+    "fλ_Result_getDetachArg": function getDetachArg<CtxResult>(result: Operator.fλ.Result<any, CtxResult>): boolean | [CtxLike<CtxResult>, undefined | Error, CtxResult] {
+
+        const detach = z_f1.fλ_Result_Matched_match<any, CtxResult>(result) ? result[1] : result;
+
+        if (z_f1.fλ_Result_Detach_FromEvt_match(detach)) {
+            return true;
+        }
+
+        if (z_f1.fλ_Result_Detach_WithCtxArg_match<CtxResult>(detach)) {
+            return [
+                detach.DETACH as Exclude<typeof detach.DETACH, VoidCtxLike>,
+                (detach as Extract<Operator.fλ.Result<any, CtxResult>, { err: any }>).err,
+                (detach as Extract<Operator.fλ.Result<any, CtxResult>, { res: any }>).res
+            ];
+        }
+
+        return false;
+
+    },
+    "fλ_Result_NotMatched_match": function match<CtxResult>(result: any): result is Operator.fλ.Result.NotMatched<CtxResult> {
+        return (
+            result === null ||
+            z_f1.fλ_Result_Detach_match(result)
+        );
+    },
+    "fλ_Result_Matched_match": function match<U, CtxResult>(
+        result: any,
+    ): result is Operator.fλ.Result.Matched<U, CtxResult> {
+        return (
+            typeGuard<Operator.fλ.Result.Matched<U, CtxResult>>(result) &&
+            result instanceof Object &&
+            !("input" in result) && //exclude String.prototype.match
+            (
+                result.length === 1 ||
+                (
+                    result.length === 2 &&
+                    (
+                        result[1] === null ||
+                        z_f1.fλ_Result_Detach_match(result[1])
+                    )
+                )
+            )
+        );
+    },
+    "fλ_Result_Detach_FromEvt_match": function match(detach: any): detach is Operator.fλ.Result.Detach.FromEvt {
+        return detach === "DETACH";
+    },
+    "fλ_Result_Detach_WithCtxArg_match": function match<CtxResult>(detach: any): detach is Operator.fλ.Result.Detach.WithCtxArg<CtxResult> {
+        return (
+            typeGuard<Operator.fλ.Result.Detach<CtxResult>>(detach) &&
+            detach instanceof Object &&
+            detach.DETACH instanceof Object
+        );
+    },
+    "fλ_Result_Detach_match": function match<CtxResult>(detach: any): detach is Operator.fλ.Result.Detach<CtxResult> {
+        return z_f1.fλ_Result_Detach_FromEvt_match(detach) || z_f1.fλ_Result_Detach_WithCtxArg_match(detach);
+    }
+
+
+};
+
 
 /** https://docs.evt.land/api/operator */
 export type Operator<T, U, CtxResult = any> =
@@ -28,9 +96,7 @@ export namespace Operator {
 
         export namespace Stateful {
 
-            export function match<T, U, CtxResult>(op: Operator<T, U, CtxResult>): op is Stateful<T, U, CtxResult> {
-                return typeof op !== "function";
-            }
+            export const match = z_f1.fλ_Stateful_match;
 
         }
 
@@ -38,45 +104,19 @@ export namespace Operator {
 
         export namespace Result {
 
-            export function match<U, CtxResult>(result: any): result is Result<U, CtxResult> {
-                return Matched.match(result) || NotMatched.match(result);
-            }
+            export const match = z_f1.fλ_Result_match;
 
-            export function getDetachArg<CtxResult>(result: Result<any, CtxResult>): boolean | [CtxLike<CtxResult>, undefined | Error, CtxResult] {
-
-                const detach = Matched.match<any, CtxResult>(result) ? result[1] : result;
-
-                if (Detach.FromEvt.match(detach)) {
-                    return true;
-                }
-
-                if (Detach.WithCtxArg.match<CtxResult>(detach)) {
-                    return [
-                        detach.DETACH as Exclude<typeof detach.DETACH, VoidCtxLike>,
-                        (detach as Extract<Result<any,CtxResult>, { err: any }>).err,
-                        (detach as Extract<Result<any, CtxResult>, { res: any }>).res
-                    ];
-                }
-
-
-                return false;
-
-            }
+            export const getDetachArg = z_f1.fλ_Result_getDetachArg;
 
             export type NotMatched<CtxResult = any> = Detach<CtxResult> | null;
 
             export namespace NotMatched {
 
-                export function match<CtxResult>(result: any): result is NotMatched<CtxResult> {
-                    return (
-                        result === null ||
-                        Detach.match(result)
-                    );
-                }
+                export const match = z_f1.fλ_Result_NotMatched_match;
 
             }
 
-            export type Matched<U, CtxResult= any> = Matched.NoDetachArg<U> | Matched.WithDetachArg<U, CtxResult>;
+            export type Matched<U, CtxResult = any> = Matched.NoDetachArg<U> | Matched.WithDetachArg<U, CtxResult>;
 
             export namespace Matched {
 
@@ -84,25 +124,7 @@ export namespace Operator {
 
                 export type WithDetachArg<U, CtxResult = any> = readonly [U, Detach<CtxResult> | null];
 
-                export function match<U,CtxResult>(
-                    result: any,
-                ): result is Matched<U, CtxResult> {
-                    return (
-                        typeGuard<Matched<U, CtxResult>>(result) &&
-                        result instanceof Object &&
-                        !("input" in result) && //exclude String.prototype.match
-                        (
-                            result.length === 1 ||
-                            (
-                                result.length === 2 &&
-                                (
-                                    result[1] === null ||
-                                    Detach.match(result[1])
-                                )
-                            )
-                        )
-                    );
-                }
+                export const match = z_f1.fλ_Result_Matched_match;
 
             }
 
@@ -114,9 +136,8 @@ export namespace Operator {
 
                 export namespace FromEvt {
 
-                    export function match(detach: any): detach is FromEvt {
-                        return detach === "DETACH";
-                    }
+                    export const match = z_f1.fλ_Result_Detach_FromEvt_match;
+
 
                 }
 
@@ -134,19 +155,11 @@ export namespace Operator {
                         { DETACH: CtxLike<CtxResult>; res: CtxResult; }
                         ;
 
-                    export function match<CtxResult>(detach: any): detach is WithCtxArg<CtxResult> {
-                        return (
-                            typeGuard<Detach<CtxResult>>(detach) &&
-                            detach instanceof Object &&
-                            detach.DETACH instanceof Object
-                        );
-                    }
+                    export const match = z_f1.fλ_Result_Detach_WithCtxArg_match;
 
                 }
 
-                export function match<CtxResult>(detach: any): detach is Detach<CtxResult> {
-                    return FromEvt.match(detach) || WithCtxArg.match(detach);
-                }
+                export const match = z_f1.fλ_Result_Detach_match;
 
             }
 
