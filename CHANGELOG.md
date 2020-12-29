@@ -1,3 +1,8 @@
+### **1.9.12** (2020-12-29)  
+  
+- Support --no-check deno flag  
+- Add React example in the readme    
+  
 ### **1.9.11** (2020-12-05)  
   
 - Indicate that v2 is under devloppement.    
