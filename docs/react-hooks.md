@@ -79,6 +79,10 @@ export function MyComponent(){
 }
 ```
 
+{% hint style="info" %}
+This example will only work with [EVT v2.0](https://github.com/garronej/evt/pull/16)
+{% endhint %}
+
 ## ESLint
 
 You can use this [`react-hooks/exhaustive-deps`](https://github.com/facebook/react/blob/master/packages/eslint-plugin-react-hooks/README.md#advanced-configuration) setting to be warned if you forget a dependency:
