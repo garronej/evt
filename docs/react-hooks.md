@@ -37,6 +37,10 @@ function App(){
 
 \*\*\*\*[**Run it**](https://stackblitz.com/edit/evt-hooks-101?file=index.tsx)\*\*\*\*
 
+{% hint style="success" %}
+The core idea is to always use the cts to attach handlers. This will enable EVT to detach/reload handlers when they need to be namely when the component is unmounted or a value used in a handler has changed.
+{% endhint %}
+
 ## Custom hooks
 
 Evt let enables you to create powerful custom hooks. Here are some examples:
@@ -82,6 +86,62 @@ export function MyComponent(){
 {% hint style="info" %}
 This example will only work with [EVT v2.0](https://github.com/garronej/evt/pull/16)
 {% endhint %}
+
+### Custom hooks that enable to toogle dark mode
+
+This hook use for default value the OS default \(true if the user have dark mode enabled system whild\) and persist de result value in local storage.
+
+```typescript
+import { useState } from "react";
+import { Evt } from "evt";
+import { useEvt } from "evt/hooks";
+
+
+const key = "isDarkModeEnabled_dXddOm";
+
+const evtIsDarkModeEnabled = Evt.create(
+    (() => {
+
+        const value = localStorage.getItem(key);
+
+        return value === null ? null : value === "true";
+
+    })() ??
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+);
+
+evtIsDarkModeEnabled.attach(
+    isDarkModeEnabled => localStorage.setItem(
+        key, isDarkModeEnabled ? "true" : "false"
+    )
+);
+
+
+
+export function useIsDarkModeEnabled(): {
+    isDarkModeEnabled: boolean;
+    setIsDarkModeEnabled(params: { isDarkModeEnabled: boolean; }): void;
+} {
+
+    const [isDarkModeEnabled, setIsDarkModeEnabled] = 
+        useState(evtIsDarkModeEnabled.state);
+
+    useEvt(ctx =>
+        evtIsDarkModeEnabled
+            .toStateless(ctx) //We use .toStateless() to avoid calling setIsDarkModeEnabled on first render 
+            .attach(setIsDarkModeEnabled),
+        []
+    );
+
+    return {
+        isDarkModeEnabled,
+        "setIsDarkModeEnabled": ({ isDarkModeEnabled }) =>
+            evtIsDarkModeEnabled.state = isDarkModeEnabled
+    };
+
+
+}
+```
 
 ## ESLint
 
