@@ -13,7 +13,7 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi();
 
         const sevText = Evt.create("foo");
 
-        sevText.evtChange.attach(text => {
+        sevText.evtChange.toStateless().attach(text => {
 
             stdout+= text;
 
@@ -22,7 +22,8 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi();
         sevText.state = "foo";
         sevText.state = " bar";
 
-        assert(stdout === "foo bar");
+        console.log(stdout);
+        assert(stdout === " bar");
 
 
     }
@@ -61,7 +62,7 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi();
         sevText.state = "foo";
         sevText.state = " bar";
 
-        assert(stdout === "foo bar");
+        assert(stdout === " bar");
 
 
     }

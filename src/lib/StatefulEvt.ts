@@ -63,7 +63,12 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
             "state",
             {
                 "get": function (this: StatefulEvtImpl<any>) { return this.__state; },
-                "set": function (this: StatefulEvtImpl<any>, state) { this.post(state); }
+                "set": function (this: StatefulEvtImpl<any>, state) { 
+                    if( this.state === state ){
+                        return;
+                    }
+                    this.post(state); 
+                }
             }
         );
 
