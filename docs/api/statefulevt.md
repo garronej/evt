@@ -10,6 +10,12 @@ Property type: `T`
 
 reading the property gives the last event data posted. Setting the property \(`evt.state = data`\) is equivalent to calling `.post(data)`.
 
+{% hint style="danger" %}
+In v2 `evt.state = data` will only trigger the call of `.post(data)` if `data !== evt.state`
+
+Consult v2 roadmap [here](https://github.com/garronej/evt/pull/16)
+{% endhint %}
+
 ```typescript
 import { Evt } from "evt";
 
