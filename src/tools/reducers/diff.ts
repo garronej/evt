@@ -1,33 +1,77 @@
 import { ReduceArguments, toReduceArguments } from "./reduceify";
 import { contains } from "./contains";
 import { removeDuplicates } from "./removeDuplicates";
+import { id } from "../typeSafety/id";
 
 export type ArrDiff<T> = {
     added: readonly T[];
     removed: readonly T[];
 }
 
+const areStrictEqual = (e1: unknown, e2: unknown) => e1 === e2;
+
+/** WARNING: Providing areEquals significantly impact performances */
 export function arrDiff<ArrOf>(
     arr: readonly ArrOf[],
     newArr: readonly ArrOf[],
-    areEquals: (e1: ArrOf, e2: ArrOf) => boolean = (e1, e2) => e1 === e2
+    areEquals: (e1: ArrOf, e2: ArrOf) => boolean = areStrictEqual
 ): ArrDiff<ArrOf> {
 
-    return {
-        "added": newArr
-            .reduce(...removeDuplicates<ArrOf>(areEquals))
-            .filter(newEntry => !arr.reduce(...contains<ArrOf>(entry => areEquals(entry, newEntry)))),
-        "removed": arr
-            .reduce(...removeDuplicates<ArrOf>(areEquals))
-            .filter(entry => !newArr.reduce(...contains<ArrOf>(newEntry => areEquals(newEntry, entry))))
+    const arrDiff = {
+        "added": id<ArrOf[]>([]),
+        "removed": id<ArrOf[]>([])
     };
 
+    if (
+        arr.length === newArr.length &&
+        arr.every((elem, i) => areEquals(elem, newArr[i]))
+    ) {
+        return arrDiff;
+    }
+
+    if (areEquals !== areStrictEqual) {
+
+        return {
+            "added": newArr
+                .reduce(...removeDuplicates<ArrOf>(areEquals))
+                .filter(newEntry => !arr.reduce(...contains<ArrOf>(entry => areEquals(entry, newEntry)))),
+            "removed": arr
+                .reduce(...removeDuplicates<ArrOf>(areEquals))
+                .filter(entry => !newArr.reduce(...contains<ArrOf>(newEntry => areEquals(newEntry, entry))))
+        };
+
+    }
+
+    const arrAsSet = new Set<ArrOf>(arr);
+    const newArrAsSet = new Set(newArr);
+
+    arrAsSet.forEach(elem => {
+
+        if (newArrAsSet.has(elem)) {
+            return;
+        }
+
+        arrDiff.removed.push(elem);
+
+    });
+
+    newArrAsSet.forEach(elem => {
+
+        if (arrAsSet.has(elem)) {
+            return;
+        }
+
+        arrDiff.added.push(elem);
+
+    });
+
+    return arrDiff;
 
 }
 
 export function diff<ArrOf>(
     newArr: readonly ArrOf[],
-    areEquals?: (e1: ArrOf, e2: ArrOf) => boolean 
+    areEquals?: (e1: ArrOf, e2: ArrOf) => boolean
 ): ReduceArguments<ArrOf, ArrDiff<ArrOf>> {
     return toReduceArguments(arrDiff, newArr, areEquals);
 }
