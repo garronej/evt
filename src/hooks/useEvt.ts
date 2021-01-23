@@ -1,5 +1,5 @@
 import * as React from "react";
-const { useEffect, useRef } = React;
+const { useEffect, useRef, useState } = React;
 
 import { Evt } from "../lib/Evt";
 import type { VoidCtx } from "../lib";
@@ -37,10 +37,10 @@ const isDevStrictMode = typeof process !== "object" ?
  */
 export function useEvt<T>(
     factoryOrEffect: (ctx: VoidCtx) => T,
-    deps: any[]
+    deps: React.DependencyList
 ): T {
 
-    const ctx = useSemanticGuaranteeMemo(() => Evt.newCtx(), []);
+    const [ ctx ] = useState(() => Evt.newCtx());
 
     const out = useSemanticGuaranteeMemo(() => {
 
