@@ -4,13 +4,16 @@ import { LazyEvt } from "./LazyEvt";
 import { LazyStatefulEvt } from "./LazyStatefulEvt";
 import { importProxy } from "./importProxy";
 import { invokeOperator } from "./util/invokeOperator";
-import { Operator } from "./types/Operator";
 import { parsePropsFromArgs } from "./Evt.parsePropsFromArgs";
-import type { CtxLike } from "./types/interfaces/CtxLike";
-type Diff<T> = import("./types/interfaces").Diff<T>;
-type NonPostableEvt<T> = import("./types/interfaces").NonPostableEvt<T>;
-type StatefulReadonlyEvt<T> = import("./types/interfaces").StatefulReadonlyEvt<T>;
 import { Evt, onAddHandlerByEvt } from "./Evt";
+import type { CtxLike, StateDiff, NonPostableEvt, StatefulReadonlyEvt } from "./types";
+
+import * as nsOperator from "./types/Operator";
+
+// NOTE: For compat with --no-check 
+// https://github.com/asos-craigmorten/opine/issues/97#issuecomment-751806014
+const { Operator: OperatorAsValue } = nsOperator;
+
 
 /** https://docs.evt.land/api/statefulevt */
 export type StatefulEvt<T> = import("./types/interfaces").StatefulEvt<T>;
@@ -35,7 +38,7 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
                     true
                 );
 
-                if (Operator.fλ.Result.Matched.match(opResult)) {
+                if (OperatorAsValue.fλ.Result.Matched.match(opResult)) {
 
                     handlerTrigger(opResult);
 
@@ -45,14 +48,14 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
         );
     }
 
-    private readonly lazyEvtDiff = new LazyEvt<Diff<T>>();
-    declare public readonly evtDiff: NonPostableEvt<Diff<T>>;
+    private readonly lazyEvtDiff = new LazyEvt<StateDiff<T>>();
+    declare public readonly evtDiff: NonPostableEvt<StateDiff<T>>;
 
     private readonly lazyEvtChange: LazyStatefulEvt<T>;
     declare public readonly evtChange: StatefulReadonlyEvt<T>;
 
-    private readonly lazyEvtChangeDiff = new LazyEvt<Diff<T>>();
-    declare public readonly evtChangeDiff: NonPostableEvt<Diff<T>>;
+    private readonly lazyEvtChangeDiff = new LazyEvt<StateDiff<T>>();
+    declare public readonly evtChangeDiff: NonPostableEvt<StateDiff<T>>;
 
     private static __4: void = (() => {
 
@@ -156,7 +159,7 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
             true
         );
 
-        if (Operator.fλ.Result.NotMatched.match(opResult)) {
+        if (OperatorAsValue.fλ.Result.NotMatched.match(opResult)) {
 
             throw new Error([
                 "Cannot pipe StatefulEvt because the operator does not match",

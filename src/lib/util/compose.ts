@@ -1,21 +1,25 @@
 import { encapsulateOpState } from "./encapsulateOpState";
 import { invokeOperator } from "./invokeOperator";
-import { Operator } from "../types/Operator";
 import { id } from "../../tools/typeSafety/id";
 import { assert } from "../../tools/typeSafety/assert";
 import { typeGuard } from "../../tools/typeSafety/typeGuard";
+import * as nsOperator from "../types/Operator";
+import type { Operator } from "../types/Operator";
+// NOTE: For compat with --no-check 
+// https://github.com/asos-craigmorten/opine/issues/97#issuecomment-751806014
+const { Operator: OperatorAsValue } = nsOperator;
 
 function f_o_g<A, B, C, CtxResultOp1 = any, CtxResultOp2 = any>(
     op1: Operator<A, B, CtxResultOp1>,
     op2: Operator<B, C, CtxResultOp2>
 ): Operator.fλ.Stateless<A, C, CtxResultOp1 | CtxResultOp2> {
 
-    const opAtoB = Operator.fλ.Stateful.match(op1) ?
+    const opAtoB = OperatorAsValue.fλ.Stateful.match(op1) ?
         encapsulateOpState(op1) :
         id<Operator.Stateless<A, B, CtxResultOp1>>(op1)
         ;
 
-    const opBtoC = Operator.fλ.Stateful.match(op2) ?
+    const opBtoC = OperatorAsValue.fλ.Stateful.match(op2) ?
         encapsulateOpState(op2) :
         id<Operator.Stateless<B, C, CtxResultOp2>>(op2)
         ;
@@ -29,7 +33,7 @@ function f_o_g<A, B, C, CtxResultOp1 = any, CtxResultOp2 = any>(
                 isPost
             );
 
-            if (Operator.fλ.Result.NotMatched.match<CtxResultOp1>(resultB)) {
+            if (OperatorAsValue.fλ.Result.NotMatched.match<CtxResultOp1>(resultB)) {
                 //CtxResultOp1 assignable to CtxResultOp1 | CtxResultOp2...
                 assert(typeGuard<Operator.fλ.Result.NotMatched<CtxResultOp1 | CtxResultOp2>>(resultB));
                 return resultB;
@@ -49,7 +53,7 @@ function f_o_g<A, B, C, CtxResultOp1 = any, CtxResultOp2 = any>(
                 isPost
             );
 
-            if (Operator.fλ.Result.NotMatched.match<CtxResultOp2>(resultC)) {
+            if (OperatorAsValue.fλ.Result.NotMatched.match<CtxResultOp2>(resultC)) {
                 //...same
                 assert(typeGuard<Operator.fλ.Result.NotMatched<CtxResultOp1 | CtxResultOp2>>(resultC));
                 return detachOp1 !== null ? detachOp1 : resultC;
@@ -178,7 +182,7 @@ export function compose<T>(
 
         const [op] = ops;
 
-        return Operator.fλ.Stateful.match<T, any, any>(op) ?
+        return OperatorAsValue.fλ.Stateful.match<T, any, any>(op) ?
             encapsulateOpState(op) :
             op
             ;

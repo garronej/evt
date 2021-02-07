@@ -1,13 +1,6 @@
 
-
-namespace Handler {
-
-    export type WithEvt<T,CtxResult> = 
-        import("../Handler").Handler.WithEvt<T, CtxResult>;
-
-}
-
-type Ctx<T> = import("./Ctx").Ctx<T>;
+import type { Handler } from "../Handler";
+import type { Ctx } from "./Ctx";
 
 /** 
  * https://docs.evt.land/api/evt/ctx 

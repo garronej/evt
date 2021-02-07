@@ -1,4 +1,4 @@
-import { Evt, EvtError } from "../lib";
+import { Evt, TimeoutEvtError } from "../lib";
 
 let evt= new Evt<string>();
 
@@ -24,7 +24,7 @@ let success= false;
 
     }catch(error){ 
 
-        console.assert(error instanceof EvtError.Timeout);
+        console.assert(error instanceof TimeoutEvtError);
 
         success = true;
 

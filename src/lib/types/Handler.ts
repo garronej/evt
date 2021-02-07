@@ -1,6 +1,6 @@
-type Operator<T, U, CtxResult = any> = import("./Operator").Operator<T, U, CtxResult>;
-type EvtLike<T>= import("../types/helper").EvtLike<T>;
-type CtxLike<Result> = import("../types/interfaces").CtxLike<Result>;
+import type { Operator } from "./Operator";
+import type { EvtLike } from "../types/helper";
+import type { CtxLike } from "../types/interfaces";
 
 /** https://docs.evt.land/api/handler */
 export type Handler<T, U, CtxProp extends CtxLike<any> | undefined = CtxLike<any> | undefined> =

@@ -16,24 +16,26 @@ import { invokeOperator } from "./util/invokeOperator";
 import { Polyfill as Map, LightMap } from "minimal-polyfills/Map";
 import { Polyfill as WeakMap } from "minimal-polyfills/WeakMap";
 import * as runExclusive from "run-exclusive";
-import { EvtError } from "./types/EvtError";
 import { overwriteReadonlyProp } from "../tools/typeSafety/overwriteReadonlyProp";
 import { typeGuard } from "../tools/typeSafety/typeGuard";
 import { encapsulateOpState } from "./util/encapsulateOpState";
 import { Deferred } from "../tools/Deferred";
 import { loosenType } from "./Evt.loosenType";
-import { CtxLike } from "./types/interfaces/CtxLike";
 import { safeClearTimeout, safeSetTimeout, Timer } from "../tools/safeSetTimeout";
 import { isPromiseLike } from "../tools/typeSafety/isPromiseLike";
+import { DetachedEvtError, TimeoutEvtError } from "./types/EvtError";
+import * as nsOperator from "./types/Operator";
+import * as nsCtxLike from "./types/interfaces/CtxLike";
+import type { Handler, Operator, NonPostableEvt, StatefulEvt, EvtLike, CtxLike } from "./types";
 
-import type { Handler } from "./types/Handler";
-import { Operator } from "./types/Operator";
-type NonPostableEvt<T> = import("./types/interfaces").NonPostableEvt<T>;
-type StatefulEvt<T> = import("./types/interfaces").StatefulEvt<T>;
-type EvtLike<T> = import("./types/helper").EvtLike<T>;
+// NOTE: For compat with --no-check 
+// https://github.com/asos-craigmorten/opine/issues/97#issuecomment-751806014
+const { Operator: OperatorAsValue } = nsOperator;
+const { CtxLike: CtxLikeAsValue } = nsCtxLike;
 
 /** https://docs.evt.land/api/evt */
-export type Evt<T> = import("./types/interfaces").Evt<T>;
+export type Evt<T> = import("./types/interfaces/Evt").Evt<T>;
+
 
 class EvtImpl<T> implements Evt<T> {
 
@@ -65,7 +67,7 @@ class EvtImpl<T> implements Evt<T> {
 
     toStateful(p1: any, p2?: CtxLike): StatefulEvt<any> {
 
-        const isP1Ctx = CtxLike.match(p1);
+        const isP1Ctx = CtxLikeAsValue.match(p1);
 
         const initialValue: any = isP1Ctx ? undefined : p1;
         const ctx = p2 || (isP1Ctx ? p1 : undefined);
@@ -242,7 +244,7 @@ class EvtImpl<T> implements Evt<T> {
     private detachHandler(
         handler: Handler<T, any>,
         wTimer: [Timer | undefined],
-        rejectPr: (error: EvtError.Detached) => void
+        rejectPr: (error: DetachedEvtError) => void
     ) {
 
         const index = this.handlers.indexOf(handler);
@@ -268,7 +270,7 @@ class EvtImpl<T> implements Evt<T> {
 
             safeClearTimeout(wTimer[0]);
 
-            rejectPr(new EvtError.Detached());
+            rejectPr(new DetachedEvtError());
 
         }
 
@@ -293,7 +295,7 @@ class EvtImpl<T> implements Evt<T> {
             wTimer[0] = undefined;
         }
 
-        EvtImpl.doDetachIfNeeded(handler, opResult, once);
+        EvtImpl_doDetachIfNeeded(handler, opResult, once);
 
         const [transformedData] = opResult;
 
@@ -313,7 +315,7 @@ class EvtImpl<T> implements Evt<T> {
         propsFromMethodName: Handler.PropsFromMethodName
     ): Handler<T, U> {
 
-        if (Operator.fλ.Stateful.match<T, any, any>(propsFromArgs.op)) {
+        if (OperatorAsValue.fλ.Stateful.match<T, any, any>(propsFromArgs.op)) {
 
             this.statelessByStatefulOp.set(
                 propsFromArgs.op,
@@ -341,14 +343,14 @@ class EvtImpl<T> implements Evt<T> {
 
                 handler.detach();
 
-                d.reject(new EvtError.Timeout(handler.timeout!));
+                d.reject(new TimeoutEvtError(handler.timeout!));
 
             }, handler.timeout);
 
         }
 
         const handlerTrigger: (opResult: Operator.fλ.Result.Matched<T, U>) => PromiseLike<void> | undefined
-        = opResult => this.triggerHandler(
+            = opResult => this.triggerHandler(
                 handler,
                 wTimer,
                 d.isPending ? d.resolve : undefined,
@@ -406,7 +408,7 @@ class EvtImpl<T> implements Evt<T> {
         //NOTE: Can happen for example if this is a StatefulEvt 
         //and the handler is "once" and the matcher match the state 
         //We don't want to post an attach if the handler is already detached.
-        if( this.handlerTriggers.has(handler) ){
+        if (this.handlerTriggers.has(handler)) {
 
             this.lazyEvtAttach.post(handler);
 
@@ -480,7 +482,7 @@ class EvtImpl<T> implements Evt<T> {
     }
 
     getStatelessOp<U, CtxResult>(op: Operator<T, U, CtxResult>): Operator.Stateless<T, U, CtxResult> {
-        return Operator.fλ.Stateful.match(op) ?
+        return OperatorAsValue.fλ.Stateful.match(op) ?
             this.statelessByStatefulOp.get(op)! :
             op
     }
@@ -546,9 +548,9 @@ class EvtImpl<T> implements Evt<T> {
                 true
             );
 
-            if (Operator.fλ.Result.NotMatched.match(opResult)) {
+            if (OperatorAsValue.fλ.Result.NotMatched.match(opResult)) {
 
-                EvtImpl.doDetachIfNeeded(handler, opResult);
+                EvtImpl_doDetachIfNeeded(handler, opResult);
 
                 continue;
 
@@ -608,9 +610,9 @@ class EvtImpl<T> implements Evt<T> {
                         true
                     );
 
-                    if (Operator.fλ.Result.NotMatched.match(opResult)) {
+                    if (OperatorAsValue.fλ.Result.NotMatched.match(opResult)) {
 
-                        EvtImpl.doDetachIfNeeded(handler, opResult);
+                        EvtImpl_doDetachIfNeeded(handler, opResult);
 
                         continue;
 
@@ -906,38 +908,34 @@ class EvtImpl<T> implements Evt<T> {
 
 }
 
-namespace EvtImpl {
+//NOTE: For some reason can't set it as static method so we put it here
+function EvtImpl_doDetachIfNeeded<U = any>(
+    handler: Handler<any, U>,
+    opResult: Operator.fλ.Result.Matched<U, any>,
+    once: boolean
+): void;
+function EvtImpl_doDetachIfNeeded(
+    handler: Handler<any, any>,
+    opResult: Operator.fλ.Result.NotMatched<any>,
+): void;
+function EvtImpl_doDetachIfNeeded<U = any>(
+    handler: Handler<any, U>,
+    opResult: Operator.fλ.Result<U, any>,
+    once?: boolean
+): void {
 
-    //NOTE: For some reason can't set it as static method so we put it here
-    export function doDetachIfNeeded<U = any>(
-        handler: Handler<any, U>,
-        opResult: Operator.fλ.Result.Matched<U, any>,
-        once: boolean
-    ): void;
-    export function doDetachIfNeeded(
-        handler: Handler<any, any>,
-        opResult: Operator.fλ.Result.NotMatched<any>,
-    ): void;
-    export function doDetachIfNeeded<U = any>(
-        handler: Handler<any, U>,
-        opResult: Operator.fλ.Result<U, any>,
-        once?: boolean
-    ): void {
+    const detach = OperatorAsValue.fλ.Result.getDetachArg(opResult);
 
-        const detach = Operator.fλ.Result.getDetachArg(opResult);
+    if (typeof detach !== "boolean") {
+        const [ctx, error, res] = detach;
 
-        if (typeof detach !== "boolean") {
-            const [ctx, error, res] = detach;
-
-            if (!!error) {
-                ctx.abort(error);
-            } else {
-                ctx.done(res);
-            }
-        } else if (detach || !!once) {
-            handler.detach();
+        if (!!error) {
+            ctx.abort(error);
+        } else {
+            ctx.done(res);
         }
-
+    } else if (detach || !!once) {
+        handler.detach();
     }
 
 }

@@ -1,4 +1,5 @@
-import { Evt, EvtError } from "../lib";
+import { Evt, DetachedEvtError } from "../lib";
+
 
 let evt = new Evt<string>();
 
@@ -14,7 +15,7 @@ let success= 0;
 
     } catch (error) {
 
-        console.assert(error instanceof EvtError.Detached);
+        console.assert(error instanceof DetachedEvtError);
 
         success++;
 
@@ -33,7 +34,7 @@ let success= 0;
 
     } catch (error) {
 
-        console.assert(error instanceof EvtError.Detached);
+        console.assert(error instanceof DetachedEvtError);
 
         success++;
 
@@ -52,7 +53,7 @@ let success= 0;
 
     } catch (error) {
 
-        console.assert(error instanceof EvtError.Detached);
+        console.assert(error instanceof DetachedEvtError);
 
         success++;
 

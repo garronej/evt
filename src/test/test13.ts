@@ -1,6 +1,4 @@
-import {
-    Evt, EvtError
-} from "../lib/index";
+import { Evt, TimeoutEvtError } from "../lib/index";
 
 let pass= false;
 
@@ -26,7 +24,7 @@ setTimeout(() => {
 
     }catch( error ){
 
-        console.assert( error instanceof EvtError.Timeout );
+        console.assert( error instanceof TimeoutEvtError );
 
         pass= true;
     }

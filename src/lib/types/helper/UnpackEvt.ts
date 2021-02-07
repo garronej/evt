@@ -1,5 +1,6 @@
 
-type EvtLike<T> = import("./EvtLike").EvtLike<T>;
+
+import type { EvtLike } from "./EvtLike";
 
 type UnpackEvtBase<T extends EvtLike<any>> = T extends EvtLike<infer U> ? U : never;
 

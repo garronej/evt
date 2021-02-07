@@ -1,10 +1,13 @@
 
+import type { Ctx } from "./Ctx";
+import type { Evt } from "./Evt";
+import type { StatefulEvt } from "./StatefulEvt";
 
 /** Manually handling circular import so React Native does not gives warning. */
 export const importProxy: {
-    Ctx: typeof import("./Ctx").Ctx;
-    Evt: typeof import("./Evt").Evt;
-    StatefulEvt: typeof import("./StatefulEvt").StatefulEvt;
+    Ctx: typeof Ctx;
+    Evt: typeof Evt;
+    StatefulEvt: typeof StatefulEvt;
 } = {} as any;
 
 

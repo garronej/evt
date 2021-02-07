@@ -1,5 +1,5 @@
 
-import { Evt, VoidEvt, EvtError } from "../lib";
+import { Evt, VoidEvt, TimeoutEvtError } from "../lib";
 import { id, assert } from "../tools/typeSafety";
 import { every } from "../tools/reducers";
 import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi";
@@ -207,7 +207,7 @@ const evtSocketError = new Evt<Error>();
         await mustReject({
             "promise": prDl.catch(error => {
 
-                assert(error instanceof EvtError.Timeout);
+                assert(error instanceof TimeoutEvtError);
 
                 throw "";
             }),

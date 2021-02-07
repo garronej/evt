@@ -4,14 +4,16 @@ import { assert } from "../tools/typeSafety/assert";
 import { typeGuard } from "../tools/typeSafety/typeGuard";
 import { LazyEvt } from "./LazyEvt";
 import { importProxy } from "./importProxy";
-import type { Handler } from "./types/Handler";
 import { defineAccessors } from "../tools/typeSafety/defineAccessors";
 import { overwriteReadonlyProp } from "../tools/typeSafety/overwriteReadonlyProp";
 
-type EvtLike<T> = import("./types/helper").EvtLike<T>;
-type Evt<T> = import("./types/interfaces").Evt<T>;
-type CtxLike<T> = import("./types/interfaces").CtxLike<T>;
-type DoneOrAborted<Result> = import("./types/interfaces/Ctx").DoneOrAborted<Result>;
+import type { 
+    Handler, 
+    EvtLike,
+    Evt,
+    CtxLike,
+    DoneOrAborted
+} from "./types";
 
 export type Ctx<Result> = import("./types/interfaces").Ctx<Result>;
 

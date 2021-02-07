@@ -1,18 +1,10 @@
 
-export type Operator<T, U, CtxResult = any> =
-    import("../Operator").Operator<T, U, CtxResult>;
+import type { Operator } from "../Operator";
 
-namespace Operator {
-
-    export type fλ<T, U, CtxResult = any> =
-        import("../Operator").Operator.fλ<T, U, CtxResult>;
-
-}
-
-type NonPostableEvt<T> = import("./NonPostableEvt").NonPostableEvt<T>;
-type CtxLike<Result = any> = import("./CtxLike").CtxLike<Result>;
-type StatefulEvt<T> = import("./StatefulEvt").StatefulEvt<T>;
-type Evt<T> = import("./Evt").Evt<T>;
+import type { NonPostableEvt } from "./NonPostableEvt";
+import type { CtxLike } from "./CtxLike";
+import type { StatefulEvt } from "./StatefulEvt";
+import type { Evt } from "./Evt";
 
 export type StateDiff<T> = { prevState: T, newState: T };
 

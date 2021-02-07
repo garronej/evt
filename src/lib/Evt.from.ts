@@ -1,25 +1,19 @@
 import { id } from "../tools/typeSafety/id";
 import { assert } from "../tools/typeSafety/assert";
 import { typeGuard } from "../tools/typeSafety/typeGuard";
-import { EventTargetLike } from "./types/EventTargetLike";
 import { mergeImpl } from "./Evt.merge";
 import { importProxy } from "./importProxy";
+import type { dom, Evt, EvtLike  } from "./types";
+import type { EventTargetLike } from "./types";
+import * as nsEventTargetLike from "./types/EventTargetLike";
+const { EventTargetLike: EventTargetLikeAsValue } = nsEventTargetLike;
 
-namespace dom {
-
-    export type HTMLElementEventMap = import("./types/lib.dom").HTMLElementEventMap;
-    export type WindowEventMap = import("./types/lib.dom").WindowEventMap;
-    export type DocumentEventMap = import("./types/lib.dom").DocumentEventMap;
-
-}
-
-type Evt<T>= import("./types/interfaces/Evt").Evt<T>;
-type EvtLike<T> = import("./types/helper").EvtLike<T>;
 
 type OneOrMany<T> = T | ArrayLike<T>;
-type CtxLike<Result> = import("./types/interfaces").CtxLike<Result> & {
+type CtxLike<Result> = import("./types").CtxLike<Result> & {
       evtDoneOrAborted: EvtLike<unknown> & { postCount: number; attachOnce(callback: ()=> void): void; };
 };
+
 
 function fromImpl<T>(
     ctx: CtxLike<any> | undefined,
@@ -30,7 +24,7 @@ function fromImpl<T>(
 
     const matchEventTargetLike =
         (target_: typeof target): target_ is EventTargetLike<T> =>
-            EventTargetLike.canBe(target_);
+            EventTargetLikeAsValue.canBe(target_);
 
     if (!matchEventTargetLike(target)) {
 
@@ -82,22 +76,22 @@ function fromImpl<T>(
         off: ProxyMethod<T>;
     };
 
-    if (EventTargetLike.NodeStyleEventEmitter.match(target)) {
+    if (EventTargetLikeAsValue.NodeStyleEventEmitter.match(target)) {
         proxy = {
             "on": (listener, eventName) => target.addListener(eventName, listener),
             "off": (listener, eventName) => target.removeListener(eventName, listener)
         };
-    } else if (EventTargetLike.JQueryStyleEventEmitter.match(target)) {
+    } else if (EventTargetLikeAsValue.JQueryStyleEventEmitter.match(target)) {
         proxy = {
             "on": (listener, eventName) => target.on(eventName, listener),
             "off": (listener, eventName) => target.off(eventName, listener)
         };
-    } else if (EventTargetLike.HasEventTargetAddRemove.match(target)) {
+    } else if (EventTargetLikeAsValue.HasEventTargetAddRemove.match(target)) {
         proxy = {
             "on": (listener, eventName, options) => target.addEventListener(eventName, listener, options),
             "off": (listener, eventName, options) => target.removeEventListener(eventName, listener, options)
         };
-    } else if (EventTargetLike.RxJSSubject.match(target)) {
+    } else if (EventTargetLikeAsValue.RxJSSubject.match(target)) {
 
         let subscription: EventTargetLike.RxJSSubject.Subscription;
 

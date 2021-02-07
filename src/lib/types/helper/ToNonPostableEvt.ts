@@ -1,15 +1,6 @@
 
-type EvtLike<T> = import("./EvtLike").EvtLike<T>;
-type StatefulPostable<T> = import("../interfaces").StatefulPostable<T>;
-type NonPostableEvt<T> = import("../interfaces").NonPostableEvt<T>;
-type StatefulReadonlyEvt<T> = import("../interfaces").StatefulReadonlyEvt<T>;
-
-//NOTE: Omit only introduced in 3.5
-/**
- * Construct a type with the properties of T except for those in type K.
- */
-type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
-
+import type { EvtLike } from "./EvtLike";
+import type { StatefulPostable, NonPostableEvt, StatefulReadonlyEvt } from "../interfaces";
 
 type ToNonPostableEvtBase<E extends EvtLike<any>> =
     E extends StatefulReadonlyEvt<infer U> ? StatefulReadonlyEvt<U> :

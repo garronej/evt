@@ -1,5 +1,8 @@
-
-import { Operator } from "../types/Operator";
+import * as nsOperator from "../types/Operator";
+import type { Operator } from "../types/Operator";
+// NOTE: For compat with --no-check 
+// https://github.com/asos-craigmorten/opine/issues/97#issuecomment-751806014
+const { Operator: OperatorAsValue } = nsOperator;
 
 /** Invoke any type of stateless operator and return as if it was a fλ*/
 export function invokeOperator<T, U, CtxResult>(op: Operator.fλ.Stateless<T, U, CtxResult>, data: T, isPost?: true): Operator.fλ.Result<U, CtxResult>;
@@ -10,7 +13,7 @@ export function invokeOperator<T>(op: Operator.Stateless<T, any, any>, data: T, 
 
     const result = op(data, undefined, isPost);
 
-    return Operator.fλ.Result.match(result) ?
+    return OperatorAsValue.fλ.Result.match(result) ?
         result :
         !!result ? [data] : null
         ;

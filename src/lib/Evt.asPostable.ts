@@ -1,6 +1,4 @@
-
-type EvtLike<T>= import("./types/helper").EvtLike<T>;
-type ToPostableEvt<E extends ({ [key: string]: any; } | EvtLike<any>)> = import("./types/helper/ToPostableEvt").ToPostableEvt<E>;
+import type { EvtLike, ToPostableEvt} from "./types";
 
 /** 
  * https://docs.evt.land/api/evt/aspostable 

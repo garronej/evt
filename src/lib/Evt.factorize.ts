@@ -1,9 +1,4 @@
-
-
-type FactorizeEvt<E extends import("./types/helper").EvtLike<any>> = 
-    import("./types/helper/FactorizeEvt").FactorizeEvt<E>;
-
-type EvtLike<T> = import("./types/helper").EvtLike<T>;
+import type { FactorizeEvt, EvtLike } from "./types/helper";
 
 /** https://docs.evt.land/api/evt/factorize */
 export function factorize<E extends EvtLike<any>>(

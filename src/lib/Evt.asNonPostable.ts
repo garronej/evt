@@ -1,8 +1,5 @@
 
-type ToNonPostableEvt<E extends ({ [key: string]: any; } | import("../lib/types/helper").EvtLike<any>)> = 
-    import("./types/helper/ToNonPostableEvt").ToNonPostableEvt<E>;
-
-type EvtLike<T>= import("./types/helper").EvtLike<T>;
+import type { ToNonPostableEvt, EvtLike } from "./types";
 
 /** https://docs.evt.land/api/evt/asnonpostable */
 export function asNonPostable<E extends EvtLike<any>>(evt: E): ToNonPostableEvt<E>{

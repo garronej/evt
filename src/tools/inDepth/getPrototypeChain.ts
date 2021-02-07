@@ -16,24 +16,21 @@ export function getPrototypeChain(obj: Object, callback?: (proto: Object) => boo
     return [proto, ...getPrototypeChain(proto)];
 
 }
-export namespace getPrototypeChain {
+getPrototypeChain.isMatched = (obj: Object, regExp: RegExp): boolean => {
 
-    export function isMatched(obj: Object, regExp: RegExp): boolean {
+    let out = false;
 
-        let out = false;
+    getPrototypeChain(
+        obj,
+        ({ constructor }) => {
+            out = regExp.test(constructor.name);
+            return !out;
+        }
+    );
 
-        getPrototypeChain(
-            obj,
-            ({ constructor }) => {
-                out = regExp.test(constructor.name);
-                return !out;
-            }
-        );
-
-        return out;
+    return out;
 
 
-    }
+};
 
-}
 

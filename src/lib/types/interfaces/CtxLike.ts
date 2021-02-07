@@ -1,9 +1,7 @@
 
 import { typeGuard } from "../../../tools/typeSafety/typeGuard";
-type EvtLike<T> = import("../helper").EvtLike<T>;
-
-type Handler<T, U, CtxProp extends CtxLike<any> | undefined = CtxLike<any> | undefined> = 
-    import("../Handler").Handler<T, U, CtxProp>;
+import type { EvtLike  } from "../helper";
+import type { Handler } from "../Handler";
 
 /** 
  * Minimal interface that an object must implement to be a valid context argument 

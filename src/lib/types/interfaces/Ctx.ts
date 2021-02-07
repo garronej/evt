@@ -1,21 +1,9 @@
-
-type CtxLike<T> = import("./CtxLike").CtxLike<T>;
-
-type Handler<T, U, CtxProp extends CtxLike<any> | undefined = CtxLike<any> | undefined> = 
-    import("../Handler").Handler<T, U, CtxProp>;
-
-namespace Handler {
-
-    export type WithEvt<T, CtxResult> = 
-        import("../Handler").Handler.WithEvt<T, CtxResult>;
-
-}
-
-type EvtLike<T> = import("../helper").EvtLike<T>;
-type Evt<T> = import("./Evt").Evt<T>;
+import type { CtxLike } from "./CtxLike";
+import type { Handler } from "../Handler";
+import type { EvtLike } from "../helper";
+import type { Evt } from "./Evt";
 
 export type DoneOrAborted<Result> = DoneOrAborted.Done<Result> | DoneOrAborted.Aborted<Result>;
-
 export namespace DoneOrAborted {
 
     type Common<Result> = {

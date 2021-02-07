@@ -1,19 +1,12 @@
 
 import { Evt } from "./Evt";
-
-type StatefulEvt<T> = import("./types/interfaces").StatefulEvt<T>;
-type StatefulReadonlyEvt<T> = import("./types/interfaces").StatefulReadonlyEvt<T>;
-type NonPostableEvt<T> = import("./types/interfaces").NonPostableEvt<T>;
-
-type UnpackEvt<T extends ({ [key: string]: any; } | import("./types/helper").EvtLike<any>)> =
-    import("./types/helper").UnpackEvt<T>;
+import type { StatefulEvt, StatefulReadonlyEvt, NonPostableEvt, UnpackEvt } from "./types";
+import type { PromiseOrNot } from "../tools/typeSafety";
+import type { UseVoidEvt } from "./types/helper/SwapEvtType";
 
 type EvtLike<T> = import("./types/helper").EvtLike<T> & {
     attach(callback: (data: T) => void): void;
 };
-
-type UseVoidEvt<T> = import("./types/helper/SwapEvtType").UseVoidEvt<T>;
-type PromiseOrNot<T> = import("../tools/typeSafety").PromiseOrNot<T>;
 
 
 /** 
