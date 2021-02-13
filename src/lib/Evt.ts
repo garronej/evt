@@ -171,7 +171,7 @@ class EvtImpl<T> implements Evt<T> {
 
     private readonly handlerTriggers: LightMap<
         Handler<T, any>,
-        (opResult: Operator.fλ.Result.Matched<any, any>) => PromiseLike<void> | undefined
+        (opResult: readonly [ any ]) => PromiseLike<void> | undefined
     > = new Map();
 
     //NOTE: An async handler ( attached with waitFor ) is only eligible to handle a post if the post
@@ -194,8 +194,8 @@ class EvtImpl<T> implements Evt<T> {
         (typeof EvtImpl.prototype.asyncHandlerChronologyExceptionRange) | undefined;
 
     declare private readonly statelessByStatefulOp: WeakMap<
-        Operator.fλ.Stateful<T, any, any>,
-        Operator.fλ.Stateless<T, any, any>
+        Operator.fλ.Stateful<T, any>,
+        Operator.fλ.Stateless<T, any>
     >;
     declare private __statelessByStatefulOp:
         (typeof EvtImpl.prototype.statelessByStatefulOp) | undefined;
@@ -285,7 +285,7 @@ class EvtImpl<T> implements Evt<T> {
         handler: Handler<T, U>,
         wTimer: [Timer | undefined],
         resolvePr: ((transformedData: any) => void) | undefined,
-        opResult: Operator.fλ.Result.Matched<any, any>
+        opResult: readonly [U] //TODO: Or readonly [ any ] ?? 
     ): PromiseLike<void> | undefined {
 
         const { callback, once } = handler;
@@ -295,7 +295,9 @@ class EvtImpl<T> implements Evt<T> {
             wTimer[0] = undefined;
         }
 
-        EvtImpl_doDetachIfNeeded(handler, opResult, once);
+        if (once) {
+            handler.detach();
+        }
 
         const [transformedData] = opResult;
 
@@ -315,7 +317,7 @@ class EvtImpl<T> implements Evt<T> {
         propsFromMethodName: Handler.PropsFromMethodName
     ): Handler<T, U> {
 
-        if (OperatorAsValue.fλ.Stateful.match<T, any, any>(propsFromArgs.op)) {
+        if (OperatorAsValue.fλ.Stateful.match<T, any>(propsFromArgs.op)) {
 
             this.statelessByStatefulOp.set(
                 propsFromArgs.op,
@@ -349,7 +351,7 @@ class EvtImpl<T> implements Evt<T> {
 
         }
 
-        const handlerTrigger: (opResult: Operator.fλ.Result.Matched<T, U>) => PromiseLike<void> | undefined
+        const handlerTrigger: (opResult: readonly [U]) => PromiseLike<void> | undefined
             = opResult => this.triggerHandler(
                 handler,
                 wTimer,
@@ -481,7 +483,7 @@ class EvtImpl<T> implements Evt<T> {
 
     }
 
-    getStatelessOp<U, CtxResult>(op: Operator<T, U, CtxResult>): Operator.Stateless<T, U, CtxResult> {
+    getStatelessOp<U>(op: Operator<T, U>): Operator.Stateless<T, U> {
         return OperatorAsValue.fλ.Stateful.match(op) ?
             this.statelessByStatefulOp.get(op)! :
             op
@@ -542,21 +544,19 @@ class EvtImpl<T> implements Evt<T> {
                 continue;
             }
 
+            //NOTE: If detached while executing the operator
+            //we still want to trigger the handler.
+            const handlerTrigger = this.handlerTriggers.get(handler);
+
             const opResult = invokeOperator(
                 this.getStatelessOp(op),
                 data,
                 true
             );
 
-            if (OperatorAsValue.fλ.Result.NotMatched.match(opResult)) {
-
-                EvtImpl_doDetachIfNeeded(handler, opResult);
-
+            if( !opResult ) {
                 continue;
-
             }
-
-            const handlerTrigger = this.handlerTriggers.get(handler);
 
             //NOTE: Possible if detached while in the loop.
             if (!handlerTrigger) {
@@ -610,12 +610,8 @@ class EvtImpl<T> implements Evt<T> {
                         true
                     );
 
-                    if (OperatorAsValue.fλ.Result.NotMatched.match(opResult)) {
-
-                        EvtImpl_doDetachIfNeeded(handler, opResult);
-
+                    if( !opResult ){
                         continue;
-
                     }
 
                     const handlerTrigger = this.handlerTriggers.get(handler);
@@ -908,38 +904,6 @@ class EvtImpl<T> implements Evt<T> {
 
 }
 
-//NOTE: For some reason can't set it as static method so we put it here
-function EvtImpl_doDetachIfNeeded<U = any>(
-    handler: Handler<any, U>,
-    opResult: Operator.fλ.Result.Matched<U, any>,
-    once: boolean
-): void;
-function EvtImpl_doDetachIfNeeded(
-    handler: Handler<any, any>,
-    opResult: Operator.fλ.Result.NotMatched<any>,
-): void;
-function EvtImpl_doDetachIfNeeded<U = any>(
-    handler: Handler<any, U>,
-    opResult: Operator.fλ.Result<U, any>,
-    once?: boolean
-): void {
-
-    const detach = OperatorAsValue.fλ.Result.getDetachArg(opResult);
-
-    if (typeof detach !== "boolean") {
-        const [ctx, error, res] = detach;
-
-        if (!!error) {
-            ctx.abort(error);
-        } else {
-            ctx.done(res);
-        }
-    } else if (detach || !!once) {
-        handler.detach();
-    }
-
-}
-
 /** 
  * Can be seen as a protected method that can be 
  * optionally be implemented by class extending Evt.
@@ -952,7 +916,7 @@ export const onAddHandlerByEvt = new WeakMap<
     EvtLike<any>,
     (
         handler: Handler<any, any>,
-        handlerTrigger: (opResult: Operator.fλ.Result.Matched<any, any>) => PromiseLike<void> | undefined
+        handlerTrigger: (opResult: readonly [ any ]) => PromiseLike<void> | undefined
     ) => void>();
 
 

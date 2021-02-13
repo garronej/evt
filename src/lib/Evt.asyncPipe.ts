@@ -67,7 +67,7 @@ export function asyncPipe<E extends EvtLike<any>, U>(
 
         }
 
-        if (opResult === null) {
+        if (!opResult) {
 
             return;
         }

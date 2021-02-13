@@ -7,10 +7,10 @@ import type { CtxLike, Handler } from "./types";
 
 export function matchAll() { return true; }
 
-const canBeOperator = (p: undefined | CtxLike<any> | Operator<any, any, any>): boolean => {
+const canBeOperator = (p: undefined | CtxLike<any> | Operator<any, any>): boolean => {
     return (
         p !== undefined &&
-        typeGuard<Operator<any, any, any>>(p) &&
+        typeGuard<Operator<any, any>>(p) &&
         (
             typeof p === "function" ||
             typeof p[0] === "function"
@@ -42,7 +42,7 @@ export function parsePropsFromArgs<T>(
             //[ ctx, ...op[] ]
             //[ ...op[] ]
 
-            const getOpWrap = (ops: [Operator<T, any, any>, ...Operator<any, any, any>[]]) =>
+            const getOpWrap = (ops: [Operator<T, any>, ...Operator<any, any>[]]) =>
                 ops.length === 0 ?
                     {}
                     :

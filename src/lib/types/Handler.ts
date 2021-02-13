@@ -17,7 +17,7 @@ export namespace Handler {
     export type PropsFromArgs<T, U, CtxProp extends CtxLike<any> | undefined = CtxLike<any> | undefined> = {
         ctx: CtxProp;
         timeout: number | undefined;
-        op: Operator<T, U, CtxProp extends CtxLike<infer CtxResult> ? CtxResult : undefined>;
+        op: Operator<T, U>;
         callback: ((transformedData: U) => void) | undefined;
     };
 

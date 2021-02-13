@@ -38,7 +38,7 @@ export interface NonPostableEvt<T> {
     disableTrace(): this;
 
     /** https://docs.evt.land/api/evt/getstatelessop */
-    getStatelessOp<U, CtxResult>(op: Operator<T, U, CtxResult>): Operator.Stateless<T, U, CtxResult>;
+    getStatelessOp<U>(op: Operator<T, U>): Operator.Stateless<T, U>;
 
     /**
      * https://docs.evt.land/api/evt/ishandled
@@ -74,8 +74,8 @@ export interface NonPostableEvt<T> {
     /** https://docs.evt.land/api/evt/pipe */
     pipe(): Evt<T>;
 
-    pipe<U, CtxResult>(
-        op: Operator.fλ<T, U, CtxResult>
+    pipe<U>(
+        op: Operator.fλ<T, U>
     ): Evt<U>;
     pipe<U extends T>(
         op: (data: T) => data is U
@@ -86,9 +86,9 @@ export interface NonPostableEvt<T> {
 
     pipe(ctx: CtxLike): Evt<T>;
 
-    pipe<U, CtxResult>(
+    pipe<U>(
         ctx: CtxLike,
-        op: Operator.fλ<T, U, CtxResult>
+        op: Operator.fλ<T, U>
     ): Evt<U>;
     pipe<U extends T>(
         ctx: CtxLike,
@@ -99,25 +99,25 @@ export interface NonPostableEvt<T> {
         op: (data: T) => boolean
     ): Evt<T>;
 
-    pipe<B, C, CtxResultOp1, CtxResultOp2>(
-        op1: Operator.fλ<T, B, CtxResultOp1>,
-        op2: Operator.fλ<B, C, CtxResultOp2>
+    pipe<B, C>(
+        op1: Operator.fλ<T, B>,
+        op2: Operator.fλ<B, C>
     ): Evt<C>;
-    pipe<B, C extends B, CtxResult>(
-        op1: Operator.fλ<T, B, CtxResult>,
+    pipe<B, C extends B>(
+        op1: Operator.fλ<T, B>,
         op2: (data: B) => data is C
     ): Evt<C>;
-    pipe<B, CtxResult>(
-        op1: Operator.fλ<T, B, CtxResult>,
+    pipe<B>(
+        op1: Operator.fλ<T, B>,
         op2: (data: B) => boolean
     ): Evt<B>;
-    pipe<B extends T, C, CtxResult>(
+    pipe<B extends T, C>(
         op1: (data: T) => data is B,
-        op2: Operator.fλ<B, C, CtxResult>
+        op2: Operator.fλ<B, C>
     ): Evt<B>;
-    pipe<B, CtxResult>(
+    pipe<B>(
         op1: (data: T) => boolean,
-        op2: Operator.fλ<T, B, CtxResult>
+        op2: Operator.fλ<T, B>
     ): Evt<B>;
     pipe<B extends T, C extends B>(
         op1: (data: T) => data is B,
@@ -137,72 +137,72 @@ export interface NonPostableEvt<T> {
     ): Evt<T>;
 
 
-    pipe<B, C, D, CtxResultOp1, CtxResultOp2, CtxResultOp3>(
-        op1: Operator.fλ<T, B, CtxResultOp1>,
-        op2: Operator.fλ<B, C, CtxResultOp2>,
-        op3: Operator.fλ<C, D, CtxResultOp3>
+    pipe<B, C, D>(
+        op1: Operator.fλ<T, B>,
+        op2: Operator.fλ<B, C>,
+        op3: Operator.fλ<C, D>
     ): Evt<D>;
 
-    pipe<B, C, D, E, CtxResultOp1 = any, CtxResultOp2 = any, CtxResultOp3 = any, CtxResultOp4 = any>(
-        op1: Operator.fλ<T, B, CtxResultOp1>,
-        op2: Operator.fλ<B, C, CtxResultOp2>,
-        op3: Operator.fλ<C, D, CtxResultOp3>,
-        op4: Operator.fλ<D, E, CtxResultOp4>
+    pipe<B, C, D, E>(
+        op1: Operator.fλ<T, B>,
+        op2: Operator.fλ<B, C>,
+        op3: Operator.fλ<C, D>,
+        op4: Operator.fλ<D, E>
     ): Evt<E>;
 
-    pipe<B, C, D, E, CtxResultOp1 = any, CtxResultOp2 = any, CtxResultOp3 = any, CtxResultOp4 = any>(
-        op1: Operator.fλ<T, B, CtxResultOp1>,
-        op2: Operator.fλ<B, C, CtxResultOp2>,
-        op3: Operator.fλ<C, D, CtxResultOp3>,
-        op4: Operator.fλ<D, E, CtxResultOp4>
+    pipe<B, C, D, E>(
+        op1: Operator.fλ<T, B>,
+        op2: Operator.fλ<B, C>,
+        op3: Operator.fλ<C, D>,
+        op4: Operator.fλ<D, E>
     ): Evt<E>;
 
-    pipe<B, C, D, E, F, CtxResultOp1 = any, CtxResultOp2 = any, CtxResultOp3 = any, CtxResultOp4 = any, CtxResultOp5 = any>(
-        op1: Operator.fλ<T, B, CtxResultOp1>,
-        op2: Operator.fλ<B, C, CtxResultOp2>,
-        op3: Operator.fλ<C, D, CtxResultOp3>,
-        op4: Operator.fλ<D, E, CtxResultOp4>,
-        op5: Operator.fλ<E, F, CtxResultOp5>
+    pipe<B, C, D, E, F>(
+        op1: Operator.fλ<T, B>,
+        op2: Operator.fλ<B, C>,
+        op3: Operator.fλ<C, D>,
+        op4: Operator.fλ<D, E>,
+        op5: Operator.fλ<E, F>
     ): Evt<F>;
 
 
-    pipe<B, C, CtxResultOp1 = any, CtxResultOp2 = any>(
-        op1: Operator<T, B, CtxResultOp2>,
-        op2: Operator<B, C, CtxResultOp2>
+    pipe<B, C>(
+        op1: Operator<T, B>,
+        op2: Operator<B, C>
     ): Evt<C>;
 
-    pipe<B, C, D, CtxResultOp1 = any, CtxResultOp2 = any, CtxResultOp3 = any>(
-        op1: Operator<T, B, CtxResultOp1>,
-        op2: Operator<B, C, CtxResultOp2>,
-        op3: Operator<C, D, CtxResultOp3>
+    pipe<B, C, D>(
+        op1: Operator<T, B>,
+        op2: Operator<B, C>,
+        op3: Operator<C, D>
     ): Evt<D>;
 
-    pipe<B, C, D, E, CtxResultOp1 = any, CtxResultOp2 = any, CtxResultOp3 = any, CtxResultOp4 = any>(
-        op1: Operator<T, B, CtxResultOp1>,
-        op2: Operator<B, C, CtxResultOp2>,
-        op3: Operator<C, D, CtxResultOp3>,
-        op4: Operator<D, E, CtxResultOp4>
+    pipe<B, C, D, E>(
+        op1: Operator<T, B>,
+        op2: Operator<B, C>,
+        op3: Operator<C, D>,
+        op4: Operator<D, E>
     ): Evt<E>;
 
-    pipe<B, C, D, E, F, CtxResultOp1 = any, CtxResultOp2 = any, CtxResultOp3 = any, CtxResultOp4 = any, CtxResultOp5 = any>(
-        op1: Operator<T, B, CtxResultOp1>,
-        op2: Operator<B, C, CtxResultOp2>,
-        op3: Operator<C, D, CtxResultOp3>,
-        op4: Operator<D, E, CtxResultOp4>,
-        op5: Operator<E, F, CtxResultOp5>
+    pipe<B, C, D, E, F>(
+        op1: Operator<T, B>,
+        op2: Operator<B, C>,
+        op3: Operator<C, D>,
+        op4: Operator<D, E>,
+        op5: Operator<E, F>
     ): Evt<F>;
 
     pipe(
         ...ops: [
-            Operator<T, any, any>,
-            ...Operator<any, any, any>[]
+            Operator<T, any>,
+            ...Operator<any, any>[]
         ]
     ): Evt<any>;
 
     pipe<T>(
         ...ops: [
-            Operator<T, any, any>,
-            ...Operator<any, any, any>[]
+            Operator<T, any>,
+            ...Operator<any, any>[]
         ]
     ): Evt<any>;
 
@@ -215,8 +215,8 @@ export interface NonPostableEvt<T> {
      * 
      * timeout?
      */
-    waitFor<U, CtxResult>(
-        op: Operator.fλ.Stateless<T, U, CtxResult>,
+    waitFor<U>(
+        op: Operator.fλ.Stateless<T, U>,
         ctx: CtxLike,
         timeout?: number
     ): Promise<U>;
@@ -255,8 +255,8 @@ export interface NonPostableEvt<T> {
      * 
      * timeout?
      */
-    waitFor<U, CtxResult>(
-        op: Operator.fλ.Stateless<T, U, CtxResult>,
+    waitFor<U>(
+        op: Operator.fλ.Stateless<T, U>,
         timeout?: number
     ): Promise<U>;
     /**
@@ -321,8 +321,8 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attach<U, CtxResult = any>(
-        op: Operator.fλ<T, U, CtxResult>,
+    $attach<U>(
+        op: Operator.fλ<T, U>,
         ctx: CtxLike,
         timeout: number,
         callback: (transformedData: U) => void
@@ -339,9 +339,9 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attach<U, CtxResult = any>(
-        op: Operator.fλ<T, U, CtxResult>,
-        ctx: CtxLike<CtxResult>,
+    $attach<U>(
+        op: Operator.fλ<T, U>,
+        ctx: CtxLike,
         callback: (transformedData: U) => void
     ): this;
     /**
@@ -356,8 +356,8 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attach<U, CtxResult = any>(
-        op: Operator.fλ<T, U, CtxResult>,
+    $attach<U>(
+        op: Operator.fλ<T, U>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -371,8 +371,8 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attach<U, R>(
-        op: Operator.fλ<T, U, R>,
+    $attach<U>(
+        op: Operator.fλ<T, U>,
         callback: (transformedData: U) => void
     ): this;
 
@@ -581,8 +581,8 @@ export interface NonPostableEvt<T> {
      * NOTE: $attachOnce() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attachOnce() without the '$' prefix.
      */
-    $attachOnce<U, CtxResult = any>(
-        op: Operator.fλ.Stateless<T, U, CtxResult>,
+    $attachOnce<U>(
+        op: Operator.fλ.Stateless<T, U>,
         ctx: CtxLike,
         timeout: number,
         callback: (transformedData: U) => void
@@ -599,8 +599,8 @@ export interface NonPostableEvt<T> {
      * NOTE: $attachOnce() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attachOnce() without the '$' prefix.
      */
-    $attachOnce<U, CtxResult = any>(
-        op: Operator.fλ.Stateless<T, U, CtxResult>,
+    $attachOnce<U>(
+        op: Operator.fλ.Stateless<T, U>,
         ctx: CtxLike,
         callback: (transformedData: U) => void
     ): this;
@@ -616,8 +616,8 @@ export interface NonPostableEvt<T> {
      * NOTE: $attachOnce() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attachOnce() without the '$' prefix.
      */
-    $attachOnce<U, CtxResult = any>(
-        op: Operator.fλ.Stateless<T, U, CtxResult>,
+    $attachOnce<U>(
+        op: Operator.fλ.Stateless<T, U>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -631,8 +631,8 @@ export interface NonPostableEvt<T> {
      * NOTE: $attachOnce() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attachOnce() without the '$' prefix.
      */
-    $attachOnce<U, CtxResult = any>(
-        op: Operator.fλ.Stateless<T, U, CtxResult>,
+    $attachOnce<U>(
+        op: Operator.fλ.Stateless<T, U>,
         callback: (transformedData: U) => void
     ): this;
 
@@ -840,8 +840,8 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attachExtract<U, CtxResult>(
-        op: Operator.fλ<T, U, CtxResult>,
+    $attachExtract<U>(
+        op: Operator.fλ<T, U>,
         ctx: CtxLike,
         timeout: number,
         callback: (transformedData: U) => void
@@ -858,8 +858,8 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attachExtract<U, CtxResult>(
-        op: Operator.fλ<T, U, CtxResult>,
+    $attachExtract<U>(
+        op: Operator.fλ<T, U>,
         ctx: CtxLike,
         callback: (transformedData: U) => void
     ): this;
@@ -875,8 +875,8 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attachExtract<U, CtxResult = any>(
-        op: Operator.fλ<T, U, CtxResult>,
+    $attachExtract<U>(
+        op: Operator.fλ<T, U>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -890,8 +890,8 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attachExtract<U, CtxResult = any>(
-        op: Operator.fλ<T, U, CtxResult>,
+    $attachExtract<U>(
+        op: Operator.fλ<T, U>,
         callback: (transformedData: U) => void
     ): this;
 
@@ -1081,8 +1081,8 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attachPrepend<U, CtxResult = any>(
-        op: Operator.fλ<T, U, CtxResult>,
+    $attachPrepend<U>(
+        op: Operator.fλ<T, U>,
         ctx: CtxLike,
         timeout: number,
         callback: (transformedData: U) => void
@@ -1099,8 +1099,8 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attachPrepend<U, CtxResult = any>(
-        op: Operator.fλ<T, U, CtxResult>,
+    $attachPrepend<U>(
+        op: Operator.fλ<T, U>,
         ctx: CtxLike,
         callback: (transformedData: U) => void
     ): this;
@@ -1116,8 +1116,8 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attachPrepend<U, CtxResult = any>(
-        op: Operator.fλ<T, U, CtxResult>,
+    $attachPrepend<U>(
+        op: Operator.fλ<T, U>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -1131,8 +1131,8 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attachPrepend<U, CtxResult = any>(
-        op: Operator.fλ<T, U, CtxResult>,
+    $attachPrepend<U>(
+        op: Operator.fλ<T, U>,
         callback: (transformedData: U) => void
     ): this;
 
@@ -1323,8 +1323,8 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attachOncePrepend<U, CtxResult = any>(
-        op: Operator.fλ.Stateless<T, U, CtxResult>,
+    $attachOncePrepend<U>(
+        op: Operator.fλ.Stateless<T, U>,
         ctx: CtxLike,
         timeout: number,
         callback: (transformedData: U) => void
@@ -1341,8 +1341,8 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attachOncePrepend<U, CtxResult = any>(
-        op: Operator.fλ.Stateless<T, U, CtxResult>,
+    $attachOncePrepend<U>(
+        op: Operator.fλ.Stateless<T, U>,
         ctx: CtxLike,
         callback: (transformedData: U) => void
     ): this;
@@ -1358,8 +1358,8 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attachOncePrepend<U, CtxResult = any>(
-        op: Operator.fλ.Stateless<T, U, CtxResult>,
+    $attachOncePrepend<U>(
+        op: Operator.fλ.Stateless<T, U>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -1373,8 +1373,8 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attachOncePrepend<U, CtxResult = any>(
-        op: Operator.fλ.Stateless<T, U, CtxResult>,
+    $attachOncePrepend<U>(
+        op: Operator.fλ.Stateless<T, U>,
         callback: (transformedData: U) => void
     ): this;
 
@@ -1564,8 +1564,8 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attachOnceExtract<U, CtxResult = any>(
-        op: Operator.fλ.Stateless<T, U, CtxResult>,
+    $attachOnceExtract<U>(
+        op: Operator.fλ.Stateless<T, U>,
         ctx: CtxLike,
         timeout: number,
         callback: (transformedData: U) => void
@@ -1582,8 +1582,8 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attachOnceExtract<U, CtxResult = any>(
-        op: Operator.fλ.Stateless<T, U, CtxResult>,
+    $attachOnceExtract<U>(
+        op: Operator.fλ.Stateless<T, U>,
         ctx: CtxLike,
         callback: (transformedData: U) => void
     ): this;
@@ -1599,8 +1599,8 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attachOnceExtract<U, CtxResult = any>(
-        op: Operator.fλ.Stateless<T, U, CtxResult>,
+    $attachOnceExtract<U>(
+        op: Operator.fλ.Stateless<T, U>,
         timeout: number,
         callback: (transformedData: U) => void
     ): Promise<U>;
@@ -1614,8 +1614,8 @@ export interface NonPostableEvt<T> {
      * NOTE: $attach() with '$' is to use only with fλ operators,
      * if your operator return a boolean use the attach() without the '$' prefix.
      */
-    $attachOnceExtract<U, CtxResult = any>(
-        op: Operator.fλ.Stateless<T, U, CtxResult>,
+    $attachOnceExtract<U>(
+        op: Operator.fλ.Stateless<T, U>,
         callback: (transformedData: U) => void
     ): this;
 

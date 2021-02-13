@@ -8,13 +8,6 @@ import { parsePropsFromArgs } from "./Evt.parsePropsFromArgs";
 import { Evt, onAddHandlerByEvt } from "./Evt";
 import type { CtxLike, StateDiff, NonPostableEvt, StatefulReadonlyEvt } from "./types";
 
-import * as nsOperator from "./types/Operator";
-
-// NOTE: For compat with --no-check 
-// https://github.com/asos-craigmorten/opine/issues/97#issuecomment-751806014
-const { Operator: OperatorAsValue } = nsOperator;
-
-
 /** https://docs.evt.land/api/statefulevt */
 export type StatefulEvt<T> = import("./types/interfaces").StatefulEvt<T>;
 
@@ -38,11 +31,11 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
                     true
                 );
 
-                if (OperatorAsValue.fλ.Result.Matched.match(opResult)) {
-
-                    handlerTrigger(opResult);
-
+                if( !opResult ){
+                    return;
                 }
+
+                handlerTrigger(opResult);
 
             }
         );
@@ -159,7 +152,7 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
             true
         );
 
-        if (OperatorAsValue.fλ.Result.NotMatched.match(opResult)) {
+        if( !opResult  ){
 
             throw new Error([
                 "Cannot pipe StatefulEvt because the operator does not match",

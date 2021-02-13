@@ -1,4 +1,5 @@
 
+//NOTE: We want it to work with undefined for user that can't use null (eslint rule)
 
 import { Evt } from "../lib";
 import { getHandlerPr } from "./getHandlerPr";
@@ -7,7 +8,6 @@ import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi"
 const { mustStayPending } = getPromiseAssertionApi();
 
 const evt = new Evt<string | string[]>();
-
 
 mustStayPending(
     getHandlerPr(evt, () =>

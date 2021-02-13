@@ -27,8 +27,8 @@ export interface StatefulReadonlyEvt<T> extends NonPostableEvt<T> {
     /** https://docs.evt.land/api/statefulevt#pipe */
     pipe(): StatefulEvt<T>;
 
-    pipe<U, CtxResult>(
-        op: Operator.fλ<T, U, CtxResult>
+    pipe<U>(
+        op: Operator.fλ<T, U>
     ): StatefulEvt<U>;
     pipe<U extends T>(
         op: (data: T) => data is U
@@ -39,9 +39,9 @@ export interface StatefulReadonlyEvt<T> extends NonPostableEvt<T> {
 
     pipe(ctx: CtxLike<any>): StatefulEvt<T>;
 
-    pipe<U, CtxResult>(
+    pipe<U>(
         ctx: CtxLike<any>,
-        op: Operator.fλ<T, U, CtxResult>
+        op: Operator.fλ<T, U>
     ): StatefulEvt<U>;
     pipe<U extends T>(
         ctx: CtxLike<any>,
@@ -52,25 +52,25 @@ export interface StatefulReadonlyEvt<T> extends NonPostableEvt<T> {
         op: (data: T) => boolean
     ): StatefulEvt<T>;
 
-    pipe<B, C, CtxResultOp1, CtxResultOp2>(
-        op1: Operator.fλ<T, B, CtxResultOp1>,
-        op2: Operator.fλ<B, C, CtxResultOp2>
+    pipe<B, C>(
+        op1: Operator.fλ<T, B>,
+        op2: Operator.fλ<B, C>
     ): StatefulEvt<C>;
-    pipe<B, C extends B, CtxResult>(
-        op1: Operator.fλ<T, B, CtxResult>,
+    pipe<B, C extends B>(
+        op1: Operator.fλ<T, B>,
         op2: (data: B) => data is C
     ): StatefulEvt<C>;
-    pipe<B, CtxResult>(
-        op1: Operator.fλ<T, B, CtxResult>,
+    pipe<B>(
+        op1: Operator.fλ<T, B>,
         op2: (data: B) => boolean
     ): StatefulEvt<B>;
-    pipe<B extends T, C, CtxResult>(
+    pipe<B extends T, C>(
         op1: (data: T) => data is B,
-        op2: Operator.fλ<B, C, CtxResult>
+        op2: Operator.fλ<B, C>
     ): StatefulEvt<B>;
-    pipe<B, CtxResult>(
+    pipe<B>(
         op1: (data: T) => boolean,
-        op2: Operator.fλ<T, B, CtxResult>
+        op2: Operator.fλ<T, B>
     ): StatefulEvt<B>;
     pipe<B extends T, C extends B>(
         op1: (data: T) => data is B,
@@ -90,72 +90,72 @@ export interface StatefulReadonlyEvt<T> extends NonPostableEvt<T> {
     ): StatefulEvt<T>;
 
 
-    pipe<B, C, D, CtxResultOp1, CtxResultOp2, CtxResultOp3>(
-        op1: Operator.fλ<T, B, CtxResultOp1>,
-        op2: Operator.fλ<B, C, CtxResultOp2>,
-        op3: Operator.fλ<C, D, CtxResultOp3>
+    pipe<B, C, D>(
+        op1: Operator.fλ<T, B>,
+        op2: Operator.fλ<B, C>,
+        op3: Operator.fλ<C, D>
     ): StatefulEvt<D>;
 
-    pipe<B, C, D, E, CtxResultOp1 = any, CtxResultOp2 = any, CtxResultOp3 = any, CtxResultOp4 = any>(
-        op1: Operator.fλ<T, B, CtxResultOp1>,
-        op2: Operator.fλ<B, C, CtxResultOp2>,
-        op3: Operator.fλ<C, D, CtxResultOp3>,
-        op4: Operator.fλ<D, E, CtxResultOp4>
+    pipe<B, C, D, E>(
+        op1: Operator.fλ<T, B>,
+        op2: Operator.fλ<B, C>,
+        op3: Operator.fλ<C, D>,
+        op4: Operator.fλ<D, E>
     ): StatefulEvt<E>;
 
-    pipe<B, C, D, E, CtxResultOp1 = any, CtxResultOp2 = any, CtxResultOp3 = any, CtxResultOp4 = any>(
-        op1: Operator.fλ<T, B, CtxResultOp1>,
-        op2: Operator.fλ<B, C, CtxResultOp2>,
-        op3: Operator.fλ<C, D, CtxResultOp3>,
-        op4: Operator.fλ<D, E, CtxResultOp4>
+    pipe<B, C, D, E>(
+        op1: Operator.fλ<T, B>,
+        op2: Operator.fλ<B, C>,
+        op3: Operator.fλ<C, D>,
+        op4: Operator.fλ<D, E>
     ): StatefulEvt<E>;
 
-    pipe<B, C, D, E, F, CtxResultOp1 = any, CtxResultOp2 = any, CtxResultOp3 = any, CtxResultOp4 = any, CtxResultOp5 = any>(
-        op1: Operator.fλ<T, B, CtxResultOp1>,
-        op2: Operator.fλ<B, C, CtxResultOp2>,
-        op3: Operator.fλ<C, D, CtxResultOp3>,
-        op4: Operator.fλ<D, E, CtxResultOp4>,
-        op5: Operator.fλ<E, F, CtxResultOp5>
+    pipe<B, C, D, E, F>(
+        op1: Operator.fλ<T, B>,
+        op2: Operator.fλ<B, C>,
+        op3: Operator.fλ<C, D>,
+        op4: Operator.fλ<D, E>,
+        op5: Operator.fλ<E, F>
     ): StatefulEvt<F>;
 
 
-    pipe<B, C, CtxResultOp1 = any, CtxResultOp2 = any>(
-        op1: Operator<T, B, CtxResultOp2>,
-        op2: Operator<B, C, CtxResultOp2>
+    pipe<B, C>(
+        op1: Operator<T, B>,
+        op2: Operator<B, C>
     ): StatefulEvt<C>;
 
-    pipe<B, C, D, CtxResultOp1 = any, CtxResultOp2 = any, CtxResultOp3 = any>(
-        op1: Operator<T, B, CtxResultOp1>,
-        op2: Operator<B, C, CtxResultOp2>,
-        op3: Operator<C, D, CtxResultOp3>
+    pipe<B, C, D>(
+        op1: Operator<T, B>,
+        op2: Operator<B, C>,
+        op3: Operator<C, D>
     ): StatefulEvt<D>;
 
-    pipe<B, C, D, E, CtxResultOp1 = any, CtxResultOp2 = any, CtxResultOp3 = any, CtxResultOp4 = any>(
-        op1: Operator<T, B, CtxResultOp1>,
-        op2: Operator<B, C, CtxResultOp2>,
-        op3: Operator<C, D, CtxResultOp3>,
-        op4: Operator<D, E, CtxResultOp4>
+    pipe<B, C, D, E>(
+        op1: Operator<T, B>,
+        op2: Operator<B, C>,
+        op3: Operator<C, D>,
+        op4: Operator<D, E>
     ): StatefulEvt<E>;
 
-    pipe<B, C, D, E, F, CtxResultOp1 = any, CtxResultOp2 = any, CtxResultOp3 = any, CtxResultOp4 = any, CtxResultOp5 = any>(
-        op1: Operator<T, B, CtxResultOp1>,
-        op2: Operator<B, C, CtxResultOp2>,
-        op3: Operator<C, D, CtxResultOp3>,
-        op4: Operator<D, E, CtxResultOp4>,
-        op5: Operator<E, F, CtxResultOp5>
+    pipe<B, C, D, E, F>(
+        op1: Operator<T, B>,
+        op2: Operator<B, C>,
+        op3: Operator<C, D>,
+        op4: Operator<D, E>,
+        op5: Operator<E, F>
     ): StatefulEvt<F>;
 
     pipe(
         ...ops: [
-            Operator<T, any, any>,
-            ...Operator<any, any, any>[]
+            Operator<T, any>,
+            ...Operator<any, any>[]
         ]
     ): StatefulEvt<any>;
 
     pipe<T>(
         ...ops: [
-            Operator<T, any, any>,
-            ...Operator<any, any, any>[]
+            Operator<T, any>,
+            ...Operator<any, any>[]
         ]
     ): StatefulEvt<any>;
 

@@ -48,9 +48,12 @@ function downloadFile(
             }
         ])
         .pipe(({ byteLength }) => byteLength >= fileSize)
-        .pipe(({ byteLength, chunks }) => byteLength > fileSize ?
-            { "DETACH": ctxDl, "err": new Error(MESSAGE_TOO_MUCH_BYTES) } :
-            [chunks]
+        .pipe(
+            (...[{ byteLength, chunks }, , isPost]) => (
+                byteLength > fileSize ?
+                    (isPost && ctxDl.abort(new Error(MESSAGE_TOO_MUCH_BYTES)), null) :
+                    [chunks]
+            )
         )
         .pipe(chunks => [concatUint8Array(chunks, fileSize)])
         .attach(rawFile => ctxDl.done(rawFile))

@@ -5,8 +5,11 @@ const evtText = new Evt<"TICK" | "END" >();
 
 let acc= "";
 
+const ctx = Evt.newCtx();
+
 evtText.$attach(
-    text => [text, text === "END" ? "DETACH" : null],
+    (...[text,,isPost])=> (isPost && text === "END" && ctx.done(), [text]),
+    ctx,
     text=> acc += " " + text
 );
 

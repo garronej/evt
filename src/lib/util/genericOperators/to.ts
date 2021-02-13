@@ -1,3 +1,4 @@
+import type { Operator } from "../../types";
 /*
 NOTE: Here we allow a tiny memory leak to be able to emulate
 the EventEmitter.removeListener(event, callback) method easily.
@@ -18,7 +19,7 @@ const map = new Map<string, ReturnType<typeof to>>();
  * */
 export const to = <T extends readonly [string, any], K extends T[0]>(
     eventName: K
-): import("../../types").Operator.fλ.Stateless<T, (Extract<T, readonly [K, any]> extends never ? T : Extract<T, readonly [K, any]>)[1], never> =>
+): Operator.fλ.Stateless<T, (Extract<T, readonly [K, any]> extends never ? T : Extract<T, readonly [K, any]>)[1]> =>
     map.get(eventName) ?? (
         map.set(
             eventName,

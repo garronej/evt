@@ -29,27 +29,41 @@ const startUi = (() => {
         field => acc += `${person.name} ${field} changed\n`
     );
 
-    return ({ evtPersonChange }: { evtPersonChange: ToNonPostableEvt<Evt<PersonChange>> }) =>
+    return ({ evtPersonChange }: { evtPersonChange: ToNonPostableEvt<Evt<PersonChange>> }) => {
+
+        const ctx = Evt.newCtx();
+
         evtPersonChange.$attach(
             personChange => personChange.eventType === "NEW" ?
                 [personChange.person] : null,
+            ctx,
             person => createPersonLogger({
                 person,
-                "evtFieldChange": evtPersonChange.pipe(
-                    personChange => personChange.person !== person ?
-                        null
-                        :
-                        (() => {
-                            switch (personChange.eventType) {
-                                case "NEW": return null;
-                                case "UPDATE": return [personChange.field] as const;
-                                case "DELETE": return "DETACH";
-                            }
-                        })()
-                )
+                "evtFieldChange": (() => {
+
+                    const ctx = Evt.newCtx();
+
+                    return evtPersonChange.pipe(
+                        ctx,
+                        (...[personChange, , isPost]) => personChange.person !== person ?
+                            null
+                            :
+                            (() => {
+                                switch (personChange.eventType) {
+                                    case "NEW": return null;
+                                    case "UPDATE": return [personChange.field] as const;
+                                    case "DELETE": return (isPost && ctx.done(), null);
+                                }
+                            })()
+                    );
+
+                })()
+
+
             })
-        )
-        ;
+        );
+
+    };
 
 
 
@@ -62,7 +76,7 @@ const updateModelFactory = (
     }
 ) => {
 
-    const sleep = (ms: number) => new Promise<void>(resolve => setTimeout(()=>resolve(), ms));
+    const sleep = (ms: number) => new Promise<void>(resolve => setTimeout(() => resolve(), ms));
 
     const updateModel = async (person: Person): Promise<void> => {
 
@@ -73,11 +87,11 @@ const updateModelFactory = (
                 person
             };
 
-            console.assert(handlerHandlingEventCount(personChange) === 1);
+            assert(handlerHandlingEventCount(personChange) === 1);
 
             postPersonChange(personChange);
 
-            console.assert(handlerHandlingEventCount(personChange) === 1);
+            assert(handlerHandlingEventCount(personChange) === 1);
 
         }
 
@@ -93,11 +107,11 @@ const updateModelFactory = (
                 person
             };
 
-            console.assert(handlerHandlingEventCount(personChange) === 1);
+            assert(handlerHandlingEventCount(personChange) === 1);
 
             postPersonChange(personChange);
 
-            console.assert(handlerHandlingEventCount(personChange) === 1);
+            assert(handlerHandlingEventCount(personChange) === 1);
 
         }
 
@@ -113,11 +127,11 @@ const updateModelFactory = (
                 person
             };
 
-            console.assert(handlerHandlingEventCount(personChange) === 1);
+            assert(handlerHandlingEventCount(personChange) === 1);
 
             postPersonChange(personChange);
 
-            console.assert(handlerHandlingEventCount(personChange) === 1);
+            assert(handlerHandlingEventCount(personChange) === 1);
 
         }
 
@@ -131,12 +145,15 @@ const updateModelFactory = (
                 person
             };
 
+            console.log("start");
 
-            console.assert(handlerHandlingEventCount(personChange) === 1);
+            assert(handlerHandlingEventCount(personChange) === 1);
+
+            console.log("end");
 
             postPersonChange(personChange);
 
-            console.assert(handlerHandlingEventCount(personChange) === 0);
+            assert(handlerHandlingEventCount(personChange) === 0);
 
         }
 
@@ -155,14 +172,23 @@ const updateModelFactory = (
 
     const { updateModel } = updateModelFactory({
         "postPersonChange": personChange => evtPersonChange.post(personChange),
-        "handlerHandlingEventCount": personChange =>
-            evtPersonChange
+        "handlerHandlingEventCount": personChange => {
+
+            console.log(evtPersonChange.getHandlers().length);
+
+            const out = evtPersonChange
                 .getHandlers()
-                .filter(({ op }) => { 
+                .filter(({ op }) => {
                     assert(typeof op === "function");
-                    return !!op(personChange); 
+                    return !!op(personChange);
                 })
-                .length
+                .length;
+
+            console.log(evtPersonChange.getHandlers().length);
+
+            return out;
+
+        }
     });
 
     Promise.all(
@@ -176,9 +202,9 @@ const updateModelFactory = (
     ).then(() => {
 
         //The only remaining handler is the one listening for new person.
-        console.assert(evtPersonChange.getHandlers().length === 1);
+        assert(evtPersonChange.getHandlers().length === 1);
 
-        console.assert(
+        assert(
             acc ===
             [
                 "Alice age changed",

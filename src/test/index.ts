@@ -31,7 +31,8 @@ if (n) {
 
     await new Promise(resolve => setTimeout(resolve, 2400));
 
-    const n = 98;
+    //const n = 98;
+    const n = 35;
 
     console.log({ n });
 

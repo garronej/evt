@@ -65,7 +65,7 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi({ "takeIntoAccou
         .pipe(str => [str.toUpperCase()])
         .pipe(str => str.startsWith("H"))
         .pipe(scan((charCount, str) => charCount + str.length, 0))
-        .pipe(count => count <= 33 ? [`${count}`] : { "DETACH": ctx, "res": 43 })
+        .pipe((...[count, , isPost]) => count <= 33 ? [`${count}`] : (isPost && ctx.done(43), null))
         .attach(str => last = str)
         ;
 
@@ -115,7 +115,7 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi({ "takeIntoAccou
         .pipe(str => [str.toUpperCase()])
         .pipe(str => str.startsWith("H"))
         .pipe(scan((charCount, str) => charCount + str.length, 0))
-        .pipe(count => [`${count}`, count < 33 ? null : { "DETACH": ctx }])
+        .pipe((...[count, , isPost]) => (isPost && count >= 33 && ctx.done(), [`${count}`]))
         .attach(str => last = str)
         ;
 
