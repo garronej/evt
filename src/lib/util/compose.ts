@@ -23,12 +23,12 @@ function f_o_g<A, B, C>(
         ;
 
     return id<Operator.fλ.Stateless<A, C>>(
-        (...[dataA, , isPost]) => {
+        (...[dataA, , registerSideEffect]) => {
 
             const resultB = invokeOperator(
                 opAtoB,
                 dataA,
-                isPost
+                registerSideEffect
             );
 
             if( !resultB ){
@@ -40,7 +40,7 @@ function f_o_g<A, B, C>(
             const resultC= invokeOperator(
                 opBtoC,
                 dataB,
-                isPost
+                registerSideEffect
             );
 
             if( !resultC ){
