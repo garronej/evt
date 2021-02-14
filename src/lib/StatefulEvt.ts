@@ -28,7 +28,6 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
 
                 const opResult = this.getInvocableOp(handler.op)(
                     this.__state,
-                    undefined,
                     runSideEffect
                 );
 
@@ -147,7 +146,6 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
 
         const opResult = this.getInvocableOp(parsePropsFromArgs(args, "pipe").op)(
             this.__state, 
-            undefined, 
             runSideEffect
         );
 

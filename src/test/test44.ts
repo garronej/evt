@@ -8,7 +8,7 @@ let acc= "";
 const ctx = Evt.newCtx();
 
 evtText.$attach(
-    (...[text, , registerSideEffect]) => (text === "END" && registerSideEffect(() => ctx.done()), [text]),
+    (text, registerSideEffect) => (text === "END" && registerSideEffect(() => ctx.done()), [text]),
     ctx,
     text=> acc += " " + text
 );

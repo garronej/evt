@@ -45,7 +45,7 @@ const startUi = (() => {
 
                     return evtPersonChange.pipe(
                         ctx,
-                        (...[personChange, , registerSideEffect]) => personChange.person !== person ?
+                        (personChange, registerSideEffect) => personChange.person !== person ?
                             null
                             :
                             (() => {

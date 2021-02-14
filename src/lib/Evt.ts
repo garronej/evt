@@ -512,7 +512,6 @@ class EvtImpl<T> implements Evt<T> {
 
         const opResult = invocableOp(
             data,
-            undefined,
             () => hasSideEffect = true
         );
 
@@ -582,7 +581,6 @@ class EvtImpl<T> implements Evt<T> {
 
             const opResult = this.getInvocableOp(op)(
                 data,
-                undefined,
                 runSideEffect
             );
 
@@ -638,7 +636,6 @@ class EvtImpl<T> implements Evt<T> {
 
                     const opResult = this.getInvocableOp(handler.op)(
                         data,
-                        undefined,
                         runSideEffect
                     );
 

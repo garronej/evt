@@ -65,7 +65,7 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi({ "takeIntoAccou
         .pipe(str => [str.toUpperCase()])
         .pipe(str => str.startsWith("H"))
         .pipe(scan((charCount, str) => charCount + str.length, 0))
-        .pipe((...[count, , registerSideEffect]) => count <= 33 ? [`${count}`] : (registerSideEffect(() => ctx.done(43)), null))
+        .pipe((count, registerSideEffect) => count <= 33 ? [`${count}`] : (registerSideEffect(() => ctx.done(43)), null))
         .attach(str => last = str)
         ;
 
@@ -115,7 +115,7 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi({ "takeIntoAccou
         .pipe(str => [str.toUpperCase()])
         .pipe(str => str.startsWith("H"))
         .pipe(scan((charCount, str) => charCount + str.length, 0))
-        .pipe((...[count, , registerSideEffect]) => (count >= 33 && registerSideEffect(() => ctx.done()), [`${count}`]))
+        .pipe((count, registerSideEffect) => (count >= 33 && registerSideEffect(() => ctx.done()), [`${count}`]))
         .attach(str => last = str)
         ;
 

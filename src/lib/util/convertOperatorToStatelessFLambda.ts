@@ -7,7 +7,7 @@ function encapsulateOpState<T, U>(
 
     let state: U = statefulFλOp[1];
 
-    return (...[data, , registerSideEffect]) => {
+    return (data, registerSideEffect) => {
 
         const opResult = statefulFλOp[0](data, state, registerSideEffect);
 
@@ -22,7 +22,7 @@ function encapsulateOpState<T, U>(
 }
 
 function statelessOpToStatelessFλ<T, U>(op: Operator.Stateless<T, U>): Operator.fλ.Stateless<T, U> {
-    return (...[data, , registerSideEffect]) => {
+    return (data, registerSideEffect) => {
 
         /* NOTE: Here, if the user is using TypeScript we should have readonly [U] or boolean
          * but users using vanilla JS can very well provide operators like: text => text.match(/^error/) 
@@ -31,7 +31,7 @@ function statelessOpToStatelessFλ<T, U>(op: Operator.Stateless<T, U>): Operator
          * Long story short we do our best to guess what the user meant with he's operator, if it was
          * intended to be a filter or a fλ.
          */
-        const opResult: any = (op as Operator.fλ.Stateless<T, U>)(data, undefined, registerSideEffect);
+        const opResult: any = (op as Operator.fλ.Stateless<T, U>)(data, registerSideEffect);
 
         return (
             opResult instanceof Object &&

@@ -12,9 +12,9 @@ function f_o_g<A, B, C>(
     const opBtoC = convertOperatorToStatelessFλ(op2);
 
     return id<Operator.fλ.Stateless<A, C>>(
-        (...[dataA, , registerSideEffect]) => {
+        (dataA, registerSideEffect) => {
 
-            const resultB = opAtoB(dataA, undefined, registerSideEffect);
+            const resultB = opAtoB(dataA, registerSideEffect);
 
             if( !resultB ){
                 return null;
@@ -22,7 +22,7 @@ function f_o_g<A, B, C>(
 
             const [dataB] = resultB;
 
-            const resultC = opBtoC(dataB, undefined, registerSideEffect);
+            const resultC = opBtoC(dataB, registerSideEffect);
 
             if( !resultC ){
                 return resultC;

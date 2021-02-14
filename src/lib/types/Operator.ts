@@ -15,7 +15,7 @@ export namespace Operator {
 
     export namespace fλ {
 
-        export type Stateless<T, U> = (data: T, prev: undefined, registerSideEffect: (sideEffect: () => void) => void) => readonly [U] | null;
+        export type Stateless<T, U> = (data: T, registerSideEffect: (sideEffect: () => void) => void) => readonly [U] | null;
 
         export type Stateful<T, U> = [
             (data: T, prev: U, registerSideEffect: (sideEffect: () => void)=> void) => readonly [U] | null,
