@@ -33,7 +33,7 @@ interface StatefulReadonlyEvtLike {
  * 
  * To use StatefulEvt as react component state.
  * */
-export function useStatefulEvt(evts: StatefulReadonlyEvtLike[]): void {
+export function useRerenderOnStateChange(...evts: StatefulReadonlyEvtLike[]): void {
 
     const [, forceUpdate] = useReducer(x => x + 1, 0);
 
@@ -46,7 +46,7 @@ export function useStatefulEvt(evts: StatefulReadonlyEvtLike[]): void {
 
                 attach();
 
-                //NOTE: We do all this funny business because we want to assure that the handler
+                //NOTE: We do all this funny business because we want to ensure that the handler
                 //that triggers the re-render is always the last handler to be invoked.
                 //What we do is we detach our handler when an other is added and synchronously re-attach it
                 Evt.merge(

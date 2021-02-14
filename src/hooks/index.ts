@@ -6,4 +6,4 @@ with react we don't want to require react to be
 installed to install Evt.
 */
 export { useEvt } from "./useEvt";
-export { useStatefulEvt } from "./useStatefulEvt";
+export { useRerenderOnStateChange } from "./useRerenderOnStateChange";
