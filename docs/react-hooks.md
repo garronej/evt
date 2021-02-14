@@ -49,7 +49,7 @@ Evt let enables you to create powerful custom hooks. Here are some examples:
 
 ```typescript
 import { Evt } from "evt";
-import { useEvt, useStatefulEvt } from "evt/hooks";
+import { useEvt, useRerenderOnStateChange } from "evt/hooks";
 
 export function useWindowInnerWidth() {
 
@@ -61,7 +61,7 @@ export function useWindowInnerWidth() {
         []
     );
 
-    useStatefulEvt([evtInnerWidth]);
+    useRerenderOnStateChange(evtInnerWidth);
 
     return { "windowInnerWidth": evtInnerWidth.state };
 
