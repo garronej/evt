@@ -6,7 +6,7 @@ const evtText = new Evt<string>();
 const text = "ok";
 
 evtText.evtAttach.attach(
-    ({ op }) => !!evtText.getStatelessOp(op)(text),
+    ({ op })=> evtText.isHandledByOp(op, text),
     () => evtText.post(text)
 );
 

@@ -22,7 +22,6 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi();
         sevText.state = "foo";
         sevText.state = " bar";
 
-        console.log(stdout);
         assert(stdout === " bar");
 
 

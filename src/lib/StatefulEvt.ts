@@ -3,13 +3,14 @@ import { defineAccessors } from "../tools/typeSafety/defineAccessors";
 import { LazyEvt } from "./LazyEvt";
 import { LazyStatefulEvt } from "./LazyStatefulEvt";
 import { importProxy } from "./importProxy";
-import { invokeOperator } from "./util/invokeOperator";
 import { parsePropsFromArgs } from "./Evt.parsePropsFromArgs";
 import { Evt, onAddHandlerByEvt } from "./Evt";
 import type { CtxLike, StateDiff, NonPostableEvt, StatefulReadonlyEvt } from "./types";
 
 /** https://docs.evt.land/api/statefulevt */
 export type StatefulEvt<T> = import("./types/interfaces").StatefulEvt<T>;
+
+const runSideEffect = (sideEffect: ()=> void) => sideEffect();
 
 class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
 
@@ -25,10 +26,10 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
             this,
             (handler, handlerTrigger) => {
 
-                const opResult = invokeOperator(
-                    this.getStatelessOp(handler.op),
+                const opResult = this.getInvocableOp(handler.op)(
                     this.__state,
-                    true
+                    undefined,
+                    runSideEffect
                 );
 
                 if( !opResult ){
@@ -144,12 +145,10 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
             .pipe(...(args as Parameters<typeof importProxy.Evt.prototype.pipe>))
             ;
 
-        const opResult = invokeOperator(
-            this.getStatelessOp(
-                parsePropsFromArgs(args, "pipe").op
-            ),
-            this.__state,
-            true
+        const opResult = this.getInvocableOp(parsePropsFromArgs(args, "pipe").op)(
+            this.__state, 
+            undefined, 
+            runSideEffect
         );
 
         if( !opResult  ){
@@ -179,3 +178,4 @@ export const StatefulEvt: {
 } = StatefulEvtImpl;
 
 importProxy.StatefulEvt = StatefulEvt;
+

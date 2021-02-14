@@ -14,7 +14,7 @@ mustResolve({
         evtText,
         () =>
             evtText.attach(
-                obj_ => obj_.p.match("foo") as any as boolean,
+                obj_ => !!obj_.p.match("foo") as any as boolean,
                 obj_ => obj_ === obj
             )
     ),

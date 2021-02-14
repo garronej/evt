@@ -37,8 +37,14 @@ export interface NonPostableEvt<T> {
     /** https://docs.evt.land/api/evt/enabletrace */
     disableTrace(): this;
 
-    /** https://docs.evt.land/api/evt/getstatelessop */
-    getStatelessOp<U>(op: Operator<T, U>): Operator.Stateless<T, U>;
+    /** 
+     * TODO: Update doc, it replace: https://docs.evt.land/api/evt/getstatelessop 
+     * Maybe this feature is too confusing to be documented...
+     * */
+    getInvocableOp<U>(op: Operator<T, U>): Operator.fλ.Stateless<T, U>;
+
+    /** TODO: DOC !!! */
+    isHandledByOp<U>(op: Operator<T, U>, data: T): boolean;
 
     /**
      * https://docs.evt.land/api/evt/ishandled

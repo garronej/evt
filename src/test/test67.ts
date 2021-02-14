@@ -11,24 +11,24 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi();
 
     evtText.$attach(
         compose(
-            (...[text, , isPost]) => (
-                isPost && Evt.newCtx<boolean>().done(true),
+            (...[text, , registerSideEffect]) => (
+                registerSideEffect(()=>Evt.newCtx<boolean>().done(true)),
                 [text.toUpperCase()]
             ),
-            (...[text, , isPost]) => (
-                isPost && Evt.newCtx<number>().done(3),
+            (...[text, , registerSideEffect]) => (
+                registerSideEffect(()=> Evt.newCtx<number>().done(3)),
                 [text.length]
             ),
-            (...[n, , isPost]) => (
-                isPost && Evt.newCtx(),
+            (...[n, , registerSideEffect]) => (
+                registerSideEffect(()=> Evt.newCtx()),
                 [`=>${n}<=`]
             ),
-            (...[str, , isPost]) => (
-                isPost && Evt.newCtx().abort(new Error()),
+            (...[str, , registerSideEffect]) => (
+                registerSideEffect(()=> Evt.newCtx().abort(new Error())),
                 [str.toUpperCase()]
             ),
-            (...[str, , isPost]) => (
-                isPost && Evt.newCtx<boolean>().abort(new Error()),
+            (...[str, , registerSideEffect]) => (
+                registerSideEffect(()=> Evt.newCtx<boolean>().abort(new Error())),
                 [str.toUpperCase()]
             )
         ),
@@ -49,7 +49,7 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi();
             getHandlerPr(evtText, () =>
                 evtText.$attach(
                     compose(
-                        (...[text,,isPost])=>(isPost && ctx.done(), [text]),
+                        (...[text,,registerSideEffect])=>(registerSideEffect(()=>ctx.done()), [text]),
                         text => [text]
                     ),
                     ctx,
@@ -74,7 +74,7 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi();
             getHandlerPr(evtText, () =>
                 evtText.$attach(
                     compose(
-                        (...[text, , isPost]) => (isPost && ctx.done(), [text]),
+                        (...[text, , registerSideEffect]) => ( registerSideEffect(()=> ctx.done()), [text]),
                         text => [text]
                     ),
                     ctx,
@@ -98,7 +98,7 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi();
         getHandlerPr(evtText, () =>
             evtText.$attach(
                 compose(
-                    (...[text, , isPost]) => (isPost && ctx.done(), [text]),
+                    (...[text, , registerSideEffect]) => (registerSideEffect(()=> ctx.done()), [text]),
                     () => null
                 ),
                 ctx,
@@ -124,7 +124,7 @@ const { mustResolve, mustStayPending } = getPromiseAssertionApi();
 
             evtText.$attach(
                 compose(
-                    (...[text, , isPost]) => (isPost && ctx.done(), [text]),
+                    (...[text, , registerSideEffect]) => (registerSideEffect(() => ctx.done()), [text]),
                     str => (str.toLowerCase(), null)
                 ),
                 ctx,

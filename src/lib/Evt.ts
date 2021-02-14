@@ -12,25 +12,24 @@ import { parsePropsFromArgs, matchAll } from "./Evt.parsePropsFromArgs";
 import { newCtx } from "./Evt.newCtx";
 import { LazyEvt } from "./LazyEvt";
 import { defineAccessors } from "../tools/typeSafety/defineAccessors";
-import { invokeOperator } from "./util/invokeOperator";
 import { Polyfill as Map, LightMap } from "minimal-polyfills/Map";
 import { Polyfill as WeakMap } from "minimal-polyfills/WeakMap";
 import * as runExclusive from "run-exclusive";
 import { overwriteReadonlyProp } from "../tools/typeSafety/overwriteReadonlyProp";
 import { typeGuard } from "../tools/typeSafety/typeGuard";
-import { encapsulateOpState } from "./util/encapsulateOpState";
 import { Deferred } from "../tools/Deferred";
 import { loosenType } from "./Evt.loosenType";
 import { safeClearTimeout, safeSetTimeout, Timer } from "../tools/safeSetTimeout";
 import { isPromiseLike } from "../tools/typeSafety/isPromiseLike";
 import { DetachedEvtError, TimeoutEvtError } from "./types/EvtError";
-import * as nsOperator from "./types/Operator";
 import * as nsCtxLike from "./types/interfaces/CtxLike";
 import type { Handler, Operator, NonPostableEvt, StatefulEvt, EvtLike, CtxLike } from "./types";
+import { convertOperatorToStatelessFλ } from "./util/convertOperatorToStatelessFLambda";
+
+const runSideEffect = (sideEffect: () => void) => sideEffect();
 
 // NOTE: For compat with --no-check 
 // https://github.com/asos-craigmorten/opine/issues/97#issuecomment-751806014
-const { Operator: OperatorAsValue } = nsOperator;
 const { CtxLike: CtxLikeAsValue } = nsCtxLike;
 
 /** https://docs.evt.land/api/evt */
@@ -171,7 +170,7 @@ class EvtImpl<T> implements Evt<T> {
 
     private readonly handlerTriggers: LightMap<
         Handler<T, any>,
-        (opResult: readonly [ any ]) => PromiseLike<void> | undefined
+        (opResult: readonly [any]) => PromiseLike<void> | undefined
     > = new Map();
 
     //NOTE: An async handler ( attached with waitFor ) is only eligible to handle a post if the post
@@ -193,12 +192,13 @@ class EvtImpl<T> implements Evt<T> {
     declare private __asyncHandlerChronologyExceptionRange:
         (typeof EvtImpl.prototype.asyncHandlerChronologyExceptionRange) | undefined;
 
-    declare private readonly statelessByStatefulOp: WeakMap<
-        Operator.fλ.Stateful<T, any>,
+    declare private readonly invocableOpByOb: WeakMap<
+        Operator<T, any>,
         Operator.fλ.Stateless<T, any>
     >;
-    declare private __statelessByStatefulOp:
-        (typeof EvtImpl.prototype.statelessByStatefulOp) | undefined;
+
+    declare private __invocableOpByOb:
+        (typeof EvtImpl.prototype.invocableOpByOb) | undefined;
 
     private static __2: void = (() => {
 
@@ -208,7 +208,7 @@ class EvtImpl<T> implements Evt<T> {
             ([
                 "__asyncHandlerChronologyMark",
                 "__asyncHandlerChronologyExceptionRange",
-                "__statelessByStatefulOp"
+                "__invocableOpByOb"
             ] as const).map(key => [
                 key.substr(2),
                 {
@@ -227,6 +227,21 @@ class EvtImpl<T> implements Evt<T> {
 
 
     })();
+
+    getInvocableOp<U>(op: Operator<T, U>): Operator.fλ.Stateless<T, U> {
+
+        const invocableOp = this.invocableOpByOb.get(op);
+
+        if( invocableOp === undefined ){
+            throw new Error([
+                "Provided operator isn't the operator of any handler",
+                "currently attached to the Evt instance"
+            ].join(" "));
+        }
+
+        return invocableOp;
+
+    }
 
     /*
     NOTE: Used as Date.now() would be used to compare if an event is anterior 
@@ -317,14 +332,10 @@ class EvtImpl<T> implements Evt<T> {
         propsFromMethodName: Handler.PropsFromMethodName
     ): Handler<T, U> {
 
-        if (OperatorAsValue.fλ.Stateful.match<T, any>(propsFromArgs.op)) {
-
-            this.statelessByStatefulOp.set(
-                propsFromArgs.op,
-                encapsulateOpState(propsFromArgs.op)
-            );
-
-        }
+        this.invocableOpByOb.set(
+            propsFromArgs.op,
+            convertOperatorToStatelessFλ(propsFromArgs.op)
+        );
 
         const d = new Deferred<U>();
 
@@ -483,11 +494,32 @@ class EvtImpl<T> implements Evt<T> {
 
     }
 
-    getStatelessOp<U>(op: Operator<T, U>): Operator.Stateless<T, U> {
-        return OperatorAsValue.fλ.Stateful.match(op) ?
-            this.statelessByStatefulOp.get(op)! :
-            op
+    isHandledByOp<U>(op: Operator<T, U>, data: T): boolean {
+
+        let hasSideEffect = false;
+
+        let invocableOp: Operator.fλ.Stateless<T, U>;
+
+        try {
+
+            invocableOp = this.getInvocableOp(op);
+
+        } catch {
+
+            return false;
+
+        }
+
+        const opResult = invocableOp(
+            data,
+            undefined,
+            () => hasSideEffect = true
+        );
+
+        return opResult !== null || hasSideEffect;
+
     }
+
 
     private trace(data: T) {
 
@@ -500,7 +532,7 @@ class EvtImpl<T> implements Evt<T> {
         const isExtracted = !!this.handlers.find(
             ({ extract, op }) => (
                 extract &&
-                !!this.getStatelessOp(op)(data)
+                this.isHandledByOp(op, data)
             )
         );
 
@@ -513,7 +545,7 @@ class EvtImpl<T> implements Evt<T> {
             const handlerCount = this.handlers
                 .filter(
                     ({ extract, op }) => !extract &&
-                        !!this.getStatelessOp(op)(data)
+                        this.isHandledByOp(op, data)
                 )
                 .length;
 
@@ -548,13 +580,13 @@ class EvtImpl<T> implements Evt<T> {
             //we still want to trigger the handler.
             const handlerTrigger = this.handlerTriggers.get(handler);
 
-            const opResult = invokeOperator(
-                this.getStatelessOp(op),
+            const opResult = this.getInvocableOp(op)(
                 data,
-                true
+                undefined,
+                runSideEffect
             );
 
-            if( !opResult ) {
+            if (opResult === null) {
                 continue;
             }
 
@@ -604,13 +636,13 @@ class EvtImpl<T> implements Evt<T> {
                         continue;
                     }
 
-                    const opResult = invokeOperator(
-                        this.getStatelessOp(handler.op),
+                    const opResult = this.getInvocableOp(handler.op)(
                         data,
-                        true
+                        undefined,
+                        runSideEffect
                     );
 
-                    if( !opResult ){
+                    if (opResult === null) {
                         continue;
                     }
 
@@ -717,7 +749,7 @@ class EvtImpl<T> implements Evt<T> {
 
     isHandled(data: T): boolean {
         return !!this.getHandlers()
-            .find(({ op }) => !!this.getStatelessOp(op)(data))
+            .find(({ op }) => this.isHandledByOp(op, data))
             ;
     }
 
@@ -849,7 +881,7 @@ class EvtImpl<T> implements Evt<T> {
         const d = new Deferred<number>();
 
         this.evtAttach.attachOnce(
-            ({ op }) => !!invokeOperator(this.getStatelessOp(op), data),
+            ({ op }) => this.isHandledByOp(op, data),
             () => Promise.resolve().then(() => d.resolve(this.post(data)))
         );
 
@@ -916,7 +948,7 @@ export const onAddHandlerByEvt = new WeakMap<
     EvtLike<any>,
     (
         handler: Handler<any, any>,
-        handlerTrigger: (opResult: readonly [ any ]) => PromiseLike<void> | undefined
+        handlerTrigger: (opResult: readonly [any]) => PromiseLike<void> | undefined
     ) => void>();
 
 

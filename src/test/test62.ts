@@ -49,9 +49,9 @@ function downloadFile(
         ])
         .pipe(({ byteLength }) => byteLength >= fileSize)
         .pipe(
-            (...[{ byteLength, chunks }, , isPost]) => (
+            (...[{ byteLength, chunks }, , registerSideEffect]) => (
                 byteLength > fileSize ?
-                    (isPost && ctxDl.abort(new Error(MESSAGE_TOO_MUCH_BYTES)), null) :
+                    (registerSideEffect(() => ctxDl.abort(new Error(MESSAGE_TOO_MUCH_BYTES))), null) :
                     [chunks]
             )
         )

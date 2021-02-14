@@ -45,14 +45,14 @@ const startUi = (() => {
 
                     return evtPersonChange.pipe(
                         ctx,
-                        (...[personChange, , isPost]) => personChange.person !== person ?
+                        (...[personChange, , registerSideEffect]) => personChange.person !== person ?
                             null
                             :
                             (() => {
                                 switch (personChange.eventType) {
                                     case "NEW": return null;
                                     case "UPDATE": return [personChange.field] as const;
-                                    case "DELETE": return (isPost && ctx.done(), null);
+                                    case "DELETE": return (registerSideEffect(() => ctx.done()), null);
                                 }
                             })()
                     );
@@ -145,11 +145,7 @@ const updateModelFactory = (
                 person
             };
 
-            console.log("start");
-
             assert(handlerHandlingEventCount(personChange) === 1);
-
-            console.log("end");
 
             postPersonChange(personChange);
 
@@ -172,23 +168,11 @@ const updateModelFactory = (
 
     const { updateModel } = updateModelFactory({
         "postPersonChange": personChange => evtPersonChange.post(personChange),
-        "handlerHandlingEventCount": personChange => {
-
-            console.log(evtPersonChange.getHandlers().length);
-
-            const out = evtPersonChange
+        "handlerHandlingEventCount": personChange => 
+            evtPersonChange
                 .getHandlers()
-                .filter(({ op }) => {
-                    assert(typeof op === "function");
-                    return !!op(personChange);
-                })
-                .length;
-
-            console.log(evtPersonChange.getHandlers().length);
-
-            return out;
-
-        }
+                .filter(({ op }) => evtPersonChange.isHandledByOp(op, personChange))
+                .length
     });
 
     Promise.all(

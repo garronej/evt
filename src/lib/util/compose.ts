@@ -1,35 +1,20 @@
-import { encapsulateOpState } from "./encapsulateOpState";
-import { invokeOperator } from "./invokeOperator";
+import { convertOperatorToStatelessFλ } from "./convertOperatorToStatelessFLambda";
 import { id } from "../../tools/typeSafety/id";
-import * as nsOperator from "../types/Operator";
 import type { Operator } from "../types/Operator";
-// NOTE: For compat with --no-check 
-// https://github.com/asos-craigmorten/opine/issues/97#issuecomment-751806014
-const { Operator: OperatorAsValue } = nsOperator;
 
 function f_o_g<A, B, C>(
     op1: Operator<A, B>,
     op2: Operator<B, C>
 ): Operator.fλ.Stateless<A, C> {
 
-    const opAtoB = OperatorAsValue.fλ.Stateful.match(op1) ?
-        encapsulateOpState(op1) :
-        id<Operator.Stateless<A, B>>(op1)
-        ;
+    const opAtoB = convertOperatorToStatelessFλ(op1);
 
-    const opBtoC = OperatorAsValue.fλ.Stateful.match(op2) ?
-        encapsulateOpState(op2) :
-        id<Operator.Stateless<B, C>>(op2)
-        ;
+    const opBtoC = convertOperatorToStatelessFλ(op2);
 
     return id<Operator.fλ.Stateless<A, C>>(
         (...[dataA, , registerSideEffect]) => {
 
-            const resultB = invokeOperator(
-                opAtoB,
-                dataA,
-                registerSideEffect
-            );
+            const resultB = opAtoB(dataA, undefined, registerSideEffect);
 
             if( !resultB ){
                 return null;
@@ -37,11 +22,7 @@ function f_o_g<A, B, C>(
 
             const [dataB] = resultB;
 
-            const resultC= invokeOperator(
-                opBtoC,
-                dataB,
-                registerSideEffect
-            );
+            const resultC = opBtoC(dataB, undefined, registerSideEffect);
 
             if( !resultC ){
                 return resultC;
@@ -153,23 +134,20 @@ export function compose<T>(
         Operator<T, any>,
         ...Operator<any, any>[]
     ]
-): Operator.Stateless<T, any>;
+): Operator.fλ.Stateless<T, any>;
 
 export function compose<T>(
     ...ops: [
         Operator<T, any>,
         ...Operator<any, any>[]
     ]
-): Operator.Stateless<T, any> | Operator.Stateless<T, any> {
+): Operator.fλ.Stateless<T, any>  {
 
     if (ops.length === 1) {
 
         const [op] = ops;
 
-        return OperatorAsValue.fλ.Stateful.match<T, any>(op) ?
-            encapsulateOpState(op) :
-            op
-            ;
+        return convertOperatorToStatelessFλ(op);
 
     }
 
