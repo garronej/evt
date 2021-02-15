@@ -47,6 +47,7 @@
         "@types/react": "^16.9.43",
         "denoify": "^0.5.10",
         "react": "^16.13.1",
+        "resize-observer-polyfill": "^1.5.1",
         "rxjs": "^6.5.4",
         "simplifyify": "8.0.1",
         "terser": "4.6.13",

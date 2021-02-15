@@ -1,21 +1,20 @@
 import { id } from "../tools/typeSafety/id";
-import { assert } from "../tools/typeSafety/assert";
+import { assert } from "../tools/typeSafety/assert";
 import { typeGuard } from "../tools/typeSafety/typeGuard";
 import { mergeImpl } from "./Evt.merge";
-import { importProxy } from "./importProxy";
-import type { dom, Evt, EvtLike  } from "./types";
+import { importProxy } from "./importProxy";
+import type { dom, Evt, EvtLike } from "./types";
 import type { EventTargetLike } from "./types";
 import * as nsEventTargetLike from "./types/EventTargetLike";
-const { EventTargetLike: EventTargetLikeAsValue } = nsEventTargetLike;
-
+const { EventTargetLike: EventTargetLikeAsValue } = nsEventTargetLike;
+import type { ObserverConstructor } from "./types/Observer";
 
 type OneOrMany<T> = T | ArrayLike<T>;
 type CtxLike<Result> = import("./types").CtxLike<Result> & {
-      evtDoneOrAborted: EvtLike<unknown> & { postCount: number; attachOnce(callback: ()=> void): void; };
+    evtDoneOrAborted: EvtLike<unknown> & { postCount: number; attachOnce(callback: () => void): void; };
 };
 
-
-function fromImpl<T>(
+function fromImplForTargetEventLike<T>(
     ctx: CtxLike<any> | undefined,
     target: OneOrMany<EventTargetLike<T>> | PromiseLike<T>,
     eventName?: string,
@@ -59,7 +58,7 @@ function fromImpl<T>(
         return mergeImpl<Evt<T>>(
             ctx,
             Array.from(target).map(
-                target => fromImpl<T>(ctx, target, eventName, options)
+                target => fromImplForTargetEventLike<T>(ctx, target, eventName, options)
             )
         );
 
@@ -125,6 +124,27 @@ function fromImpl<T>(
 
 }
 
+function fromImplForObserver<Target, Entry>(
+    ctx: CtxLike<any> | undefined,
+    ObserverConstructor: ObserverConstructor<Target, Entry>,
+    target: Target
+): Evt<Entry> {
+
+    const evt = importProxy.Evt.create<Entry>();
+
+    const listener = ([entry]: Entry[]) => evt.post(entry);
+
+    const observer = new ObserverConstructor(listener);
+
+    observer.observe(target);
+
+    ctx?.evtDoneOrAborted.attachOnce(
+        () => observer.disconnect()
+    );
+
+    return evt;
+
+}
 
 /** https://docs.evt.land/api/evt/from */
 export function from<K extends keyof dom.HTMLElementEventMap>(
@@ -174,6 +194,12 @@ export function from<T>(
     target: PromiseLike<T>
 ): Evt<T>;
 
+export function from<Target, Entry>(
+    ctx: CtxLike<any>,
+    ObserverConstructor: ObserverConstructor<Target, Entry>,
+    target: Target
+): Evt<Entry>;
+
 
 export function from<K extends keyof dom.HTMLElementEventMap>(
     target: EventTargetLike.HTMLElement,
@@ -211,41 +237,96 @@ export function from<T>(
     target: PromiseLike<T>
 ): Evt<T>;
 
-export function from<T>(
-    ctxOrTarget: CtxLike<any> | OneOrMany<EventTargetLike<T>> | PromiseLike<T>,
-    targetOrEventName?: OneOrMany<EventTargetLike<T>> | string | PromiseLike<T>,
-    eventNameOrOptions?: string | EventTargetLike.HasEventTargetAddRemove.Options,
+export function from<Target, Entry>(
+    ObserverConstructor: ObserverConstructor<Target, Entry>,
+    target: Target
+): Evt<Entry>;
+/*
+/^[A-Z]/.test(targetOrEventNameOrObserverConstructorOrObserverTarget.name
+    */
+
+export function from<T, ObserverTarget = never>(
+    ctxOrTargetOrObserverConstructor: CtxLike<any> | OneOrMany<EventTargetLike<T>> | PromiseLike<T> | ObserverConstructor<ObserverTarget, T>,
+    targetOrEventNameOrObserverConstructorOrObserverTarget?: OneOrMany<EventTargetLike<T>> | string | PromiseLike<T> | ObserverConstructor<ObserverTarget, T> | ObserverTarget,
+    eventNameOrOptionsOrObserverTarget?: string | EventTargetLike.HasEventTargetAddRemove.Options | ObserverTarget,
     options?: EventTargetLike.HasEventTargetAddRemove.Options
 ): Evt<T> {
 
-    if ("evtDoneOrAborted" in ctxOrTarget) {
+    if ("evtDoneOrAborted" in ctxOrTargetOrObserverConstructor) {
 
         assert(
-            typeGuard<OneOrMany<EventTargetLike<T>> | PromiseLike<T>>(targetOrEventName) &&
-            typeGuard<string | undefined>(eventNameOrOptions) &&
+            typeGuard<OneOrMany<EventTargetLike<T>> | PromiseLike<T> | ObserverConstructor<ObserverTarget, T>>(targetOrEventNameOrObserverConstructorOrObserverTarget) &&
+            typeGuard<string | undefined | ObserverTarget>(eventNameOrOptionsOrObserverTarget) &&
             typeGuard<EventTargetLike.HasEventTargetAddRemove.Options | undefined>(options)
         );
 
-        return fromImpl(
-            ctxOrTarget,
-            targetOrEventName,
-            eventNameOrOptions,
-            options
-        );
+        if (typeof targetOrEventNameOrObserverConstructorOrObserverTarget === "function") {
+
+            assert(
+                typeGuard<ObserverTarget>(eventNameOrOptionsOrObserverTarget) &&
+                typeGuard<undefined>(options)
+            );
+
+            return fromImplForObserver(
+                ctxOrTargetOrObserverConstructor,
+                targetOrEventNameOrObserverConstructorOrObserverTarget,
+                eventNameOrOptionsOrObserverTarget
+            );
+
+        } else {
+
+            assert(
+                typeGuard<Exclude<typeof eventNameOrOptionsOrObserverTarget, ObserverTarget>>(eventNameOrOptionsOrObserverTarget)
+            );
+
+            return fromImplForTargetEventLike(
+                ctxOrTargetOrObserverConstructor,
+                targetOrEventNameOrObserverConstructorOrObserverTarget,
+                eventNameOrOptionsOrObserverTarget,
+                options
+            );
+
+        }
+
 
     } else {
 
         assert(
-            typeGuard<string | undefined>(targetOrEventName) &&
-            typeGuard<EventTargetLike.HasEventTargetAddRemove.Options | undefined>(eventNameOrOptions)
+            typeGuard<Exclude<typeof ctxOrTargetOrObserverConstructor, CtxLike<any>>>(ctxOrTargetOrObserverConstructor) &&
+            typeGuard<string | undefined | ObserverTarget>(targetOrEventNameOrObserverConstructorOrObserverTarget) &&
+            typeGuard<EventTargetLike.HasEventTargetAddRemove.Options | undefined>(eventNameOrOptionsOrObserverTarget)
         );
 
-        return fromImpl(
-            undefined,
-            ctxOrTarget,
-            targetOrEventName,
-            eventNameOrOptions
-        );
+        if (typeof ctxOrTargetOrObserverConstructor === "function") {
+
+            assert(
+                typeGuard<ObserverTarget>(targetOrEventNameOrObserverConstructorOrObserverTarget) &&
+                typeGuard<undefined>(eventNameOrOptionsOrObserverTarget)
+            );
+
+            return fromImplForObserver(
+                undefined,
+                ctxOrTargetOrObserverConstructor,
+                targetOrEventNameOrObserverConstructorOrObserverTarget
+            );
+
+
+        } else {
+
+            assert(
+                typeGuard<Exclude<typeof targetOrEventNameOrObserverConstructorOrObserverTarget, ObserverTarget>>(targetOrEventNameOrObserverConstructorOrObserverTarget)
+            );
+
+            return fromImplForTargetEventLike(
+                undefined,
+                ctxOrTargetOrObserverConstructor,
+                targetOrEventNameOrObserverConstructorOrObserverTarget,
+                eventNameOrOptionsOrObserverTarget
+            );
+
+        }
+
+
 
     }
 
