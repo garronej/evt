@@ -65,7 +65,7 @@ socket.$attach(
 
 \*\*\*\*[**Run the browser**](https://stackblitz.com/edit/evt-inheritence-pdzywu?file=index.ts)\*\*\*\*
 
-Now we encourage favoring composition over inheritance and having one Evt instance for each events type.
+Now we encourage favoring composition over inheritance and having one EVT instance for each events type.
 
 ```typescript
 import { Evt } from "evt";
