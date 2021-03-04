@@ -13,3 +13,4 @@ export type { UnpackTypeGuard } from "./UnpackTypeGuard";
 export type { ReturnType } from "./ReturnType";
 export type { Parameters } from "./Parameters";
 export type { Params } from "./Params";
+export * from "./doExtends";
