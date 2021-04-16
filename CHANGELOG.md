@@ -1,3 +1,7 @@
+### **1.9.13** (2021-04-16)  
+  
+- #19: Fix compat with Deno v1.9    
+  
 ### **1.9.12** (2020-12-29)  
   
 - Support --no-check deno flag  
