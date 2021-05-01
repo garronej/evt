@@ -6,5 +6,3 @@ export type { Postable } from "./Postable";
 export type { StatefulEvt } from "./StatefulEvt";
 export type { StatefulReadonlyEvt, StateDiff  } from "./StatefulReadonlyEvt";
 export type { StatefulPostable } from "./StatefulPostable";
-export type { VoidCtx } from "./VoidCtx";
-export type { VoidEvt } from "./VoidEvt";

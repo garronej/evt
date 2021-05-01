@@ -2,7 +2,6 @@
 import { Evt } from "./Evt";
 import type { StatefulEvt, StatefulReadonlyEvt, NonPostableEvt, UnpackEvt } from "./types";
 import type { PromiseOrNot } from "../tools/typeSafety";
-import type { UseVoidEvt } from "./types/helper/SwapEvtType";
 
 type EvtLike<T> = import("./types/helper").EvtLike<T> & {
     attach(callback: (data: T) => void): void;
@@ -25,11 +24,11 @@ type EvtLike<T> = import("./types/helper").EvtLike<T> & {
 export function asyncPipe<E extends EvtLike<any>, U>(
     evt: E,
     asyncOp: (data: UnpackEvt<E>) => PromiseOrNot<[U] | null>
-): UseVoidEvt<
+): 
     E extends StatefulReadonlyEvt<any> ? StatefulEvt<U | undefined> :
     E extends NonPostableEvt<any> ? Evt<U> :
     EvtLike<U>
-> {
+{
 
     const out = "state" in evt ?
         Evt.create<UnpackEvt<E> | undefined>(undefined) :

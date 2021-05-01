@@ -6,7 +6,7 @@ _.dom.__hack;
 
 {
 
-    type T = void; type Source = _.VoidEvt;
+    type T = void; type Source = _.Evt<void>;
 
     type A = _.ToNonPostableEvt<Source>;
 

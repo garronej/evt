@@ -1,25 +1,25 @@
 import { Polyfill as WeakMap } from "minimal-polyfills/WeakMap";
 import { importProxy } from "./importProxy";
-import type { VoidCtx } from "./types";
+import type { Ctx } from "./types";
 
 /** 
  * https://docs.evt.land/api/evt/getctx
  * 
- * Evt.weakCtx(obj) always return the same instance of VoidCtx for a given object.
+ * Evt.getCtx(obj) an instance of Ctx<void>, always the same for a given object.
  * No strong reference to the object is created
  * when the object is no longer referenced it's associated Ctx will be freed from memory.
  */
 export function getCtxFactory() {
 
-    const ctxByObj = new WeakMap<object, VoidCtx>();
+    const ctxByObj = new WeakMap<object, Ctx>();
 
-    function getCtx(obj: object): VoidCtx {
+    function getCtx(obj: object): Ctx {
 
         let ctx = ctxByObj.get(obj);
 
         if (ctx === undefined) {
 
-            ctx = (new importProxy.Ctx()) as VoidCtx;
+            ctx = (new importProxy.Ctx());
 
             ctxByObj.set(obj, ctx);
 

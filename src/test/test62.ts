@@ -1,5 +1,5 @@
 
-import { Evt, VoidEvt, TimeoutEvtError } from "../lib";
+import { Evt, TimeoutEvtError } from "../lib";
 import { id, assert } from "../tools/typeSafety";
 import { every } from "../tools/reducers";
 import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi";
@@ -17,7 +17,7 @@ function downloadFile(
     { fileSize, evtChunk, evtBtnCancelClick, evtSocketError, timeout }: {
         fileSize: number;
         evtChunk: Evt<Uint8Array>;
-        evtBtnCancelClick: VoidEvt;
+        evtBtnCancelClick: Evt<void>;
         evtSocketError: Evt<Error>;
         timeout: number;
     }

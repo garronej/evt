@@ -1,17 +1,12 @@
 
 import { importProxy } from "./importProxy";
-import type { Evt, VoidEvt, StatefulEvt } from "./types";
+import type { Evt, StatefulEvt } from "./types";
 
-/** 
- * https://docs.evt.land/api/evt/create
- * Return a new VoidEvt instance.
- */
-export function create(): VoidEvt;
 /** 
  * https://docs.evt.land/api/evt/create
  * Return a new Evt<T> instance.
  */
-export function create<T>(): Evt<T>;
+export function create<T = void>(): Evt<T>;
 /** 
  * https://docs.evt.land/api/evt/create
  * Return a new StatefulEvt<T> instance.

@@ -1,14 +1,11 @@
 import { importProxy } from "./importProxy";
 import type { Ctx } from "./Ctx";
-import type { VoidCtx } from "./types";
 
 /** 
  * https://docs.evt.land/api/evt/newctx
  * 
  * return a new Ctx instance
  * */
-export function newCtx(): VoidCtx;
-export function newCtx<T>(): Ctx<T>;
-export function newCtx(): Ctx<any> {
+export function newCtx<T = void>(): Ctx<T>{
     return new importProxy.Ctx();
 }

@@ -4,7 +4,7 @@ import * as _ from "../lib";
 _.dom.__hack;
 
 type A = _.SwapEvtType<_.Evt<number>, void>;
-const a: _.VoidEvt = null as any as A;a;
+const a: _.Evt<void> = null as any as A;a;
 
 type B = _.SwapEvtType<_.Evt<number>, string | number>;
 const b: _.Evt<string | number> = null as any as B; b;
@@ -22,10 +22,10 @@ type F = _.SwapEvtType<_.Evt<undefined | number>, string | Date>;
 const f: _.Evt<string | Date>= null as any as F;f
 
 type G = _.SwapEvtType<_.Evt<number | Date>, void>;
-const g: _.VoidEvt = null as any as G; g;
+const g: _.Evt<void> = null as any as G; g;
 
 type H = _.SwapEvtType<_.StatefulEvt<number>, void>;
-const h: _.VoidEvt= null as any as H; h;
+const h: _.Evt<void>= null as any as H; h;
 
 type I = _.SwapEvtType<_.StatefulReadonlyEvt<number>, void>;
 const i: _.StatefulReadonlyEvt<void> = null as any as I; i;
@@ -34,7 +34,7 @@ type J = _.SwapEvtType<_.NonPostableEvt<number>, void>;
 const j: _.NonPostableEvt<void>= null as any as J;j;
 
 type K = _.SwapEvtType<_.Evt<undefined | number>, void>;
-const k :_. VoidEvt = null as any as K; k;
+const k :_.Evt<void> = null as any as K; k;
 
 type L = _.SwapEvtType<_.Evt<any>, void | number>;
 const l :_. Evt<number | void> = null as any as L; l;

@@ -26,7 +26,7 @@ export namespace DoneOrAborted {
 
 
 /** https://docs.evt.land/api/ctx */
-export interface Ctx<Result> {
+export interface Ctx<Result = void> {
 
     /** https://docs.evt.land/api/ctx#ctx-evtdoneoraborted */
     readonly evtDoneOrAborted: Evt<DoneOrAborted<Result>>;

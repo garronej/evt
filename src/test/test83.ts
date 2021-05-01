@@ -1,16 +1,16 @@
 
-import { Evt, VoidEvt, matchVoid } from "../lib";
+import { Evt } from "../lib";
 import { assert } from "../tools/typeSafety";
 
 const voidEvt = Evt.create();
 
-const evt: Evt<string> | VoidEvt = voidEvt as any;
+const evt: Evt<string> | Evt<void> = voidEvt as any;
 
 let count = 0;
 
 Evt.factorize(evt).attach(data => {
 
-    if (matchVoid(data)) {
+    if (data === undefined) {
 
         count++;
         return;

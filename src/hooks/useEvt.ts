@@ -2,7 +2,7 @@ import * as React from "react";
 const { useEffect, useRef, useState } = React;
 
 import { Evt } from "../lib/Evt";
-import type { VoidCtx } from "../lib";
+import type { Ctx } from "../lib";
 import { useSemanticGuaranteeMemo } from "../tools/hooks/useSemanticGuaranteeMemo";
 
 //TODO: Find a more reliable way to test if <React.UseStrict> is used.
@@ -29,14 +29,14 @@ const isDevStrictMode = typeof process !== "object" ?
  * factoryOrEffect can be used for attaching handler to event
  * or to generate a new event that is a merge/pipe of other 
  * Evts.
- * 
+ * c
  * BE AWARE: Unlike useEffect factoryOrEffect is called 
  * on render ( like useMemo's callback ).
  * 
  * Demo: https://stackblitz.com/edit/evt-useevt?file=index.tsx
  */
 export function useEvt<T>(
-    factoryOrEffect: (ctx: VoidCtx) => T,
+    factoryOrEffect: (ctx: Ctx) => T,
     deps: React.DependencyList
 ): T {
 
@@ -68,7 +68,7 @@ export function useEvt<T>(
  * callback we clear the context if useEffect(f,[])
  * is not invoked right after useState(f).
  */
-function useClearCtxIfReactStrictModeInspectRun(isDevStrictMode: boolean, ctx: VoidCtx) {
+function useClearCtxIfReactStrictModeInspectRun(isDevStrictMode: boolean, ctx: Ctx) {
 
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 

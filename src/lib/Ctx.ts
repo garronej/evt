@@ -15,7 +15,7 @@ import type {
     DoneOrAborted
 } from "./types";
 
-export type Ctx<Result> = import("./types/interfaces").Ctx<Result>;
+export type Ctx<Result = void> = import("./types/interfaces").Ctx<Result>;
 
 class CtxImpl<Result> implements Ctx<Result>{
 
