@@ -192,13 +192,13 @@ class EvtImpl<T> implements Evt<T> {
     declare private __asyncHandlerChronologyExceptionRange:
         (typeof EvtImpl.prototype.asyncHandlerChronologyExceptionRange) | undefined;
 
-    declare private readonly invocableOpByOb: WeakMap<
+    declare private readonly invocableOpByOp: WeakMap<
         Operator<T, any>,
         Operator.fλ.Stateless<T, any>
     >;
 
     declare private __invocableOpByOb:
-        (typeof EvtImpl.prototype.invocableOpByOb) | undefined;
+        (typeof EvtImpl.prototype.invocableOpByOp) | undefined;
 
     private static __2: void = (() => {
 
@@ -230,7 +230,7 @@ class EvtImpl<T> implements Evt<T> {
 
     getInvocableOp<U>(op: Operator<T, U>): Operator.fλ.Stateless<T, U> {
 
-        const invocableOp = this.invocableOpByOb.get(op);
+        const invocableOp = this.invocableOpByOp.get(op);
 
         if( invocableOp === undefined ){
             throw new Error([
@@ -332,7 +332,7 @@ class EvtImpl<T> implements Evt<T> {
         propsFromMethodName: Handler.PropsFromMethodName
     ): Handler<T, U> {
 
-        this.invocableOpByOb.set(
+        this.invocableOpByOp.set(
             propsFromArgs.op,
             convertOperatorToStatelessFλ(propsFromArgs.op)
         );
