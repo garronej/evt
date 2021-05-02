@@ -197,7 +197,7 @@ class EvtImpl<T> implements Evt<T> {
         Operator.fλ.Stateless<T, any>
     >;
 
-    declare private __invocableOpByOb:
+    declare private __invocableOpByOp:
         (typeof EvtImpl.prototype.invocableOpByOp) | undefined;
 
     private static __2: void = (() => {
@@ -208,7 +208,7 @@ class EvtImpl<T> implements Evt<T> {
             ([
                 "__asyncHandlerChronologyMark",
                 "__asyncHandlerChronologyExceptionRange",
-                "__invocableOpByOb"
+                "__invocableOpByOp"
             ] as const).map(key => [
                 key.substr(2),
                 {
