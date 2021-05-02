@@ -1,5 +1,4 @@
 import "minimal-polyfills/Object.is";
-import { defineAccessors } from "../tools/typeSafety/defineAccessors";
 import { LazyEvt } from "./LazyEvt";
 import { LazyStatefulEvt } from "./LazyStatefulEvt";
 import { importProxy } from "./importProxy";
@@ -15,7 +14,11 @@ const runSideEffect = (sideEffect: ()=> void) => sideEffect();
 class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
 
     __state: T;
-    declare state: T;
+    get state(): T { return this.__state; }
+    set state(value: T) {
+        if (this.state === value) return; 
+        this.post(value);
+    }
 
     constructor(initialState: T) {
         super();
@@ -31,7 +34,7 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
                     runSideEffect
                 );
 
-                if( !opResult ){
+                if (!opResult) {
                     return;
                 }
 
@@ -42,51 +45,13 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
     }
 
     private readonly lazyEvtDiff = new LazyEvt<StateDiff<T>>();
-    declare public readonly evtDiff: NonPostableEvt<StateDiff<T>>;
+    get evtDiff(): NonPostableEvt<StateDiff<T>> { return this.lazyEvtDiff.evt; }
 
     private readonly lazyEvtChange: LazyStatefulEvt<T>;
-    declare public readonly evtChange: StatefulReadonlyEvt<T>;
+    get evtChange(): StatefulReadonlyEvt<T> { return this.lazyEvtChange.evt; }
 
     private readonly lazyEvtChangeDiff = new LazyEvt<StateDiff<T>>();
-    declare public readonly evtChangeDiff: NonPostableEvt<StateDiff<T>>;
-
-    private static __4: void = (() => {
-
-        if (false) { StatefulEvtImpl.__4 }
-
-        defineAccessors(
-            StatefulEvtImpl.prototype,
-            "state",
-            {
-                "get": function (this: StatefulEvtImpl<any>) { return this.__state; },
-                "set": function (this: StatefulEvtImpl<any>, state) { 
-                    if( this.state === state ){
-                        return;
-                    }
-                    this.post(state); 
-                }
-            }
-        );
-
-        defineAccessors(
-            StatefulEvtImpl.prototype,
-            "evtDiff",
-            { "get": function (this: StatefulEvtImpl<any>) { return this.lazyEvtDiff.evt; } }
-        );
-
-        defineAccessors(
-            StatefulEvtImpl.prototype,
-            "evtChange",
-            { "get": function (this: StatefulEvtImpl<any>) { return this.lazyEvtChange.evt; } }
-        );
-
-        defineAccessors(
-            StatefulEvtImpl.prototype,
-            "evtChangeDiff",
-            { "get": function (this: StatefulEvtImpl<any>) { return this.lazyEvtChangeDiff.evt; } }
-        );
-
-    })();
+    get evtChangeDiff(): NonPostableEvt<StateDiff<T>> { return this.lazyEvtChangeDiff.evt; }
 
     post(data: T): number {
         return this.__post(data, false, false);
@@ -145,11 +110,11 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
             ;
 
         const opResult = this.getInvocableOp(parsePropsFromArgs(args, "pipe").op)(
-            this.__state, 
+            this.__state,
             runSideEffect
         );
 
-        if( !opResult  ){
+        if (!opResult) {
 
             throw new Error([
                 "Cannot pipe StatefulEvt because the operator does not match",

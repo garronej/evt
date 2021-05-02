@@ -11,7 +11,6 @@ import { asNonPostable } from "./Evt.asNonPostable";
 import { parsePropsFromArgs, matchAll } from "./Evt.parsePropsFromArgs";
 import { newCtx } from "./Evt.newCtx";
 import { LazyEvt } from "./LazyEvt";
-import { defineAccessors } from "../tools/typeSafety/defineAccessors";
 import { Polyfill as Map, LightMap } from "minimal-polyfills/Map";
 import { Polyfill as WeakMap } from "minimal-polyfills/WeakMap";
 import * as runExclusive from "run-exclusive";
@@ -85,37 +84,17 @@ class EvtImpl<T> implements Evt<T> {
 
     }
 
-    declare readonly evtAttach: Evt<Handler<T, any>>;
-    declare readonly evtDetach: Evt<Handler<T, any>>;
+    get evtAttach(): Evt<Handler<T, any>> {
+        return this.lazyEvtAttach.evt;
+    }
+
+    get evtDetach(): Evt<Handler<T, any>> {
+        return this.lazyEvtDetach.evt;
+    }
 
     private readonly lazyEvtAttach = new LazyEvt<Handler<T, any>>();
     private readonly lazyEvtDetach = new LazyEvt<Handler<T, any>>();
 
-    private static __1: void = (() => {
-
-        if (false) { EvtImpl.__1 }
-
-        defineAccessors(
-            EvtImpl.prototype,
-            "evtAttach",
-            {
-                "get": function (this: EvtImpl<any>) {
-                    return this.lazyEvtAttach.evt;
-                }
-            }
-        );
-
-        defineAccessors(
-            EvtImpl.prototype,
-            "evtDetach",
-            {
-                "get": function (this: EvtImpl<any>) {
-                    return this.lazyEvtDetach.evt;
-                }
-            }
-        );
-
-    })();
 
     private __maxHandlers: undefined | number = undefined;
 
@@ -173,66 +152,39 @@ class EvtImpl<T> implements Evt<T> {
         (opResult: readonly [any]) => PromiseLike<void> | undefined
     > = new Map();
 
+
     //NOTE: An async handler ( attached with waitFor ) is only eligible to handle a post if the post
     //occurred after the handler was set. We don't want to waitFor event from the past.
     //private readonly asyncHandlerChronologyMark = new WeakMap<ImplicitParams.Async, number>();
-    declare private readonly asyncHandlerChronologyMark: WeakMap<
+    private get asyncHandlerChronologyMark(): WeakMap<
         Handler.PropsFromMethodName.Async,
         number
-    >;
-    declare private __asyncHandlerChronologyMark:
-        (typeof EvtImpl.prototype.asyncHandlerChronologyMark) | undefined;
+    > {
+        return ((this as any)["~internal"] ??= {})["asyncHandlerChronologyMark"] ??= new WeakMap<any, any>();
+    }
 
     //NOTE: There is an exception to the above rule, we want to allow async waitFor loop 
     //do so we have to handle the case where multiple event would be posted synchronously.
-    declare private readonly asyncHandlerChronologyExceptionRange: WeakMap<
+    private get asyncHandlerChronologyExceptionRange(): WeakMap<
         Handler.PropsFromMethodName.Async,
         { lowerMark: number; upperMark: number; }
-    >;
-    declare private __asyncHandlerChronologyExceptionRange:
-        (typeof EvtImpl.prototype.asyncHandlerChronologyExceptionRange) | undefined;
+    > {
+        return ((this as any)["~internal"] ??= {})["asyncHandlerChronologyExceptionRange"] ??= new WeakMap<any, any>();
+    }
 
-    declare private readonly invocableOpByOp: WeakMap<
+
+    private get invocableOpByOp(): WeakMap<
         Operator<T, any>,
         Operator.fλ.Stateless<T, any>
-    >;
-
-    declare private __invocableOpByOp:
-        (typeof EvtImpl.prototype.invocableOpByOp) | undefined;
-
-    private static __2: void = (() => {
-
-        if (false) { EvtImpl.__2; }
-
-        Object.defineProperties(EvtImpl.prototype,
-            ([
-                "__asyncHandlerChronologyMark",
-                "__asyncHandlerChronologyExceptionRange",
-                "__invocableOpByOp"
-            ] as const).map(key => [
-                key.substr(2),
-                {
-                    "get": function (this: EvtImpl<any>) {
-
-                        if (this[key] === undefined) {
-                            this[key] = new WeakMap<any, any>();
-                        }
-
-                        return this[key];
-
-                    }
-                }
-            ] as const).reduce<any>((prev, [key, obj]) => ({ ...prev, [key]: obj }), {})
-        );
-
-
-    })();
+    > {
+        return ((this as any)["~internal"] ??= {})["invocableOpByOp"] ??= new WeakMap<any, any>();
+    }
 
     getInvocableOp<U>(op: Operator<T, U>): Operator.fλ.Stateless<T, U> {
 
         const invocableOp = this.invocableOpByOp.get(op);
 
-        if( invocableOp === undefined ){
+        if (invocableOp === undefined) {
             throw new Error([
                 "Provided operator isn't the operator of any handler",
                 "currently attached to the Evt instance"

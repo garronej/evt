@@ -4,7 +4,6 @@ import { assert } from "../tools/typeSafety/assert";
 import { typeGuard } from "../tools/typeSafety/typeGuard";
 import { LazyEvt } from "./LazyEvt";
 import { importProxy } from "./importProxy";
-import { defineAccessors } from "../tools/typeSafety/defineAccessors";
 import { overwriteReadonlyProp } from "../tools/typeSafety/overwriteReadonlyProp";
 
 import type { 
@@ -19,11 +18,18 @@ export type Ctx<Result = void> = import("./types/interfaces").Ctx<Result>;
 
 class CtxImpl<Result> implements Ctx<Result>{
 
-    declare readonly evtDoneOrAborted: Evt<DoneOrAborted<Result>>;
 
-    declare readonly evtAttach: Evt<Handler.WithEvt<any, Result>>;
+    get evtDoneOrAborted(): Evt<DoneOrAborted<Result>> {
+        return this.lazyEvtDoneOrAborted.evt;
+    }
 
-    declare readonly evtDetach: Evt<Handler.WithEvt<any, Result>>;
+    get evtAttach(): Evt<Handler.WithEvt<any, Result>> {
+        return this.lazyEvtAttach.evt;
+    }
+
+    get evtDetach(): Evt<Handler.WithEvt<any, Result>> {
+        return this.lazyEvtDetach.evt;
+    }
 
 
     private lazyEvtAttach = new LazyEvt<Handler.WithEvt<any, Result>>();
@@ -33,42 +39,6 @@ class CtxImpl<Result> implements Ctx<Result>{
     private onDoneOrAborted(doneEvtData: DoneOrAborted<Result>): void {
         this.lazyEvtDoneOrAborted.post(doneEvtData);
     }
-
-    private static __1: void = (() => {
-
-        if (false) { CtxImpl.__1 }
-
-        defineAccessors(
-            CtxImpl.prototype,
-            "evtDoneOrAborted",
-            {
-                "get": function (this: CtxImpl<any>) {
-                    return this.lazyEvtDoneOrAborted.evt;
-                }
-            }
-        );
-
-        defineAccessors(
-            CtxImpl.prototype,
-            "evtAttach",
-            {
-                "get": function (this: CtxImpl<any>) {
-                    return this.lazyEvtAttach.evt;
-                }
-            }
-        );
-
-        defineAccessors(
-            CtxImpl.prototype,
-            "evtDetach",
-            {
-                "get": function (this: CtxImpl<any>) {
-                    return this.lazyEvtDetach.evt;
-                }
-            }
-        );
-
-    })();
 
     waitFor(timeout?: number): Promise<Result> {
         return this.evtDoneOrAborted

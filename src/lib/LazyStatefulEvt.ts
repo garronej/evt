@@ -1,40 +1,29 @@
 import { overwriteReadonlyProp } from "../tools/typeSafety/overwriteReadonlyProp";
 import { importProxy } from "./importProxy";
-import type { StatefulEvt } from "./types"
-import { defineAccessors } from "../tools/typeSafety/defineAccessors";
-
+import type { StatefulEvt } from "./types"
 export class LazyStatefulEvt<T> {
 
     private initialPostCount = 0;
     private initialState: T;
 
-    declare readonly evt: StatefulEvt<T>;
+    get evt(): StatefulEvt<T> {
+
+        if (this.__evt === undefined) {
+            this.__evt = new importProxy.StatefulEvt(this.initialState);
+            //NOTE: For avoid keeping strong reference
+            this.initialState = null as any;
+            overwriteReadonlyProp(this.__evt, "postCount", this.initialPostCount);
+        }
+
+        return this.__evt;
+
+    }
     declare private __evt: StatefulEvt<T>;
 
-    constructor(initialState: T){
+    constructor(initialState: T) {
         this.initialState = initialState;
     }
 
-    private static __1: void = (() => {
-
-        if (false) { LazyStatefulEvt.__1; }
-
-        defineAccessors(LazyStatefulEvt.prototype, "evt", {
-            "get": function (this: LazyStatefulEvt<any>) {
-
-                if (this.__evt === undefined) {
-                    this.__evt = new importProxy.StatefulEvt(this.initialState);
-                    delete this.initialState;
-                    overwriteReadonlyProp(this.__evt, "postCount", this.initialPostCount);
-                }
-
-                return this.__evt;
-
-            }
-        });
-
-
-    })();
 
     private __post(data: T, doWait: false): number;
     private __post(data: T, doWait: true): Promise<void>;
@@ -49,15 +38,15 @@ export class LazyStatefulEvt<T> {
 
         }
 
-        return this.__evt[doWait?"postAndWait":"post"](data);
+        return this.__evt[doWait ? "postAndWait" : "post"](data);
 
     }
 
-    post(data: T){
-        return this.__post(data,false);
+    post(data: T) {
+        return this.__post(data, false);
     }
 
-    postAndWait(data: T){
+    postAndWait(data: T) {
         return this.__post(data, true);
     }
 

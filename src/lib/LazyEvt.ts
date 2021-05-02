@@ -1,34 +1,23 @@
 import { overwriteReadonlyProp } from "../tools/typeSafety/overwriteReadonlyProp";
 import { importProxy } from "./importProxy";
-import type { Evt } from "./types";
-import { defineAccessors } from "../tools/typeSafety/defineAccessors";
+import type { Evt } from "./types";
 
 export class LazyEvt<T> {
 
     private initialPostCount = 0;
 
-    declare readonly evt: Evt<T>;
+    get evt(): Evt<T> {
+
+        if (this.__evt === undefined) {
+            this.__evt = new importProxy.Evt();
+            overwriteReadonlyProp(this.__evt, "postCount", this.initialPostCount);
+        }
+
+        return this.__evt;
+
+    }
+
     declare private __evt: Evt<T>;
-
-    private static __1: void = (() => {
-
-        if (false) { LazyEvt.__1; }
-
-        defineAccessors(LazyEvt.prototype, "evt", {
-            "get": function (this: LazyEvt<any>) {
-
-                if (this.__evt === undefined) {
-                    this.__evt = new importProxy.Evt();
-                    overwriteReadonlyProp(this.__evt, "postCount", this.initialPostCount);
-                }
-
-                return this.__evt;
-
-            }
-        });
-
-
-    })();
 
     private __post(data: T, doWait: false): number;
     private __post(data: T, doWait: true): Promise<void>;
@@ -40,15 +29,15 @@ export class LazyEvt<T> {
 
         }
 
-        return this.__evt[doWait?"postAndWait":"post"](data);
+        return this.__evt[doWait ? "postAndWait" : "post"](data);
 
     }
 
-    post(data: T){
-        return this.__post(data,false);
+    post(data: T) {
+        return this.__post(data, false);
     }
 
-    postAndWait(data: T){
+    postAndWait(data: T) {
         return this.__post(data, true);
     }
 
