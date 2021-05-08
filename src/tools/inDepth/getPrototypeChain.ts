@@ -35,9 +35,8 @@ export function getPrototypeChain(obj: Object, callback?: (proto: Object) => boo
     return [proto, ...getPrototypeChain(proto)];
 
 }
-export namespace getPrototypeChain {
 
-    export const isMatched = z_.isMatched;
+getPrototypeChain.isMatched = z_.isMatched;
 
-}
+
 
