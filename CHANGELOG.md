@@ -1,3 +1,7 @@
+### **1.9.14** (2021-05-08)  
+  
+- Deno fix: tools/inDepth --no-check compat    
+  
 ### **1.9.13** (2021-04-16)  
   
 - #19: Fix compat with Deno v1.9    
