@@ -1,4 +1,4 @@
-import { typeGuard } from "../typeSafety/typeGuard";
+import { typeGuard } from "tsafe/typeGuard";
 import { getPrototypeChain } from "./getPrototypeChain";
 
 type SetLike<T> = {

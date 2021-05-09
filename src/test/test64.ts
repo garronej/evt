@@ -3,7 +3,7 @@ import { Evt } from "../lib";
 
 import { chunksOf } from "../lib/util/genericOperators/chunksOf";
 import { same } from "../tools/inDepth";
-import { assert } from "../tools/typeSafety"
+import { assert } from "tsafe";
 
 
 {

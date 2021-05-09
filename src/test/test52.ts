@@ -1,6 +1,6 @@
 
 import { Evt, throttleTime } from "../lib";
-import { assert } from "../tools/typeSafety";
+import { assert } from "tsafe";
 
 const evtCount = new Evt<number>();
 

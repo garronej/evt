@@ -1,9 +1,9 @@
 
-import { assert } from "../typeSafety/assert";
+import { assert } from "tsafe/assert";
 import { Polyfill as Map, LightMap } from "minimal-polyfills/Map";
 type LightSet<T> = import("minimal-polyfills/Set").LightSet<T>;
 import { MapLike, SetLike, ArrayLike, DateLike } from "./types";
-import { overwriteReadonlyProp } from "../typeSafety/overwriteReadonlyProp";
+import { overwriteReadonlyProp } from "tsafe/lab/overwriteReadonlyProp";
 
 /** Will work with:
  * Array

@@ -1,5 +1,5 @@
 import { Evt, StatefulReadonlyEvt } from "../lib";
-import { assert } from "../tools/typeSafety";
+import { assert } from "tsafe/assert";
 
 
 const evtCount = Evt.create(0);

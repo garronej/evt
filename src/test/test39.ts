@@ -1,6 +1,7 @@
 
 import { Evt, ToNonPostableEvt } from "../lib";
-import { id, assert } from "../tools/typeSafety";
+import { assert } from "tsafe/assert";
+import { id } from "tsafe/id";
 
 type Person = {
     name: string;

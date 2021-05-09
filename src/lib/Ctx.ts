@@ -1,10 +1,10 @@
 import { Polyfill as Set } from "minimal-polyfills/Set";
 import { Polyfill as WeakMap } from "minimal-polyfills/WeakMap";
-import { assert } from "../tools/typeSafety/assert";
-import { typeGuard } from "../tools/typeSafety/typeGuard";
+import { assert } from "tsafe/assert";;
+import { typeGuard } from "tsafe/typeGuard";
 import { LazyEvt } from "./LazyEvt";
 import { importProxy } from "./importProxy";
-import { overwriteReadonlyProp } from "../tools/typeSafety/overwriteReadonlyProp";
+import { overwriteReadonlyProp } from "tsafe/lab/overwriteReadonlyProp";
 
 import type { 
     Handler, 

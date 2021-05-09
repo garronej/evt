@@ -1,5 +1,5 @@
 import { convertOperatorToStatelessFλ } from "./convertOperatorToStatelessFLambda";
-import { id } from "../../tools/typeSafety/id";
+import { id } from "tsafe/id";
 import type { Operator } from "../types/Operator";
 
 function f_o_g<A, B, C>(

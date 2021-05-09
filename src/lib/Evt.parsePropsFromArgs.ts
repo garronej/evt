@@ -1,8 +1,8 @@
 
 import type { Operator } from "./types/Operator"
-import { id } from "../tools/typeSafety/id";
+import { id } from "tsafe/id";
 import { compose } from "./util/compose";
-import { typeGuard } from "../tools/typeSafety/typeGuard"
+import { typeGuard } from "tsafe/typeGuard"
 import type { CtxLike, Handler } from "./types";
 
 export function matchAll() { return true; }

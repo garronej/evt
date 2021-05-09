@@ -2,7 +2,7 @@
 import { Evt } from "../lib";
 import * as inDepth from "../tools/inDepth";
 import { diff } from "../tools/reducers";
-import { assert } from "../tools/typeSafety";
+import { assert } from "tsafe/assert";
 
 {
 

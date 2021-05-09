@@ -1,4 +1,4 @@
-import { overwriteReadonlyProp } from "../tools/typeSafety/overwriteReadonlyProp";
+import { overwriteReadonlyProp } from "tsafe/lab/overwriteReadonlyProp";
 import { importProxy } from "./importProxy";
 import type { StatefulEvt } from "./types"
 export class LazyStatefulEvt<T> {

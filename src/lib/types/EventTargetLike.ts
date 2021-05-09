@@ -1,5 +1,5 @@
 
-import { typeGuard } from "../../tools/typeSafety";
+import { typeGuard } from "tsafe/typeGuard";
 
 export type EventTargetLike<T> =
     EventTargetLike.HasEventTargetAddRemove<T> |

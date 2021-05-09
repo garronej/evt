@@ -1,6 +1,6 @@
 
 import { Evt, Handler } from "../lib";
-import { assert } from "../tools/typeSafety";
+import { assert } from "tsafe/assert";
 import { getHandlerPr } from "./getHandlerPr";
 import { getPromiseAssertionApi } from "../tools/testing";
 

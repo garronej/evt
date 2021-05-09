@@ -1,6 +1,6 @@
 
 import { Evt, to, dom } from "../lib";
-import { assert } from "../tools/typeSafety";
+import { assert } from "tsafe/assert";
 
 const evt = new Evt<
     ["text", string] |

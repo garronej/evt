@@ -1,7 +1,7 @@
 import { ReduceArguments, toReduceArguments } from "./reduceify";
 import { contains } from "./contains";
 import { removeDuplicates } from "./removeDuplicates";
-import { id } from "../typeSafety/id";
+import { id } from "tsafe/id";
 
 export type ArrDiff<T> = {
     added: readonly T[];

@@ -1,5 +1,5 @@
 
-import { typeGuard } from "../../../tools/typeSafety/typeGuard";
+import { typeGuard } from "tsafe/typeGuard";
 import type { EvtLike  } from "../helper";
 import type { Handler } from "../Handler";
 

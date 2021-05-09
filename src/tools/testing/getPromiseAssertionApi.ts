@@ -1,5 +1,4 @@
-
-import { assert } from "../typeSafety";
+import { assert } from "tsafe/assert";
 import { sameFactory } from "../inDepth/same";
 
 export function getPromiseAssertionApi(

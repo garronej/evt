@@ -1,7 +1,7 @@
 import { Evt } from "../lib";
 import { getHandlerPr } from "./getHandlerPr";
 import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi";
-import { assert } from "../tools/typeSafety";
+import { assert } from "tsafe/assert";
 
 const { mustResolve, mustReject } = getPromiseAssertionApi();
 

@@ -1,6 +1,6 @@
-import { id } from "../tools/typeSafety/id";
-import { assert } from "../tools/typeSafety/assert";
-import { typeGuard } from "../tools/typeSafety/typeGuard";
+import { id } from "tsafe/id";
+import { assert } from "tsafe/assert";;
+import { typeGuard } from "tsafe/typeGuard";
 import { mergeImpl } from "./Evt.merge";
 import { importProxy } from "./importProxy";
 import type { dom, Evt, EvtLike } from "./types";

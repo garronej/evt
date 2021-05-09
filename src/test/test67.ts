@@ -1,5 +1,5 @@
 import { Evt, compose } from "../lib";
-import { assert } from "../tools/typeSafety";
+import { assert } from "tsafe/assert";
 import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi";
 import { getHandlerPr } from "./getHandlerPr";
 

@@ -1,6 +1,7 @@
 
 import { Evt, TimeoutEvtError } from "../lib";
-import { id, assert } from "../tools/typeSafety";
+import { assert } from "tsafe/assert";
+import { id } from "tsafe/id";
 import { every } from "../tools/reducers";
 import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi";
 import { concatUint8Array } from "../tools/concatUint8Array";

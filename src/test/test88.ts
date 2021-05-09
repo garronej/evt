@@ -1,7 +1,7 @@
 
 
 import { Evt } from "../lib";
-import { assert } from "../tools/typeSafety";
+import { assert } from "tsafe";
 
 
 const evtText = Evt.create("foo");

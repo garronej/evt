@@ -1,5 +1,5 @@
 import { Evt } from "../lib";
-import { assert } from "../tools/typeSafety";
+import { assert } from "tsafe/assert";
 
 const evtText = new Evt<string>();
 

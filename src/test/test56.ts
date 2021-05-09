@@ -2,7 +2,7 @@
 import { Evt } from "../lib";
 import { EventEmitter } from "events";
 import { getPromiseAssertionApi } from "../tools/testing";
-import { assert } from "../tools/typeSafety";
+import { assert } from "tsafe/assert";
 
 (async () => {
 

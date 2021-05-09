@@ -1,6 +1,6 @@
 import { Evt } from "../lib";
 //import { Evt as EvtNext } from "../lib/Evt";
-import { id } from "../tools/typeSafety";
+import { id } from "tsafe/id";
 import { getPromiseAssertionApi } from "../tools/testing";
 import { getHandlerPr } from "./getHandlerPr";
 const { mustResolve, mustStayPending } = getPromiseAssertionApi();

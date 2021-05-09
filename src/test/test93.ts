@@ -1,6 +1,6 @@
 
 import { Evt, to } from "../lib";
-import { assert } from "../tools/typeSafety/assert";
+import { assert } from "tsafe/assert";
 
 
 const evt = new Evt<["event1", string] | ["event2", number]>();

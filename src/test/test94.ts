@@ -1,4 +1,4 @@
-import { assert, AssertionError } from "../tools/typeSafety/assert";
+import { assert, AssertionError } from "tsafe";
 
 try {
 

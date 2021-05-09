@@ -1,6 +1,6 @@
 
 import { Evt } from "../lib";
-import { assert } from "../tools/typeSafety";
+import { assert } from "tsafe/assert";
 
 const evtAge = new Evt<number>();
 

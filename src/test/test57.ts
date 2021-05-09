@@ -1,7 +1,7 @@
 import { Evt } from "../lib";
 import { Subject } from "rxjs";
 import { getPromiseAssertionApi } from "../tools/testing";
-import { assert } from "../tools/typeSafety";
+import { assert } from "tsafe";
 
 (async () => {
 

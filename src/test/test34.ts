@@ -1,7 +1,7 @@
 
-import { exclude } from "../tools/typeSafety/exclude";
+import { exclude } from "tsafe/exclude";
 import { same } from "../tools/inDepth";
-import { assert } from "../tools/typeSafety/assert"
+import { assert } from "tsafe/assert";
 
 
 {

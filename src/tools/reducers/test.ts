@@ -1,5 +1,4 @@
-
-import { assert } from "../typeSafety";
+import { assert } from "tsafe/assert";
 import { every, allEqualsTo, allEquals, removeDuplicates, partition, allUniq, and, count, includes, or, sameAs, diff } from "./index";
 import { arrEvery } from "./every";
 import { arrPartition } from "./partition";

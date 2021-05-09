@@ -1,7 +1,7 @@
 
 import { Evt } from "./Evt";
 import type { StatefulEvt, StatefulReadonlyEvt, NonPostableEvt, UnpackEvt } from "./types";
-import type { PromiseOrNot } from "../tools/typeSafety";
+import type { PromiseOrNot } from "tsafe/lab/PromiseOrNot";
 
 type EvtLike<T> = import("./types/helper").EvtLike<T> & {
     attach(callback: (data: T) => void): void;

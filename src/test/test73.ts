@@ -1,6 +1,6 @@
 
 import { Evt } from "../lib";
-import { assert } from "../tools/typeSafety/assert";
+import { assert } from "tsafe/assert";;
 
 {
 

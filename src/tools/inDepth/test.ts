@@ -1,7 +1,7 @@
 
 
 import { sameFactory, same } from "./same";
-import { assert } from "../typeSafety/assert";
+import { assert } from "tsafe/assert";
 import { copy } from "./copy";
 import * as util from "util";
 

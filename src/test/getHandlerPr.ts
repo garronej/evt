@@ -1,7 +1,7 @@
 
 type NonPostableEvt<T> = import("../lib").NonPostableEvt<T>;
 import { arrDiff } from "../tools/reducers/diff";
-import { assert } from "../tools/typeSafety";
+import { assert } from "tsafe";
 
 /** For tests that used the legacy attach returned Promise */
 export function getHandlerPr(evt: NonPostableEvt<any>, run: ()=> void): Promise<any>{

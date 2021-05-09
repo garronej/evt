@@ -1,5 +1,5 @@
 import { Evt, Ctx } from "../lib";
-import { assert } from "../tools/typeSafety/assert";
+import { assert } from "tsafe/assert";
 
 assert(Evt.name === "Evt");
 assert(Ctx.name === "Ctx");
