@@ -108,7 +108,7 @@ _*Those are introductory examples, EVT can do much more than this._
         <img src="https://user-images.githubusercontent.com/6702424/85961024-ed4aca00-b9a7-11ea-9c7e-03e2f59e6d21.png"> 
     </a>
     <a href="https://insee.fr">
-        <img src="https://avatars.githubusercontent.com/u/56802548?s=200&v=4"> 
+        <img src="https://user-images.githubusercontent.com/6702424/117936881-a9358f00-b305-11eb-84b9-e61593632bdd.png"> 
     </a>
 </p>
 
