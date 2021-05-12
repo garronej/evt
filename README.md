@@ -65,7 +65,7 @@ evt.post(["text", "hi!"]);
 evt.post(["time", 123]);
 evt.post(["time", 1234]);
 ```
-in React
+in React, it let you attach event listeners without having to worry about detaching them.
 ```typescript
 import { useState } from "react";
 import { Evt } from "evt";
@@ -106,6 +106,9 @@ _*Those are introductory examples, EVT can do much more than this._
     <br>
     <a href="https://thegraph.com">
         <img src="https://user-images.githubusercontent.com/6702424/85961024-ed4aca00-b9a7-11ea-9c7e-03e2f59e6d21.png"> 
+    </a>
+    <a href="https://insee.fr">
+        <img src="https://avatars.githubusercontent.com/u/56802548?s=200&v=4"> 
     </a>
 </p>
 
