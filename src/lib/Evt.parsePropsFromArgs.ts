@@ -10,7 +10,7 @@ export function matchAll() { return true; }
 const canBeOperator = (p: undefined | CtxLike<any> | Operator<any, any>): boolean => {
     return (
         p !== undefined &&
-        typeGuard<Operator<any, any>>(p) &&
+        typeGuard<Operator<any, any>>(p, true) &&
         (
             typeof p === "function" ||
             typeof p[0] === "function"
@@ -29,8 +29,6 @@ export function parsePropsFromArgs<T>(
     inputs: readonly any[],
     methodName: "waitFor" | "attach*" | "pipe"
 ): Handler.PropsFromArgs<T, any> {
-
-    typeGuard<Handler.PropsFromArgs<T, any>>(defaultParams);
 
     type Out = Handler.PropsFromArgs<T, any>;
 

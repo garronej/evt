@@ -1,7 +1,7 @@
 import { Polyfill as Set } from "minimal-polyfills/Set";
 import { Polyfill as WeakMap } from "minimal-polyfills/WeakMap";
 import { assert } from "tsafe/assert";;
-import { typeGuard } from "tsafe/typeGuard";
+import { is } from "tsafe/is";
 import { LazyEvt } from "./LazyEvt";
 import { importProxy } from "./importProxy";
 import { overwriteReadonlyProp } from "tsafe/lab/overwriteReadonlyProp";
@@ -119,7 +119,7 @@ class CtxImpl<Result> implements Ctx<Result>{
         evt: EvtLike<T>
     ) {
         assert(handler.ctx === this);
-        assert(typeGuard<Handler<T, any, Ctx<Result>>>(handler));
+        assert(is<Handler<T, any, Ctx<Result>>>(handler));
         this.handlers.add(handler);
         this.evtByHandler.set(handler, evt);
         this.lazyEvtAttach.post({ handler, evt });
@@ -129,7 +129,7 @@ class CtxImpl<Result> implements Ctx<Result>{
         handler: Handler<T, any, CtxLike<Result>>,
     ) {
         assert(handler.ctx === this);
-        assert(typeGuard<Handler<T, any, Ctx<Result>>>(handler));
+        assert(is<Handler<T, any, Ctx<Result>>>(handler));
 
         this.lazyEvtDetach.post({
             handler,

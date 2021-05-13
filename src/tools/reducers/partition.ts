@@ -1,5 +1,5 @@
 import { assert } from "tsafe/assert";
-import { typeGuard } from "tsafe/typeGuard";
+import { is } from "tsafe/is";
 import { ReduceArguments, toReduceArguments } from "./reduceify";
 
 function arrPartitionImpl<ArrOf, U extends ArrOf>(
@@ -16,7 +16,7 @@ function arrPartitionImpl<ArrOf, U extends ArrOf>(
         } else {
 
             //NOTE: Should be deduced by the compiler
-            assert(typeGuard<Exclude<ArrOf, U>>(currentValue));
+            assert(is<Exclude<ArrOf, U>>(currentValue));
 
             previousValue[1].push(currentValue);
 

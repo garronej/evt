@@ -10,7 +10,7 @@ export namespace SetLike {
 
     export function match<T>(set: Object): set is SetLike<T> {
         return (
-            typeGuard<SetLike<T>>(set) &&
+            typeGuard<SetLike<T>>(set, true) &&
             typeof set.values === "function" &&
             getPrototypeChain.isMatched(set, /Set/)
         );
@@ -27,7 +27,7 @@ export namespace MapLike {
 
     export function match<T, U>(map: Object): map is MapLike<T, U> {
         return (
-            typeGuard<MapLike<T, U>>(map) &&
+            typeGuard<MapLike<T, U>>(map, true) &&
             typeof map.keys === "function" &&
             typeof map.get === "function" &&
             getPrototypeChain.isMatched(map, /Map/)
@@ -40,7 +40,7 @@ export namespace ArrayLike {
 
     export function match<T>(arr: Object): arr is ArrayLike<T> {
         return (
-            typeGuard<ArrayLike<T>>(arr) &&
+            typeGuard<ArrayLike<T>>(arr, true) &&
                 typeof arr.length === "number" &&
                 arr.length !== 0 ?
                 (`${arr.length - 1}` in arr) :
@@ -59,7 +59,7 @@ export namespace DateLike {
 
     export function match(date: Object): date is DateLike {
         return (
-            typeGuard<DateLike>(date) &&
+            typeGuard<DateLike>(date, true) &&
             typeof date.getTime === "function" &&
             getPrototypeChain.isMatched(date, /Date/)
         )

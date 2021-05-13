@@ -18,7 +18,7 @@ export namespace CtxLike {
 
     export function match<T=any>(o: any): o is CtxLike<T> {
         return (
-            typeGuard<CtxLike>(o) &&
+            typeGuard<CtxLike>(o, true) &&
             o instanceof Object &&
             typeof o.done === "function" &&
             typeof o.abort === "function" &&

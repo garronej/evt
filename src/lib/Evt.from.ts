@@ -255,16 +255,16 @@ export function from<T, ObserverTarget = never>(
     if ("evtDoneOrAborted" in ctxOrTargetOrObserverConstructor) {
 
         assert(
-            typeGuard<OneOrMany<EventTargetLike<T>> | PromiseLike<T> | ObserverConstructor<ObserverTarget, T>>(targetOrEventNameOrObserverConstructorOrObserverTarget) &&
-            typeGuard<string | undefined | ObserverTarget>(eventNameOrOptionsOrObserverTarget) &&
-            typeGuard<EventTargetLike.HasEventTargetAddRemove.Options | undefined>(options)
+            typeGuard<OneOrMany<EventTargetLike<T>> | PromiseLike<T> | ObserverConstructor<ObserverTarget, T>>(targetOrEventNameOrObserverConstructorOrObserverTarget, true) &&
+            typeGuard<string | undefined | ObserverTarget>(eventNameOrOptionsOrObserverTarget, true) &&
+            typeGuard<EventTargetLike.HasEventTargetAddRemove.Options | undefined>(options, true)
         );
 
         if (typeof targetOrEventNameOrObserverConstructorOrObserverTarget === "function") {
 
             assert(
-                typeGuard<ObserverTarget>(eventNameOrOptionsOrObserverTarget) &&
-                typeGuard<undefined>(options)
+                typeGuard<ObserverTarget>(eventNameOrOptionsOrObserverTarget, true) &&
+                typeGuard<undefined>(options, true)
             );
 
             return fromImplForObserver(
@@ -276,7 +276,7 @@ export function from<T, ObserverTarget = never>(
         } else {
 
             assert(
-                typeGuard<Exclude<typeof eventNameOrOptionsOrObserverTarget, ObserverTarget>>(eventNameOrOptionsOrObserverTarget)
+                typeGuard<Exclude<typeof eventNameOrOptionsOrObserverTarget, ObserverTarget>>(eventNameOrOptionsOrObserverTarget, true)
             );
 
             return fromImplForTargetEventLike(
@@ -292,16 +292,16 @@ export function from<T, ObserverTarget = never>(
     } else {
 
         assert(
-            typeGuard<Exclude<typeof ctxOrTargetOrObserverConstructor, CtxLike<any>>>(ctxOrTargetOrObserverConstructor) &&
-            typeGuard<string | undefined | ObserverTarget>(targetOrEventNameOrObserverConstructorOrObserverTarget) &&
-            typeGuard<EventTargetLike.HasEventTargetAddRemove.Options | undefined>(eventNameOrOptionsOrObserverTarget)
+            typeGuard<Exclude<typeof ctxOrTargetOrObserverConstructor, CtxLike<any>>>(ctxOrTargetOrObserverConstructor, true) &&
+            typeGuard<string | undefined | ObserverTarget>(targetOrEventNameOrObserverConstructorOrObserverTarget, true) &&
+            typeGuard<EventTargetLike.HasEventTargetAddRemove.Options | undefined>(eventNameOrOptionsOrObserverTarget, true)
         );
 
         if (typeof ctxOrTargetOrObserverConstructor === "function") {
 
             assert(
-                typeGuard<ObserverTarget>(targetOrEventNameOrObserverConstructorOrObserverTarget) &&
-                typeGuard<undefined>(eventNameOrOptionsOrObserverTarget)
+                typeGuard<ObserverTarget>(targetOrEventNameOrObserverConstructorOrObserverTarget, true) &&
+                typeGuard<undefined>(eventNameOrOptionsOrObserverTarget, true)
             );
 
             return fromImplForObserver(
@@ -314,7 +314,9 @@ export function from<T, ObserverTarget = never>(
         } else {
 
             assert(
-                typeGuard<Exclude<typeof targetOrEventNameOrObserverConstructorOrObserverTarget, ObserverTarget>>(targetOrEventNameOrObserverConstructorOrObserverTarget)
+                typeGuard<Exclude<typeof targetOrEventNameOrObserverConstructorOrObserverTarget, ObserverTarget>>(
+                    targetOrEventNameOrObserverConstructorOrObserverTarget, true
+                )
             );
 
             return fromImplForTargetEventLike(
