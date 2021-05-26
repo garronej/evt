@@ -36,7 +36,7 @@ const ctxs = new WeakSet<any>();
  * 
  * To use StatefulEvt as react component state.
  * */
-export function useRerenderOnStateChange(evts: StatefulReadonlyEvtLike[]): void {
+export function useRerenderOnStateChange(...evts: StatefulReadonlyEvtLike[]): void {
 
     const [, forceUpdate] = useReducer(x => x + 1, 0);
 
