@@ -1,5 +1,5 @@
 import * as React from "react";
-const { useEffect, useRef, useState } = React;
+const { useEffect, useRef } = React;
 
 import { Evt } from "../lib/Evt";
 import type { Ctx } from "../lib";
@@ -40,20 +40,23 @@ export function useEvt<T>(
     deps: React.DependencyList
 ): T {
 
-    const [ ctx ] = useState(() => Evt.newCtx());
+    //const [ ctx ] = useState(() => Evt.newCtx());
+
+    const ctxRef = useRef<Ctx>(null as any);
 
     const out = useSemanticGuaranteeMemo(() => {
 
-        ctx.done();
+        ctxRef.current?.done();
 
-        return factoryOrEffect(ctx);
+        ctxRef.current = Evt.newCtx();
+
+        return factoryOrEffect(ctxRef.current);
 
     }, deps);
 
+    useEffect(() => () => { ctxRef.current.done(); }, []);
 
-    useEffect(() => () => { ctx.done(); }, []);
-
-    useClearCtxIfReactStrictModeInspectRun(isDevStrictMode, ctx);
+    useClearCtxIfReactStrictModeInspectRun(isDevStrictMode, ctxRef);
 
     return out;
 
@@ -68,7 +71,10 @@ export function useEvt<T>(
  * callback we clear the context if useEffect(f,[])
  * is not invoked right after useState(f).
  */
-function useClearCtxIfReactStrictModeInspectRun(isDevStrictMode: boolean, ctx: Ctx) {
+function useClearCtxIfReactStrictModeInspectRun(
+    isDevStrictMode: boolean, 
+    ctxRef: React.MutableRefObject<Ctx>
+) {
 
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -79,7 +85,7 @@ function useClearCtxIfReactStrictModeInspectRun(isDevStrictMode: boolean, ctx: C
         }
 
         timerRef.current = setTimeout(
-            () => ctx.done(),
+            () => ctxRef.current.done(),
             700
         );
 
