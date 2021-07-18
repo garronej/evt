@@ -1,11 +1,11 @@
-import type { DependencyList } from "react";
-import { useRef, useEffect, useState } from "react";
+import * as React from "react";
+const { useRef, useEffect, useState } = React;
 import { useEvt } from "./useEvt";
 import type { Ctx } from "../lib";
 
 export function useElementEvt<T extends HTMLElement = any>(
 	effect: (params: { ctx: Ctx; element: T }) => void,
-	deps: DependencyList
+	deps: React.DependencyList
 ) {
 
 	const ref = useRef<T>(null);
