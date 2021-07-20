@@ -1,3 +1,7 @@
+## **1.10.0** (2021-07-20)  
+  
+- #21: Feat distinct operator    
+  
 ### **1.9.14** (2021-05-08)  
   
 - Deno fix: tools/inDepth --no-check compat    
