@@ -28,8 +28,3 @@ export namespace CtxLike {
     }
 
 }
-
-
-export interface VoidCtxLike extends CtxLike<void> {
-    done(): void;
-}
