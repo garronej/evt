@@ -1,3 +1,7 @@
+### **1.10.1** (2021-07-20)  
+  
+-  #21: Feat distinct operator    
+  
 ## **1.10.0** (2021-07-20)  
   
 - #21: Feat distinct operator    
