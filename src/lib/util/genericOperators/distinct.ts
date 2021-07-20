@@ -1,5 +1,7 @@
 import { compose } from "../compose";
 
+type CtxLike = { evtDoneOrAborted: { postCount: number; }  };
+
 export const distinct = <T>(
     keySelector?: ((value: T) => any) | undefined,
     ctxFlush?: CtxLike
