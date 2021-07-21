@@ -1,7 +1,8 @@
 
-import { Evt } from "./Evt";
+import type { Evt } from "./Evt";
 import type { StatefulEvt, StatefulReadonlyEvt, NonPostableEvt, UnpackEvt } from "./types";
 import type { PromiseOrNot } from "tsafe/lab/PromiseOrNot";
+import { importProxy } from "./importProxy";
 
 type EvtLike<T> = import("./types/helper").EvtLike<T> & {
     attach(callback: (data: T) => void): void;
@@ -31,8 +32,8 @@ export function asyncPipe<E extends EvtLike<any>, U>(
 {
 
     const out = "state" in evt ?
-        Evt.create<UnpackEvt<E> | undefined>(undefined) :
-        Evt.create<UnpackEvt<E>>();
+        importProxy.Evt.create<UnpackEvt<E> | undefined>(undefined) :
+        importProxy.Evt.create<UnpackEvt<E>>();
 
     let currentCallCount = 0;
 
