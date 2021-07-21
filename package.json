@@ -23,7 +23,7 @@
     "dependencies": {
         "minimal-polyfills": "^2.2.1",
         "run-exclusive": "^2.2.14",
-        "tsafe": "^0.2.2"
+        "tsafe": "^0.4.1"
     },
     "files": [
         "dist/",

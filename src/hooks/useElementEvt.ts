@@ -6,9 +6,25 @@ import type { Ctx } from "../lib";
 export function useElementEvt<T extends HTMLElement = any>(
 	effect: (params: { ctx: Ctx; element: T }) => void,
 	deps: React.DependencyList
-) {
+): { ref: React.RefObject<T>; };
+export function useElementEvt<T extends HTMLElement = any>(
+	effect: (params: { ctx: Ctx; element: T }) => void,
+	ref: React.RefObject<T>,
+	deps: React.DependencyList
+): void;
+export function useElementEvt<T extends HTMLElement = any>(
+	effect: (params: { ctx: Ctx; element: T }) => void,
+	depsOrRef: React.DependencyList | React.RefObject<T>,
+	depsOrUndefined?: React.DependencyList
+): { ref: React.RefObject<T>; } | void {
 
-	const ref = useRef<T>(null);
+	const isRefProvided = depsOrUndefined !== undefined;
+
+	const deps = depsOrUndefined ?? depsOrRef as React.DependencyList;
+
+	const refInternallyCreated = useRef<T>(null);
+
+	const ref = isRefProvided ? depsOrRef as React.RefObject<T> : refInternallyCreated;
 
 	const [element, setElement] = useState<T | null>(null);
 
@@ -31,5 +47,6 @@ export function useElementEvt<T extends HTMLElement = any>(
 	);
 
 	return { ref };
+
 
 }
