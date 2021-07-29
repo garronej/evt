@@ -1,4 +1,5 @@
 
+//TODO: Support when the event is nullish
 
 import type { EvtLike } from "./EvtLike";
 
