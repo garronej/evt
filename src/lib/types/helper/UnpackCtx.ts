@@ -5,7 +5,7 @@ export interface CtxLike<Result = any> {
 }
 
 /** Analog to UnpackEvt<E> Unpack the type argument of a Ctx */
-export type UnpackCtx<Ctx extends CtxLike<any>> = 
+export type UnpackCtx<Ctx extends CtxLike<any> | undefined | null> =
     Ctx extends CtxLike<infer U> ? U : never
     ;
 
