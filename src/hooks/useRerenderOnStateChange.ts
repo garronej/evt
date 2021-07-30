@@ -1,14 +1,13 @@
 import { Polyfill as WeakSet } from "minimal-polyfills/WeakSet";
-import { Evt } from "evt";
-import { useEvt } from "evt/hooks";
+import { Evt } from "../lib";
+import { useEvt } from "./useEvt";
 
 import * as React from "react";
 const { useReducer } = React;
 
-
-type CtxLike<Result = any> = import("evt/lib/types/interfaces/CtxLike").CtxLike<Result>;
+type CtxLike<Result = any> = import("../lib/types/interfaces/CtxLike").CtxLike<Result>;
 interface HandlerLike { ctx: CtxLike };
-type Pipe<Cb = () => void> = (ctx: CtxLike, cb?: Cb) => import("evt/lib/Evt.merge").EvtLike<any>;
+type Pipe<Cb = () => void> = (ctx: CtxLike, cb?: Cb) => import("../lib/Evt.merge").EvtLike<any>;
 
 interface StatefulReadonlyEvtLike {
     evtChange: {
