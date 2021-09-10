@@ -50,7 +50,7 @@ export function useEvt<T>(
 
     const [registeredSideEffects] = useState<(() => void)[]>([]);
 
-    const [forceUpdate] = useReducer(n => n + 1, 0);
+    const [,forceUpdate] = useReducer(n => n + 1, 0);
 
     useEffectIf(
         function callee() {
