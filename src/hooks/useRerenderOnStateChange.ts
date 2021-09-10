@@ -22,7 +22,7 @@ interface StatefulReadonlyEvtLike {
  * */
 export function useRerenderOnStateChange(...evts: StatefulReadonlyEvtLike[]): void {
     useEvt(
-        ({ ctx, registerSideEffect }) =>
+        (ctx, registerSideEffect) =>
             evts.forEach(
                 evt =>
                     evt.evtChange

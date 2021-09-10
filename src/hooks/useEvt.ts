@@ -32,16 +32,17 @@ const isDevStrictMode = typeof process !== "object" ?
  * c
  * BE AWARE: Unlike useEffect factoryOrEffect is called 
  * on render ( like useMemo's callback ).
- * If you want to register side effect you should use registerSideEffect.
+ * Remember that you shouldn't update state in a component 
+ * render tick (in the useMemo for example). If you you need to 
+ * perform an effect on first render (attaching a stateful evt
+ * for example) use registerSideEffect(()=>{ ... })
  * 
  * Demo: https://stackblitz.com/edit/evt-useevt?file=index.tsx
  */
 export function useEvt<T>(
     factoryOrEffect: (
-        params: {
-            ctx: Ctx;
-            registerSideEffect: (sideEffect: () => void) => void;
-        }
+        ctx: Ctx,
+        registerSideEffect: (sideEffect: () => void) => void
     ) => T,
     deps: React.DependencyList
 ): T {
@@ -50,7 +51,7 @@ export function useEvt<T>(
 
     const [registeredSideEffects] = useState<(() => void)[]>([]);
 
-    const [,forceUpdate] = useReducer(n => n + 1, 0);
+    const [, forceUpdate] = useReducer(n => n + 1, 0);
 
     useEffectIf(
         function callee() {
@@ -79,13 +80,13 @@ export function useEvt<T>(
 
         ctxRef.current = Evt.newCtx();
 
-        return factoryOrEffect({
-            "ctx": ctxRef.current,
-            "registerSideEffect": sideEffect => {
+        return factoryOrEffect(
+            ctxRef.current,
+            sideEffect => {
                 registeredSideEffects.push(sideEffect);
                 forceUpdate();
             }
-        });
+        );
 
     }, deps);
 

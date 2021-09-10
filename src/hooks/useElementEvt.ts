@@ -38,7 +38,7 @@ export function useElementEvt<T extends HTMLElement = any>(
 	);
 
 	useEvt(
-		({ ctx, registerSideEffect }) => {
+		(ctx, registerSideEffect) => {
 
 			if (element === null) {
 				return;
