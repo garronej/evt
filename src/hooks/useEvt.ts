@@ -1,9 +1,9 @@
-import * as React from "react";
-const { useEffect, useRef } = React;
-
 import { Evt } from "../lib/Evt";
 import type { Ctx } from "../lib";
 import { useSemanticGuaranteeMemo } from "../tools/hooks/useSemanticGuaranteeMemo";
+import { useEffectIf } from "../tools/hooks/useEffectIf";
+import * as React from "react";
+const { useEffect, useState, useReducer, useRef } = React;
 
 //TODO: Find a more reliable way to test if <React.UseStrict> is used.
 const isDevStrictMode = typeof process !== "object" ?
@@ -32,17 +32,46 @@ const isDevStrictMode = typeof process !== "object" ?
  * c
  * BE AWARE: Unlike useEffect factoryOrEffect is called 
  * on render ( like useMemo's callback ).
+ * If you want to register side effect you should use registerSideEffect.
  * 
  * Demo: https://stackblitz.com/edit/evt-useevt?file=index.tsx
  */
 export function useEvt<T>(
-    factoryOrEffect: (ctx: Ctx) => T,
+    factoryOrEffect: (
+        params: {
+            ctx: Ctx;
+            registerSideEffect: (sideEffect: () => void) => void;
+        }
+    ) => T,
     deps: React.DependencyList
 ): T {
 
-    //const [ ctx ] = useState(() => Evt.newCtx());
-
     const ctxRef = useRef<Ctx>(null as any);
+
+    const [registeredSideEffects] = useState<(() => void)[]>([]);
+
+    const [forceUpdate] = useReducer(n => n + 1, 0);
+
+    useEffectIf(
+        function callee() {
+
+            const registeredSideEffectsCopy = [...registeredSideEffects];
+
+            registeredSideEffectsCopy.forEach(sideEffect => sideEffect());
+
+            registeredSideEffects.splice(0, registeredSideEffectsCopy.length);
+
+            if (registeredSideEffects.length !== 0) {
+
+                callee();
+
+                return;
+
+            }
+
+        },
+        registeredSideEffects.length !== 0
+    );
 
     const out = useSemanticGuaranteeMemo(() => {
 
@@ -50,7 +79,13 @@ export function useEvt<T>(
 
         ctxRef.current = Evt.newCtx();
 
-        return factoryOrEffect(ctxRef.current);
+        return factoryOrEffect({
+            "ctx": ctxRef.current,
+            "registerSideEffect": sideEffect => {
+                registeredSideEffects.push(sideEffect);
+                forceUpdate();
+            }
+        });
 
     }, deps);
 
@@ -72,7 +107,7 @@ export function useEvt<T>(
  * is not invoked right after useState(f).
  */
 function useClearCtxIfReactStrictModeInspectRun(
-    isDevStrictMode: boolean, 
+    isDevStrictMode: boolean,
     ctxRef: React.MutableRefObject<Ctx>
 ) {
 

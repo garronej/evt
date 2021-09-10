@@ -13,7 +13,11 @@ export function useElementEvt<T extends HTMLElement = any>(
 	deps: React.DependencyList
 ): void;
 export function useElementEvt<T extends HTMLElement = any>(
-	effect: (params: { ctx: Ctx; element: T }) => void,
+	effect: (params: {
+		ctx: Ctx;
+		element: T;
+		registerSideEffect: (sideEffect: () => void) => void;
+	}) => void,
 	depsOrRef: React.DependencyList | React.RefObject<T>,
 	depsOrUndefined?: React.DependencyList
 ): { ref: React.RefObject<T>; } | void {
@@ -34,13 +38,13 @@ export function useElementEvt<T extends HTMLElement = any>(
 	);
 
 	useEvt(
-		ctx => {
+		({ ctx, registerSideEffect }) => {
 
 			if (element === null) {
 				return;
 			}
 
-			effect({ ctx, element });
+			effect({ ctx, element, registerSideEffect });
 
 		},
 		[element ?? Object, ...deps]
