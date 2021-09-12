@@ -121,6 +121,7 @@ import { Evt } from "https://deno.land/x/evt/mod.ts";
 ## Anywhere else:
 ```bash
 $ npm install --save evt
+# OR npm install --save evt@beta for the latest features
 ```
 ```typescript
 import { Evt } from "evt"; 
