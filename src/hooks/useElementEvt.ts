@@ -4,11 +4,19 @@ import { useEvt } from "./useEvt";
 import type { Ctx } from "../lib";
 
 export function useElementEvt<T extends HTMLElement = any>(
-	effect: (params: { ctx: Ctx; element: T }) => void,
+	effect: (params: {
+		ctx: Ctx;
+		element: T;
+		registerSideEffect: (sideEffect: () => void) => void;
+	}) => void,
 	deps: React.DependencyList
 ): { ref: React.RefObject<T>; };
 export function useElementEvt<T extends HTMLElement = any>(
-	effect: (params: { ctx: Ctx; element: T }) => void,
+	effect: (params: {
+		ctx: Ctx;
+		element: T
+		registerSideEffect: (sideEffect: () => void) => void;
+	}) => void,
 	ref: React.RefObject<T>,
 	deps: React.DependencyList
 ): void;
