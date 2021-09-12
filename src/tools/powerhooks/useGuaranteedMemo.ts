@@ -1,11 +1,7 @@
-
 import * as React from "react";
-const { useRef } = React;
+const { useRef } = React;
 
-export function useSemanticGuaranteeMemo<T>(
-    fn: () => T, 
-    deps: React.DependencyList
-): T {
+export function useGuaranteedMemo<T>(fn: () => T, deps: readonly any[]): T {
 
     const ref = useRef<{ v: T; prevDeps: any[]; }>()
 

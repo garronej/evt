@@ -1,7 +1,7 @@
 import { Evt } from "../lib/Evt";
 import type { Ctx } from "../lib";
-import { useSemanticGuaranteeMemo } from "../tools/hooks/useSemanticGuaranteeMemo";
-import { useEffectIf } from "../tools/hooks/useEffectIf";
+import { useGuaranteedMemo } from "../tools/powerhooks/useGuaranteedMemo";
+import { useEffectIf } from "../tools/powerhooks/useEffectIf";
 import * as React from "react";
 const { useEffect, useState, useReducer, useRef } = React;
 
@@ -29,7 +29,7 @@ const isDevStrictMode = typeof process !== "object" ?
  * factoryOrEffect can be used for attaching handler to event
  * or to generate a new event that is a merge/pipe of other 
  * Evts.
- * c
+ * 
  * BE AWARE: Unlike useEffect factoryOrEffect is called 
  * on render ( like useMemo's callback ).
  * Remember that you shouldn't update state in a component 
@@ -74,7 +74,7 @@ export function useEvt<T>(
         registeredSideEffects.length !== 0
     );
 
-    const out = useSemanticGuaranteeMemo(() => {
+    const out = useGuaranteedMemo(() => {
 
         ctxRef.current?.done();
 
@@ -114,7 +114,7 @@ function useClearCtxIfReactStrictModeInspectRun(
 
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    useSemanticGuaranteeMemo(() => {
+    useGuaranteedMemo(() => {
 
         if (!isDevStrictMode) {
             return;
