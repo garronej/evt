@@ -28,7 +28,7 @@ It enables and encourages **functional programming** and makes heavy use of **ty
 <b>Suitable for any JS runtime env (deno, node, old browsers, react-native ...)</b>
 - ✅ It is both a [Deno](https://deno.land/x/evt) and an [NPM](https://www.npmjs.com/evt) module. ( Achieved with [Denoify](https://github.com/garronej/denoify) ) 
 - ✅ Lightweight, no dependency.
-- ✅ No polyfills needed, the NPM module is transpiled down to ES3
+- ✅ Compatible CJS and ESM (if you install [`evt@beta`](https://github.com/garronej/evt/pull/16))
 - ✅ [React Hooks integration](https://stackblitz.com/edit/evt-react-hooks-todo-list?file=index.tsx)
 
 Can be imported in TypeScript projects using version &gt;= **3.4** \(Mar 2019\) and in any plain JS projects.
