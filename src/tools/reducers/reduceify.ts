@@ -18,8 +18,8 @@ export function toReduceArguments<ArrOf, ReduceTo, Params extends any[]>(
 
         let out: ReduceTo;
 
-        if ("1" in outWrap) {
-            out = outWrap[1];
+        if (outWrap.length === 1) {
+            out = outWrap[0];
         } else {
             out = arrOp(array, ...params);
             outWrap = [out];

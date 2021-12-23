@@ -46,7 +46,7 @@ export const overwriteReadonlyProp = <T extends { [key: string]: any; }, K exten
 
     } catch (error) {
 
-        errorDefineProperty = error;
+        errorDefineProperty = error as any;
 
     }
 
