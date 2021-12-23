@@ -5,10 +5,18 @@
     💧<i>EventEmitter's typesafe replacement</i>💧
     <br>
     <br>
-    <img src="https://github.com/garronej/evt/workflows/ci/badge.svg?branch=develop">
-    <img src="https://img.shields.io/bundlephobia/minzip/evt">
-    <img src="https://img.shields.io/npm/dw/evt">
-    <img src="https://img.shields.io/npm/l/evt">
+    <a href="https://github.com/garronej/evt/actions">
+      <img src="https://github.com/garronej/evt/workflows/ci/badge.svg?branch=develop">
+    </a>
+    <a href="https://bundlephobia.com/package/evt">
+      <img src="https://img.shields.io/bundlephobia/minzip/evt">
+    </a>
+    <a href="https://www.npmjs.com/package/evt">
+      <img src="https://img.shields.io/npm/dw/evt">
+    </a>
+    <a href="https://github.com/garronej/evt/blob/main/LICENSE">
+      <img src="https://img.shields.io/npm/l/evt">
+    </a>
 </p>
 
 </p>
