@@ -1,3 +1,10 @@
+### **1.10.2** (2021-12-23)  
+  
+- Fix for Deno 1.17  
+- Update README.md  
+- Update README.md  
+- Update README.md    
+  
 ### **1.10.1** (2021-07-20)  
   
 -  #21: Feat distinct operator    
