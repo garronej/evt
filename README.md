@@ -8,6 +8,9 @@
     <a href="https://github.com/garronej/evt/actions">
       <img src="https://github.com/garronej/evt/workflows/ci/badge.svg?branch=develop">
     </a>
+    <a href="https://deno.land/x/evt">
+        <img src="https://img.shields.io/badge/deno-module-informational?logo=deno">
+    </a>
     <a href="https://bundlephobia.com/package/evt">
       <img src="https://img.shields.io/bundlephobia/minzip/evt">
     </a>
