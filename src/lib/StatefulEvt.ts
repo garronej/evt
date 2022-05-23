@@ -130,7 +130,16 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
     }
 
     toStateless(ctx?: CtxLike): Evt<any> {
-        return !!ctx ? super.pipe(ctx) : super.pipe();
+
+        const onAddHandler=  onAddHandlerByEvt.get(this)!;
+
+        onAddHandlerByEvt.delete(this);
+
+        const out= !!ctx ? super.pipe(ctx) : super.pipe();
+
+        onAddHandlerByEvt.set(this, onAddHandler);
+
+        return out;
     }
 
 }
