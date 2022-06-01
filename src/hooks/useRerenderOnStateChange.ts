@@ -16,11 +16,12 @@ interface StatefulReadonlyEvtLike {
  * */
 export function useRerenderOnStateChange(evt: StatefulReadonlyEvtLike): void {
 
-    const [,setState]=useState(evt.state);
+    //NOTE: We use function in case the state is a function
+    const [, setState] = useState(() => evt.state);
 
     useEvt(
         ctx =>
-            evt.attach(ctx, state => setState(state)),
+            evt.attach(ctx, state => setState(() => state)),
         [evt]
     );
 }
