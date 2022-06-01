@@ -1,15 +1,8 @@
-import * as React from "react";
-const { useEffect, useRef } = React;
-
 import { Evt } from "../lib/Evt";
-import type { VoidCtx } from "../lib";
-import { useSemanticGuaranteeMemo } from "../tools/hooks/useSemanticGuaranteeMemo";
+import type { Ctx } from "../lib";
+import * as React from "react";
+const { useEffect } = React;
 
-//TODO: Find a more reliable way to test if <React.UseStrict> is used.
-const isDevStrictMode = typeof process !== "object" ?
-    false :
-    (process?.env?.NODE_ENV ?? "production") !== "production"
-    ;
 
 /**
  * https://docs.evt.land/api/react-hooks
@@ -32,71 +25,27 @@ const isDevStrictMode = typeof process !== "object" ?
  * 
  * BE AWARE: Unlike useEffect factoryOrEffect is called 
  * on render ( like useMemo's callback ).
+ * Remember that you shouldn't update state in a component 
+ * render tick (in the useMemo for example). If you you need to 
+ * perform an effect on first render (attaching a stateful evt
+ * for example) use registerSideEffect(()=>{ ... })
  * 
  * Demo: https://stackblitz.com/edit/evt-useevt?file=index.tsx
  */
-export function useEvt<T>(
-    factoryOrEffect: (ctx: VoidCtx) => T,
-    deps: any[]
-): T {
+export function useEvt(
+    effect: (ctx: Ctx<void>) => void,
+    deps: React.DependencyList
+): void {
 
-    const ctx = useSemanticGuaranteeMemo(() => Evt.newCtx(), []);
+    useEffect(
+        ()=> {
+            const ctx= Evt.newCtx();
 
-    const out = useSemanticGuaranteeMemo(() => {
+            effect(ctx);
 
-        ctx.done();
-
-        return factoryOrEffect(ctx);
-
-    }, deps);
-
-
-    useEffect(() => () => { ctx.done(); }, []);
-
-    useClearCtxIfReactStrictModeInspectRun(isDevStrictMode, ctx);
-
-    return out;
-
-}
-
-/**
- * When <React.StrictMode> is used in development
- * useState and useMemo get triggered a first time on a 
- * separate component instance but useEffect is not invoked.
- * 
- * To prevent leaving handlers that we attached inside the useMemo
- * callback we clear the context if useEffect(f,[])
- * is not invoked right after useState(f).
- */
-function useClearCtxIfReactStrictModeInspectRun(isDevStrictMode: boolean, ctx: VoidCtx) {
-
-    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-    useSemanticGuaranteeMemo(() => {
-
-        if (!isDevStrictMode) {
-            return;
-        }
-
-        timerRef.current = setTimeout(
-            () => ctx.done(),
-            700
-        );
-
-    }, []);
-
-    useEffect(() => {
-
-        if (!isDevStrictMode) {
-            return;
-        }
-
-        if (timerRef.current === null) {
-            return;
-        }
-
-        clearTimeout(timerRef.current);
-
-    }, []);
+            return ()=> { ctx.done; };
+        },
+        deps
+    );
 
 }
