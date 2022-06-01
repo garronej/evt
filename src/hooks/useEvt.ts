@@ -1,15 +1,8 @@
 import { Evt } from "../lib/Evt";
 import type { Ctx } from "../lib";
-import { useGuaranteedMemo } from "../tools/powerhooks/useGuaranteedMemo";
-import { useEffectIf } from "../tools/powerhooks/useEffectIf";
 import * as React from "react";
-const { useEffect, useState, useReducer, useRef } = React;
+const { useEffect } = React;
 
-//TODO: Find a more reliable way to test if <React.UseStrict> is used.
-const isDevStrictMode = typeof process !== "object" ?
-    false :
-    (process?.env?.NODE_ENV ?? "production") !== "production"
-    ;
 
 /**
  * https://docs.evt.land/api/react-hooks
@@ -39,106 +32,20 @@ const isDevStrictMode = typeof process !== "object" ?
  * 
  * Demo: https://stackblitz.com/edit/evt-useevt?file=index.tsx
  */
-export function useEvt<T>(
-    factoryOrEffect: (
-        ctx: Ctx,
-        registerSideEffect: (sideEffect: () => void) => void
-    ) => T,
+export function useEvt(
+    effect: (ctx: Ctx) => void,
     deps: React.DependencyList
-): T {
+): void {
 
-    const ctxRef = useRef<Ctx>(null as any);
+    useEffect(
+        ()=> {
+            const ctx= Evt.newCtx();
 
-    const [registeredSideEffects] = useState<(() => void)[]>([]);
+            effect(ctx);
 
-    const [, forceUpdate] = useReducer(n => n + 1, 0);
-
-    useEffectIf(
-        function callee() {
-
-            const registeredSideEffectsCopy = [...registeredSideEffects];
-
-            registeredSideEffectsCopy.forEach(sideEffect => sideEffect());
-
-            registeredSideEffects.splice(0, registeredSideEffectsCopy.length);
-
-            if (registeredSideEffects.length !== 0) {
-
-                callee();
-
-                return;
-
-            }
-
+            return ()=> { ctx.done; };
         },
-        registeredSideEffects.length !== 0
+        deps
     );
-
-    const out = useGuaranteedMemo(() => {
-
-        ctxRef.current?.done();
-
-        ctxRef.current = Evt.newCtx();
-
-        return factoryOrEffect(
-            ctxRef.current,
-            sideEffect => {
-                registeredSideEffects.push(sideEffect);
-                forceUpdate();
-            }
-        );
-
-    }, deps);
-
-    useEffect(() => () => { ctxRef.current.done(); }, []);
-
-    useClearCtxIfReactStrictModeInspectRun(isDevStrictMode, ctxRef);
-
-    return out;
-
-}
-
-/**
- * When <React.StrictMode> is used in development
- * useState and useMemo get triggered a first time on a 
- * separate component instance but useEffect is not invoked.
- * 
- * To prevent leaving handlers that we attached inside the useMemo
- * callback we clear the context if useEffect(f,[])
- * is not invoked right after useState(f).
- */
-function useClearCtxIfReactStrictModeInspectRun(
-    isDevStrictMode: boolean,
-    ctxRef: React.MutableRefObject<Ctx>
-) {
-
-    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-    useGuaranteedMemo(() => {
-
-        if (!isDevStrictMode) {
-            return;
-        }
-
-        timerRef.current = setTimeout(
-            () => ctxRef.current.done(),
-            700
-        );
-
-    }, []);
-
-    useEffect(() => {
-
-        if (!isDevStrictMode) {
-            return;
-        }
-
-        if (timerRef.current === null) {
-            return;
-        }
-
-        clearTimeout(timerRef.current);
-
-    }, []);
 
 }
