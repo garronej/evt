@@ -1,6 +1,6 @@
 # Extending Evt
 
-It is common practice to create classes that extends `EventEmitter` . 
+It is common practice to create classes that extends `EventEmitter` .&#x20;
 
 As a general rule of thumb, we tend to avoid inheritance in favor of other patterns but if you want to do it there is how.
 
@@ -63,7 +63,7 @@ socket.$attach(
 );
 ```
 
-\*\*\*\*[**Run the browser**](https://stackblitz.com/edit/evt-inheritence-pdzywu?file=index.ts)\*\*\*\*
+****[**Run the browser**](https://stackblitz.com/edit/evt-inheritence-pdzywu?file=index.ts)****
 
 Now we encourage favoring composition over inheritance and having one EVT instance for each events type.
 
@@ -138,5 +138,4 @@ socket.evtDisconnect.attach(
 );
 ```
 
-[**Run in the browser**](https://stackblitz.com/edit/evt-inheritence-mnhwcs?file=index.ts)\*\*\*\*
-
+[**Run in the browser**](https://stackblitz.com/edit/evt-inheritence-mnhwcs?file=index.ts)****

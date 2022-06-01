@@ -40,7 +40,7 @@ evtTime.post(1234);
 
 However, the traditional approach that consists of gathering all the events in a single bus is also an option.
 
-Note: Due to [a current TypeScript limitation](https://github.com/microsoft/TypeScript/issues/36735) the `.attach()` __methods need to be prefixed with `$` when used with fλ \( `to` in this case\) operators but `evt.$attach*()` are actually just aliases to the corresponding `evt.attach*()` methods.
+Note: Due to [a current TypeScript limitation](https://github.com/microsoft/TypeScript/issues/36735) the `.attach()` __ methods need to be prefixed with `$` when used with fλ ( `to` in this case) operators but `evt.$attach*()` are actually just aliases to the corresponding `evt.attach*()` methods.
 
 ```typescript
 import { Evt, to } from "evt";
@@ -58,7 +58,7 @@ evt.post(["time", 123]);
 evt.post(["time", 1234]);
 ```
 
-[**Run the example**](https://stackblitz.com/edit/evt-honvv3?embed=1&file=index.ts&hideExplorer=1)
+[**Run the example**](https://stackblitz.com/edit/evt-honvv3?embed=1\&file=index.ts\&hideExplorer=1)
 
 ## RxJS comparison
 
@@ -93,7 +93,7 @@ Evt.from(document, "click")
     ;
 ```
 
-\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-q772em?embed=1&file=index.ts&hideExplorer=1)
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-q772em?embed=1\&file=index.ts\&hideExplorer=1)
 
 ### RxJS operators vs EVT operator
 
@@ -143,7 +143,7 @@ const prText = evt.waitFor(
 );
 ```
 
-\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-795plc?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-795plc?embed=1\&file=index.ts\&hideExplorer=1)\*\*\*\*
 
 Let us consider another example involving state encapsulation. Here we want to accumulate all texts events until `"STOP"`
 
@@ -187,9 +187,8 @@ evtData.$attach(
 );
 ```
 
-\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-xuutfw?embed=1&file=index.ts&hideExplorer=1)\*\*\*\*
+\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-xuutfw?embed=1\&file=index.ts\&hideExplorer=1)\*\*\*\*
 
 ## Where to start
 
 The API reference documentation is full of runnable examples that should get you started in no time.
-

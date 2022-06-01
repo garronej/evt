@@ -2,7 +2,7 @@
 description: Attach a Handler provided with a callback function to the Evt
 ---
 
-# evt.attach\*\(...\)
+# evt.attach\*(...)
 
 There is multiple flavor of the attach method: `attachOnce`, `atachPrepend`, `attachExtract`... All this methods have in common to accept the same parameters and to return the same promise.
 
@@ -44,12 +44,12 @@ evtText.post("Hello World");
 
 1. `operator:` [`Operator`](https://docs.ts-evt.dev/api-doc/operator)`<T,U>`
 2. `timeout: number` Amount of time, in milliseconds before the returned promise rejects if no event has been matched within the specified delay.
-3. `ctx:` [`Ctx`](https://docs.ts-evt.dev/api/ctx)A context that can be used as a reference to detach the handler later on. 
+3. `ctx:` [`Ctx`](https://docs.ts-evt.dev/api/ctx)A context that can be used as a reference to detach the handler later on.&#x20;
 4. `callback: (data: U)=> void` Function that will be invoked every time the matcher match an event emitted by the `Evt`.
 
 A large number of overload is provided to cover all the possible combination of arguments. The ordering in which the parameters are listed above must be respected but every parameter other than the callback can be omitted.
 
-![](../../.gitbook/assets/screenshot-2020-03-16-at-06.28.38%20%281%29%20%281%29%20%282%29%20%282%29%20%281%29.png)
+![](<../../.gitbook/assets/screenshot-2020-03-16-at-06.28.38 (1) (1) (2) (2) (1) (1).png>)
 
 Examples:
 
@@ -79,7 +79,7 @@ When the method contains the keyword "**once**": Adds a **one-time** [handler](h
 
 ## `evt.attach[Once]Prepend(...)`
 
-When the method contains the keyword "**prepend**": Same as .attach\(\) but the [`handler`](https://docs.ts-evt.dev/api/handler) is added at the _beginning_ of the handler array.
+When the method contains the keyword "**prepend**": Same as .attach() but the [`handler`](https://docs.ts-evt.dev/api/handler) is added at the _beginning_ of the handler array.
 
 ```typescript
 import { Evt } from "evt";
@@ -96,7 +96,7 @@ evtLetter.post();
 //"A", "B", "C" is printed to the console.
 ```
 
-[**Run the example**](https://stackblitz.com/edit/evt-qshmkh?embed=1&file=index.ts&hideExplorer=1)
+[**Run the example**](https://stackblitz.com/edit/evt-qshmkh?embed=1\&file=index.ts\&hideExplorer=1)
 
 ## **`evt.attach[Once]Extract(...)`**
 
@@ -129,5 +129,4 @@ evtCircle.attachPrepend(
 );
 ```
 
-[**Run the example**](https://stackblitz.com/edit/evt-bwkprd?embed=1&file=index.ts&hideExplorer=1)
-
+[**Run the example**](https://stackblitz.com/edit/evt-bwkprd?embed=1\&file=index.ts\&hideExplorer=1)
