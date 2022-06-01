@@ -43,7 +43,7 @@ export function useEvt(
 
             effect(ctx);
 
-            return ()=> { ctx.done; };
+            return ()=> { ctx.done(); };
         },
         deps
     );
