@@ -1,3 +1,7 @@
+### **1.11.2** (2022-06-01)  
+  
+- Fix useRerenderOnStateChange    
+  
 ### **1.11.1** (2022-06-01)  
   
 - Correct error in useEvt    
