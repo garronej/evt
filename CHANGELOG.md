@@ -1,3 +1,11 @@
+## **1.11.0** (2022-06-01)  
+  
+- hooks compat React 18  
+- Create init-onyxia.sh  
+- Merge pull request #24 from garronej/dependabot/npm_and_yarn/shelljs-0.8.5
+
+Bump shelljs from 0.8.4 to 0.8.5    
+  
 ### **1.10.2** (2021-12-23)  
   
 - Fix for Deno 1.17  
