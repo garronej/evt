@@ -15,7 +15,7 @@
       <img src="https://img.shields.io/bundlephobia/minzip/evt">
     </a>
     <a href="https://www.npmjs.com/package/evt">
-      <img src="https://img.shields.io/npm/dw/evt">
+      <img src="https://img.shields.io/npm/dm/evt">
     </a>
     <a href="https://github.com/garronej/evt/blob/main/LICENSE">
       <img src="https://img.shields.io/npm/l/evt">
