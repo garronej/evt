@@ -34,7 +34,7 @@ const { useEffect } = React;
  */
 export function useEvt(
     effect: (ctx: Ctx) => void,
-    deps: React.DependencyList
+    deps?: React.DependencyList
 ): void {
 
     useEffect(
