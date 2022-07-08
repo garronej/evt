@@ -1,8 +1,8 @@
-# evt.waitFor\(...\)
+# evt.waitFor(...)
 
 Method that returns a promise that will resolve when the next matched event is posted.
 
-waitFor is essentially evt.attachOnce\(...\) but you don’t provide a callback. It accepts the same arguments and return the same promise.
+waitFor is essentially evt.attachOnce(...) but you don’t provide a callback. It accepts the same arguments and return the same promise.
 
 _Essentialy_ the same but [not exactly the same](https://docs.ts-evt.dev/api/evt/evt.waitfor-...#difference-between-evt-waitfor-and-evt-attachonce), there is a key difference between a handler attached via `waitFor` and a handler attached with `attach*` as explained below.
 
@@ -13,7 +13,7 @@ By default the promise returned by `waitFor` will never reject.
 ```typescript
 import { Evt } from "evt";
 
-const evtText = new Evt<string>();
+const evtText = Evt.create<string>();
 
 setTimeout(()=> evtText.post("Hi!"), 1500);
 
@@ -28,7 +28,7 @@ setTimeout(()=> evtText.post("Hi!"), 1500);
 })();
 ```
 
-[**Run the example**](https://stackblitz.com/edit/evt-cazqyr?embed=1&file=index.ts&hideExplorer=1)
+[**Run the example**](https://stackblitz.com/edit/evt-cazqyr?embed=1\&file=index.ts\&hideExplorer=1)
 
 ## With timeout
 
@@ -37,7 +37,7 @@ As with `attach*`, it is possible to set what is the maximum amount of time we a
 ```typescript
 import { Evt, EvtError } from "evt";
 
-const evtText = new Evt<string>();
+const evtText = Evt.create<string>();
 
 (async ()=>{
 
@@ -71,7 +71,7 @@ setTimeout(
 );
 ```
 
-[**Run the example**](https://stackblitz.com/edit/evt-wqh856?embed=1&file=index.ts&hideExplorer=1)
+[**Run the example**](https://stackblitz.com/edit/evt-wqh856?embed=1\&file=index.ts\&hideExplorer=1)
 
 ## Difference between `evt.waitFor(...)` and `evt.attachOnce(...)`
 
@@ -84,7 +84,7 @@ Basically it means that the following example prints `A B` on the console instea
 ```typescript
 import { Evt } from "evt";
 
-const evtText = new Evt<string>();
+const evtText = Evt.create<string>();
 
 (async ()=>{
 
@@ -101,5 +101,4 @@ evtText.post("B");
 //"A B" is printed to the console.
 ```
 
-Run this [**more practical example**](https://stackblitz.com/edit/evt-v4q4s2?embed=1&file=index.ts&hideExplorer=1) if you want to understand how this behavior prevent from some hard to figure out bugs.
-
+Run this [**more practical example**](https://stackblitz.com/edit/evt-v4q4s2?embed=1\&file=index.ts\&hideExplorer=1) if you want to understand how this behavior prevent from some hard to figure out bugs.
