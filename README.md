@@ -79,10 +79,9 @@ import { Evt } from "evt";
 
 # Try it
 
-[Run some examples](https://stackblitz.com/edit/evt-playground?embed=1&file=index.ts&hideExplorer=1)
-
-<p align="center"> 
-    <img src="https://www.evt.land/assets/img/try-in-browser.gif">  
+<p align="center">
+    <img src="https://user-images.githubusercontent.com/6702424/179363007-582acf54-8f83-42ac-a062-562f8de40d14.gif">  
+    <a href="https://stackblitz.com/edit/evt-playground-gfnidx?file=index.ts">Playground</a>
 </p>
 
 # Motivations
@@ -109,7 +108,8 @@ EVT is an attempt to address all these points while trying to remain as accessib
 # The sticker
 
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/6702424/179363007-582acf54-8f83-42ac-a062-562f8de40d14.gif">  
-    <a href="https://stackblitz.com/edit/evt-playground-gfnidx?file=index.ts">Playground</a>
+    <img src="https://user-images.githubusercontent.com/6702424/90626180-e3607d00-e21a-11ea-9c88-82880ac9cedf.png">  
 </p>
-
+<p align="center">
+    <a href="https://teespring.com/fr/evt-sticker">Shop</a>
+</p>
