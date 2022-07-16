@@ -1,28 +1,45 @@
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/6702424/76674598-91ebfc00-65b1-11ea-88df-eb43f04f3cce.png">  
+    <img src="https://user-images.githubusercontent.com/6702424/76674598-91ebfc00-65b1-11ea-88df-eb43f04f3cce.png">
 </p>
 <p align="center">
     💧<i>EventEmitter's typesafe replacement</i>💧
     <br>
     <br>
-    <img src="https://github.com/garronej/evt/workflows/ci/badge.svg?branch=develop">
-    <img src="https://img.shields.io/bundlephobia/minzip/evt">
-    <img src="https://img.shields.io/npm/dw/evt">
-    <img src="https://img.shields.io/npm/l/evt">
+    <a href="https://github.com/garronej/evt/actions">
+      <img src="https://github.com/garronej/evt/workflows/ci/badge.svg?branch=develop">
+    </a>
+    <a href="https://deno.land/x/evt">
+        <img src="https://img.shields.io/badge/deno-module-informational?logo=deno">
+    </a>
+    <a href="https://bundlephobia.com/package/evt">
+      <img src="https://img.shields.io/bundlephobia/minzip/evt">
+    </a>
+    <a href="https://www.npmjs.com/package/evt">
+      <img src="https://img.shields.io/npm/dm/evt">
+    </a>
+    <a href="https://github.com/garronej/evt/blob/main/LICENSE">
+      <img src="https://img.shields.io/npm/l/evt">
+    </a>
 </p>
 
-+ [Home](https://www.evt.land)
-+ [Documentation](https://docs.evt.land/overview)
+</p>
+<p align="center">
+  <a href="https://www.evt.land">Home</a>
+  -
+  <a href="https://docs.evt.land/overview">Documentation</a>
+  -
+  <a href="https://github.com/garronej/evt/pull/16">v2.0 🚀</a>
+</p>
 
 ---
 
 `'evt'` is intended to be a replacement for `'events'`.  
-It enables makes heavy use of **typescript**'s type inference features to provide **type safety** while keeping things **concise and elegant** 🍸.
+It enables and encourages **functional programming** and makes heavy use of **typescript**'s type inference features to provide **type safety** while keeping things **concise and elegant** 🍸.
 
 <b>Suitable for any JS runtime env (deno, node, old browsers, react-native ...)</b>
 - ✅ It is both a [Deno](https://deno.land/x/evt) and an [NPM](https://www.npmjs.com/evt) module. ( Achieved with [Denoify](https://github.com/garronej/denoify) ) 
 - ✅ Lightweight, no dependency.
-- ✅ No polyfills needed, the NPM module is transpiled down to ES3
+- ✅ Can be imported with `require` (CJS) or `import` (ESM).
 - ✅ [React Hooks integration](https://stackblitz.com/edit/evt-react-hooks-todo-list?file=index.tsx)
 
 Can be imported in TypeScript projects using version &gt;= **3.4** \(Mar 2019\) and in any plain JS projects.
@@ -59,6 +76,32 @@ evt.post(["text", "hi!"]);
 evt.post(["time", 123]);
 evt.post(["time", 1234]);
 ```
+in React, it let you attach event listeners without having to worry about detaching them.
+```typescript
+import { useState } from "react";
+import { Evt } from "evt";
+import { useEvt } from "evt/hooks";
+
+const evtTick = Evt.create();
+
+setInterval(()=> evtTick.post(), 1000);
+
+function App(){
+
+    const [count, setCount]= useState(0);
+
+    useEvt(ctx=> {
+    
+        evtTick.attach(ctx, ()=> setCount(count+1));
+    
+    },[count]);
+    
+    return <h1>tick count: {count}</h1>;
+
+
+}
+```
+[run it](https://stackblitz.com/edit/evt-hooks-101?file=index.tsx)
 
 _*Those are introductory examples, EVT can do much more than this._
 
@@ -73,7 +116,13 @@ _*Those are introductory examples, EVT can do much more than this._
     </a>
     <br>
     <a href="https://thegraph.com">
-        <img src="https://user-images.githubusercontent.com/6702424/85961024-ed4aca00-b9a7-11ea-9c7e-03e2f59e6d21.png"> 
+        <img src="https://user-images.githubusercontent.com/6702424/179356567-19e2ca0a-9797-4c82-8a45-7e1d0de896a9.png"> 
+    </a>
+    <a href="https://insee.fr">
+        <img src="https://user-images.githubusercontent.com/6702424/117936881-a9358f00-b305-11eb-84b9-e61593632bdd.png"> 
+    </a>
+    <a href="https://www.etalab.gouv.fr/">
+        <img src="https://user-images.githubusercontent.com/6702424/179345089-3aee6170-e7aa-4b38-adf1-f7d132aa7be4.png"> 
     </a>
 </p>
 
@@ -89,15 +138,6 @@ $ npm install --save evt
 ```
 ```typescript
 import { Evt } from "evt"; 
-```
-
-## Import from HTML, with CDN
-
-```html
-<script src="//unpkg.com/evt/bundle.min.js"></script>
-<script>
-    const { Evt } = window["evt"];
-</script>
 ```
 
 # Try it
@@ -120,11 +160,8 @@ _Example: waiting at most one second for the next message, stop waiting if the s
 
 Why would someone pick EVT over RxJS:  
 
-* RxJS introduces a lot of abstractions. It's a big jump from ``EventEmitter``.
-* With RxJS It is often needed to resort to custom [type guards](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards), the filter operator [breaks the type inference.](https://stackblitz.com/edit/evt-795plc?embed=1&file=index.ts&hideExplorer=1)
-* RxJS tends to be quite verbose.
-* It could be months before RxJS it eventually supports Deno.
-* No official guideline on how to integrate RxJS with React.
+* EVT's learning curve is not as steep as RxJS's. 
+* Generates code that is easier to grasp for people not familiar with reactive programming.
 
 EVT is an attempt to address all these points while trying to remain as accessible as `EventEmitter`.  
   
