@@ -35,7 +35,7 @@ setTimeout(()=> evtText.post("Hi!"), 1500);
 As with `attach*`, it is possible to set what is the maximum amount of time we are willing to wait for the event before the promise rejects.
 
 ```typescript
-import { Evt, TimeoutEvtError } from "evt";
+import { Evt, EvtError } from "evt";
 
 const evtText = Evt.create<string>();
 
@@ -49,7 +49,7 @@ const evtText = Evt.create<string>();
 
     }catch(error){
 
-        console.assert(error instanceof TimeoutEvtError);
+        console.assert(error instanceof EvtError.Timeout);
         //Error can be of two type:
         //  -EvtError.Timeout if the timeout delay was reached.
         //  -EvtError.Detached if the handler was detached before 
