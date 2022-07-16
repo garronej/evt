@@ -1,7 +1,6 @@
 # Table of contents
 
-* [Why EVT ?](README.md)
-* [Overview](overview.md)
+* [Overview](README.md)
 * [API Documentation](api/README.md)
   * [Evt\<T>](api/evt/README.md)
     * [evt.attach\*(...)](api/evt/attach.md)
