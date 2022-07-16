@@ -10,6 +10,12 @@ If you are only using the more commun features of `Evt` you can upgrade to v2 wi
 Most of the breaking changes are related to [`StatefulEvt`](api/statefulevt.md) and `React` integration.  &#x20;
 {% endhint %}
 
+{% hint style="warning" %}
+Dropped backward compatibility with typescript 3.4.&#x20;
+
+EVT now requires a version of TypeScript >= 3.8 (February 20th, 2020)
+{% endhint %}
+
 * [x] fλ Operators return type is `[U] | null (in v1: [U] | null | "DETACH" | {DETACH: Ctx} |...`&#x20;
 * [x] `StatefulEvt`: When attaching the handler should immediately be triggered with the state value. (except with attachExtract, and other \*extract\* methods)
 * [x] `StatefulEvt` evt.state= x only triggers evt.post(x) if x !== evt.state
