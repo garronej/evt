@@ -62,7 +62,7 @@ const log = global.console.log;
 
 	console.log("loop_end");
 
-	if( ctx.completionStatus?.type === "ABORTED" && ctx.completionStatus.error instanceof TimeoutEvtError ){
+	if( ctx.completionStatus?.error instanceof TimeoutEvtError ){
 		console.log("the loop was terminated because of timeout");
 	}
 
