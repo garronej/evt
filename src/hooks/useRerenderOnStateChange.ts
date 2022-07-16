@@ -10,7 +10,7 @@ interface StatefulReadonlyEvtLike {
 };
 
 /**
- * https://docs.evt.land/api/react-hooks
+ * https://docs.evt.land/react-hooks#usererenderonstatechange
  * 
  * To use StatefulEvt as react component state.
  * */

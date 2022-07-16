@@ -30,7 +30,7 @@ const { useEffect } = React;
  * perform an effect on first render (attaching a stateful evt
  * for example) use registerSideEffect(()=>{ ... })
  * 
- * Demo: https://stackblitz.com/edit/evt-useevt?file=index.tsx
+ * Demo: https://docs.evt.land/react-hooks#useevt
  */
 export function useEvt(
     effect: (ctx: Ctx) => void,
