@@ -1,7 +1,7 @@
 # Table of contents
 
-* [Overview](README.md)
-* [API Documentation](api/README.md)
+* [🚀 EVT Overview](README.md)
+* [📖 API Documentation](api/README.md)
   * [Evt\<T>](api/evt/README.md)
     * [evt.attach\*(...)](api/evt/attach.md)
     * [evt.post\*(data)](api/evt/post.md)
@@ -30,5 +30,5 @@
   * [StatefulEvt\<T>](api/statefulevt.md)
   * [Helper types](api/helpertypes.md)
   * [Handler\<T, U> (type)](api/handler.md)
-* [React hooks](react-hooks.md)
+* [🪝 React hooks](react-hooks.md)
 * [Extending Evt](extending\_evt.md)
