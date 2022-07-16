@@ -1,27 +1,21 @@
 {
-	"compilerOptions": {
-		"module": "commonjs",
-		"target": "es5",
-		"lib": [
-			"es2015"
-		],
-		"declaration": true,
-		"outDir": "./dist",
-		"sourceMap": true,
-		"newLine": "LF",
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"incremental": true,
-		"strict": true,
-		"downlevelIteration": true
-	},
-	"filesGlob": [
-		"src/**/*"
-	],
-	"exclude": [
-		"node_modules",
-		"dist/**/*",
-		"deno_dist/**/*",
-		"mod.ts"
-	]
+    "compilerOptions": {
+        "module": "CommonJS",
+        "target": "es5",
+        "lib": ["es2015"],
+        "esModuleInterop": true,
+        "declaration": true,
+        "outDir": "./dist",
+        "sourceMap": true,
+        "newLine": "LF",
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "incremental": true,
+        "strict": true,
+        "downlevelIteration": true,
+        "jsx": "react",
+        "noFallthroughCasesInSwitch": true
+    },
+    "include": ["src"],
+    "exclude": ["node_modules", "dist/", "deno_dist/", "src/**/*.deno.ts", "src/**/*.deno.tsx", "res/"]
 }

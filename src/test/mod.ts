@@ -1,4 +1,3 @@
-
 import "../tools/reducers/test";
 
 import "./test1";
@@ -6,13 +5,10 @@ import "./test2";
 import "./test3";
 import "./test4";
 
-
-
 import "./test8";
 import "./test9";
 import "./test10";
 import "./test11";
-
 
 import "./test14";
 import "./test15";
@@ -41,13 +37,7 @@ import "./test37";
 import "./test38";
 import "./test39";
 
-
-
-
 import "./test44";
-
-
-
 
 import "./test49";
 import "./test50";
@@ -56,8 +46,6 @@ import "./test52"; //May fail if test ran of slow host.
 import "./test53";
 import "./test54";
 import "./test55";
-
-
 
 import "./test59";
 import "./test60";
@@ -74,9 +62,7 @@ import "./test71";
 
 import "./test73";
 
-
 import "./test76";
-
 
 import "./test78";
 import "./test79";
