@@ -31,13 +31,22 @@ class CtxImpl<Result> implements Ctx<Result>{
         return this.lazyEvtDetach.evt;
     }
 
+    private __completionStatus: DoneOrAborted<Result> | undefined;
+
+    get completionStatus(): DoneOrAborted<Result> | undefined {
+        return this.__completionStatus;
+    }
+
 
     private lazyEvtAttach = new LazyEvt<Handler.WithEvt<any, Result>>();
     private lazyEvtDetach = new LazyEvt<Handler.WithEvt<any, Result>>();
     private lazyEvtDoneOrAborted = new LazyEvt<DoneOrAborted<Result>>();
 
-    private onDoneOrAborted(doneEvtData: DoneOrAborted<Result>): void {
-        this.lazyEvtDoneOrAborted.post(doneEvtData);
+    private onDoneOrAborted(doneOrAborted: DoneOrAborted<Result>): void {
+
+        this.__completionStatus = doneOrAborted;
+
+        this.lazyEvtDoneOrAborted.post(doneOrAborted);
     }
 
     waitFor(timeout?: number): Promise<Result> {
@@ -120,6 +129,12 @@ class CtxImpl<Result> implements Ctx<Result>{
     ) {
         assert(handler.ctx === this);
         assert(is<Handler<T, any, Ctx<Result>>>(handler));
+
+        if( this.completionStatus !== undefined ){
+            handler.detach();
+            return;
+        }
+
         this.handlers.add(handler);
         this.evtByHandler.set(handler, evt);
         this.lazyEvtAttach.post({ handler, evt });
