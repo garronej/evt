@@ -26,9 +26,7 @@
 <p align="center">
   <a href="https://www.evt.land">Home</a>
   -
-  <a href="https://docs.evt.land/overview">Documentation</a>
-  -
-  <a href="https://github.com/garronej/evt/pull/16">v2.0 🚀</a>
+  <a href="https://docs.evt.land">Documentation</a>
 </p>
 
 ---
@@ -43,67 +41,6 @@ It enables and encourages **functional programming** and makes heavy use of **ty
 - ✅ [React Hooks integration](https://stackblitz.com/edit/evt-react-hooks-todo-list?file=index.tsx)
 
 Can be imported in TypeScript projects using version &gt;= **3.4** \(Mar 2019\) and in any plain JS projects.
-
-# TL;DR*
-
-```typescript
-import { Evt } from "evt";
-
-const evtText = new Evt<string>();
-const evtTime = new Evt<number>();
-
-evtText.attach(text => console.log(text));
-evtTime.attachOnce(time => console.log(time));
-
-evtText.post("hi!"); //Prints "hi!"
-evtTime.post(123);   //Prints "123"
-evtTime.post(1234);  //Prints nothing
-```
-OR
-```typescript
-import { Evt, to } from "evt";
-
-const evt = new Evt<
-    [ "text",  string ] | 
-    [ "time",  number ]
->();
-
-//Mind the '$' prefixing 'attach'
-evt.$attach(to("text"), text => console.log(text));
-evt.$attachOnce(to("time"), time => console.log(time));
-
-evt.post(["text", "hi!"]);
-evt.post(["time", 123]);
-evt.post(["time", 1234]);
-```
-in React, it let you attach event listeners without having to worry about detaching them.
-```typescript
-import { useState } from "react";
-import { Evt } from "evt";
-import { useEvt } from "evt/hooks";
-
-const evtTick = Evt.create();
-
-setInterval(()=> evtTick.post(), 1000);
-
-function App(){
-
-    const [count, setCount]= useState(0);
-
-    useEvt(ctx=> {
-    
-        evtTick.attach(ctx, ()=> setCount(count+1));
-    
-    },[count]);
-    
-    return <h1>tick count: {count}</h1>;
-
-
-}
-```
-[run it](https://stackblitz.com/edit/evt-hooks-101?file=index.tsx)
-
-_*Those are introductory examples, EVT can do much more than this._
 
 # Who is using it
 
