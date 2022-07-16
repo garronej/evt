@@ -18,7 +18,7 @@ EVT Operators can be of three types:
 
     Filter / transform / detach handlers
 
-    * **Stateless fλ**: `<U>(data: T)=> [U] | null | "DETACH" | {DETACH:`[`Ctx`](https://docs.ts-evt.dev/api/ctx)`} |...` &#x20;
+    * **Stateless fλ**: `<U>(data: T)=> [U] | null` &#x20;
     *   **Stateful fλ**: `[ <U>(data: T, prev: U)=> ..., U ]`
 
         Uses the previous matched event data transformation as input à la `Array.prototype.reduce`
@@ -113,12 +113,7 @@ Anonymous functions to simultaneously filter, transform the data and control the
 The type of values that a fλ operator sole determine what it does:
 
 * `null` If the event should be ignored and nothing passed to the callback.
-* `[ U ]` or `[ U, null ]` When the event should be handled, wrapped into the singleton is the value will be passed to the callback.
-* `"DETACH"` If the event should be ignored and the handler detached from the `Evt`
-* `{ DETACH: Ctx<void> }` If the event should be ignored and a group of handlers bound to a certain context be detached. See [`Ctx<T>`](https://docs.ts-evt.dev/api/ctx)
-* `{ DETACH: Ctx<V>, res: V }`  See [`Ctx<T>`](https://docs.ts-evt.dev/api/ctx)\`\`
-* `{ DETACH: Ctx; err: Error }`  See [`Ctx<T>`](https://docs.ts-evt.dev/api/ctx)\`\`
-* `[ U, "DETACH" ]` / `[ U, {DETACH:Ctx, ...} ]` If the event should be handled AND some detach be performed.
+* `[ U ]`  When the event should be handled, wrapped into the singleton is the value will be passed to the callback.
 
 ### **Stateless fλ**
 
@@ -154,82 +149,6 @@ evtShape.post({ "type": "CIRCLE", "radius": 3 });
 //"radius 200" Will be printed to the console.
 evtShape.post({ "type": "CIRCLE", "radius": 200 });
 ```
-
-Other example using `"DETACH"`
-
-```typescript
-import { Evt } from "evt";
-
-const evtText= Evt.create<"TICK" | "END">();
-
-/*
- * Only handle events that are not "END".
- * If the event is "END", detach the handler.
- * Pass the event data string in lower case to the callback.
- */
-evtText.$attach(
-    text => text !== "END" ? [ text.toLowerCase() ] : "DETACH",
-    text => console.log(text) 
-);
-
-evtText.post("TICK"); //"tick" is printed to the console
-evtText.post("END"); //Nothing is printed on the console, the handler is detached
-evtText.post("TICK"); //Nothing is printed to the console.
-```
-
-Example use of `[U,null|"DETACH"]`, handling the event that causes the handler to be detached.
-
-```typescript
-const evtText= Evt.create<"TICK" | "END">();
-
-evtText.$attach(
-    text => [ text, text === "END" ? "DETACH" : null ],
-    text => console.log(text) 
-);
-
-evtText.post("TICK"); //"TICK" is printed to the console
-evtText.post("END"); //"END" is printed on the console, the handler is detached.
-evtText.post("TICK"); //Nothing is printed to the console the handler has been detached.
-```
-
-Example use of `{ DETACH:`[`Ctx`](https://docs.ts-evt.dev/api-doc/ctx)`}`, detaching a group of handlers bound to a given context.
-
-```typescript
-const evtBtnClick = Evt.create<"OK" | "QUIT">();
-
-const evtMessage = Evt.create<string>();
-const evtNotification = Evt.create<string>();
-
-const ctx= Evt.newCtx();
-
-evtMessage.attach(
-    ctx,
-    message => console.log(`message: ${message}`)
-);
-
-evtNotification.attach(
-    ctx,
-    notification => console.log(`notification: ${notification}`)
-);
-
-evtBtnClick.$attach(
-    type => [ 
-        type, 
-        type !== "QUIT" ? null : { "DETACH": ctx } 
-    ],
-    type => console.log(`Button clicked: ${type}`)
-);
-
-evtBtnClick.post("OK"); //Prints "Button clicked: OK"
-evtMessage.post("Hello World"); //Prints "Message: Hello World"
-evtNotification.post("Poke"); //Prints "Notification: Poke"
-evtBtnClick.post("QUIT"); //Prints "Button clicked: QUIT", handlers are detached...
-evtMessage.post("Hello World 2"); //Prints nothing
-evtNotification.post("Poke 2"); //Prints nothing
-evtBtnClick.post("OK"); //Prints "Button clicked: OK", evtBtnClick handler hasn't been detached as it was not bound to ctx.
-```
-
-[**Run examples**](https://stackblitz.com/edit/evt-mf3nzt?embed=1\&file=index.ts\&hideExplorer=1)
 
 ### **Stateful fλ**
 
