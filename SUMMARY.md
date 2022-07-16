@@ -32,3 +32,4 @@
   * [Handler\<T, U> (type)](api/handler.md)
 * [🪝 React hooks](react-hooks.md)
 * [🔩 Migrating from EventEmitter](extending\_evt.md)
+* [⬆ v1 -> v2](v1-greater-than-v2.md)

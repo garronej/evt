@@ -1,10 +1,4 @@
----
-description: >-
-  If you need to transition from EventEmitter to Evt without too much
-  refactorying.
----
-
-# 🔩 Migrating from EventEmitter
+# Extending Evt
 
 It is common practice to create classes that extends `EventEmitter` .&#x20;
 
@@ -17,7 +11,7 @@ class MySocket extends Evt<
     ["connect", void] |
     ["disconnect", { cause: "remote" | "local" } ] |
     ["error", Error]
-> {
+    > {
 
     public readonly address: string;
 
@@ -71,13 +65,7 @@ socket.$attach(
 
 ****[**Run the browser**](https://stackblitz.com/edit/evt-inheritence-pdzywu?file=index.ts)****
 
-Now we encourage favoring composition over inheritance and having one EVT instance for each events type.&#x20;
-
-{% hint style="info" %}
-In the following example MySocket exposes evtConnect, evtDisconnect and evtError as NonPostableEvt. &#x20;
-
-This is to ensure that the user of the socket do no do something like `socket.evtConnect.post()` as it shouldn't be allowed. Those evt should be listenable from the outside but only post from the inside.
-{% endhint %}
+Now we encourage favoring composition over inheritance and having one EVT instance for each events type.
 
 ```typescript
 import { Evt } from "evt";
