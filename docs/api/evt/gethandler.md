@@ -1,4 +1,4 @@
-# evt.getHandlers\(\)
+# evt.getHandlers()
 
 List all handlers attached to the `Evt`. Returns an array of [`Handler<T,any>`](https://docs.ts-evt.dev/api/handler).
 
@@ -36,9 +36,9 @@ evtShape.getHandlers()
 evtShape.post({ "type": "CIRCLE", "radius": 300 });
 ```
 
-[**Run the example**](https://stackblitz.com/edit/evt-zufivp?embed=1&file=index.ts&hideExplorer=1)
+[**Run the example**](https://stackblitz.com/edit/evt-zufivp?embed=1\&file=index.ts\&hideExplorer=1)
 
-`handler.detach(callback)`
+### `Equivalent of EventEmitter's handler.detach(callback)`
 
 To detach all the handlers using a given callback function as we do with `EventEmitter`:
 
@@ -61,5 +61,4 @@ evtText.getHandlers()
 evtText.post("Foo"); //Prints nothing
 ```
 
-[**Run the example**](https://stackblitz.com/edit/evt-wrqoct?embed=1&file=index.ts&hideExplorer=1)
-
+[**Run the example**](https://stackblitz.com/edit/evt-wrqoct?embed=1\&file=index.ts\&hideExplorer=1)
