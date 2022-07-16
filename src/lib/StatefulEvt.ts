@@ -29,6 +29,10 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
             this,
             (handler, handlerTrigger) => {
 
+                if( handler.extract ){
+                    return;
+                }
+
                 const opResult = this.getInvocableOp(handler.op)(
                     this.__state,
                     runSideEffect

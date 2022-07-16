@@ -1,8 +1,9 @@
-import type { Operator } from "../Operator";
-import type { StatefulEvt } from "./StatefulEvt";
-import type { CtxLike } from "./CtxLike";
-import type { Evt } from "./Evt";
-import type { Handler } from "../Handler";
+import type { Operator } from "../Operator";
+import type { StatefulEvt } from "./StatefulEvt";
+import type { CtxLike } from "./CtxLike";
+import type { Evt } from "./Evt";
+import type { Handler } from "../Handler";
+import type { AsyncIterableEvt } from "../AsyncIterableEvt";
 export interface NonPostableEvt<T> {
 
     /** https://docs.evt.land/api/statefulevt#converting-an-evt-into-a-statefulevt */
@@ -307,10 +308,102 @@ export interface NonPostableEvt<T> {
         timeout?: number
     ): Promise<T>;
 
+    [Symbol.asyncIterator](): AsyncIterator<T>;
 
-
-
-
+    /**
+    * https://docs.evt.land/api/evt/getAsyncIterable
+    * 
+    * op - fλ
+    * 
+    * ctx
+    * 
+    * timeout?
+    */
+    getAsyncIterable<U, CtxResult>(
+        op: Operator.fλ.Stateless<T, U>,
+        ctx: CtxLike<CtxResult>,
+        timeout?: number
+    ): AsyncIterableEvt<U, CtxResult>;
+    /**
+     * https://docs.evt.land/api/evt/getAsyncIterable
+     * 
+     * op - Type guard
+     * 
+     * ctx
+     * 
+     * timeout?
+     */
+    getAsyncIterable<Q extends T, CtxResult>(
+        op: (data: T) => data is Q,
+        ctx: CtxLike<CtxResult>,
+        timeout?: number
+    ): AsyncIterableEvt<Q, CtxResult>;
+    /**
+     * https://docs.evt.land/api/evt/getAsyncIterable
+     * 
+     * op - Filter
+     * 
+     * ctx
+     * 
+     * timeout?
+     */
+    getAsyncIterable<CtxResult>(
+        op: (data: T) => boolean,
+        ctx: CtxLike<CtxResult>,
+        timeout?: number
+    ): AsyncIterableEvt<T, CtxResult>;
+    /**
+     * https://docs.evt.land/api/evt/getAsyncIterable
+     * 
+     * op - fλ
+     * 
+     * timeout?
+     */
+    getAsyncIterable<U, CtxResult>(
+        op: Operator.fλ.Stateless<T, U>,
+        timeout?: number
+    ): AsyncIterableEvt<U>;
+    /**
+     * https://docs.evt.land/api/evt/getAsyncIterable
+     * 
+     * op - Type guard
+     * 
+     * timeout?
+     */
+    getAsyncIterable<Q extends T>(
+        op: (data: T) => data is Q,
+        timeout?: number
+    ): AsyncIterableEvt<Q>;
+    /**
+     * https://docs.evt.land/api/evt/getAsyncIterable
+     * 
+     * op - Filter
+     * 
+     * timeout?
+     */
+    getAsyncIterable(
+        op: (data: T) => boolean,
+        timeout?: number
+    ): AsyncIterableEvt<T>;
+    /**
+     * https://docs.evt.land/api/evt/getAsyncIterable
+     * 
+     * ctx
+     * 
+     * timeout?
+     */
+    getAsyncIterable<CtxResult>(
+        ctx: CtxLike,
+        timeout?: number
+    ): AsyncIterableEvt<T, CtxResult>;
+    /**
+     * https://docs.evt.land/api/evt/getAsyncIterable
+     * 
+     * timeout?
+     */
+    getAsyncIterable(
+        timeout?: number
+    ): AsyncIterableEvt<T, void>;
 
 
     /**

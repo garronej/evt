@@ -23,7 +23,8 @@ import { isPromiseLike } from "tsafe/isPromiseLike";
 import { DetachedEvtError, TimeoutEvtError } from "./types/EvtError";
 import * as nsCtxLike from "./types/interfaces/CtxLike";
 import type { Handler, Operator, NonPostableEvt, StatefulEvt, EvtLike, CtxLike } from "./types";
-import { convertOperatorToStatelessFλ } from "./util/convertOperatorToStatelessFLambda";
+import { convertOperatorToStatelessFλ } from "./util/convertOperatorToStatelessFLambda";
+import type { AsyncIterableEvt } from "./types/AsyncIterableEvt";
 
 const runSideEffect = (sideEffect: () => void) => sideEffect();
 
@@ -753,6 +754,129 @@ class EvtImpl<T> implements Evt<T> {
             EvtImpl.propsFormMethodNames.waitFor
         ).promise;
     }
+
+    [Symbol.asyncIterator]() {
+        return this.getAsyncIterable()[Symbol.asyncIterator]();
+    }
+
+    getAsyncIterable(...args: any[]): AsyncIterableEvt<any, any> {
+
+        const props = parsePropsFromArgs<T>(args, "waitFor");
+
+        const ctx = (props.ctx ?? newCtx()) as ReturnType<typeof newCtx>;
+
+        const self = this;
+
+        return {
+            ctx,
+            [Symbol.asyncIterator]() {
+
+                const previousDonePostCount = ctx.evtDoneOrAborted.postCount;
+
+                const evtProxy = self.pipe(ctx, props.op);
+
+                const timerWrap = (() => {
+
+                    const { timeout } = props;
+
+                    if (timeout === undefined) {
+                        return undefined;
+                    }
+
+                    const setTimeoutCallback = () => {
+                        const error = new TimeoutEvtError(timeout);
+                        ctx.abort(error);
+                    };
+
+                    const timer = setTimeout(setTimeoutCallback, timeout);
+
+                    return { timeout, setTimeoutCallback, timer };
+
+                })();
+
+                const events: [T][] = [];
+
+                evtProxy.attach(
+                    event => {
+
+                        if (timerWrap !== undefined) {
+
+                            clearTimeout(timerWrap.timer);
+
+                            timerWrap.timer = setTimeout(timerWrap.setTimeoutCallback, timerWrap.timeout);
+
+                        }
+
+                        events.push([event]);
+
+                    }
+                );
+
+                if (timerWrap !== undefined) {
+
+                    const { timer } = timerWrap;
+
+                    ctx.evtDoneOrAborted.attachOnce(
+                        event => event.type === "DONE",
+                        () => clearTimeout(timer)
+                    );
+
+                }
+
+                return {
+                    async next() {
+
+                        let eventWrap = events.shift();
+
+                        if (eventWrap === undefined) {
+
+                            const dEventWrap = new Deferred<[T] | undefined>();
+                            
+                            if( previousDonePostCount < ctx.evtDoneOrAborted.postCount ){
+                                return { "done": true };
+                            }
+
+                            const ctx2= newCtx();
+
+                            ctx.evtDoneOrAborted.attachOnce(
+                                ctx2,
+                                ()=> dEventWrap.resolve(undefined)
+                            );
+
+                            evtProxy.attachOnceExtract(ctx2, event=> {
+                                ctx2.done();
+                                dEventWrap.resolve([event])
+                            });
+
+                            eventWrap = await dEventWrap.pr;
+
+                            if( eventWrap === undefined ){
+                                return { "done": true };
+                            }
+
+                        }
+
+                        const out= { "done": false, "value": eventWrap[0] } as any;
+
+                        return out;
+
+                    },
+                    return() {
+
+                        self.detach(ctx);
+
+                        return { "done": true } as any;
+                    },
+                };
+            }
+
+        };
+
+
+    }
+
+
+
 
     $attach(...args: any[]) {
         return this.attach(...args);
