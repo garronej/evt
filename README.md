@@ -104,13 +104,12 @@ EVT is an attempt to address all these points while trying to remain as accessib
   
 </br>
 
-[Get started](https://docs.evt.land/overview#rxjs-comparison)
+[Get started](https://evt.land)
 
 # The sticker
 
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/6702424/90626180-e3607d00-e21a-11ea-9c88-82880ac9cedf.png">  
+    <img src="https://user-images.githubusercontent.com/6702424/179363007-582acf54-8f83-42ac-a062-562f8de40d14.gif">  
+    <a href="https://stackblitz.com/edit/evt-playground-gfnidx?file=index.ts">Playground</a>
 </p>
-<p align="center">
-    <a href="https://teespring.com/fr/evt-sticker">Shop</a>
-</p>
+
