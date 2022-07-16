@@ -40,7 +40,9 @@ It enables and encourages **functional programming** and makes heavy use of **ty
 - ✅ Can be imported with `require` (CJS) or `import` (ESM).
 - ✅ [React Hooks integration](https://docs.evt.land/react-hooks)
 
-Can be imported in TypeScript projects using version &gt;= **3.4** \(Mar 2019\) and in any plain JS projects.
+Can be imported in TypeScript projects using version TypeScript >= 3.8 (February 20th, 2020) and in any plain JS projects.
+
+> NOTE: There is very few breaking changes from v1 to v2. [Check them out](https://docs.evt.land/v1-greater-than-v2).  
 
 # Who is using it
 
@@ -103,7 +105,9 @@ EVT is an attempt to address all these points while trying to remain as accessib
   
 </br>
 
-[Get started](https://evt.land)
+<p align="center">
+  <a href="https://evt.land">Get Started</a>
+</p>
 
 # The sticker
 
