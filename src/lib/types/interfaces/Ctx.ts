@@ -1,5 +1,5 @@
-import type { CtxLike } from "./CtxLike";
-import type { Handler } from "../Handler";
+import type { CtxLike } from "./CtxLike";
+import type { Handler } from "../Handler";
 import type { EvtLike } from "../helper";
 import type { Evt } from "./Evt";
 
@@ -45,6 +45,10 @@ export interface Ctx<Result = void> {
      * */
     readonly evtDetach: Evt<Handler.WithEvt<any, Result>>;
 
+    /**
+     * If .done() of .abort() has been called, returns the result or error of the call.
+     **/
+    readonly completionStatus: DoneOrAborted<Result> | undefined;
 
     /** 
      * https://docs.evt.land/api/ctx#ctx-waitfor-timeout 
