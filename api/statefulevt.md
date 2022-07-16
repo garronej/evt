@@ -4,12 +4,6 @@ A `StatefulEvt` is an Evt stat keep a reference to the last value posted.
 
 You can think of it as way to observe when a value is changed.
 
-{% embed url="https://stackblitz.com/edit/evt-playground-wsa3je?file=index.ts" %}
-
-{% hint style="info" %}
-`When you attach to a` StatefulEvt `the callback is immediately called with the current value (except with` attachExtract `and` attachOnceExtract`).`
-{% endhint %}
-
 ## `.state`
 
 Property type: `T`
