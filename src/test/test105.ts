@@ -2,22 +2,27 @@
 import { Evt } from "../lib";
 import { assert } from "tsafe/assert";
 
-const log = global.console.log;
-const console = { "log": (str: string | number) => console.stdOut += `${str}`, "stdOut": "" };
+const log = console.log;
 
-const ctx= Evt.newCtx();
+{
 
-const evt= Evt.create("foo");
+	const console = { "log": (str: string | number) => console.stdOut += `${str}`, "stdOut": "" };
 
-ctx.done();
+	const ctx = Evt.newCtx();
 
-evt.attach(ctx, str=> console.log(str));
+	const evt = Evt.create("foo");
 
-evt.post("bar");
-evt.post("baz");
+	ctx.done();
 
-assert(console.stdOut === "foo");
+	evt.attach(ctx, str => console.log(str));
 
-log("PASS");
+	evt.post("bar");
+	evt.post("baz");
+
+	assert(console.stdOut === "foo");
+
+	log("PASS");
+
+}
 
 

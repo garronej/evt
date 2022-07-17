@@ -773,8 +773,6 @@ class EvtImpl<T> implements Evt<T> {
 
                 const previousDonePostCount = ctx.evtDoneOrAborted.postCount;
 
-                const evtProxy = self.pipe(ctx, props.op);
-
                 const timerWrap = (() => {
 
                     const { timeout } = props;
@@ -794,23 +792,27 @@ class EvtImpl<T> implements Evt<T> {
 
                 })();
 
-                const events: [T][] = [];
-
-                evtProxy.attach(
-                    event => {
+                const evtProxy = self
+                    .pipe(ctx, props.op)
+                    .pipe((data, registerSideEffect) => {
 
                         if (timerWrap !== undefined) {
 
-                            clearTimeout(timerWrap.timer);
+                            registerSideEffect(() => {
 
-                            timerWrap.timer = setTimeout(timerWrap.setTimeoutCallback, timerWrap.timeout);
+                                clearTimeout(timerWrap.timer);
+
+                                timerWrap.timer = setTimeout(timerWrap.setTimeoutCallback, timerWrap.timeout);
+                            });
 
                         }
 
-                        events.push([event]);
+                        return [data];
+                    });
 
-                    }
-                );
+                const events: [T][] = [];
+
+                evtProxy.attach(event => events.push([event]));
 
                 if (timerWrap !== undefined) {
 
@@ -831,32 +833,32 @@ class EvtImpl<T> implements Evt<T> {
                         if (eventWrap === undefined) {
 
                             const dEventWrap = new Deferred<[T] | undefined>();
-                            
-                            if( previousDonePostCount < ctx.evtDoneOrAborted.postCount ){
+
+                            if (previousDonePostCount < ctx.evtDoneOrAborted.postCount) {
                                 return { "done": true };
                             }
 
-                            const ctx2= newCtx();
+                            const ctx2 = newCtx();
 
                             ctx.evtDoneOrAborted.attachOnce(
                                 ctx2,
-                                ()=> dEventWrap.resolve(undefined)
+                                () => dEventWrap.resolve(undefined)
                             );
 
-                            evtProxy.attachOnceExtract(ctx2, event=> {
+                            evtProxy.attachOnceExtract(ctx2, event => {
                                 ctx2.done();
                                 dEventWrap.resolve([event])
                             });
 
                             eventWrap = await dEventWrap.pr;
 
-                            if( eventWrap === undefined ){
+                            if (eventWrap === undefined) {
                                 return { "done": true };
                             }
 
                         }
 
-                        const out= { "done": false, "value": eventWrap[0] } as any;
+                        const out = { "done": false, "value": eventWrap[0] } as any;
 
                         return out;
 

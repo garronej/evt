@@ -2,7 +2,7 @@
 import { Evt, TimeoutEvtError } from "../lib";
 import { assert } from "tsafe/assert";
 
-const log = global.console.log;
+const log = console.log;
 
 (async () => {
 
