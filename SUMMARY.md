@@ -3,6 +3,7 @@
 * [🚀 EVT Overview](README.md)
 * [📖 API Documentation](api/README.md)
   * [Evt\<T>](api/evt/README.md)
+    * [Async iterator](api/evt/async-iterator.md)
     * [evt.attach\*(...)](api/evt/attach.md)
     * [evt.post\*(data)](api/evt/post.md)
     * [evt.waitFor(...)](api/evt/waitfor.md)
