@@ -17,7 +17,7 @@ const log = global.console.log;
 
 	const evtStr = Evt.create<string>();
 
-	const it = evtStr.getAsyncIterable(60);
+	const it = evtStr.iter(60);
 
 	setTimeout(
 		()=>{

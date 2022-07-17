@@ -28,7 +28,7 @@ const log = global.console.log;
 
 
 	
-	for await (const counter of evtCounter.getAsyncIterable()) {
+	for await (const counter of evtCounter.iter()) {
 
 		console.log(counter);
 

@@ -311,7 +311,7 @@ export interface NonPostableEvt<T> {
     [Symbol.asyncIterator](): AsyncIterator<T>;
 
     /**
-    * https://docs.evt.land/api/evt/getAsyncIterable
+    * https://docs.evt.land/api/evt/iter
     * 
     * op - fλ
     * 
@@ -319,13 +319,13 @@ export interface NonPostableEvt<T> {
     * 
     * timeout?
     */
-    getAsyncIterable<U, CtxResult>(
+    iter<U, CtxResult>(
         op: Operator.fλ.Stateless<T, U>,
         ctx: CtxLike<CtxResult>,
         timeout?: number
     ): AsyncIterableEvt<U, CtxResult>;
     /**
-     * https://docs.evt.land/api/evt/getAsyncIterable
+     * https://docs.evt.land/api/evt/iter
      * 
      * op - Type guard
      * 
@@ -333,13 +333,13 @@ export interface NonPostableEvt<T> {
      * 
      * timeout?
      */
-    getAsyncIterable<Q extends T, CtxResult>(
+    iter<Q extends T, CtxResult>(
         op: (data: T) => data is Q,
         ctx: CtxLike<CtxResult>,
         timeout?: number
     ): AsyncIterableEvt<Q, CtxResult>;
     /**
-     * https://docs.evt.land/api/evt/getAsyncIterable
+     * https://docs.evt.land/api/evt/iter
      * 
      * op - Filter
      * 
@@ -347,61 +347,61 @@ export interface NonPostableEvt<T> {
      * 
      * timeout?
      */
-    getAsyncIterable<CtxResult>(
+    iter<CtxResult>(
         op: (data: T) => boolean,
         ctx: CtxLike<CtxResult>,
         timeout?: number
     ): AsyncIterableEvt<T, CtxResult>;
     /**
-     * https://docs.evt.land/api/evt/getAsyncIterable
+     * https://docs.evt.land/api/evt/iter
      * 
      * op - fλ
      * 
      * timeout?
      */
-    getAsyncIterable<U, CtxResult>(
+    iter<U, CtxResult>(
         op: Operator.fλ.Stateless<T, U>,
         timeout?: number
     ): AsyncIterableEvt<U>;
     /**
-     * https://docs.evt.land/api/evt/getAsyncIterable
+     * https://docs.evt.land/api/evt/iter
      * 
      * op - Type guard
      * 
      * timeout?
      */
-    getAsyncIterable<Q extends T>(
+    iter<Q extends T>(
         op: (data: T) => data is Q,
         timeout?: number
     ): AsyncIterableEvt<Q>;
     /**
-     * https://docs.evt.land/api/evt/getAsyncIterable
+     * https://docs.evt.land/api/evt/iter
      * 
      * op - Filter
      * 
      * timeout?
      */
-    getAsyncIterable(
+    iter(
         op: (data: T) => boolean,
         timeout?: number
     ): AsyncIterableEvt<T>;
     /**
-     * https://docs.evt.land/api/evt/getAsyncIterable
+     * https://docs.evt.land/api/evt/iter
      * 
      * ctx
      * 
      * timeout?
      */
-    getAsyncIterable<CtxResult>(
+    iter<CtxResult>(
         ctx: CtxLike,
         timeout?: number
     ): AsyncIterableEvt<T, CtxResult>;
     /**
-     * https://docs.evt.land/api/evt/getAsyncIterable
+     * https://docs.evt.land/api/evt/iter
      * 
      * timeout?
      */
-    getAsyncIterable(
+    iter(
         timeout?: number
     ): AsyncIterableEvt<T, void>;
 

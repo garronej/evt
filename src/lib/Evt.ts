@@ -756,10 +756,10 @@ class EvtImpl<T> implements Evt<T> {
     }
 
     [Symbol.asyncIterator]() {
-        return this.getAsyncIterable()[Symbol.asyncIterator]();
+        return this.iter()[Symbol.asyncIterator]();
     }
 
-    getAsyncIterable(...args: any[]): AsyncIterableEvt<any, any> {
+    iter(...args: any[]): AsyncIterableEvt<any, any> {
 
         const props = parsePropsFromArgs<T>(args, "waitFor");
 

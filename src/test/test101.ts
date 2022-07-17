@@ -49,7 +49,7 @@ const log = global.console.log;
 
 	});
 
-	for await (const str of evtStr.getAsyncIterable(ctx, 60)) {
+	for await (const str of evtStr.iter(ctx, 60)) {
 
 		await new Promise(resolve=> setTimeout(resolve,100));
 
