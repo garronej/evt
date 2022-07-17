@@ -180,23 +180,23 @@ csstype@^3.0.2:
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.1.0.tgz#4ddcac3718d787cf9df0d1b7d15033925c8f29f2"
   integrity sha512-uX1KG+x9h5hIJsaKR9xHUeUraxf8IODOwq9JLNPq6BwB04a/xgpq3rcx47l5BZu5zBPlgD342tdke3Hom/nJRA==
 
-denoify@^0.10.3:
-  version "0.10.6"
-  resolved "https://registry.yarnpkg.com/denoify/-/denoify-0.10.6.tgz#04469138ca09d660af10016c282d29b963d7a5ce"
-  integrity sha512-i7QjQZRHMIh7AT15t6MWYum9GIL24Atv4FgT6FznT7VNnCXx9fZ27dO31Z5kz6yPY9vd1pyQBDF+ljxXlvAGlQ==
+denoify@^0.11.2:
+  version "0.11.2"
+  resolved "https://registry.yarnpkg.com/denoify/-/denoify-0.11.2.tgz#8e4625636c16594e648b0ac1e9699d198c399026"
+  integrity sha512-JlE51Bz7ry8fazDVgYx8H/C3vWuBGbXrJ31jki5rSGpugs+NRh1syIEj0YMG+whvF46w9kvQdmh1MWaZvNLpqQ==
   dependencies:
     "@octokit/rest" "^18.0.0"
     "@types/comment-json" "^1.1.1"
     commander "^4.1.1"
     comment-json "^3.0.2"
-    evt beta
+    evt "^2.2.0"
     get-github-default-branch-name "^0.0.4"
     gitignore-parser "0.0.2"
     glob "^7.1.6"
     node-fetch "^2.6.0"
     path-depth "^1.0.0"
     scripting-tools "^0.19.13"
-    tsafe "^0.8.0"
+    tsafe "^0.10.0"
     url-join "^4.0.1"
 
 deprecation@^2.0.0, deprecation@^2.3.1:
@@ -209,14 +209,14 @@ esprima@^4.0.1:
   resolved "https://registry.yarnpkg.com/esprima/-/esprima-4.0.1.tgz#13b04cdb3e6c5d19df91ab6987a8695619b0aa71"
   integrity sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A==
 
-evt@beta:
-  version "2.0.0-beta.45"
-  resolved "https://registry.yarnpkg.com/evt/-/evt-2.0.0-beta.45.tgz#8b1a81e1376f6eba254f4ec9865531b2ed118a3e"
-  integrity sha512-Me2/YMCjxLgz4y0aWKIxykyJth2LHKqxc91XnsIN39IRksknObBR9Pjmxwpnhmd1lNCR6mPFv/vBt46iQWtI9g==
+evt@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/evt/-/evt-2.2.0.tgz#3f4cd36042ae951d4de4b11391cc9a1983a63f7d"
+  integrity sha512-osz8IYRfeNVva7KRdHx/ruJJo3e4OowMzL+E1Dw8xBjGNrJsK74hDvWErH9hGhnYQxu9rBDPTq8JXydvgu17kg==
   dependencies:
     minimal-polyfills "^2.2.1"
     run-exclusive "^2.2.14"
-    tsafe "^0.4.1"
+    tsafe "^0.10.0"
 
 fs.realpath@^1.0.0:
   version "1.0.0"
@@ -359,16 +359,6 @@ tsafe@^0.10.0:
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/tsafe/-/tsafe-0.10.0.tgz#c4fba365a49467ea6167e8c9482ddb94ee51b795"
   integrity sha512-CFfa1uJKfU0DDRbuB8bf2mfXjkOqiTsrltexzMMLxq5gjd1LttFECNGsO8dYUALJDbShb6+f3CwAppW/wf9BrA==
-
-tsafe@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/tsafe/-/tsafe-0.4.1.tgz#00af1be2db82abb4be531209b90232d7954e1a03"
-  integrity sha512-+OZ0gdgmwcru+MOSheCx+ymAvQz+1/ui+KFJRuaq0t2m8RNrlf7eSzEieptoPQXPY67Mdkqgkdjknn8azoD5sw==
-
-tsafe@^0.8.0:
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/tsafe/-/tsafe-0.8.1.tgz#9af7e1540bc04313a82d60c98056a5017c8b086b"
-  integrity sha512-EfPjxQHzndQAV/uh0SMGP26Wg3dCuaw8dRv2VPEuGHen5qzg2oqsMvZw2wkQFkiMisZq2fm95m5lheimW2Fpvg==
 
 tslib@^1.9.0:
   version "1.14.1"
