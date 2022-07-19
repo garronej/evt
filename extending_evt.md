@@ -13,7 +13,7 @@ In EventEmitter you had a single instance for many event types. In EVT, on the o
 That said, it's possible to use EVT just like EventEmitter.
 
 ```diff
--import { EventEmitter } from "events";
+-const EventEmitter = require("events");
 +import { Evt, to } from "evt";
 
 -const eeBus = new EventEmitter();
@@ -32,22 +32,20 @@ That said, it's possible to use EVT just like EventEmitter.
 -eeBus.once("error", error => /* ... */);
 +evtBus.attachOnce(to("error"), error => /* ... */);
 
--eeBus.detach();
+-eeBus.removeAllListeners();
 +evtBus.detach();
 
--eeBus.detach("disconnect");
+-eeBus.removeAllListeners("disconnect");
 +evtText.getHandlers()
 +    .filter(handler => handler.op === to("disconnect"))
-+    .forEach(({ detach })=> detach())
-+    ;
++    .forEach(({ detach })=> detach());
 
 const callback = ()=> { /* ... */ };
 
--eeBus.detach("connect", callback);
+-eeBus.removeListener("connect", callback);
 +evtText.getHandlers()
 +    .filter(handler => handler.callback === callback)
-+    .forEach(({detach})=> detach())
-+    ;
++    .forEach(({detach})=> detach());
 
 ```
 
