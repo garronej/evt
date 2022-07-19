@@ -8,9 +8,9 @@ description: >-
 
 ### All events in a single bus
 
-In EventEmitter you had a single instance for many event types. In EVT on the other hand the recommended approach is to have an EVT for every event type. &#x20;
+In EventEmitter you had a single instance for many event types. In EVT, on the other hand, the recommended approach is to have an EVT for every event type.
 
-That say it's possible to use EVT just like EventEmitter. &#x20;
+That said, it's possible to use EVT just like EventEmitter.
 
 ```diff
 -import { EventEmitter } from "events";
