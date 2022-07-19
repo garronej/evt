@@ -49,10 +49,19 @@ const callback = ()=> { /* ... */ };
 +    .forEach(({detach})=> detach())
 +    ;
 
- 
 ```
 
+In EVT you can use `Ctx` to detach many handlers at once. It's much more convenient than using the callback ref.
 
+```typescript
+const ctx = Evt.newCtx();  
+
+evtText.attach(to("connect"), ctx, ()=> { /* ... */ });
+evtText.attach(to("disconnect"), ctx, error => { /* ... */ });
+
+// Detach all handlers that have been attached using the ctx.
+ctx.done();
+```
 
 ### Extending Evt
 
