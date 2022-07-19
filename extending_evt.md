@@ -43,7 +43,7 @@ That said, it's possible to use EVT just like EventEmitter.
 
 const callback = ()=> { /* ... */ };
 
--eeBus.on("connect", callback);
+-eeBus.detach("connect", callback);
 +evtText.getHandlers()
 +    .filter(handler => handler.callback === callback)
 +    .forEach(({detach})=> detach())
