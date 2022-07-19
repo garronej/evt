@@ -35,6 +35,11 @@ That said, it's possible to use EVT just like EventEmitter.
 -eeBus.removeAllListeners();
 +evtBus.detach();
 
+-const count = eeBus.listenerCount("disconnect");
++const count = evtBus.getHandlers()
++    .filter(handler => handler.op === to("disconnect"))
++    .length;
+
 -eeBus.removeAllListeners("disconnect");
 +evtText.getHandlers()
 +    .filter(handler => handler.op === to("disconnect"))
