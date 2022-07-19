@@ -4,7 +4,7 @@ description: >-
   up afterward.
 ---
 
-# React hooks
+# 🪝 React hooks
 
 ## useEvt()
 

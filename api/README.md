@@ -4,6 +4,6 @@ description: >-
   users.
 ---
 
-# API Documentation
+# 📖 API Documentation
 
 The [`Operator`](https://docs.ts-evt.dev/api-doc/operator) section is the place to start.

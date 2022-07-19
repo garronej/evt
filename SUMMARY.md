@@ -32,5 +32,5 @@
   * [Helper types](api/helpertypes.md)
   * [Handler\<T, U> (type)](api/handler.md)
 * [🪝 React hooks](react-hooks.md)
-* [🔩 Migrating from EventEmitter](extending\_evt.md)
+* [🔩 From EventEmitter to Evt](migrating\_from\_events.md)
 * [⬆ v1 -> v2](v1-greater-than-v2.md)
