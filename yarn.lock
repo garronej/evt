@@ -338,6 +338,13 @@ run-exclusive@^2.2.14:
   dependencies:
     minimal-polyfills "^2.1.5"
 
+run-exclusive@^2.2.15:
+  version "2.2.15"
+  resolved "https://registry.yarnpkg.com/run-exclusive/-/run-exclusive-2.2.15.tgz#8e311a741cb8def53ececf2e9d921e47abf15117"
+  integrity sha512-MpQTHZspu8Qcl/WtJXGn7ClQitwk8m9iQwVPqFhhYSJQF/YcEu0Btn7h1UfPXHAgcDClZsHBzg0HVGYRt8Txaw==
+  dependencies:
+    minimal-polyfills "^2.2.1"
+
 rxjs@^6.5.4:
   version "6.6.7"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.6.7.tgz#90ac018acabf491bf65044235d5863c4dab804c9"
