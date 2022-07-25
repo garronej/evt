@@ -1,14 +1,8 @@
 
 import { importProxy } from "./importProxy";
-import type { UnpackEvt, Evt, CtxLike } from "./types";
+import type { UnpackEvt, Evt, CtxLike, NonPostableEvtLike } from "./types";
 
-
-export type EvtLike<T> = import("./types/helper").EvtLike<T> & {
-    attach(ctx: CtxLike<any>, callback: (data: T) => void): void;
-    attach(callback: (data: T) => void): void;
-};
-
-export function mergeImpl<EvtUnion extends EvtLike<any>>(
+export function mergeImpl<EvtUnion extends NonPostableEvtLike<any>>(
     ctx: CtxLike<any> | undefined,
     evts: readonly EvtUnion[]
 ): Evt<UnpackEvt<EvtUnion>> {
@@ -36,14 +30,14 @@ export function mergeImpl<EvtUnion extends EvtLike<any>>(
 
 
 /** https://docs.evt.land/api/evt/merge */
-export function merge<EvtUnion extends EvtLike<any>>(
+export function merge<EvtUnion extends NonPostableEvtLike<any>>(
     ctx: CtxLike<any>,
     evts: readonly EvtUnion[]
 ): Evt<UnpackEvt<EvtUnion>>;
-export function merge<EvtUnion extends EvtLike<any>>(
+export function merge<EvtUnion extends NonPostableEvtLike<any>>(
     evts: readonly EvtUnion[]
 ): Evt<UnpackEvt<EvtUnion>>;
-export function merge<EvtUnion extends EvtLike<any>>(
+export function merge<EvtUnion extends NonPostableEvtLike<any>>(
     p1: CtxLike<any> | readonly EvtUnion[],
     p2?: readonly EvtUnion[]
 ): Evt<UnpackEvt<EvtUnion>> {

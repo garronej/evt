@@ -22,7 +22,7 @@ import { safeClearTimeout, safeSetTimeout, Timer } from "../tools/safeSetTimeout
 import { isPromiseLike } from "tsafe/isPromiseLike";
 import { DetachedEvtError, TimeoutEvtError } from "./types/EvtError";
 import * as nsCtxLike from "./types/interfaces/CtxLike";
-import type { Handler, Operator, NonPostableEvt, StatefulEvt, EvtLike, CtxLike } from "./types";
+import type { Handler, Operator, NonPostableEvt, StatefulEvt, NonPostableEvtLike, CtxLike } from "./types";
 import { convertOperatorToStatelessFλ } from "./util/convertOperatorToStatelessFLambda";
 import type { AsyncIterableEvt } from "./types/AsyncIterableEvt";
 
@@ -1020,7 +1020,7 @@ class EvtImpl<T> implements Evt<T> {
  * the callback on attach.
  */
 export const onAddHandlerByEvt = new WeakMap<
-    EvtLike<any>,
+    NonPostableEvtLike<any>,
     (
         handler: Handler<any, any>,
         handlerTrigger: (opResult: readonly [any]) => PromiseLike<void> | undefined

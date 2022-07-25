@@ -1,8 +1,8 @@
 
-import type { EvtLike } from "./EvtLike";
+import type { NonPostableEvtLike } from "../interfaces/NonPostableEvtLike";
 import type { SwapEvtType } from "./SwapEvtType";
 import type { UnpackEvt } from "./UnpackEvt";
 
 /** https://docs.evt.land/api/helpertypes#swapevttype-less-than-e-t-greater-than */
-export type FactorizeEvt<E extends EvtLike<any>> = SwapEvtType<E, UnpackEvt<E>>;
+export type FactorizeEvt<E extends NonPostableEvtLike<any>> = SwapEvtType<E, UnpackEvt<E>>;
 

@@ -1,7 +1,7 @@
-import type { FactorizeEvt, EvtLike } from "./types/helper";
+import type { FactorizeEvt, NonPostableEvtLike } from "./types";
 
 /** https://docs.evt.land/api/evt/factorize */
-export function factorize<E extends EvtLike<any>>(
+export function factorize<E extends NonPostableEvtLike<any>>(
     evt: E
 ): FactorizeEvt<E> {
     return evt as any;

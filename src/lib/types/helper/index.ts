@@ -1,4 +1,3 @@
-export type { EvtLike } from "./EvtLike";
 export type { UnpackEvt } from "./UnpackEvt";
 export type { FactorizeEvt } from "./FactorizeEvt";
 export type { SwapEvtType } from "./SwapEvtType";

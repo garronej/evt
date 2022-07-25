@@ -1,20 +1,18 @@
 
-import type { EvtLike } from "./EvtLike";
-import type { StatefulPostable, NonPostableEvt, StatefulReadonlyEvt } from "../interfaces";
+import type {  StatefulReadonlyEvtLike, NonPostableEvtLike, NonPostableEvt, StatefulReadonlyEvt } from "../interfaces";
 
-type ToNonPostableEvtBase<E extends EvtLike<any>> =
-    E extends StatefulReadonlyEvt<infer U> ? StatefulReadonlyEvt<U> :
-    E extends NonPostableEvt<infer U> ? NonPostableEvt<U> :
-    Omit<E, Exclude<keyof StatefulPostable<any>, "state">>
+type ToNonPostableEvtBase<E extends NonPostableEvt<any>> =
+    E extends StatefulReadonlyEvtLike<infer U> ? StatefulReadonlyEvt<U> :
+    E extends NonPostableEvtLike<infer U> ? NonPostableEvt<U> : never
     ;
 
 type ToNonPostableEvtRecord<R extends { [key: string]: any; }> = {
-    [P in keyof R]: R[P] extends EvtLike<any> ? ToNonPostableEvtBase<R[P]> : R[P];
+    [P in keyof R]: R[P] extends NonPostableEvt<any> ? ToNonPostableEvtBase<R[P]> : R[P];
 };
 
 /** https://docs.evt.land/api/helpertypes#tononpostableevt-less-than-e-greater-than */
-export type ToNonPostableEvt<E extends ({ [key: string]: any; } | EvtLike<any>)> =
-    E extends EvtLike<any> ? ToNonPostableEvtBase<E> :
+export type ToNonPostableEvt<E extends ({ [key: string]: any; } | NonPostableEvt<any>)> =
+    E extends NonPostableEvt<any> ? ToNonPostableEvtBase<E> :
     ToNonPostableEvtRecord<E>
     ;
 

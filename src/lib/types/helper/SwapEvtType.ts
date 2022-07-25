@@ -1,12 +1,14 @@
-import type { StatefulEvt, StatefulReadonlyEvt, Evt, NonPostableEvt } from "../interfaces";
-import type { EvtLike } from "./EvtLike";
-
+import type {
+    StatefulEvtLike, StatefulEvt,
+    StatefulReadonlyEvtLike, StatefulReadonlyEvt,
+    EvtLike, Evt,
+    NonPostableEvtLike, NonPostableEvt
+} from "../interfaces";
 
 /** https://docs.evt.land/api/helpertypes#swapevttype-less-than-e-t-greater-than */
-export type SwapEvtType<E extends EvtLike<any>, T> =
-        E extends StatefulEvt<any> ? StatefulEvt<T> :
-        E extends StatefulReadonlyEvt<any> ? StatefulReadonlyEvt<T> :
-        E extends Evt<any> ? Evt<T> :
-        E extends NonPostableEvt<any> ? NonPostableEvt<T> :
-        EvtLike<T>
+export type SwapEvtType<E extends NonPostableEvtLike<any>, T> =
+    E extends StatefulEvtLike<any> ? StatefulEvt<T> :
+    E extends StatefulReadonlyEvtLike<any> ? StatefulReadonlyEvt<T> :
+    E extends EvtLike<any> ? Evt<T> :
+    NonPostableEvt<T>
     ;

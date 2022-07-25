@@ -1,29 +1,24 @@
 
-import type { EvtLike } from "./EvtLike";
 import type { 
-    StatefulPostable,
-    Postable, 
-    NonPostableEvt, 
-    StatefulReadonlyEvt, 
+    NonPostableEvtLike, 
+    StatefulReadonlyEvtLike, 
     StatefulEvt, 
-    Evt
+    Evt,
 } from "../interfaces";
 
 
-type ToPostableEvtBase<E extends EvtLike<any>> =
-        E extends StatefulReadonlyEvt<infer U> ? StatefulEvt<U> :
-        E extends NonPostableEvt<infer U> ? Evt<U> :
-        E extends { state: infer U } ? E & StatefulPostable<U> :
-        E & Postable<E>
+type ToPostableEvtBase<E extends NonPostableEvtLike<any>> =
+        E extends StatefulReadonlyEvtLike<infer U> ? StatefulEvt<U> :
+        E extends NonPostableEvtLike<infer U> ? Evt<U> : never
     ;
 
 type ToPostableEvtRecord<R extends { [key: string]: any; }> = {
-    [P in keyof R]: R[P] extends EvtLike<any> ? ToPostableEvtBase<R[P]> : R[P];
+    [P in keyof R]: R[P] extends NonPostableEvtLike<any> ? ToPostableEvtBase<R[P]> : R[P];
 };
 
 /** https://docs.evt.land/api/helpertypes#topostableevt-less-than-e-greater-than */
-export type ToPostableEvt<E extends ({ [key: string]: any; } | EvtLike<any>)> =
-    E extends EvtLike<any> ? ToPostableEvtBase<E> :
+export type ToPostableEvt<E extends ({ [key: string]: any; } | NonPostableEvtLike<any>)> =
+    E extends NonPostableEvtLike<any> ? ToPostableEvtBase<E> :
     ToPostableEvtRecord<E>
     ;
 

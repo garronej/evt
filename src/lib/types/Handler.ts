@@ -1,6 +1,5 @@
 import type { Operator } from "./Operator";
-import type { EvtLike } from "../types/helper";
-import type { CtxLike } from "../types/interfaces";
+import type { CtxLike, NonPostableEvtLike } from "../types/interfaces";
 
 /** https://docs.evt.land/api/handler */
 export type Handler<T, U, CtxProp extends CtxLike<any> | undefined = CtxLike<any> | undefined> =
@@ -54,7 +53,7 @@ export namespace Handler {
 
     export type WithEvt<T,CtxResult> = {
         handler: Handler<T, any, CtxLike<CtxResult>>;
-        evt: EvtLike<T>;
+        evt: NonPostableEvtLike<T>;
     };
 
 }

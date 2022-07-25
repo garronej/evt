@@ -1,6 +1,6 @@
 import type { CtxLike } from "./CtxLike";
 import type { Handler } from "../Handler";
-import type { EvtLike } from "../helper";
+import type { NonPostableEvtLike } from "./NonPostableEvtLike";
 import type { Evt } from "./Evt";
 
 export type DoneOrAborted<Result> = DoneOrAborted.Done<Result> | DoneOrAborted.Aborted<Result>;
@@ -90,7 +90,7 @@ export interface Ctx<Result = void> {
      * */
     zz__addHandler<T>(
         handler: Handler<T, any, CtxLike<Result>>,
-        evt: EvtLike<T>
+        evt: NonPostableEvtLike<T>
     ): void;
 
     /** 

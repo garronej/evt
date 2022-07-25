@@ -1,12 +1,9 @@
 
 import type { Evt } from "./Evt";
-import type { StatefulEvt, StatefulReadonlyEvt, NonPostableEvt, UnpackEvt } from "./types";
-import type { PromiseOrNot } from "tsafe/lab/PromiseOrNot";
+import type { StatefulEvt, UnpackEvt, NonPostableEvtLike, StatefulReadonlyEvtLike } from "./types";
+import type { PromiseOrNot } from "tsafe/lab/PromiseOrNot";
 import { importProxy } from "./importProxy";
 
-type EvtLike<T> = import("./types/helper").EvtLike<T> & {
-    attach(callback: (data: T) => void): void;
-};
 
 
 /** 
@@ -22,13 +19,11 @@ type EvtLike<T> = import("./types/helper").EvtLike<T> & {
  * 
  * More usage example in src/test/test95.ts
  */
-export function asyncPipe<E extends EvtLike<any>, U>(
+export function asyncPipe<E extends NonPostableEvtLike<any>, U>(
     evt: E,
     asyncOp: (data: UnpackEvt<E>) => PromiseOrNot<[U] | null>
 ): 
-    E extends StatefulReadonlyEvt<any> ? StatefulEvt<U | undefined> :
-    E extends NonPostableEvt<any> ? Evt<U> :
-    EvtLike<U>
+    E extends StatefulReadonlyEvtLike<any> ? StatefulEvt<U | undefined> : Evt<U> 
 {
 
     const out = "state" in evt ?

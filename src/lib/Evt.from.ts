@@ -3,7 +3,7 @@ import { assert } from "tsafe/assert";;
 import { typeGuard } from "tsafe/typeGuard";
 import { mergeImpl } from "./Evt.merge";
 import { importProxy } from "./importProxy";
-import type { dom, Evt, EvtLike } from "./types";
+import type { dom, Evt, NonPostableEvtLike } from "./types";
 import type { EventTargetLike } from "./types";
 import * as nsEventTargetLike from "./types/EventTargetLike";
 const { EventTargetLike: EventTargetLikeAsValue } = nsEventTargetLike;
@@ -11,7 +11,7 @@ import type { ObserverConstructor } from "./types/Observer";
 
 type OneOrMany<T> = T | ArrayLike<T>;
 type CtxLike<Result> = import("./types").CtxLike<Result> & {
-    evtDoneOrAborted: EvtLike<unknown> & { postCount: number; attachOnce(callback: () => void): void; };
+    evtDoneOrAborted: NonPostableEvtLike<unknown> & { postCount: number; attachOnce(callback: () => void): void; };
 };
 
 function fromImplForTargetEventLike<T>(

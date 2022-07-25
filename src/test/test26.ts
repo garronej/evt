@@ -1,9 +1,9 @@
 
 import { Evt } from "../lib";
 
-type UnpackEvt<T extends ({ [key: string]: any; } | import("../lib/types/helper").EvtLike<any>)> = import("../lib/types/helper").UnpackEvt<T>;
+type UnpackEvt<T extends ({ [key: string]: any; } | import("../lib/types").EvtLike<any>)> = import("../lib/types/helper").UnpackEvt<T>;
 
-type ToNonPostableEvt<E extends ({ [key: string]: any; } | import("../lib/types/helper").EvtLike<any>)> = 
+type ToNonPostableEvt<E extends ({ [key: string]: any; } | import("../lib/types").EvtLike<any>)> = 
     import("../lib/types/helper/ToNonPostableEvt").ToNonPostableEvt<E>;
 
 type UnpackEvt_<T> = import("../lib/types/helper").UnpackEvt<T>;

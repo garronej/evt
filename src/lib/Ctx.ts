@@ -8,7 +8,7 @@ import { overwriteReadonlyProp } from "tsafe/lab/overwriteReadonlyProp";
 
 import type { 
     Handler, 
-    EvtLike,
+    NonPostableEvtLike,
     Evt,
     CtxLike,
     DoneOrAborted
@@ -113,7 +113,7 @@ class CtxImpl<Result> implements Ctx<Result>{
     >();
     private evtByHandler = new WeakMap<
         Handler<any, any, Ctx<Result>>,
-        EvtLike<any>
+        NonPostableEvtLike<any>
     >();
 
     getHandlers(): Handler.WithEvt<any, Result>[] {
@@ -125,7 +125,7 @@ class CtxImpl<Result> implements Ctx<Result>{
 
     zz__addHandler<T>(
         handler: Handler<T, any, CtxLike<Result>>,
-        evt: EvtLike<T>
+        evt: NonPostableEvtLike<T>
     ) {
         assert(handler.ctx === this);
         assert(is<Handler<T, any, Ctx<Result>>>(handler));
