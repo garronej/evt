@@ -8,55 +8,21 @@ description: >-
 
 ## useEvt()
 
-```tsx
-import { useState } from "react";
-import { Evt } from "evt";
-import { useEvt } from "evt/hooks";
+{% embed url="https://stackblitz.com/edit/evt-hooks-101?file=index.tsx" %}
+Basic example
+{% endembed %}
 
-const evtTick = Evt.create();
+{% embed url="https://stackblitz.com/edit/react-ts-hqhuzk?file=App.tsx" %}
+Creating Evt from DOM Elements
+{% endembed %}
 
-setInterval(()=> evtTick.post(), 1000);
-
-function App(){
-
-    const [count, setCount]= useState(0);
-
-    useEvt(ctx=> {
-    
-        evtTick.attach(ctx, ()=> setCount(count+1));
-    
-    },[count]);
-    
-    return <h1>tick count: {count}</h1>;
-
-}
-```
-
-****[**Run it**](https://stackblitz.com/edit/evt-hooks-101?file=index.tsx)****
-
-{% hint style="success" %}
-The core idea is to always use the `ctx` to attach handlers. This will enable EVT to detach/reload handlers when they need to be namely when the component is unmounted or a value used in a handler has changed.
-{% endhint %}
+The core idea is to always use the `ctx` to attach handlers. This will enable EVT to detach/reload handlers when they need to be namely when the component is unmounted or a value used in a handler has changed. &#x20;
 
 ## useRerenderOnStateChange()
 
-```tsx
-import { useState } from "react";
-import { Evt } from "evt";
-import { useRerenderOnStateChange } from "evt/hooks";
-
-const evtTickCount = Evt.create(0);
-
-setInterval(()=> evtTickCount.state++, 1000);
-
-function App(){
-
-    useRerenderOnStateChange(evtTickCount);
-    
-    return <h1>tick count: {evtTickCount.state}</h1>;
-
-}
-```
+{% embed url="https://stackblitz.com/edit/react-ts-wquwqg?file=App.tsx" %}
+With StatefulEvt
+{% endembed %}
 
 ## ESLint
 
