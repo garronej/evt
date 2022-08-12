@@ -8,6 +8,9 @@
     <a href="https://github.com/garronej/evt/actions">
       <img src="https://github.com/garronej/evt/workflows/ci/badge.svg?branch=develop">
     </a>
+    <a href="https://www.npmjs.com/package/evt">
+      <img src="https://img.shields.io/npm/v/evt?logo=npm">
+    </a>
     <a href="https://deno.land/x/evt">
         <img src="https://img.shields.io/badge/deno-module-informational?logo=deno">
     </a>
