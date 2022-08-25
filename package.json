@@ -1,6 +1,6 @@
 {
     "name": "evt",
-    "version": "2.3.3",
+    "version": "2.3.4",
     "description": "Type safe replacement for node's EventEmitter",
     "repository": {
         "type": "git",
@@ -17,7 +17,7 @@
     "author": "u/garronej",
     "license": "MIT",
     "dependencies": {
-        "minimal-polyfills": "^2.2.1",
+        "minimal-polyfills": "^2.2.2",
         "run-exclusive": "^2.2.16",
         "tsafe": "^1.0.1"
     },
