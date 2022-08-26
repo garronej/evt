@@ -4,7 +4,7 @@ description: >-
   refactorying.
 ---
 
-# 🔩 Migrating from EventEmitter
+# 🔩 From EventEmitter to Evt
 
 ### All events in a single bus
 
@@ -150,23 +150,18 @@ class MySocket {
     public readonly address: string;
     
     /*
-    We use NonPostableEvt instead of Evt so we make clear that
-    the connect disconnect and error events are not supposed to
-    be posted from outside the class implementation.
+    We expose a NonPostableEvt copy of the Evt and not the Evt itself so we make 
+    sure that the connect, disconnect and error events are not posted by the 
+    user of the class and only internally.
     */
-
-    public readonly evtConnect: NonPostableEvt<void> = new Evt();
+    #evtConnect = Evt.create();
+    readonly evtConnect = Evt.asNonPostable(this.#evtConnect.pipe());
     
-    //Equivalent of the line above but it prevent you from having to import the ToNonPostable helper type
-    public readonly evtDisconnect = Evt.asNonPostable(
-        Evt.create<{ 
-            cause: "local" | "remote" 
-        }>()
-    ); 
+    #evtDisconnect = Evt.create<{ cause: "local" | "remote" }>();
+    readonly evtDisconnect = Evt.asNonPostable(this.#evtConnect.pipe());
     
-    public readonly evtError= Evt.asNonPostable(
-        Evt.create<Error>()
-    );
+    #evtError = Evt.create<Error>();
+    readonly evtError = Evt.asNonPostable(this.#evtError);
 
     constructor(
         params: { 
@@ -180,12 +175,12 @@ class MySocket {
 
 
         setTimeout(
-            () => Evt.asPostable(this.evtConnect).post(),
+            () => this.#evtConnect.post(),
             300
         );
 
         setTimeout(
-            () => Evt.asPostable(this.evtDisconnect).post({ "cause": "local" }),
+            () => this.#evtDisconnect.post({ "cause": "local" }),
             2000
         );
 
