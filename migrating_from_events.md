@@ -4,7 +4,7 @@ description: >-
   refactorying.
 ---
 
-# 🔩 From EventEmitter to Evt
+# 🔩 Migrating from EventEmitter
 
 ### All events in a single bus
 
@@ -66,13 +66,11 @@ evtText.attach(to("disconnect"), ctx, error => { /* ... */ });
 ctx.done();
 ```
 
-### Extending/composing Evt
-
-#### Inheritence (not recommended)
+### Extending Evt
 
 It is common practice to create classes that extends `EventEmitter` .&#x20;
 
-As a general rule of thumb, we tend to avoid inheritance in favor of composition but if you want to do it there is how.
+As a general rule of thumb, we tend to avoid inheritance in favor of other patterns but if you want to do it there is how.
 
 ```typescript
 import { Evt, to } from "evt";
@@ -135,30 +133,40 @@ socket.$attach(
 
 ****[**Run the browser**](https://stackblitz.com/edit/evt-inheritence-pdzywu?file=index.ts)****
 
-#### Composition ( recommended approach )
+Now we encourage favoring composition over inheritance and having one EVT instance for each events type.&#x20;
 
-Now we encourage favoring composition over inheritance and having one EVT instance for each events type. &#x20;
+{% hint style="info" %}
+In the following example MySocket exposes evtConnect, evtDisconnect and evtError as NonPostableEvt. &#x20;
+
+This is to ensure that the user of the socket do no do something like `socket.evtConnect.post()` as it shouldn't be allowed. Those evt should be listenable from the outside but only post from the inside.
+{% endhint %}
 
 ```typescript
 import { Evt } from "evt";
+import type { NonPostableEvt } from "evt";
 
 class MySocket {
 
     public readonly address: string;
     
     /*
-    We expose a NonPostableEvt copy of the Evt and not the Evt itself so we make 
-    sure that the connect, disconnect and error events are not posted by the 
-    user of the class and only internally.
+    We use NonPostableEvt instead of Evt so we make clear that
+    the connect disconnect and error events are not supposed to
+    be posted from outside the class implementation.
     */
-    #evtConnect = Evt.create();
-    readonly evtConnect = Evt.asNonPostable(this.#evtConnect.pipe());
+
+    public readonly evtConnect: NonPostableEvt<void> = new Evt();
     
-    #evtDisconnect = Evt.create<{ cause: "local" | "remote" }>();
-    readonly evtDisconnect = Evt.asNonPostable(this.#evtDisconnect.pipe());
+    //Equivalent of the line above but it prevent you from having to import the ToNonPostable helper type
+    public readonly evtDisconnect = Evt.asNonPostable(
+        Evt.create<{ 
+            cause: "local" | "remote" 
+        }>()
+    ); 
     
-    #evtError = Evt.create<Error>();
-    readonly evtError = Evt.asNonPostable(this.#evtError);
+    public readonly evtError= Evt.asNonPostable(
+        Evt.create<Error>()
+    );
 
     constructor(
         params: { 
@@ -172,12 +180,12 @@ class MySocket {
 
 
         setTimeout(
-            () => this.#evtConnect.post(),
+            () => Evt.asPostable(this.evtConnect).post(),
             300
         );
 
         setTimeout(
-            () => this.#evtDisconnect.post({ "cause": "local" }),
+            () => Evt.asPostable(this.evtDisconnect).post({ "cause": "local" }),
             2000
         );
 
@@ -193,7 +201,7 @@ const socket = new MySocket({
 
   await socket.evtConnect.waitFor();
 
-  console.log("socket connected");
+  console.log("socket connected [bis]");
 
 })();
 

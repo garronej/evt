@@ -4,6 +4,27 @@ description: Cast the passed event as portable.
 
 # Evt.asPostable(evt)
 
+## Deprecated
+
+Evt.asPostable() will be removed in the next major of Evt. &#x20;
+
+If you are currently using it, consider refactoring your code so that you don't need it anymore.&#x20;
+
+See this example. ( that replace this older one).
+
+<pre class="language-diff"><code class="lang-diff"> import { Evt } from "evt";
+ import type {
+   NonPostableEvt,
+<strong>+  ToPostableEvt
+</strong> } from "evt";
+
+ const evtMsg: NonPostableEvt&#x3C;string> = new Evt();
+
+<strong>-Evt.toPostable(evtMsg).post("foo");
+</strong><strong>+(evtMsg as ToPostable&#x3C;typeof evtMsg>).post("foo");</strong></code></pre>
+
+## Usecase
+
 {% hint style="info" %}
 Evt.asNonPostable() is the identity function with special type annotation
 {% endhint %}
@@ -13,8 +34,6 @@ Use this method only on`Evt` you instantiated yourself. Not as a hack to trigger
 {% endhint %}
 
 To invoke `post()` on a `NonPostableEvt` or a `StatefullReadonlyEvt`.
-
-## Usecase:
 
 Without this method this would be the way for a class to expose `Evt` that are posted internally and exposed to be listened.
 
