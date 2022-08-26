@@ -10,7 +10,7 @@ Evt.asPostable() will be removed in the next major of Evt. &#x20;
 
 If you are currently using it, consider refactoring your code so that you don't need it anymore.&#x20;
 
-See this example. ( that replace this older one).
+See [this newer example](../../migrating\_from\_events.md#composition-recommended-approach). ( that replace [the older one](https://github.com/garronej/evt/blob/2069fe58663433c3042e00a9b72622e244b01721/extending\_evt.md?plain=1#L71-L138)).
 
 <pre class="language-diff"><code class="lang-diff"> import { Evt } from "evt";
  import type {
