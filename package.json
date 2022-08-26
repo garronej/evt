@@ -17,9 +17,9 @@
     "author": "u/garronej",
     "license": "MIT",
     "dependencies": {
-        "minimal-polyfills": "^2.2.1",
+        "minimal-polyfills": "^2.2.2",
         "run-exclusive": "^2.2.16",
-        "tsafe": "^0.10.1"
+        "tsafe": "^1.0.1"
     },
     "files": [
         "src/",
