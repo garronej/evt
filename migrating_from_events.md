@@ -155,7 +155,7 @@ class MySocket {
     readonly evtConnect = Evt.asNonPostable(this.#evtConnect.pipe());
     
     #evtDisconnect = Evt.create<{ cause: "local" | "remote" }>();
-    readonly evtDisconnect = Evt.asNonPostable(this.#evtConnect.pipe());
+    readonly evtDisconnect = Evt.asNonPostable(this.#evtDisconnect.pipe());
     
     #evtError = Evt.create<Error>();
     readonly evtError = Evt.asNonPostable(this.#evtError);
