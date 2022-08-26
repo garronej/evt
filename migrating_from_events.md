@@ -193,7 +193,7 @@ const socket = new MySocket({
 
   await socket.evtConnect.waitFor();
 
-  console.log("socket connected [bis]");
+  console.log("socket connected");
 
 })();
 
