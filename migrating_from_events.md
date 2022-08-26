@@ -66,11 +66,13 @@ evtText.attach(to("disconnect"), ctx, error => { /* ... */ });
 ctx.done();
 ```
 
-### Extending Evt
+### Extending/composing Evt
+
+#### Inheritence (not recommended)
 
 It is common practice to create classes that extends `EventEmitter` .&#x20;
 
-As a general rule of thumb, we tend to avoid inheritance in favor of other patterns but if you want to do it there is how.
+As a general rule of thumb, we tend to avoid inheritance in favor of composition but if you want to do it there is how.
 
 ```typescript
 import { Evt, to } from "evt";
@@ -133,17 +135,12 @@ socket.$attach(
 
 ****[**Run the browser**](https://stackblitz.com/edit/evt-inheritence-pdzywu?file=index.ts)****
 
-Now we encourage favoring composition over inheritance and having one EVT instance for each events type.&#x20;
+#### Composition ( recommended approach )
 
-{% hint style="info" %}
-In the following example MySocket exposes evtConnect, evtDisconnect and evtError as NonPostableEvt. &#x20;
-
-This is to ensure that the user of the socket do no do something like `socket.evtConnect.post()` as it shouldn't be allowed. Those evt should be listenable from the outside but only post from the inside.
-{% endhint %}
+Now we encourage favoring composition over inheritance and having one EVT instance for each events type. &#x20;
 
 ```typescript
 import { Evt } from "evt";
-import type { NonPostableEvt } from "evt";
 
 class MySocket {
 
