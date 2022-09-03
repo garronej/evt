@@ -75,7 +75,12 @@ function fromImplForTargetEventLike<T>(
         off: ProxyMethod<T>;
     };
 
-    if (EventTargetLikeAsValue.NodeStyleEventEmitter.match(target)) {
+    if (EventTargetLikeAsValue.HasEventTargetAddRemove.match(target)) {
+        proxy = {
+            "on": (listener, eventName, options) => target.addEventListener(eventName, listener, options),
+            "off": (listener, eventName, options) => target.removeEventListener(eventName, listener, options)
+        };
+    } else if (EventTargetLikeAsValue.NodeStyleEventEmitter.match(target)) {
         proxy = {
             "on": (listener, eventName) => target.addListener(eventName, listener),
             "off": (listener, eventName) => target.removeListener(eventName, listener)
@@ -84,11 +89,6 @@ function fromImplForTargetEventLike<T>(
         proxy = {
             "on": (listener, eventName) => target.on(eventName, listener),
             "off": (listener, eventName) => target.off(eventName, listener)
-        };
-    } else if (EventTargetLikeAsValue.HasEventTargetAddRemove.match(target)) {
-        proxy = {
-            "on": (listener, eventName, options) => target.addEventListener(eventName, listener, options),
-            "off": (listener, eventName, options) => target.removeEventListener(eventName, listener, options)
         };
     } else if (EventTargetLikeAsValue.RxJSSubject.match(target)) {
 
