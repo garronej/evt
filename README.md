@@ -40,7 +40,7 @@ It enables and encourages **functional programming** and makes heavy use of **ty
 <b>Suitable for any JS runtime env (deno, node, old browsers, react-native ...)</b>
 - ✅ It is both a [Deno](https://deno.land/x/evt) and an [NPM](https://www.npmjs.com/evt) module. ( Achieved with [Denoify](https://github.com/garronej/denoify) ) 
 - ✅ No external dependencies ([`tsafe`](https://github.com/garronej/tsafe), [`run-exclusive`](https://github.com/garronej/run_exclusive) and [`minimal-polyfills`](https://github.com/garronej/minimal_polyfills) are all from the same author as EVT).
-- ✅ [Great React integration](https://docs.evt.land/react-hooks).  
+- ✅ [Makes it easy to work with events in React](https://docs.evt.land/react-hooks).  
 
 Can be imported in TypeScript projects using version TypeScript >= 3.8 (February 20th, 2020) and in any plain JS projects.
 
