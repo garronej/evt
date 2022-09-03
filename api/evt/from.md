@@ -24,7 +24,7 @@ Depending of the API the type argument will be inferred or not.
 
 `name`: The event name of interest, being emitted by the `target`.
 
-## Example
+## Examples
 
 ### With DOM EventTarget
 
@@ -48,6 +48,15 @@ Evt.from(ctx, htmlButtonElement, "click").attach(mouseEvent => {/* ... */});
 
 [**Run the example**](https://stackblitz.com/edit/react-ts-hqhuzk?file=App.tsx)****
 
+### From [ResizeObserver](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver)
+
+```typescript
+const ctx = Evt.createCtx();
+declare const htmlDivElement: HTMLDivElement;
+
+Evt.from(ctx, ResizeObserver, htmlDivElement).attach(resizeObserverEntry=>{/* ... */});
+```
+
 ### From `EventEmitter`
 
 ```typescript
@@ -67,7 +76,7 @@ ctx.done();
 console.log(ee.listenerCount("text"));//Prints "0"
 ```
 
-\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-qyk2ny?embed=1\&file=index.ts\&hideExplorer=1)\*\*\*\*
+[**Run the example**](https://stackblitz.com/edit/evt-qyk2ny?embed=1\&file=index.ts\&hideExplorer=1)
 
 ### With RxJS Subject
 
@@ -90,11 +99,7 @@ ctx.done();
 subject.next("Foo bar"); //Prints nothing
 ```
 
-\*\*\*\*[**Run the example**](https://stackblitz.com/edit/evt-t14cot?embed=1\&file=index.ts\&hideExplorer=1)\*\*\*\*
-
-###
-
-
+[**Run the example**](https://stackblitz.com/edit/evt-t14cot?embed=1\&file=index.ts\&hideExplorer=1)
 
 ### With JQuery-like event target
 
