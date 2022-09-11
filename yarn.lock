@@ -180,19 +180,20 @@ csstype@^3.0.2:
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.1.0.tgz#4ddcac3718d787cf9df0d1b7d15033925c8f29f2"
   integrity sha512-uX1KG+x9h5hIJsaKR9xHUeUraxf8IODOwq9JLNPq6BwB04a/xgpq3rcx47l5BZu5zBPlgD342tdke3Hom/nJRA==
 
-denoify@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/denoify/-/denoify-1.0.3.tgz#6060b0e05d0987af223a85ba914b645b547322a9"
-  integrity sha512-SBu+6jOilxuHEFbd0/DcaBdkgwslx5XV94lOIsys2sMSfPgalU+/y+Oy7WUPonwOekqCbQEh05D+vH9UJopg6w==
+denoify@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/denoify/-/denoify-1.1.0.tgz#dd94097b0aa44bc445cfdebe7be06947145a0157"
+  integrity sha512-a2UaipOna5FlfLuWN/xIkeNVmGdjvWDuwkyQgtYYUVwGNs1v8+eHpIQmOETxFE0z2VHyVo2in5tWQwudv46K7Q==
   dependencies:
     "@octokit/rest" "^18.0.0"
     "@types/comment-json" "^1.1.1"
     commander "^4.1.1"
     comment-json "^3.0.2"
-    evt "^2.4.0"
+    evt "^2.4.1"
     get-github-default-branch-name "^0.0.4"
     gitignore-parser "0.0.2"
     glob "^7.1.6"
+    minimal-polyfills "^2.2.2"
     node-fetch "^2.6.7"
     path-depth "^1.0.0"
     scripting-tools "^0.19.13"
@@ -209,10 +210,10 @@ esprima@^4.0.1:
   resolved "https://registry.yarnpkg.com/esprima/-/esprima-4.0.1.tgz#13b04cdb3e6c5d19df91ab6987a8695619b0aa71"
   integrity sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A==
 
-evt@^2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/evt/-/evt-2.4.0.tgz#5052d3a685bba8f7e7be699b358c1781bd4037bf"
-  integrity sha512-1V8FnExwqzX2fufT793mHfCnQay078kRdAEDHzJz863pgJK9aeDiWXZFs5aKmzJfIgi+svevtApVnleZXz4Jeg==
+evt@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/evt/-/evt-2.4.1.tgz#68beca2f7bd7eb755fdda5b263a80b934100e046"
+  integrity sha512-eo7sZcfDbiVWD5Aw6STkIEMmchYLdeGnJB6tVaM9AXZc7pViin3PmQhb6fgFIFHfl0re9zSEHtSjyu70Y7dRJg==
   dependencies:
     minimal-polyfills "^2.2.2"
     run-exclusive "^2.2.16"
