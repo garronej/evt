@@ -9,24 +9,8 @@ on:
 
 jobs:
 
-  test_lint:
-    runs-on: ubuntu-latest
-    if: ${{ !github.event.created && github.repository != 'garronej/denoify_ci' }}
-    steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-    - uses: bahmutov/npm-install@v1
-    - name: If this step fails run 'npm run lint' and 'npm run format' then commit again.
-      run: |
-        PACKAGE_MANAGER=npm
-        if [ -f "./yarn.lock" ]; then
-            PACKAGE_MANAGER=yarn
-        fi
-        $PACKAGE_MANAGER run lint:check
-        $PACKAGE_MANAGER run format:check
   test_node:
     runs-on: ${{ matrix.os }}
-    needs: test_lint
     strategy:
       matrix:
         node: [ '14', '15' ,'16', '17' ]
@@ -53,7 +37,6 @@ jobs:
         npm test:node
   test_deno:
     runs-on: ubuntu-latest
-    needs: test_lint
     name: test with Deno
     steps: 
     - uses: actions/checkout@v3
