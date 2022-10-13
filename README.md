@@ -6,7 +6,7 @@
     <br>
     <br>
     <a href="https://github.com/garronej/evt/actions">
-      <img src="https://github.com/garronej/evt/workflows/ci/badge.svg?branch=develop">
+      <img src="https://github.com/garronej/evt/workflows/ci/badge.svg?branch=main">
     </a>
     <a href="https://www.npmjs.com/package/evt">
       <img src="https://img.shields.io/npm/v/evt?logo=npm">
