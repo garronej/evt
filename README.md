@@ -11,8 +11,8 @@
     <a href="https://www.npmjs.com/package/evt">
       <img src="https://img.shields.io/npm/v/evt?logo=npm">
     </a>
-    <a href="https://deno.land/x/evt">
-        <img src="https://img.shields.io/badge/deno-module-informational?logo=deno">
+    <a href="https://deno.land/x/tsafe">
+        <img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fdeno-visualizer.danopia.net%2Fshields%2Flatest-version%2Fx%2Fevt%2Fmod.ts">
     </a>
     <a href="https://bundlephobia.com/package/evt">
       <img src="https://img.shields.io/bundlephobia/minzip/evt">
