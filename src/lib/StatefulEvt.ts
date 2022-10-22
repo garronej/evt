@@ -1,3 +1,4 @@
+// @denoify-line-ignore
 import "minimal-polyfills/Object.is";
 import { LazyEvt } from "./LazyEvt";
 import { LazyStatefulEvt } from "./LazyStatefulEvt";

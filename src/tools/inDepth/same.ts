@@ -1,7 +1,9 @@
+// @denoify-line-ignore
 import { Polyfill as Set } from "minimal-polyfills/Set";
+// @denoify-line-ignore
+import "minimal-polyfills/Object.is";
 import { MapLike, SetLike, DateLike, ArrayLike } from "./types";
 import { arrAllEquals } from "../reducers/allEquals";
-import "minimal-polyfills/Object.is";
 
 /** 
  * Function that perform a in depth comparison of two things of arbitrary type T

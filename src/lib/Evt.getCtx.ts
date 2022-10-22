@@ -1,3 +1,4 @@
+// @denoify-line-ignore
 import { Polyfill as WeakMap } from "minimal-polyfills/WeakMap";
 import { importProxy } from "./importProxy";
 import type { Ctx } from "./types";

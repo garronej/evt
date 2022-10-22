@@ -1,7 +1,9 @@
 
+// @denoify-line-ignore
+import { Polyfill as Map } from "minimal-polyfills/Map";
+import type { LightMap } from "../minimal-polyfills/LightMap";
+import type { LightSet } from "../minimal-polyfills/LightSet";
 import { assert } from "tsafe/assert";
-import { Polyfill as Map, LightMap } from "minimal-polyfills/Map";
-type LightSet<T> = import("minimal-polyfills/Set").LightSet<T>;
 import { MapLike, SetLike, ArrayLike, DateLike } from "./types";
 import { overwriteReadonlyProp } from "tsafe/lab/overwriteReadonlyProp";
 

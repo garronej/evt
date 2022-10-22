@@ -1,4 +1,10 @@
+// @denoify-line-ignore
 import "minimal-polyfills/Array.prototype.find";
+// @denoify-line-ignore
+import { Polyfill as Map } from "minimal-polyfills/Map";
+// @denoify-line-ignore
+import { Polyfill as WeakMap } from "minimal-polyfills/WeakMap";
+import type { LightMap } from "../tools/minimal-polyfills/LightMap";
 import { importProxy } from "./importProxy";
 import { create } from "./Evt.create";
 import { getCtxFactory } from "./Evt.getCtx";
@@ -11,8 +17,6 @@ import { asNonPostable } from "./Evt.asNonPostable";
 import { parsePropsFromArgs, matchAll } from "./Evt.parsePropsFromArgs";
 import { newCtx } from "./Evt.newCtx";
 import { LazyEvt } from "./LazyEvt";
-import { Polyfill as Map, LightMap } from "minimal-polyfills/Map";
-import { Polyfill as WeakMap } from "minimal-polyfills/WeakMap";
 import * as runExclusive from "run-exclusive";
 import { overwriteReadonlyProp } from "tsafe/lab/overwriteReadonlyProp";
 import { typeGuard } from "tsafe/typeGuard";
