@@ -19,7 +19,7 @@
     "dependencies": {
         "minimal-polyfills": "^2.2.2",
         "run-exclusive": "^2.2.18",
-        "tsafe": "^1.4.0"
+        "tsafe": "^1.4.1"
     },
     "files": [
         "src/",
