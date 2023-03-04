@@ -1,4 +1,4 @@
-import { Evt } from "../lib/Evt";
+import { Evt } from "../lib";
 import type { Ctx } from "../lib";
 import * as React from "react";
 const { useEffect } = React;
