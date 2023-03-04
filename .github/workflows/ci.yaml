@@ -23,6 +23,8 @@ jobs:
         node-version: ${{ matrix.node }}
     - uses: bahmutov/npm-install@v1
     - run: yarn build
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
     - run: yarn test:node
   test_deno:
     runs-on: ubuntu-latest
