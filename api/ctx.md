@@ -14,13 +14,11 @@ The only difference between `CtxVoid` and `Ctx<void>` is that `ctxVoid.done()` c
 
 Detach, from the `Evt` instances they are attached to, all Handlers bound to the context.
 
-Calling this method causes the `Evt` returned by `ctx.getEvtDone()` to be posted.
-
 {% hint style="info" %}
-When an fλ operator return `{ "DETACH": ctx }`, `ctx.done()` is invoked.
-
-When it returns `{ "DETACH": ctx, "res": result }`, `ctx.done(result)` is invoked.
+Once you have called ctx.done() the ctx can't be re-used. If you attach another handler using this ctx, it will be immediately detached. &#x20;
 {% endhint %}
+
+Calling this method causes the `Evt` returned by `ctx.getEvtDone()` to be posted.
 
 {% hint style="info" %}
 To test if ctx.done() have been invoked already you can use:`ctx.getEvtDone().postCount !== 0`

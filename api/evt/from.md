@@ -46,7 +46,7 @@ declare const htmlButtonElement: HTMLButtonElement;
 Evt.from(ctx, htmlButtonElement, "click").attach(mouseEvent => {/* ... */});
 ```
 
-[**Run the example**](https://stackblitz.com/edit/react-ts-hqhuzk?file=App.tsx)****
+[**Run the example**](https://stackblitz.com/edit/react-ts-hqhuzk?file=App.tsx)
 
 ### From [ResizeObserver](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver)
 
