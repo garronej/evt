@@ -75,7 +75,7 @@ setTimeout(
 
 ## Difference between `evt.waitFor(...)` and `evt.attachOnce(...)`
 
-`const pr= evt.waitFor()` is **NOT** equivalent to const `pr= evt.attachOnce(()=>{})`
+`const pr = evt.waitFor()` is **NOT** equivalent to `const pr = evt.attachOnce(()=>{})`
 
 `evt.waitFor()` is designed in a way that makes it safe to use `async` procedures.
 
