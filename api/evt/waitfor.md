@@ -2,10 +2,6 @@
 
 Method that returns a promise that will resolve when the next matched event is posted.
 
-waitFor is essentially evt.attachOnce(...) but you don’t provide a callback. It accepts the same arguments and return the same promise.
-
-_Essentialy_ the same but [not exactly the same](https://docs.evt.land/api/evt/waitfor#difference-between-evt.waitfor-...-and-evt.attachonce-...), there is a key difference between a handler attached via `waitFor` and a handler attached with `attach*` as explained below.
-
 ## Without timeout
 
 By default the promise returned by `waitFor` will never reject.
@@ -73,13 +69,7 @@ setTimeout(
 
 [**Run the example**](https://stackblitz.com/edit/evt-wqh856?embed=1\&file=index.ts\&hideExplorer=1)
 
-## Difference between `evt.waitFor(...)` and `evt.attachOnce(...)`
-
-`const pr = evt.waitFor()` is **NOT** equivalent to `const pr = evt.attachOnce(()=>{})`
-
-`evt.waitFor()` is designed in a way that makes it safe to use `async` procedures.
-
-Basically it means that the following example prints `A B` on the console instead of waiting forever for the secondLetter.
+## Subtilities of `evt.waitFor(...)`&#x20;
 
 ```typescript
 import { Evt } from "evt";
@@ -88,8 +78,11 @@ const evtText = Evt.create<string>();
 
 (async ()=>{
 
+    //const firstLetter = await new Promise(resolve=> evtText.attachOnce(resolve));
     const firstLetter = await evtText.waitFor();
+    //const secondLetter = await new Promise(resolve=> evtText.attachOnce(resolve));
     const secondLetter = await evtText.waitFor();
+
 
     console.log(`${firstLetter} ${secondLetter}`);
 
@@ -98,7 +91,9 @@ const evtText = Evt.create<string>();
 evtText.post("A");
 evtText.post("B");
 
-//"A B" is printed to the console.
+//"A B" is printed to the console.  
+// Now, if you comment out the implementation using .attachOnce you'll see that
+// the second letter is lost, we never reach the console.log
 ```
 
-Run this [**more practical example**](https://stackblitz.com/edit/evt-v4q4s2?embed=1\&file=index.ts\&hideExplorer=1) if you want to understand how this behavior prevent from some hard to figure out bugs.
+[Playground](https://stackblitz.com/edit/evt-playground-34zdzv?file=index.ts)

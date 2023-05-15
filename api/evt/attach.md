@@ -49,7 +49,7 @@ evtText.post("Hello World");
 
 A large number of overload is provided to cover all the possible combination of arguments. The ordering in which the parameters are listed above must be respected but every parameter other than the callback can be omitted.
 
-![](<../../.gitbook/assets/screenshot-2020-03-16-at-06.28.38 (1) (1) (2) (2) (2) (2).png>)
+![](<../../.gitbook/assets/screenshot-2020-03-16-at-06.28.38 (1) (1) (2) (2) (2) (1) (2).png>)
 
 Examples:
 
