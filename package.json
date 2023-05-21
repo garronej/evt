@@ -31,8 +31,8 @@
     "author": "u/garronej",
     "license": "MIT",
     "dependencies": {
-        "minimal-polyfills": "^2.2.2",
-        "run-exclusive": "^2.2.18",
+        "minimal-polyfills": "^2.2.3",
+        "run-exclusive": "^2.2.19",
         "tsafe": "^1.6.3"
     },
     "files": [
