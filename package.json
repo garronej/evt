@@ -8,6 +8,20 @@
     },
     "main": "dist/lib/index.js",
     "types": "dist/lib/index.d.ts",
+    "exports": {
+        ".": "./dist/lib/index.js",
+        "./hooks": "./dist/hooks/index.js",
+        "./lib": "./dist/lib/index.js",
+        "./lib/types": "./dist/lib/types/index.js",
+        "./lib/types/helper": "./dist/lib/types/helper/index.js",
+        "./lib/util": "./dist/lib/util/index.js",
+        "./lib/util/genericOperators": "./dist/lib/util/genericOperators/index.js",
+        "./tools": "./dist/tools/index.js",
+        "./tools/inDepth": "./dist/tools/inDepth/index.js",
+        "./tools/reducers": "./dist/tools/reducers/index.js",
+        "./tools/testing": "./dist/tools/testing/index.js",
+        "./*": "./dist/*.js"
+    },
     "scripts": {
         "test:node": "node ./dist/test",
         "test:deno": "deno run --reload --unstable --no-check deno_dist/test/mod.ts",
