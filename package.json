@@ -16,7 +16,6 @@
         "./lib/types/helper": "./dist/lib/types/helper/index.js",
         "./lib/util": "./dist/lib/util/index.js",
         "./lib/util/genericOperators": "./dist/lib/util/genericOperators/index.js",
-        "./tools": "./dist/tools/index.js",
         "./tools/inDepth": "./dist/tools/inDepth/index.js",
         "./tools/reducers": "./dist/tools/reducers/index.js",
         "./tools/testing": "./dist/tools/testing/index.js",
