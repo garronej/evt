@@ -3,9 +3,9 @@ import "minimal-polyfills/Object.is";
 import { LazyEvt } from "./LazyEvt";
 import { LazyStatefulEvt } from "./LazyStatefulEvt";
 import { importProxy } from "./importProxy";
-import { parsePropsFromArgs } from "./Evt.parsePropsFromArgs";
 import { Evt, onAddHandlerByEvt } from "./Evt";
 import type { CtxLike, StateDiff, NonPostableEvt, StatefulReadonlyEvt } from "./types";
+import { assert } from "tsafe/assert";
 
 /** https://docs.evt.land/api/statefulevt */
 export type StatefulEvt<T> = import("./types/interfaces").StatefulEvt<T>;
@@ -34,10 +34,19 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
                     return;
                 }
 
+                let sideEffect: (()=> void) | undefined = undefined;
+
                 const opResult = this.getInvocableOp(handler.op)(
                     this.__state,
-                    runSideEffect
+                    this.setOpResultForPipe !== undefined ? (sideEffect_=>sideEffect =sideEffect_) : runSideEffect
                 );
+
+                if( this.setOpResultForPipe !== undefined ){
+                    this.setOpResultForPipe(opResult);
+                    if( sideEffect !== undefined ){
+                        runSideEffect(sideEffect);
+                    }
+                }
 
                 if (!opResult) {
                     return;
@@ -108,16 +117,21 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
 
     }
 
+    private setOpResultForPipe: ((opResult: readonly [any] | null) => void) | undefined;
+
     pipe(...args: any[]): StatefulEvt<any> {
+
+        let opResult: readonly [any] | null | undefined = undefined;
+
+        this.setOpResultForPipe = opResult_ => opResult = opResult_;
 
         const evt = super
             .pipe(...(args as Parameters<typeof importProxy.Evt.prototype.pipe>))
             ;
 
-        const opResult = this.getInvocableOp(parsePropsFromArgs(args, "pipe").op)(
-            this.__state,
-            runSideEffect
-        );
+        assert(opResult !== undefined);
+
+        this.setOpResultForPipe = undefined;
 
         if (!opResult) {
 
