@@ -188,20 +188,6 @@ evtTick.state++; // TS ERROR
 evtTick.post(2); // TS ERROR
 ```
 
-## `.postFoceChange()`
-
-```typescript
- /** 
-  * Post and enforce that .evtChange and .evtChangeDiff 
-  * be posted even if the state has not changed.
-  * 
-  * If no argument is passed the post is performed with the current state.
-  * 
-  * Returns post count 
-  **/
-  postForceChange(wData?: readonly [T]): number;
-```
-
 ## `.toStateless([ctx])`
 
 Return a stateless copy of the `Evt.`
