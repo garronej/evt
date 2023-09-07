@@ -34,59 +34,6 @@ evtCount.state++; //Prints "2"
 console.log(evtCount.state); //Pints "2";
 ```
 
-## `.evtChange`
-
-Property type: `ReadonlyStatefulEvt<T>`
-
-The `.evtChange` property is an `Evt` that post only when the `.state` has changed. ( or when post is made via `.postForceChange()` )
-
-```typescript
-import { Evt } from "evt";
-
-const evtIsConnected = Evt.create(false);
-
-evtIsConnected.attach(console.log);
-
-evtIsConnected.state = false; //Prints nothing .state was already false.
-evtIsConnected.state = true; //Prints "true";
-```
-
-## `.evtDiff`
-
-Property type: `NonPostableEvt<{prevState:T; newState: T}>`
-
-Posted every time the Evt is posted. Used to compare the previous state with the new state.
-
-```typescript
-import { Evt } from "evt";
-
-const evtColor = Evt.create<"BLUE"|"RED"|"WHITE">("BLUE");
-evtColor.evtDiff.attach(
-    ({ prevState, newState})=> console.log(`${prevState}=>${newState}`)
-);
-
-evtColor.state= "BLUE"; //Prints "BLUE=>BLUE"
-evtColor.state= "WHITE"; //Prints "BLUE=>WHITE"
-```
-
-## `.evtChangeDiff`
-
-Property type: `NonPostableEvt<{prevState:T; newState: T}>`
-
-Same than .evtDiff but post only when .evtChang post.
-
-```typescript
-import { Evt } from "evt";
-
-const evtColor = Evt.create<"BLUE"|"RED"|"WHITE">("BLUE");
-evtColor.evtChangeDiff.attach(
-    ({ prevState, newState})=> console.log(`${prevState}=>${newState}`)
-);
-
-evtColor.state= "BLUE"; //Prints nothing
-evtColor.state= "WHITE"; //Prints "BLUE=>WHITE"
-```
-
 ## `.pipe(...)`
 
 Same as [`evt.pipe(...)`](https://docs.evt.land/api/evt/pipe) but return a `StatefulEvt`. Be aware that the current state of the `StatefulEvt` must be matched by the operator ( if any ) when invoking `.pipe()`, elst an exception will be thrown.
@@ -109,24 +56,83 @@ evtSelectedCircleColor.attach(console.log);
 
 ## Converting an `Evt` into a `StatefulEvt`
 
-Use the method method .toStateful(initialState) of Evt. Example:
+Basic example: &#x20;
+
+```typescript
+import { Evt } from "evt";
+
+const evtSrc = Evt.create<string>();
+
+const evtFoo = evtSrc.toStatefull("initial value");
+
+console.log(evtFoo.state === "initial value");
+
+evtStr.post("new value");
+
+console.log(evtFoo.state === "new value");
+```
+
+Concrete example:
+
+```typescript
+import { Evt } from "evt";
+
+// Evt that post whenever the window is resized window.addEventListener("resize", ...)
+const evtResize = Evt.from(window, "resize");
+
+// A statefulle evt with evtInnerWith state which is always the current value of
+// window.innerSize.
+const evtInnerWidth = evtResize
+    .toStatefull() // convert into a statefull evt with initial value set to unefined
+    .pipe(()=> [window.innerWidth]);
+
+```
+
+## onlyIfChanged operator
+
+When using stetefull Evt is often usefull to have event posted only when the state value has changed. For that purpose you can pipe with the onlyIfChanged operator. &#x20;
+
+{% embed url="https://stackblitz.com/edit/evt-playground-rgyith?embed=1&file=index.ts" %}
+
+Concrete example: &#x20;
+
+If we take the previous example: &#x20;
 
 ```typescript
 import { Evt } from "evt";
 
 
-const evtClickCount= Evt.from(document,"click")
-    .pipe([(...[,count])=>[count+1],0])
-    .toStateful(0);
+const evtInnerWidth = Evt.from(window, "resize")
+    .toStatefull() 
+    .pipe(()=> [window.innerWidth]);
+    
+evtInnerWith.attach(innerWidth => {
 
-//...user click 3 times on the page
+    // This callback will be called whenever the screen is resized 
+    // including if only if the height has changed because
+    // window.addEventListener("resize", ()=> ... 
+    // is the source event emitter.  
 
-console.log(evtClickCount.state); //Prints "3"
+});
 ```
 
-{% hint style="success" %}
-You do not need to pass an initialization value to `.toStateful(),` if you don't the state will be initialized with `undefined` and the returned StatefulEvt will be of type`<T | undefined>`. This is usefull when using .toStateful after `Evt.merge()`. See next example.
-{% endhint %}
+Now if we put the `onlyIfChanged` operator intor the mix: &#x20;
+
+```typescript
+import { Evt, onlyIfChanged } from "evt";
+
+const evtInnerWidth = Evt.from(window, "resize")
+    .toStatefull() 
+    .pipe(()=> [window.innerWidth])
+    .pipe(onlyIfChanged());
+    
+evtInnerWith.attach(innerWidth => {
+
+    // This callback will only be called whenever window.innerWidth
+    // actually changes.  
+
+});
+```
 
 ## Merging multiple `StatefulEvt`s
 
