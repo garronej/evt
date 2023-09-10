@@ -6,6 +6,7 @@ import { importProxy } from "./importProxy";
 import { Evt, onAddHandlerByEvt } from "./Evt";
 import type { CtxLike, StateDiff, NonPostableEvt, StatefulReadonlyEvt } from "./types";
 import { assert } from "tsafe/assert";
+import { id } from "tsafe/id";
 
 /** https://docs.evt.land/api/statefulevt */
 export type StatefulEvt<T> = import("./types/interfaces").StatefulEvt<T>;
@@ -34,7 +35,8 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
                     return;
                 }
 
-                let sideEffect: (()=> void) | undefined = undefined;
+                let sideEffect= id<(()=> void) | undefined>(undefined);
+
 
                 const opResult = this.getInvocableOp(handler.op)(
                     this.__state,
@@ -44,7 +46,7 @@ class StatefulEvtImpl<T> extends Evt<T> implements StatefulEvt<T> {
                 if( this.setOpResultForPipe !== undefined ){
                     this.setOpResultForPipe(opResult);
                     if( sideEffect !== undefined ){
-                        runSideEffect(sideEffect);
+                        sideEffect();
                     }
                 }
 
