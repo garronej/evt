@@ -31,10 +31,7 @@ Operators functions can be used with:
 * The [`evt.waitFor(...)`](https://docs.ts-evt.dev/api-doc/evt#evt-waitfor)   method
 * The [`evt.pipe(...)`](https://docs.ts-evt.dev/api-doc/evt#evt-pipe) method.
 
-
-
 ```typescript
-
 type Circle = {
     color: string;
     radius: number;
@@ -44,6 +41,7 @@ type Circle = {
 const blueRadius = (circle: Circle)=> circle.color !== "blue" ? null : [circle.radius];
 
 const evtCircle = Evt.create<Circle>();
+
 // Usage with attach, ($) because it's a fλ
 evtCircle.$attach(
     blueRadius,
