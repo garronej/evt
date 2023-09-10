@@ -15,13 +15,14 @@
         "./lib/types": "./dist/lib/types/index.js",
         "./lib/types/helper": "./dist/lib/types/helper/index.js",
         "./lib/util": "./dist/lib/util/index.js",
-        "./lib/util/genericOperators": "./dist/lib/util/genericOperators/index.js",
         "./tools/inDepth": "./dist/tools/inDepth/index.js",
         "./tools/reducers": "./dist/tools/reducers/index.js",
         "./tools/testing": "./dist/tools/testing/index.js",
         "./hooks/*": "./dist/hooks/*.js",
         "./lib/*": "./dist/lib/*.js",
-        "./tools/*": "./dist/tools/*.js"
+        "./tools/*": "./dist/tools/*.js",
+        "./operators": "./dist/operators/index.js",
+        "./operators/*": "./dist/operators/*.js"
     },
     "scripts": {
         "test:node": "node ./dist/test",

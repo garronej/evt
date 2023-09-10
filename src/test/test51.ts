@@ -1,7 +1,7 @@
 
 import { Evt } from "../lib";
 import { assert } from "tsafe/assert";;
-import { scan } from "../lib/util/genericOperators/scan";
+import { scan } from "../operators/scan";
 import { getHandlerPr } from "./getHandlerPr";
 import { getPromiseAssertionApi } from "../tools/testing/getPromiseAssertionApi";
 

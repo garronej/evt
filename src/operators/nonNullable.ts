@@ -6,5 +6,5 @@ const nonNullableImpl = <T>(data: T) =>
     !isNonNullable(data) ? null : [data] as const;
 
 export const nonNullable =
-    <T>(): import("../../types").Operator.fλ.Stateless<T, NonNullable<T>> =>
+    <T>(): import("../lib/types").Operator.fλ.Stateless<T, NonNullable<T>> =>
         nonNullableImpl;

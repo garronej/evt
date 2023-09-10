@@ -1,6 +1,6 @@
 import { Evt } from "../lib";
 import { assert } from "tsafe/assert";
-import { onlyIfChanged } from "../lib/util/genericOperators/onlyIfChanged";
+import { onlyIfChanged } from "../operators/onlyIfChanged";
 
 let alphabet = ""
 

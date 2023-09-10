@@ -1,5 +1,5 @@
-import { compose } from "../compose";
-import { concatUint8Array } from "../../../tools/concatUint8Array";
+import { compose } from "../lib/util/compose";
+import { concatUint8Array } from "../tools/concatUint8Array";
 
 /** Output Uint8Array of fixed size*/
 export const chunksOf = (byteLength: number) => {

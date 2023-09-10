@@ -1,4 +1,4 @@
-import { compose } from "../compose";
+import { compose } from "../lib/util/compose";
 
 type CtxLike = { evtDoneOrAborted: { postCount: number; }  };
 

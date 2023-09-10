@@ -1,4 +1,4 @@
-import type { Operator } from "../../types";
+import type { Operator } from "../lib/types";
 /*
 NOTE: Here we allow a tiny memory leak to be able to emulate
 the EventEmitter.removeListener(event, callback) method easily.

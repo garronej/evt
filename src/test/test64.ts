@@ -1,7 +1,7 @@
 
 import { Evt } from "../lib";
 
-import { chunksOf } from "../lib/util/genericOperators/chunksOf";
+import { chunksOf } from "../operators/chunksOf";
 import { same } from "../tools/inDepth";
 import { assert } from "tsafe";
 

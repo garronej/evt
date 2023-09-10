@@ -1,4 +1,4 @@
-import { compose } from "../compose";
+import { compose } from "../lib/util/compose";
 
 export const throttleTime = <T>(duration: number) =>
     compose<T, { data: T; lastClick: number; }, T>(

@@ -1,7 +1,7 @@
 
-import { Operator, NonPostableEvt } from "../../types";
-import { StatefulEvt } from "../../StatefulEvt";
-import { same } from "../../../tools/inDepth/same";
+import { Operator, NonPostableEvt } from "../lib/types";
+import { StatefulEvt } from "../lib/StatefulEvt";
+import { same } from "../tools/inDepth/same";
 
 const initialValue = {};
 
