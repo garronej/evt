@@ -201,8 +201,6 @@ evtText.post("World"); //Prints "START: Hello World"
 
 \*\*\*\*[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-stateful-qs1nsh?embed=1\&file=index.ts\&hideExplorer=1)\*\*\*\*
 
-###
-
 ## Generic operators
 
 Some generic operators are provided in `"evt/operators"` such as `scan`, `throttleTime` or `to` but that's about it.
@@ -217,5 +215,3 @@ export { scan } from "evt/operator/scan";
 export { throttleTime } from "evt/operator/throttleTime";
 export { to } from "evt/operator/to";
 ```
-
-##
