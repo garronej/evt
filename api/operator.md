@@ -201,6 +201,20 @@ evtText.post("World"); //Prints "START: Hello World"
 
 \*\*\*\*[**Run the example**](https://stackblitz.com/edit/ts-evt-demo-stateful-qs1nsh?embed=1\&file=index.ts\&hideExplorer=1)\*\*\*\*
 
+
+
+
+
+## Side effect
+
+If you want your operator to have side effect you should use the second argument of the operator function `registerSideEffect`: &#x20;
+
+{% embed url="https://stackblitz.com/edit/ts-evt-demo-stateful-nxiqdt?file=index.ts" %}
+
+This is important becaue when you can the .isHandled() method on an evt the operator is invoked. Aditionally your operator can be invoked internally by Evt, it shouldn't produce side effect. &#x20;
+
+This is why it's important to make sure the the sideEffect is executed only when there is an actuall event posted. &#x20;
+
 ## Generic operators
 
 Some generic operators are provided in `"evt/operators"` such as `scan`, `throttleTime` or `to` but that's about it.
