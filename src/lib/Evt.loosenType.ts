@@ -1,7 +1,7 @@
 import type { SwapEvtType, UnpackEvt, NonPostableEvtLike} from "./types";
 
 /**
- * https://docs.evt.land/api/evt/loosenType
+ * https://docs.evt.land/api/evt/loosentype
  */
 export function loosenType<E extends NonPostableEvtLike<any>, SupersetOfT>(
     evt: E
