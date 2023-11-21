@@ -124,6 +124,8 @@ import { Evt, onlyIfChanged } from "evt";
 const evtInnerWidth = Evt.from(window, "resize")
     .toStatefull() 
     .pipe(()=> [window.innerWidth])
+    // By default it compare object structure so { foo: 3 } is considered equal to 
+    // an other object that would also be { foo: 3 }
     .pipe(onlyIfChanged());
     
 evtInnerWith.attach(innerWidth => {
