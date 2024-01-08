@@ -63,7 +63,7 @@ export const same = (() => {
 
         }
 
-        if (!(o1 instanceof Object && o1 instanceof Object)) {
+        if (!(o1 instanceof Object && o2 instanceof Object)) {
             return false;
         }
 
