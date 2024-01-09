@@ -250,10 +250,10 @@ csstype@^3.0.2:
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.1.0.tgz#4ddcac3718d787cf9df0d1b7d15033925c8f29f2"
   integrity sha512-uX1KG+x9h5hIJsaKR9xHUeUraxf8IODOwq9JLNPq6BwB04a/xgpq3rcx47l5BZu5zBPlgD342tdke3Hom/nJRA==
 
-denoify@^1.6.6:
-  version "1.6.6"
-  resolved "https://registry.yarnpkg.com/denoify/-/denoify-1.6.6.tgz#59e32896c448a45a82069b923caa036bcaf80046"
-  integrity sha512-cu78YmhU5EgEAmyXmhSmRGZ9Gszv1l8DRr0CIv8O6PtgglzFB8Ls9GEKsieTqJUFU8fe3AAh4QizJXAoKO68Mw==
+denoify@^1.6.7:
+  version "1.6.7"
+  resolved "https://registry.yarnpkg.com/denoify/-/denoify-1.6.7.tgz#51dc762b65716278f175a8368fc1ea18be49a1a5"
+  integrity sha512-/ZAEg/3U8wREuCR1zePgKKVOhF7knX3NCC0e46NVHiZcAKHibvz+vEvq/RMZ2SSUCFJH1SkLYG5gOMb40FnIUw==
   dependencies:
     "@octokit/rest" "^18.0.0"
     "@types/comment-json" "^1.1.1"
