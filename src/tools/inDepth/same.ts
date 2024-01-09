@@ -67,6 +67,9 @@ export const same = (() => {
             return false;
         }
 
+        if( typeof o1 === "function" || typeof o2 === "function" ){
+            return false;
+        }
 
         if (DateLike.match(o1)) {
 
