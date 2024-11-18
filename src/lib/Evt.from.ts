@@ -1,5 +1,5 @@
 import { id } from "tsafe/id";
-import { assert } from "tsafe/assert";;
+import { assert } from "tsafe/assert";
 import { typeGuard } from "tsafe/typeGuard";
 import { mergeImpl } from "./Evt.merge";
 import { importProxy } from "./importProxy";

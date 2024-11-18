@@ -2,8 +2,7 @@
 import { Polyfill as Set } from "minimal-polyfills/Set";
 // @denoify-line-ignore
 import { Polyfill as WeakMap } from "minimal-polyfills/WeakMap";
-import { assert } from "tsafe/assert";;
-import { is } from "tsafe/is";
+import { assert, is } from "tsafe/assert";
 import { LazyEvt } from "./LazyEvt";
 import { importProxy } from "./importProxy";
 import { overwriteReadonlyProp } from "tsafe/lab/overwriteReadonlyProp";
