@@ -873,6 +873,12 @@ class EvtImpl<T> implements Evt<T> {
 
                         return { "done": true } as any;
                     },
+                    throw(error) {
+
+                        self.detach(ctx);
+
+                        return Promise.reject(error);
+                    },
                 };
             }
 
