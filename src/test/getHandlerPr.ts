@@ -19,6 +19,9 @@ export function getHandlerPr(evt: NonPostableEvt<any>, run: ()=> void): Promise<
         handlersAfter
     );
 
+    if (o.added.length === 0) {
+        throw new Error("No handlers were added during the test run");
+    }
     return o.added[0].promise;
 
 }
